@@ -17,7 +17,7 @@ public class TextureObject extends Entity {
 		tex = new Texture(texture);
 	}
 	
-	TextureObject(String texture, float x,float y, float speed, boolean isAI)
+	TextureObject(String texture, float x,float y, float speed)
 	{
 		tex = new Texture(texture);
 		setX(x);
