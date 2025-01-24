@@ -38,7 +38,7 @@ public class TextureObject extends Entity {
 	@Override
 	public void draw(SpriteBatch batch)
 	{
-		batch.draw(tex, getX(), getY());
+		batch.draw(tex, getX() - tex.getWidth() / 2, getY() - tex.getHeight() / 2);
 	}
 	
 	@Override
