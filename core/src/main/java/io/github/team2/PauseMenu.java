@@ -11,8 +11,6 @@ public class PauseMenu extends Scene {
 
     private Entity image;
     
-    private EntityManager em;
-    
     public PauseMenu()
     {
     	em = new EntityManager();

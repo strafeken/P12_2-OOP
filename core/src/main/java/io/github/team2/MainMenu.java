@@ -8,8 +8,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 public class MainMenu extends Scene {
     
     private Entity image;
-    
-    private EntityManager em;
 
 	public MainMenu()
 	{

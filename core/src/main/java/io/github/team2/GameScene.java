@@ -15,8 +15,6 @@ public class GameScene extends Scene {
 	private Entity circle;
 	private Entity triangle;
 
-	private EntityManager em;
-
 	public GameScene()
 	{
 		
