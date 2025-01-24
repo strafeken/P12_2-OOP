@@ -59,4 +59,13 @@ public class EntityManager {
 			e.moveAIControlled();
 		}
 	}
+	
+	public void dispose()
+	{
+		for (Entity entity : entityList)
+		{
+			if (entity instanceof TextureObject)
+				((TextureObject) entity).dispose();
+		}
+	}
 }

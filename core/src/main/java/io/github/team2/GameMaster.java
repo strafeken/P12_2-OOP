@@ -3,6 +3,8 @@ package io.github.team2;
 import java.util.Random;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -13,42 +15,23 @@ public class GameMaster extends ApplicationAdapter {
 	private SpriteBatch batch;
 	
 	private ShapeRenderer shape;
-
-	private Entity droplets[];
-	private Entity bucket;
-	private Entity circle;
-	private Entity triangle;
 	
-	private EntityManager em;
+	private SceneManager sm;
 	
 	@Override
 	public void create()
 	{
-		em = new EntityManager();
+		sm = SceneManager.getInstance();
+		
+		sm.addScene(SceneID.MAIN_MENU, new MainMenu());
+		sm.addScene(SceneID.GAME_SCENE, new GameScene());
+		sm.addScene(SceneID.PAUSE_MENU, new PauseMenu());
+		
+		sm.setNextScene(SceneID.MAIN_MENU);
 		
 		batch = new SpriteBatch();
 		
 		shape = new ShapeRenderer();
-		
-		droplets = new TextureObject[10];
-		
-		Random random = new Random();
-		
-		for(int i = 0; i < droplets.length; ++i)
-			droplets[i] = new Drop("droplet.png", random.nextInt(600), random.nextInt(440), 100);
-		
-		bucket = new Bucket("bucket.png", 200, 0, 200);
-		
-		circle = new Circle(Color.RED, 50, 500, 300, 200);
-
-		triangle = new Triangle(Color.GREEN, 100, 100, 200);
-		
-		for(int i = 0; i < droplets.length; ++i)
-			em.addEntities(droplets[i]);
-		
-		em.addEntities(bucket);
-		em.addEntities(circle);
-		em.addEntities(triangle);	
 	}
 	
 	@Override
@@ -56,10 +39,18 @@ public class GameMaster extends ApplicationAdapter {
 	{
 		ScreenUtils.clear(0, 0, 0.2f, 1);
 		
-		em.update();
+		sm.update();
+		sm.draw(batch);
+		sm.draw(shape);
 		
-		em.draw(batch);
-		em.draw(shape);
+		// pause and resume game
+		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && sm.getCurrentSceneID() != SceneID.MAIN_MENU)
+		{
+			if (sm.getCurrentSceneID() == SceneID.GAME_SCENE)
+				sm.pushScene(SceneID.PAUSE_MENU);
+			else
+				sm.popScene();
+	    }
 	}
 	
 	@Override
@@ -68,11 +59,5 @@ public class GameMaster extends ApplicationAdapter {
 		batch.dispose();
 		
 		shape.dispose();
-		
-		for(Entity entity : droplets)
-		{
-			if (entity instanceof TextureObject)
-				((TextureObject)entity).dispose();
-		}
 	}
 }
