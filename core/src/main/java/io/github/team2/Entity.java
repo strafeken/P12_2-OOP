@@ -2,28 +2,27 @@ package io.github.team2;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 
-public abstract class Entity implements Movement {
+public abstract class Entity implements iMovable {
 	
-	//protected float x;
-	//protected float y;
-	
-	protected Vector2 position;
+	protected float x;
+	protected float y;
 	protected float speed;
 	
 	public Entity()
 	{
-		position = new Vector2();
+		x = 0;
+		y = 0;
 		speed = 0;
 	}
 	
 	public Entity(float x, float y, float speed)
 	{
-		this.position = new Vector2(x , y);
+		this.x = x;
+		this.y = y;
 		this.speed = speed;
 	}
-	/*
+	
 	public float getX()
 	{
 		return x;
@@ -43,19 +42,6 @@ public abstract class Entity implements Movement {
 	{
 		this.y = y;
 	}
-	*/
-	
-	public Vector2 getPosition()
-	{
-		return position;
-	}
-	
-	public void setPosition(float x, float y)
-	{
-		
-		this.position.set(x, y);
-	}
-	
 	
 	public float getSpeed()
 	{
