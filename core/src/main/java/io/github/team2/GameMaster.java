@@ -39,16 +39,16 @@ public class GameMaster extends ApplicationAdapter {
 		
 		bucket = new Bucket("bucket.png", 200, 0, 200);
 		
-		circle = new Circle(Color.RED, 50, 500, 300, 200);
+		//circle = new Circle(Color.RED, 50, 500, 300, 200);
 
-		triangle = new Triangle(Color.GREEN, 100, 100, 200);
+		//triangle = new Triangle(Color.GREEN, 100, 100, 200);
 		
 		for(int i = 0; i < droplets.length; ++i)
 			em.addEntities(droplets[i]);
 		
 		em.addEntities(bucket);
-		em.addEntities(circle);
-		em.addEntities(triangle);	
+		//em.addEntities(circle);
+		//em.addEntities(triangle);	
 	}
 	
 	@Override

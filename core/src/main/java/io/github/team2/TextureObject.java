@@ -3,6 +3,7 @@ package io.github.team2;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+
 public class TextureObject extends Entity {
 	
 	protected Texture tex;
@@ -19,10 +20,17 @@ public class TextureObject extends Entity {
 	
 	TextureObject(String texture, float x,float y, float speed)
 	{
+		
 		tex = new Texture(texture);
+		setPosition(x, y);
+		setSpeed(speed);
+		
+		/*
 		setX(x);
 		setY(y);
-		setSpeed(speed);
+		*/
+		
+		//setSpeed(speed);
 	}
 	
 	public float getWidth()
@@ -38,9 +46,11 @@ public class TextureObject extends Entity {
 	@Override
 	public void draw(SpriteBatch batch)
 	{
-		batch.draw(tex, getX(), getY());
+		batch.draw(tex, this.getPosition().x, this.getPosition().y);
 	}
 	
+	
+	/*
 	@Override
 	public void moveUserControlled()
 	{
@@ -52,6 +62,7 @@ public class TextureObject extends Entity {
 	{
 		
 	}
+	*/
 	
 	@Override
 	public void update()
@@ -63,4 +74,12 @@ public class TextureObject extends Entity {
 	{
 		tex.dispose();
 	}
+	
+	@Override
+	public void moveTo() {}
+	
+	@Override
+	public void rotateTo(float num) {}
+	
+	
 }
