@@ -15,13 +15,10 @@ public class SceneManager {
 	// handles scene states
 	private Stack<SceneID> sceneStack;
 	
-	private boolean isPaused;
-	
 	private SceneManager()
 	{
 		scenes = new HashMap<>();
 		sceneStack = new Stack<>();
-		isPaused = false;
 	}
 	
 	public static SceneManager getInstance()
