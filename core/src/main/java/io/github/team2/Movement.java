@@ -20,9 +20,21 @@ public interface Movement {
 	public void rotateTo(float num);
 	
 	
-	public default boolean checkOutOfBound() {
+	public default boolean checkOutOfBound(PhysicsBody body) {
+		if (body.getPosition().x < 0 || body.getPosition().x > screenWidth) {
+			System.out.println("hit wall");
+			return true;
+			
+		}
 		
-		return true;
+		if (body.getPosition().y < -1 || body.getPosition().y > screenHeight) {
+			System.out.println("hit wall");
+			return true;
+			
+		}
+
+
+		return false;
 	}
 	
 	
