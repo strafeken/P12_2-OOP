@@ -19,8 +19,9 @@ public class Circle extends Entity {
 		setSpeed(10);
 	}
 	
-	public Circle(Color color, float radius, float x, float y, float speed)
+	public Circle(EntityType type, Color color, float radius, float x, float y, float speed)
 	{
+		setEntityType(type);
 		this.color = color;
 		this.radius = radius;
 		setX(x);
@@ -48,10 +49,15 @@ public class Circle extends Entity {
 	@Override
 	public void moveUserControlled()
 	{
+        if (getBody() == null)
+        	return;
+        
 		if (Gdx.input.isKeyPressed(Keys.A))
-			setX(getX() - speed * Gdx.graphics.getDeltaTime());
-		if (Gdx.input.isKeyPressed(Keys.D))
-			setX(getX() + speed * Gdx.graphics.getDeltaTime());
+			getBody().setLinearVelocity(-getSpeed(), 0);
+		else if (Gdx.input.isKeyPressed(Keys.D))
+			getBody().setLinearVelocity(getSpeed(), 0);
+		else
+			getBody().setLinearVelocity(0, 0);
 	}
 	
 	@Override
@@ -63,6 +69,7 @@ public class Circle extends Entity {
 	@Override
 	public void update()
 	{
-		System.out.println("Circle  XY: " + getX() + " / " + getY() + " Radius: " + radius);
+//		System.out.println("Circle  XY: " + getX() + " / " + getY() + " Radius: " + radius);
+		updateBody();
 	}
 }

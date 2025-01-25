@@ -1,19 +1,25 @@
 package io.github.team2;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class Entity implements iMovable {
 	
-	protected float x;
-	protected float y;
-	protected float speed;
+	private float x;
+	private float y;
+	private float speed;
+	private EntityType type;
+	private PhysicsBody body;
 	
 	public Entity()
 	{
 		x = 0;
 		y = 0;
 		speed = 0;
+		type = null;
+		body = null;
 	}
 	
 	public Entity(float x, float y, float speed)
@@ -21,6 +27,8 @@ public abstract class Entity implements iMovable {
 		this.x = x;
 		this.y = y;
 		this.speed = speed;
+		type = null;
+		body = null;
 	}
 	
 	public float getX()
@@ -53,6 +61,26 @@ public abstract class Entity implements iMovable {
 		this.speed = speed;
 	}
 	
+	public EntityType getEntityType()
+	{
+		return type;
+	}
+	
+	public void setEntityType(EntityType type)
+	{
+		this.type = type;
+	}
+	
+	public PhysicsBody getBody()
+	{
+		return body;
+	}
+	
+	public void InitPhysicsBody(World world, BodyDef.BodyType bodyType, boolean isTextureObject, boolean isCircle)
+	{
+		body = new PhysicsBody(world, this, bodyType, isTextureObject, isCircle);
+	}
+	
 	public void draw(ShapeRenderer shape)
 	{
 		
@@ -62,6 +90,15 @@ public abstract class Entity implements iMovable {
 	{
 		
 	}
-	
+
 	public abstract void update();
+	
+	// sync position with physics body position
+	public void updateBody()
+	{
+        if (body == null)
+        	return;
+        
+        body.updateEntityPosition(this);
+	}
 }

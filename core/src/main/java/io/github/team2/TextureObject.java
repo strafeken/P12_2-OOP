@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class TextureObject extends Entity {
 	
-	protected Texture tex;
+	private Texture tex;
 	
 	TextureObject()
 	{
@@ -23,6 +23,16 @@ public class TextureObject extends Entity {
 		setX(x);
 		setY(y);
 		setSpeed(speed);
+	}
+	
+	public Texture getTexture()
+	{
+		return tex;
+	}
+	
+	public void setTexture(Texture texture)
+	{
+		tex = texture;
 	}
 	
 	public float getWidth()

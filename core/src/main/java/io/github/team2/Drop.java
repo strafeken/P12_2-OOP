@@ -14,15 +14,16 @@ public class Drop extends TextureObject {
 	
 	public Drop(String texture)
 	{
-		tex = new Texture(texture);
+		setTexture(new Texture(texture));
 		setX(50);
 		setY(50);
 		setSpeed(10);
 	}
 	
-	public Drop(String textureFile, float x, float y, float speed)
+	public Drop(EntityType type, String texture, float x, float y, float speed)
 	{
-		tex = new Texture(textureFile);
+		setEntityType(type);
+		setTexture(new Texture(texture));
 		setX(x);
 		setY(y);
 		setSpeed(speed);
@@ -31,14 +32,9 @@ public class Drop extends TextureObject {
 	@Override
 	public void moveAIControlled()
 	{
-		setY(getY() - dropSpeed * Gdx.graphics.getDeltaTime());
+		if (getBody().getPosition().y < 1)
+			getBody().setLocation(getX(), Gdx.graphics.getHeight());
 		
-		if (getY() < 1)
-		{
-			setY(400);
-			
-			if (dropSpeed < 300)
-				dropSpeed += 20;
-		}	
+		updateBody();
 	}
 }

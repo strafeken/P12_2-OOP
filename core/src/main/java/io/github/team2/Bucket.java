@@ -13,15 +13,16 @@ public class Bucket extends TextureObject {
 	
 	public Bucket(String texture)
 	{
-		tex = new Texture(texture);
+		setTexture(new Texture(texture));
 		setX(50);
 		setY(50);
 		setSpeed(10);
 	}
 	
-	public Bucket(String texture, float x, float y, float speed)
+	public Bucket(EntityType type, String texture, float x, float y, float speed)
 	{
-		tex = new Texture(texture);
+		setEntityType(type);
+		setTexture(new Texture(texture));
 		setX(x);
 		setY(y);
 		setSpeed(speed);
@@ -30,9 +31,20 @@ public class Bucket extends TextureObject {
 	@Override
 	public void moveUserControlled()
 	{
+        if (getBody() == null)
+        	return;
+        
 		if (Gdx.input.isKeyPressed(Keys.LEFT))
-			setX(getX() - speed * Gdx.graphics.getDeltaTime());
-		if (Gdx.input.isKeyPressed(Keys.RIGHT))
-			setX(getX() + speed * Gdx.graphics.getDeltaTime());
+			getBody().setLinearVelocity(-getSpeed(), 0);
+		else if (Gdx.input.isKeyPressed(Keys.RIGHT))
+			getBody().setLinearVelocity(getSpeed(), 0);
+		else
+			getBody().setLinearVelocity(0, 0);
+	}
+	
+	@Override
+	public void update()
+	{
+		updateBody();
 	}
 }

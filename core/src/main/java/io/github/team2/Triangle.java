@@ -25,8 +25,9 @@ public class Triangle extends Entity {
 //		y3 = getY() - offset;
 	}
 	
-	public Triangle(Color color, float x, float y, float speed)
+	public Triangle(EntityType type, Color color, float x, float y, float speed)
 	{
+		setEntityType(type);
 		this.color = color;
 		setX(x);
 		setY(y);
@@ -67,11 +68,16 @@ public class Triangle extends Entity {
 	
 	@Override
 	public void moveUserControlled()
-	{
+	{		
+        if (getBody() == null)
+        	return;
+        
 		if (Gdx.input.isKeyPressed(Keys.LEFT))
-			setX(getX() - speed * Gdx.graphics.getDeltaTime());
-		if (Gdx.input.isKeyPressed(Keys.RIGHT))
-			setX(getX() + speed * Gdx.graphics.getDeltaTime());
+			getBody().setLinearVelocity(-getSpeed(), 0);
+		else if (Gdx.input.isKeyPressed(Keys.RIGHT))
+			getBody().setLinearVelocity(getSpeed(), 0);
+		else
+			getBody().setLinearVelocity(0, 0);		
 	}
 	
 	@Override
@@ -83,6 +89,7 @@ public class Triangle extends Entity {
 	@Override
 	public void update()
 	{
-		System.out.println("Triangle  XY: " + getX() + " / " + getY());
+//		System.out.println("Triangle  XY: " + getX() + " / " + getY());
+		updateBody();
 	}
 }
