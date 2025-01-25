@@ -2,6 +2,7 @@ package io.github.team2;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 
 public class Drop extends TextureObject {
 	
@@ -37,4 +38,11 @@ public class Drop extends TextureObject {
 		
 		updateBody();
 	}
+	
+	@Override
+	public void moveTo(Vector2 position) {
+		
+		
+	}
+	
 }
