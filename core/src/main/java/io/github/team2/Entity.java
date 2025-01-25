@@ -5,7 +5,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public abstract class Entity implements iMovable {
+public abstract class Entity implements Movement {
 	
 	private float x;
 	private float y;

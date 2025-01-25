@@ -2,6 +2,7 @@ package io.github.team2;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 public class TextureObject extends Entity {
 	
@@ -62,6 +63,27 @@ public class TextureObject extends Entity {
 	{
 		
 	}
+	
+	@Override
+	public void moveTo(Vector2 position)
+	{
+		
+	}
+	
+	@Override
+	public void moveDirection(String direction)
+	{
+		
+	}
+	
+	@Override
+	public void rotateTo(float num)
+	{
+		
+	}
+	
+	
+	
 	
 	@Override
 	public void update()

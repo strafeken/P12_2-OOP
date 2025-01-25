@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 
 public class Triangle extends Entity {
 	
@@ -82,6 +83,25 @@ public class Triangle extends Entity {
 	
 	@Override
 	public void moveAIControlled()
+	{
+		
+	}
+	
+	
+	@Override
+	public void moveTo(Vector2 position)
+	{
+		
+	}
+	
+	@Override
+	public void moveDirection(String direction)
+	{
+		
+	}
+	
+	@Override
+	public void rotateTo(float num)
 	{
 		
 	}
