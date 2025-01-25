@@ -9,10 +9,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 public class EntityManager {
 	
 	private List<Entity> entityList;
+	private List<Entity> entitiesToRemove;
 	
 	public EntityManager()
 	{
 		entityList = new ArrayList<>();
+		entitiesToRemove = new ArrayList<>();
 	}
 	
 	public void addEntities(Entity entity)
@@ -20,9 +22,21 @@ public class EntityManager {
 		entityList.add(entity);
 	}
 	
-	public void remove(int index)
+	// remove entities after update to prevent concurrent access
+	public void markForRemoval(Entity entity)
 	{
-		entityList.remove(index);
+		entitiesToRemove.add(entity);
+	}
+	
+	public void removeEntity(Entity entity)
+	{
+		entityList.remove(entity);
+        
+		if (entity.getBody() != null)
+			entity.getBody().dispose();
+
+		if (entity instanceof TextureObject)
+            ((TextureObject) entity).dispose();
 	}
 	
 	public Entity get(int index)
@@ -52,18 +66,26 @@ public class EntityManager {
 	
 	public void update()
 	{
-		for(Entity e : entityList)
+		for (Entity e : entityList)
 		{
 			e.moveUserControlled();
 			e.moveAIControlled();
 			e.update();
 		}
+		
+		for (Entity e : entitiesToRemove)
+			removeEntity(e);
+		
+		entitiesToRemove.clear();
 	}
 	
 	public void dispose()
 	{
 		for (Entity entity : entityList)
 		{
+			if (entity.getBody() != null)
+				entity.getBody().dispose();
+			
 			if (entity instanceof TextureObject)
 				((TextureObject) entity).dispose();
 		}
