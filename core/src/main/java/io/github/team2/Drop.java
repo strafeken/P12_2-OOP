@@ -33,6 +33,7 @@ public class Drop extends TextureObject {
 	@Override
 	public void moveAIControlled()
 	{
+		
 		if (getBody().getPosition().y < 1)
 			getBody().setLocation(getX(), Gdx.graphics.getHeight());
 		

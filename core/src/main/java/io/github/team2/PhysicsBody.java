@@ -55,6 +55,9 @@ public class PhysicsBody {
 		return body.getPosition();
 	}
 	
+	
+	
+	
 	public void setLocation(float x, float y)
 	{
 		body.setTransform(x, y, 0);
