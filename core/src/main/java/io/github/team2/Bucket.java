@@ -29,23 +29,22 @@ public class Bucket extends TextureObject {
         if (getBody() == null)
         	return;
         
-		if (Gdx.input.isKeyPressed(Keys.LEFT))	
-			if (this.checkOutOfBound(getBody()) == false) 
+		if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+			if (this.checkOutOfBound(this, "LEFT") == false) {
 				this.moveDirection("LEFT");
+			}
 			
-			else 
-				this.moveDirection("RIGHT");
-			
-			
-			
+		}
+				
 			
 			//getBody().setLinearVelocity(-getSpeed(), 0);
 		else if (Gdx.input.isKeyPressed(Keys.RIGHT))
-			if (this.checkOutOfBound(getBody()) == false) 
+			{
+			if (this.checkOutOfBound(this, "RIGHT") == false) 
 				this.moveDirection("RIGHT");
 				//getBody().setLinearVelocity(getSpeed(), 0);
-			else
-				this.moveDirection("LEFT");
+			
+			}
 		else
 			getBody().setLinearVelocity(0, 0);
 	}

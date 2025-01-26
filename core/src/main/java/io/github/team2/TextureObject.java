@@ -45,6 +45,24 @@ public class TextureObject extends Entity {
 		return tex.getHeight();
 	}
 
+	public float getSide(String side)
+	{	
+		float value = 0;
+		if (side == "TOP") 		value = this.getPosition().y + (this.getHeight()/2); 
+		if (side == "BOTTOM")	value = this.getPosition().y - (this.getHeight()/2);
+		
+		if (side == "LEFT")		value = this.getBody().getPosition().x - this.getWidth()/2;
+		if (side == "RIGHT")	value = this.getPosition().x + (this.getWidth()/2);
+		
+		
+		System.out.println("X:"+ this.getPosition().x + " Y:" +this.getPosition().y + "Value:" +
+				value);
+		
+		return value;
+	}
+	
+
+	
 	@Override
 	public void draw(SpriteBatch batch)
 	{
