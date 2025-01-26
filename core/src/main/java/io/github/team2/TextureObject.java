@@ -18,11 +18,10 @@ public class TextureObject extends Entity {
 		tex = new Texture(texture);
 	}
 	
-	TextureObject(String texture, float x,float y, float speed)
+	TextureObject(String texture, Vector2 position, float speed)
 	{
 		tex = new Texture(texture);
-		setX(x);
-		setY(y);
+		setPosition(position);
 		setSpeed(speed);
 	}
 	
@@ -49,7 +48,7 @@ public class TextureObject extends Entity {
 	@Override
 	public void draw(SpriteBatch batch)
 	{
-		batch.draw(tex, getX() - tex.getWidth() / 2, getY() - tex.getHeight() / 2);
+		batch.draw(tex, getPosition().x - tex.getWidth() / 2, getPosition().y - tex.getHeight() / 2);
 	}
 	
 	@Override

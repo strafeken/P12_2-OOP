@@ -8,12 +8,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class GameScene extends Scene {
@@ -29,6 +25,12 @@ public class GameScene extends Scene {
 	private Entity bucket;
 	private Entity circle;
 	private Entity triangle;
+	
+	private static final float TIME_STEP = 1/60f;
+	private static final int VELOCITY_ITERATIONS = 6;
+	private static final int POSITION_ITERATIONS = 2;
+	
+	private float accumulator = 0f;
 
 	public GameScene()
 	{
@@ -55,17 +57,17 @@ public class GameScene extends Scene {
 
 		for (int i = 0; i < droplets.length; ++i)
 		{
-			droplets[i] = new Drop(EntityType.DROP, "droplet.png", random.nextInt(600), random.nextInt(440), 100);
+			droplets[i] = new Drop(EntityType.DROP, "droplet.png", new Vector2(random.nextInt(600), random.nextInt(440)), 100);
 			droplets[i].InitPhysicsBody(world, BodyDef.BodyType.DynamicBody, true, false);
 		}
 
-		bucket = new Bucket(EntityType.BUCKET, "bucket.png", 200, 50, 20);
+		bucket = new Bucket(EntityType.BUCKET, "bucket.png", new Vector2(200, 50), 200);
 		bucket.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody, true, false);
 		
-		circle = new Circle(EntityType.CIRCLE, Color.RED, 50, 500, 300, 20);
+		circle = new Circle(EntityType.CIRCLE, Color.RED, 50, new Vector2(500, 300), 200);
 		circle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody, false, true);
 
-		triangle = new Triangle(EntityType.TRIANGLE, Color.GREEN, 100, 100, 20);
+		triangle = new Triangle(EntityType.TRIANGLE, Color.GREEN, new Vector2(100, 100), 200);
 		triangle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody, false, false);
 
 		for (int i = 0; i < droplets.length; ++i)
@@ -86,7 +88,15 @@ public class GameScene extends Scene {
 		// update physics at the end of render() loop
 		// should be under draw() physics will update when game is paused
 		// could add a boolean however it'll be a bit messy
-		world.step(1 / 60f, 6, 2);
+	    float deltaTime = Gdx.graphics.getDeltaTime();
+
+	    accumulator += deltaTime;
+
+	    while (accumulator >= TIME_STEP)
+	    {
+	        world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+	        accumulator -= TIME_STEP;
+	    }
 		
 		if (Gdx.input.isKeyPressed(Keys.X))
 			SceneManager.getInstance().setNextScene(SceneID.MAIN_MENU);

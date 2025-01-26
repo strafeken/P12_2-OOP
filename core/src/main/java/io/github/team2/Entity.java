@@ -1,54 +1,42 @@
 package io.github.team2;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class Entity implements Movement {
 	
-	private float x;
-	private float y;
+	private Vector2 position;
 	private float speed;
 	private EntityType type;
 	private PhysicsBody body;
 	
 	public Entity()
 	{
-		x = 0;
-		y = 0;
+		position = new Vector2(0, 0);
 		speed = 0;
 		type = null;
 		body = null;
 	}
 	
-	public Entity(float x, float y, float speed)
+	public Entity(Vector2 position, float speed)
 	{
-		this.x = x;
-		this.y = y;
+		this.position = position;
 		this.speed = speed;
 		type = null;
 		body = null;
 	}
 	
-	public float getX()
+	public Vector2 getPosition()
 	{
-		return x;
+		return position;
 	}
 	
-	public void setX(float x)
+	public void setPosition(Vector2 position)
 	{
-		this.x = x;
-	}
-	
-	public float getY()
-	{
-		return y;
-	}
-	
-	public void setY(float y)
-	{
-		this.y = y;
+		this.position = position;
 	}
 	
 	public float getSpeed()

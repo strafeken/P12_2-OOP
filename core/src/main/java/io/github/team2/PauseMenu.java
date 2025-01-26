@@ -2,10 +2,9 @@ package io.github.team2;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
 
 public class PauseMenu extends Scene {
 
@@ -21,7 +20,7 @@ public class PauseMenu extends Scene {
 	{
         System.out.println("Pause Menu => LOAD");
         
-		image = new TextureObject("bucket.png", 140, 210, 0);
+		image = new TextureObject("libgdx.png", new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2), 0);
 		
 		em.addEntities(image);
     }

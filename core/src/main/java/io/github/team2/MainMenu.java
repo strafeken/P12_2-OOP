@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 
 public class MainMenu extends Scene {
     
@@ -13,7 +14,7 @@ public class MainMenu extends Scene {
 	{
 		em = new EntityManager();
 		
-		image = new TextureObject("libgdx.png", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0);
+		image = new TextureObject("libgdx.png", new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2), 0);
 		
 		em.addEntities(image);
 	}
