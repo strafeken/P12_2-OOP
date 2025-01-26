@@ -13,12 +13,15 @@ public abstract class Entity implements Movement {
 	private EntityType type;
 	private PhysicsBody body;
 	
+	private boolean isMoving;
+	
 	public Entity()
 	{
 		position = new Vector2(0, 0);
 		speed = 0;
 		type = null;
 		body = null;
+		isMoving = false;
 	}
 	
 	public Entity(Vector2 position, float speed)
@@ -27,6 +30,7 @@ public abstract class Entity implements Movement {
 		this.speed = speed;
 		type = null;
 		body = null;
+		isMoving = false;
 	}
 	
 	public Vector2 getPosition()
@@ -63,6 +67,20 @@ public abstract class Entity implements Movement {
 	{
 		return body;
 	}
+	
+	public boolean getIsMoving()
+	{
+		return isMoving;
+		
+	}
+	
+	
+	public void setIsMoving(boolean flag)
+	{
+		this.isMoving= flag;
+		
+	}
+	
 	
 	public void InitPhysicsBody(World world, BodyDef.BodyType bodyType, boolean isTextureObject, boolean isCircle)
 	{

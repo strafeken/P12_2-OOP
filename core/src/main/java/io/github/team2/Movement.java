@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public interface Movement {
 	
+	// TODO: possibility to shift screen global variables to scene manager
+	
 	public float screenWidth = Gdx.graphics.getWidth();
 	public float screenHeight = Gdx.graphics.getHeight();
 	

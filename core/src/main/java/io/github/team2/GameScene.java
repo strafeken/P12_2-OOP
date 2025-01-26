@@ -54,7 +54,7 @@ public class GameScene extends Scene {
 		droplets = new TextureObject[10];
 		
 		Random random = new Random();
-
+		// TODO: once global screen variable up edit to be dynamic
 		for (int i = 0; i < droplets.length; ++i)
 		{
 			droplets[i] = new Drop(EntityType.DROP, "droplet.png", new Vector2(random.nextInt(600), random.nextInt(440)), 100);
