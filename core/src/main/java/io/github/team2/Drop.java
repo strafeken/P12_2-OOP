@@ -2,30 +2,25 @@ package io.github.team2;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 
 public class Drop extends TextureObject {
 	
 	private float dropSpeed = 100;
 	
-	public Drop()
-	{
-		
-	}
-	
 	public Drop(String texture)
 	{
+		setEntityType(EntityType.DROP);
 		setTexture(new Texture(texture));
-		setX(50);
-		setY(50);
+		setPosition(new Vector2(0, 0));
 		setSpeed(10);
 	}
 	
-	public Drop(EntityType type, String texture, float x, float y, float speed)
+	public Drop(EntityType type, String texture, Vector2 position, float speed)
 	{
 		setEntityType(type);
 		setTexture(new Texture(texture));
-		setX(x);
-		setY(y);
+		setPosition(position);
 		setSpeed(speed);
 	}
 	
@@ -33,7 +28,7 @@ public class Drop extends TextureObject {
 	public void moveAIControlled()
 	{
 		if (getBody().getPosition().y < 1)
-			getBody().setLocation(getX(), Gdx.graphics.getHeight());
+			getBody().setLocation(getPosition().x, Gdx.graphics.getHeight());
 		
 		updateBody();
 	}

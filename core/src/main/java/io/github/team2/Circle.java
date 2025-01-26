@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 
 public class Circle extends Entity {
 	
@@ -12,20 +13,19 @@ public class Circle extends Entity {
 	
 	public Circle()
 	{
+		setEntityType(EntityType.CIRCLE);
 		color = Color.WHITE;
 		radius = 10;
-		setX(50);
-		setY(50);
-		setSpeed(10);
+		setPosition(new Vector2(0, 0));
+		setSpeed(0);
 	}
 	
-	public Circle(EntityType type, Color color, float radius, float x, float y, float speed)
+	public Circle(EntityType type, Color color, float radius, Vector2 position, float speed)
 	{
 		setEntityType(type);
 		this.color = color;
 		this.radius = radius;
-		setX(x);
-		setY(y);
+		setPosition(position);
 		setSpeed(speed);
 	}
 	
@@ -43,7 +43,7 @@ public class Circle extends Entity {
 	public void draw(ShapeRenderer shape)
 	{
 		shape.setColor(color);
-		shape.circle(getX(), getY(), radius);
+		shape.circle(getPosition().x, getPosition().y, radius);
 	}
 	
 	@Override

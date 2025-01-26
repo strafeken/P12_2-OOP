@@ -16,7 +16,7 @@ public class PhysicsBody {
 	{
     	BodyDef bodyDef = new BodyDef();
         bodyDef.type = bodyType;
-        bodyDef.position.set(entity.getX(), entity.getY());
+        bodyDef.position.set(entity.getPosition().x, entity.getPosition().y);
         
         body = world.createBody(bodyDef);
         
@@ -67,8 +67,7 @@ public class PhysicsBody {
 
     public void updateEntityPosition(Entity entity)
     {
-        entity.setX(body.getPosition().x);
-        entity.setY(body.getPosition().y);
+        entity.setPosition(new Vector2(body.getPosition().x, body.getPosition().y));
     }
 
     public void dispose()

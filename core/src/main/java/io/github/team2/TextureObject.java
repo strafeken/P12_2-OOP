@@ -2,6 +2,7 @@ package io.github.team2;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 public class TextureObject extends Entity {
 	
@@ -17,11 +18,10 @@ public class TextureObject extends Entity {
 		tex = new Texture(texture);
 	}
 	
-	TextureObject(String texture, float x,float y, float speed)
+	TextureObject(String texture, Vector2 position, float speed)
 	{
 		tex = new Texture(texture);
-		setX(x);
-		setY(y);
+		setPosition(position);
 		setSpeed(speed);
 	}
 	
@@ -48,7 +48,7 @@ public class TextureObject extends Entity {
 	@Override
 	public void draw(SpriteBatch batch)
 	{
-		batch.draw(tex, getX() - tex.getWidth() / 2, getY() - tex.getHeight() / 2);
+		batch.draw(tex, getPosition().x - tex.getWidth() / 2, getPosition().y - tex.getHeight() / 2);
 	}
 	
 	@Override
