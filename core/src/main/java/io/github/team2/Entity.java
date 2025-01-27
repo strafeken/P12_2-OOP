@@ -17,7 +17,7 @@ public abstract class Entity implements iMovable {
 	{
 		position = new Vector2(0, 0);
 		speed = 0;
-		type = null;
+		type = EntityType.UNDEFINED;
 		body = null;
 	}
 	
@@ -25,7 +25,7 @@ public abstract class Entity implements iMovable {
 	{
 		this.position = position;
 		this.speed = speed;
-		type = null;
+		type = EntityType.UNDEFINED;
 		body = null;
 	}
 	
@@ -64,9 +64,9 @@ public abstract class Entity implements iMovable {
 		return body;
 	}
 	
-	public void InitPhysicsBody(World world, BodyDef.BodyType bodyType, boolean isTextureObject, boolean isCircle)
+	public void InitPhysicsBody(World world, BodyDef.BodyType bodyType)
 	{
-		body = new PhysicsBody(world, this, bodyType, isTextureObject, isCircle);
+		body = new PhysicsBody(world, this, bodyType);
 	}
 	
 	public void draw(ShapeRenderer shape)

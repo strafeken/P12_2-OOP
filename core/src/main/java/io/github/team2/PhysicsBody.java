@@ -6,13 +6,14 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class PhysicsBody {
 	
 	private Body body;
 	
-	public PhysicsBody(World world, Entity entity, BodyDef.BodyType bodyType, boolean isTextureObject, boolean isCircle)
+	public PhysicsBody(World world, Entity entity, BodyDef.BodyType bodyType)
 	{
     	BodyDef bodyDef = new BodyDef();
         bodyDef.type = bodyType;
@@ -20,34 +21,46 @@ public class PhysicsBody {
         
         body = world.createBody(bodyDef);
         
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.density = 1f;
-        fixtureDef.friction = 0.5f;
-        fixtureDef.restitution = 0.3f;
+        FixtureDef fixtureDef = createFixtureDef(1f, 0.5f, 0.3f);
         
-        if (isTextureObject)
-        {
-        	PolygonShape shape = new PolygonShape();
-            shape.setAsBox(((TextureObject)entity).getWidth() / 2, ((TextureObject)entity).getHeight() / 2);
-            fixtureDef.shape = shape;
-        }
-        else if (isCircle)
-        {
-        	CircleShape shape = new CircleShape();
-        	shape.setRadius(((Circle) entity).getRadius());
-        	fixtureDef.shape = shape;        	
-        }
-        else // currently just triangle
-        {
-        	PolygonShape shape = new PolygonShape();
-            shape.setAsBox(50, 50);
-            fixtureDef.shape = shape;
-        }
+        fixtureDef.shape = createShapeForEntity(entity);
         
         body.createFixture(fixtureDef);
         fixtureDef.shape.dispose();
 
         body.setUserData(entity);
+	}
+	
+	private FixtureDef createFixtureDef(float density, float friction, float restitution)
+	{
+	    FixtureDef fixtureDef = new FixtureDef();
+	    fixtureDef.density = density;
+	    fixtureDef.friction = friction;
+	    fixtureDef.restitution = restitution;
+	    return fixtureDef;
+	}
+	
+	private Shape createShapeForEntity(Entity entity)
+	{
+		EntityType eType = entity.getEntityType();
+
+	    switch (eType)
+	    {
+	        case CIRCLE:
+	            CircleShape circle = new CircleShape();
+	            circle.setRadius(((Circle) entity).getRadius());
+	            return circle;
+	        case TRIANGLE:
+	            PolygonShape triangle = new PolygonShape();
+	            float triangleSize = ((Triangle) entity).getSize() / 2;
+	            triangle.setAsBox(triangleSize, triangleSize);
+	            return triangle;
+	        default:
+	            PolygonShape box = new PolygonShape();
+	            TextureObject textureEntity = (TextureObject) entity;
+	            box.setAsBox(textureEntity.getWidth() / 2, textureEntity.getHeight() / 2);
+	            return box;
+	    }
 	}
 	
 	public Vector2 getPosition()

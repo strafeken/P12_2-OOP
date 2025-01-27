@@ -14,19 +14,19 @@ public class Circle extends Entity {
 	public Circle()
 	{
 		setEntityType(EntityType.CIRCLE);
-		color = Color.WHITE;
-		radius = 10;
 		setPosition(new Vector2(0, 0));
 		setSpeed(0);
+		color = Color.WHITE;
+		radius = 10;
 	}
 	
-	public Circle(EntityType type, Color color, float radius, Vector2 position, float speed)
+	public Circle(EntityType type, Vector2 position, float speed, Color color, float radius)
 	{
 		setEntityType(type);
-		this.color = color;
-		this.radius = radius;
 		setPosition(position);
 		setSpeed(speed);
+		this.color = color;
+		this.radius = radius;
 	}
 	
 	public float getRadius()

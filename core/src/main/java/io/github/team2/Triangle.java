@@ -9,29 +9,49 @@ import com.badlogic.gdx.math.Vector2;
 public class Triangle extends Entity {
 	
 	private Color color;
-	private float offset = 50;
+	private float size;
 	
 	public Triangle()
 	{
 		setEntityType(EntityType.TRIANGLE);
-		color = Color.WHITE;
 		setPosition(new Vector2(0, 0));
 		setSpeed(0);
+		color = Color.WHITE;
+		size = 10;
 	}
 	
-	public Triangle(EntityType type, Color color, Vector2 position, float speed)
+	public Triangle(EntityType type, Vector2 position, float speed, Color color, float size)
 	{
 		setEntityType(type);
-		this.color = color;
 		setPosition(position);
 		setSpeed(speed);
+		this.color = color;
+		this.size = size;
+	}
+	
+	public float getSize()
+	{
+		return size * 2;
+	}
+	
+	public void setSize(float size)
+	{
+		this.size = size;
 	}
 	
 	@Override
 	public void draw(ShapeRenderer shape)
 	{
 		shape.setColor(color);
-		shape.triangle(getPosition().x - offset, getPosition().y - offset, getPosition().x, getPosition().y + offset, getPosition().x + offset, getPosition().y - offset);
+		
+		float x = getPosition().x;
+		float y = getPosition().y;
+		
+		shape.triangle(
+				x - size, y - size, // bottom-left vertex
+				x, y + size, // top vertex
+				x + size, y - size // bottom-right vertex
+				);
 	}
 	
 	@Override
