@@ -31,16 +31,19 @@ public class CollisionResolver {
     
     private CollisionType getCollisionType(Entity a, Entity b)
     {
-        EntityType typeA = a.getEntityType();
-        EntityType typeB = b.getEntityType();
-
-        if ((typeA == EntityType.BUCKET && typeB == EntityType.DROP) || (typeA == EntityType.DROP && typeB == EntityType.BUCKET)) 
-            return CollisionType.BUCKET_DROP;
-        
-        if ((typeA == EntityType.CIRCLE && typeB == EntityType.DROP) || (typeA == EntityType.DROP && typeB == EntityType.CIRCLE))
-            return CollisionType.CIRCLE_DROP;
+    	if (isPair(a, b, EntityType.BUCKET, EntityType.DROP))
+    		return CollisionType.BUCKET_DROP;
+    	
+    	if (isPair(a, b, EntityType.CIRCLE, EntityType.DROP))
+    		return CollisionType.CIRCLE_DROP;
 
         return null;
+    }
+    
+    private boolean isPair(Entity a, Entity b, EntityType type1, EntityType type2)
+    {
+        return (a.getEntityType() == type1 && b.getEntityType() == type2) ||
+               (a.getEntityType() == type2 && b.getEntityType() == type1);
     }
     
     private void handleBucketDropCollision(Entity a, Entity b)
