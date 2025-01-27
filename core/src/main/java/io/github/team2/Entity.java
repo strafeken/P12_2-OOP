@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public abstract class Entity implements iMovable {
 	
 	private Vector2 position;
+	private Vector2 direction;
 	private float speed;
 	private EntityType type;
 	private PhysicsBody body;
@@ -16,14 +17,16 @@ public abstract class Entity implements iMovable {
 	public Entity()
 	{
 		position = new Vector2(0, 0);
+		direction = new Vector2(0, 0);
 		speed = 0;
 		type = EntityType.UNDEFINED;
 		body = null;
 	}
 	
-	public Entity(Vector2 position, float speed)
+	public Entity(Vector2 position, Vector2 direction, float speed)
 	{
 		this.position = position;
+		this.direction = direction;
 		this.speed = speed;
 		type = EntityType.UNDEFINED;
 		body = null;
@@ -37,6 +40,16 @@ public abstract class Entity implements iMovable {
 	public void setPosition(Vector2 position)
 	{
 		this.position = position;
+	}
+	
+	public Vector2 getDirection()
+	{
+		return direction;
+	}
+	
+	public void setDirection(Vector2 direction)
+	{
+		this.direction = direction;
 	}
 	
 	public float getSpeed()

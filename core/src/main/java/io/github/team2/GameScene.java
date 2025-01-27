@@ -42,7 +42,7 @@ public class GameScene extends Scene {
 	{
 		System.out.println("Game Scene => LOAD");
 		
-		world = new World(new Vector2(0, -10), true);
+		world = new World(new Vector2(0, -100), true);
 		
         debugRenderer = new Box2DDebugRenderer();
 		
@@ -57,17 +57,17 @@ public class GameScene extends Scene {
 
 		for (int i = 0; i < droplets.length; ++i)
 		{
-			droplets[i] = new Drop(EntityType.DROP, "droplet.png", new Vector2(random.nextInt(600), random.nextInt(440)), 100);
+			droplets[i] = new Drop(EntityType.DROP, "droplet.png", new Vector2(random.nextInt(600), random.nextInt(440)), new Vector2(0, 0), 100);
 			droplets[i].InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
 		}
 
-		bucket = new Bucket(EntityType.BUCKET, "bucket.png", new Vector2(200, 50), 200);
+		bucket = new Bucket(EntityType.BUCKET, "bucket.png", new Vector2(200, 50), new Vector2(0, 0), 200);
 		bucket.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 		
-		circle = new Circle(EntityType.CIRCLE, new Vector2(500, 300), 200, Color.RED, 50);
+		circle = new Circle(EntityType.CIRCLE, new Vector2(500, 300), new Vector2(0, 0), 200, Color.RED, 50);
 		circle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
-		triangle = new Triangle(EntityType.TRIANGLE, new Vector2(100, 100), 200, Color.GREEN, 50);
+		triangle = new Triangle(EntityType.TRIANGLE, new Vector2(100, 100), new Vector2(0, 0), 200, Color.GREEN, 50);
 		triangle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
 		for (int i = 0; i < droplets.length; ++i)

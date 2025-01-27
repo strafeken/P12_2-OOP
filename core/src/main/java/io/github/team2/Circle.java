@@ -15,15 +15,17 @@ public class Circle extends Entity {
 	{
 		setEntityType(EntityType.CIRCLE);
 		setPosition(new Vector2(0, 0));
+		setDirection(new Vector2(0, 0));
 		setSpeed(0);
 		color = Color.WHITE;
 		radius = 10;
 	}
 	
-	public Circle(EntityType type, Vector2 position, float speed, Color color, float radius)
+	public Circle(EntityType type, Vector2 position, Vector2 direction, float speed, Color color, float radius)
 	{
 		setEntityType(type);
 		setPosition(position);
+		setDirection(direction);
 		setSpeed(speed);
 		this.color = color;
 		this.radius = radius;

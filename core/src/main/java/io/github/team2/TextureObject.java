@@ -18,10 +18,11 @@ public class TextureObject extends Entity {
 		tex = new Texture(texture);
 	}
 	
-	TextureObject(String texture, Vector2 position, float speed)
+	TextureObject(String texture, Vector2 position, Vector2 direction, float speed)
 	{
 		tex = new Texture(texture);
 		setPosition(position);
+		setDirection(direction);
 		setSpeed(speed);
 	}
 	

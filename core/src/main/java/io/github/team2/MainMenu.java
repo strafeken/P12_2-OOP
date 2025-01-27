@@ -14,7 +14,7 @@ public class MainMenu extends Scene {
 	{
 		em = new EntityManager();
 		
-		image = new TextureObject("libgdx.png", new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2), 0);
+		image = new TextureObject("libgdx.png", new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2), new Vector2(0, 0), 0);
 		
 		em.addEntities(image);
 	}

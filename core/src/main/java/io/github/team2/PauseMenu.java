@@ -20,7 +20,7 @@ public class PauseMenu extends Scene {
 	{
         System.out.println("Pause Menu => LOAD");
         
-		image = new TextureObject("libgdx.png", new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2), 0);
+		image = new TextureObject("libgdx.png", new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2), new Vector2(0, 0), 0);
 		
 		em.addEntities(image);
     }
