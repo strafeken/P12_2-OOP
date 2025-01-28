@@ -37,8 +37,18 @@ public class GameMaster extends ApplicationAdapter {
 		ScreenUtils.clear(0, 0, 0.2f, 1);
 		
 		sm.update();
+		
+		batch.begin();		
+		
 		sm.draw(batch);
+		
+		batch.end();
+		
+		shape.begin(ShapeRenderer.ShapeType.Filled);
+		
 		sm.draw(shape);
+		
+		shape.end();
 		
 		// pause and resume game
 		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && sm.getCurrentSceneID() != SceneID.MAIN_MENU)
