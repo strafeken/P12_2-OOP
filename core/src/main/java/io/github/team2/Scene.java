@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 public abstract class Scene {
 	
 	protected EntityManager em;
+	protected TextManager tm;
 	
 	public abstract void load(); // load assets and heavy resources
 	public abstract void update();

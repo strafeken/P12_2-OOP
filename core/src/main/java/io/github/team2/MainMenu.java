@@ -2,6 +2,7 @@ package io.github.team2;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -13,6 +14,7 @@ public class MainMenu extends Scene {
 	public MainMenu()
 	{
 		em = new EntityManager();
+		tm = new TextManager();
 		
 		image = new TextureObject("libgdx.png", new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2), new Vector2(0, 0), 0);
 		
@@ -36,6 +38,8 @@ public class MainMenu extends Scene {
 	public void draw(SpriteBatch batch)
 	{
 		em.draw(batch);
+		
+		tm.draw(batch, "Main Menu", 200, 200, Color.RED);
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -20,6 +21,8 @@ public class GameScene extends Scene {
     
     private CollisionDetector collisionDetector;
     private CollisionResolver collisionResolver;
+    
+	private TextManager tm;
 
 	private Entity droplets[];
 	private Entity bucket;
@@ -31,7 +34,7 @@ public class GameScene extends Scene {
 	private static final int POSITION_ITERATIONS = 2;
 	
 	private float accumulator = 0f;
-
+	
 	public GameScene()
 	{
 		
@@ -50,6 +53,8 @@ public class GameScene extends Scene {
 
 		collisionResolver = new CollisionResolver(em);
 		collisionDetector = new CollisionDetector(collisionResolver);
+		
+		tm = new TextManager();
 		
 		droplets = new TextureObject[10];
 		
@@ -106,6 +111,8 @@ public class GameScene extends Scene {
 	public void draw(SpriteBatch batch)
 	{
 		em.draw(batch);
+		
+		tm.draw(batch, "Game Scene", 200, 200, Color.RED);
 	}
 
 	@Override

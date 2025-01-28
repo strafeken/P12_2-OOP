@@ -2,6 +2,7 @@ package io.github.team2;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -13,6 +14,7 @@ public class PauseMenu extends Scene {
     public PauseMenu()
     {
     	em = new EntityManager();
+    	tm = new TextManager();
     }
     
 	@Override
@@ -35,6 +37,8 @@ public class PauseMenu extends Scene {
     public void draw(SpriteBatch batch)
     {
     	em.draw(batch);
+    	
+    	tm.draw(batch, "Main Menu", 200, 150, Color.RED);
     }
 
     @Override
