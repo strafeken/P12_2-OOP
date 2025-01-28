@@ -6,15 +6,15 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
-public class Triangle extends Entity {
+public class Triangle extends GameShape {
 	
-	private Color color;
+	
 	private float offset = 50;
 	
 	public Triangle()
 	{
 		setEntityType(EntityType.TRIANGLE);
-		color = Color.WHITE;
+		setColor(Color.WHITE);
 		setPosition(new Vector2(0, 0));
 		setSpeed(0);
 	}
@@ -22,7 +22,7 @@ public class Triangle extends Entity {
 	public Triangle(EntityType type, Color color, Vector2 position, float speed)
 	{
 		setEntityType(type);
-		this.color = color;
+		setColor(color);
 		setPosition(position);
 		setSpeed(speed);
 	}
@@ -30,7 +30,7 @@ public class Triangle extends Entity {
 	@Override
 	public void draw(ShapeRenderer shape)
 	{
-		shape.setColor(color);
+		shape.setColor(this.getColor());
 		shape.triangle(getPosition().x - offset, getPosition().y - offset, getPosition().x, getPosition().y + offset, getPosition().x + offset, getPosition().y - offset);
 	}
 	

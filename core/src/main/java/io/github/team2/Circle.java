@@ -6,15 +6,15 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
-public class Circle extends Entity {
+public class Circle extends GameShape {
 	
-	private Color color;
+
 	private float radius;
 	
 	public Circle()
 	{
 		setEntityType(EntityType.CIRCLE);
-		color = Color.WHITE;
+		setColor(Color.WHITE);
 		radius = 10;
 		setPosition(new Vector2(0, 0));
 		setSpeed(0);
@@ -23,10 +23,10 @@ public class Circle extends Entity {
 	public Circle(EntityType type, Color color, float radius, Vector2 position, float speed)
 	{
 		setEntityType(type);
-		this.color = color;
-		this.radius = radius;
+		setColor(color);;
 		setPosition(position);
 		setSpeed(speed);
+		this.radius = radius;
 	}
 	
 	public float getRadius()
@@ -42,7 +42,7 @@ public class Circle extends Entity {
 	@Override
 	public void draw(ShapeRenderer shape)
 	{
-		shape.setColor(color);
+		shape.setColor(this.getColor());
 		shape.circle(getPosition().x, getPosition().y, radius);
 	}
 	
@@ -62,6 +62,8 @@ public class Circle extends Entity {
 		else
 			getBody().setLinearVelocity(0, 0);
 	}
+	
+	
 	
 	@Override
 	public void moveAIControlled()
