@@ -99,6 +99,13 @@ public class TextureObject extends Entity {
 		
 	}
 	
+	@Override
+	public boolean checkPosition(Vector2 position)
+	{
+		
+		
+		return false;
+	}
 	
 	
 	

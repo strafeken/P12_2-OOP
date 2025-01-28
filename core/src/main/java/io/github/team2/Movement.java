@@ -20,6 +20,7 @@ public interface Movement {
 	public void moveDirection(String direction);
 	public void moveAIControlled();
 	public void moveUserControlled();
+	public boolean checkPosition(Vector2 position);
 	
 	
 	// rotation movement 

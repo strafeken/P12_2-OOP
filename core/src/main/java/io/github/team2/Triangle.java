@@ -34,6 +34,9 @@ public class Triangle extends Entity {
 		shape.triangle(getPosition().x - offset, getPosition().y - offset, getPosition().x, getPosition().y + offset, getPosition().x + offset, getPosition().y - offset);
 	}
 	
+	
+	// movement controls
+	
 	@Override
 	public void moveUserControlled()
 	{		
@@ -71,6 +74,14 @@ public class Triangle extends Entity {
 	public void rotateTo(float num)
 	{
 		
+	}
+	
+	@Override
+	public boolean checkPosition(Vector2 position)
+	{
+		
+		
+		return false;
 	}
 	
 	@Override

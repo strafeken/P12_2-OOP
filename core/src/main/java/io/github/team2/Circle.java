@@ -46,6 +46,9 @@ public class Circle extends Entity {
 		shape.circle(getPosition().x, getPosition().y, radius);
 	}
 	
+	
+	// movement controls
+	
 	@Override
 	public void moveUserControlled()
 	{
@@ -82,6 +85,14 @@ public class Circle extends Entity {
 	public void rotateTo(float num)
 	{
 		
+	}
+	
+	@Override
+	public boolean checkPosition(Vector2 position)
+	{
+		
+		
+		return false;
 	}
 	
 	@Override

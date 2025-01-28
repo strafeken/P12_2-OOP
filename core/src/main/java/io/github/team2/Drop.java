@@ -29,45 +29,58 @@ public class Drop extends TextureObject {
 	@Override
 	public void moveAIControlled()
 	{
-		/*
-		if (getBody().getPosition().y < 1)
-			getBody().setLocation(getPosition().x, Gdx.graphics.getHeight());
-		
-		updateBody();
-		*/
-		
-		this.moveTo(new Vector2(this.getPosition().x, 0));
+		if (this.getIsMoving() == false) {
+			
+			this.moveTo(new Vector2(this.getPosition().x, 0));
+		} 
+		else {
+			
+			if (this.checkPosition(new Vector2(this.getPosition().x, 10)) == false) {
+				this.moveDown();
+				
+			} 
+			else {
+				this.setIsMoving(false);
+				getBody().setLocation(getPosition().x, Gdx.graphics.getHeight());
+		        
+			}	
+		}
 	}
 	
 	@Override
 	public void moveTo(Vector2 targetPosition) {
-		//boolean isMoving;
-		if (this.getIsMoving() == false) {
-			this.setIsMoving(true);
-			//this.moveDown();
-		}
-		else {
-	        // Calculate the direction vector to the target position
-	        Vector2 currentPosition = this.getPosition();
-	        //Vector2 direction = targetPosition.sub(currentPosition).nor();
-	        this.getBody().setLinearVelocity(0, -this.getSpeed());
-	        
-	        if (getBody().getPosition().y < 1)
-				getBody().setLocation(getPosition().x, Gdx.graphics.getHeight());
-	        
-	       updateBody();
-		}
+		
+		this.setIsMoving(true);
+			
+
 		
 	}
-	/*
+	
 	public void moveDown() {
 		
 		this.getBody().setLinearVelocity(0, -this.getSpeed());
 		
 		
 	}
-	*/
 	
+	@Override
+	public boolean checkPosition(Vector2 position)
+	{	
+		float threshold = 0.1f;
+		if (this.getPosition().y < 0) {
+			System.out.println("reach");
+			return true;
+		}
+		
+		return false;
+	}
+	
+	
+	@Override
+	public void update()
+	{
+		updateBody();
+	}
 	
 	
 }
