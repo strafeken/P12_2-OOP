@@ -19,6 +19,8 @@ public class GameScene extends Scene {
 	// render collision debugger
     private Box2DDebugRenderer debugRenderer;
     
+    private PointsManager pm;
+
     private CollisionDetector collisionDetector;
     private CollisionResolver collisionResolver;
     
@@ -35,6 +37,7 @@ public class GameScene extends Scene {
 	
 	private float accumulator = 0f;
 	
+	
 	public GameScene()
 	{
 		
@@ -50,8 +53,10 @@ public class GameScene extends Scene {
         debugRenderer = new Box2DDebugRenderer();
 		
 		em = new EntityManager();
+		
+		pm = new PointsManager();
 
-		collisionResolver = new CollisionResolver(em);
+		collisionResolver = new CollisionResolver(em, pm);
 		collisionDetector = new CollisionDetector(collisionResolver);
 		
 		tm = new TextManager();
@@ -113,6 +118,8 @@ public class GameScene extends Scene {
 		em.draw(batch);
 		
 		tm.draw(batch, "Game Scene", 200, 200, Color.RED);
+		
+		tm.draw(batch, "Points: " + pm.getPoints(), 200, 250, Color.RED);
 	}
 
 	@Override

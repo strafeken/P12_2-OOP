@@ -3,10 +3,12 @@ package io.github.team2;
 public class CollisionResolver {
 	
 	private EntityManager em;
+	private PointsManager pm;
 	
-	public CollisionResolver(EntityManager entityManager)
+	public CollisionResolver(EntityManager entityManager, PointsManager pointsManager)
 	{
 		em = entityManager;
+		pm = pointsManager;
 	}
 	
     public void resolveCollision(Entity a, Entity b)
@@ -53,6 +55,8 @@ public class CollisionResolver {
         	em.markForRemoval(a);
         else
         	em.markForRemoval(b);
+        
+        pm.addPoints(10);
     }
 
     private void handleCircleDropCollision(Entity a, Entity b)

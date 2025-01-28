@@ -11,6 +11,7 @@ public class TextManager {
 	public TextManager()
 	{
 		font = new BitmapFont();
+		font.getData().setScale(2.0f);
 	}
 	
 	public TextManager(BitmapFont font)

@@ -38,7 +38,7 @@ public class PauseMenu extends Scene {
     {
     	em.draw(batch);
     	
-    	tm.draw(batch, "Main Menu", 200, 150, Color.RED);
+    	tm.draw(batch, "Pause Menu", 200, 150, Color.RED);
     }
 
     @Override
