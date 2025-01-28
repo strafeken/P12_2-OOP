@@ -23,8 +23,6 @@ public class GameScene extends Scene {
 
     private CollisionDetector collisionDetector;
     private CollisionResolver collisionResolver;
-    
-	private TextManager tm;
 
 	private Entity droplets[];
 	private Entity bucket;
