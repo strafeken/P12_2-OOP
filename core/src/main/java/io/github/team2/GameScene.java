@@ -67,7 +67,7 @@ public class GameScene extends Scene {
 		circle = new Circle(EntityType.CIRCLE, Color.RED, 50, new Vector2(500, 300), 200);
 		circle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody, false, true);
 
-		triangle = new Triangle(EntityType.TRIANGLE, Color.GREEN, new Vector2(100, 100), 200);
+		triangle = new Triangle(EntityType.TRIANGLE, Color.GREEN, new Vector2(100, 100), 200, 50);
 		triangle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody, false, false);
 
 		for (int i = 0; i < droplets.length; ++i)

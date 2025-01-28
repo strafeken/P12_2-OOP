@@ -73,6 +73,10 @@ public abstract class GameShape extends Entity {
 	@Override
 	public void moveDirection(String direction)
 	{
+		if (direction == "LEFT") 	{getBody().setLinearVelocity(-getSpeed(), 0);}
+		if (direction == "RIGHT") 	{getBody().setLinearVelocity(getSpeed(), 0);}
+		if (direction == "UP") 		{getBody().setLinearVelocity(0, getSpeed());}
+		if (direction == "DOWN") 	{getBody().setLinearVelocity(0, -getSpeed());}
 		
 	}
 	
@@ -80,6 +84,24 @@ public abstract class GameShape extends Entity {
 	public void rotateTo(float num)
 	{
 		
+	}
+	
+	
+	
+	public float getSide(String side)
+	{	
+		float value = 0;
+		if (side == "TOP") 		value = this.getPosition().y + (this.getHeight()/2); 
+		if (side == "BOTTOM")	value = this.getPosition().y - (this.getHeight()/2);
+		
+		if (side == "LEFT")		value = this.getBody().getPosition().x - this.getWidth()/2;
+		if (side == "RIGHT")	value = this.getPosition().x + (this.getWidth()/2);
+		
+		
+		System.out.println("X:"+ this.getPosition().x + " Y:" +this.getPosition().y + "Value:" +
+				value);
+		
+		return value;
 	}
 	
 	

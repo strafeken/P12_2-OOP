@@ -81,6 +81,10 @@ public abstract class Entity implements Movement {
 		
 	}
 	
+
+	
+	
+	
 	
 	public void InitPhysicsBody(World world, BodyDef.BodyType bodyType, boolean isTextureObject, boolean isCircle)
 	{

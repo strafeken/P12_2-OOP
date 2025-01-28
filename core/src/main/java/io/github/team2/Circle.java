@@ -27,6 +27,10 @@ public class Circle extends GameShape {
 		setPosition(position);
 		setSpeed(speed);
 		this.radius = radius;
+		
+		// set width and height 
+		this.setWidth(radius*2);
+		this.setHeight(radius*2);
 	}
 	
 	public float getRadius()
@@ -55,10 +59,21 @@ public class Circle extends GameShape {
         if (getBody() == null)
         	return;
         
-		if (Gdx.input.isKeyPressed(Keys.A))
-			getBody().setLinearVelocity(-getSpeed(), 0);
-		else if (Gdx.input.isKeyPressed(Keys.D))
-			getBody().setLinearVelocity(getSpeed(), 0);
+		if (Gdx.input.isKeyPressed(Keys.A)) {
+			if (this.checkOutOfBound(this, "LEFT") == false) {
+				this.moveDirection("LEFT");
+			} 
+			
+		}
+			
+			//getBody().setLinearVelocity(-getSpeed(), 0);
+		else if (Gdx.input.isKeyPressed(Keys.D)) {
+			
+			if (this.checkOutOfBound(this, "RIGHT") == false) 
+				this.moveDirection("RIGHT");
+		}
+			
+			
 		else
 			getBody().setLinearVelocity(0, 0);
 	}
@@ -77,11 +92,7 @@ public class Circle extends GameShape {
 		
 	}
 	
-	@Override
-	public void moveDirection(String direction)
-	{
-		
-	}
+
 	
 	@Override
 	public void rotateTo(float num)

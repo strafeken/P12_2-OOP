@@ -63,6 +63,45 @@ public interface Movement {
 	}
 	
 	
+	
+	public default boolean checkOutOfBound(GameShape object, String projectedMovement) {
+		
+		if (projectedMovement.equals("LEFT") && object.getSide("LEFT") < screenLeft ) {
+			
+
+			System.out.println("hit left wall");
+			object.getBody().setLinearVelocity(0, 0);
+			return true;
+		}
+			
+		if (projectedMovement.equals("RIGHT") &&  object.getSide("RIGHT")  > screenWidth) {
+			System.out.println("hit right wall");
+			object.getBody().setLinearVelocity(0, 0);
+			return true;
+			
+		}
+		
+		if  (projectedMovement.equals("TOP") &&  object.getSide("TOP")  > screenHeight) {
+			System.out.println("hit top wall");
+			object.getBody().setLinearVelocity(0, 0);
+			return true;
+			
+		}
+		
+		if  (projectedMovement.equals("BOTTOM") &&  object.getSide("BOTTOM") < screenBottom) {
+			System.out.println("bottom hit wall");
+			object.getBody().setLinearVelocity(0, 0);
+			return true;
+			
+		}
+		
+
+		return false;
+	}
+	
+	
+	
+	
 	}
 
 
