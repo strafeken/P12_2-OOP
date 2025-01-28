@@ -6,9 +6,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
-public class Triangle extends Entity {
+public class Triangle extends GameShape {
 	
-	private Color color;
 	private float size;
 	
 	public Triangle()
@@ -17,7 +16,7 @@ public class Triangle extends Entity {
 		setPosition(new Vector2(0, 0));
 		setDirection(new Vector2(0, 0));
 		setSpeed(0);
-		color = Color.WHITE;
+		setColor(Color.WHITE);
 		size = 10;
 	}
 	
@@ -27,7 +26,7 @@ public class Triangle extends Entity {
 		setPosition(position);
 		setDirection(direction);
 		setSpeed(speed);
-		this.color = color;
+		setColor(color);
 		this.size = size;
 	}
 	
@@ -44,7 +43,7 @@ public class Triangle extends Entity {
 	@Override
 	public void draw(ShapeRenderer shape)
 	{
-		shape.setColor(color);
+		shape.setColor(getColor());
 		
 		float x = getPosition().x;
 		float y = getPosition().y;
