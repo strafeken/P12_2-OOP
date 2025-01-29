@@ -27,7 +27,6 @@ public class GameMaster extends ApplicationAdapter {
 		sm.setNextScene(SceneID.MAIN_MENU);
 		
 		batch = new SpriteBatch();
-		
 		shape = new ShapeRenderer();
 	}
 	
@@ -38,33 +37,19 @@ public class GameMaster extends ApplicationAdapter {
 		
 		sm.update();
 		
-		batch.begin();		
-		
+		batch.begin();
 		sm.draw(batch);
-		
 		batch.end();
 		
 		shape.begin(ShapeRenderer.ShapeType.Filled);
-		
 		sm.draw(shape);
-		
 		shape.end();
-		
-		// pause and resume game
-		if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && sm.getCurrentSceneID() != SceneID.MAIN_MENU)
-		{
-			if (sm.getCurrentSceneID() == SceneID.GAME_SCENE)
-				sm.pushScene(SceneID.PAUSE_MENU);
-			else
-				sm.popScene();
-	    }
 	}
 	
 	@Override
 	public void dispose()
 	{
-		batch.dispose();
-		
+		batch.dispose();	
 		shape.dispose();
 	}
 }

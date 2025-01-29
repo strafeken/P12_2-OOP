@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
@@ -43,9 +44,10 @@ public class SceneManager {
 			sceneStack.pop();
 		}
 
-		sceneStack.push(id);
-		
+		sceneStack.push(id);		
 		scenes.get(id).load();
+		// sets input processor to the input manager of the next scene
+		Gdx.input.setInputProcessor(scenes.get(sceneStack.peek()).getInputManager());
 	}
 	
 	// used for pause menu
@@ -53,6 +55,8 @@ public class SceneManager {
 	{
         sceneStack.push(id);
         scenes.get(id).load();
+        // sets input processor to the input manager of the next scene
+        Gdx.input.setInputProcessor(scenes.get(sceneStack.peek()).getInputManager());
     }
 
 	// used to return to game scene
@@ -60,7 +64,11 @@ public class SceneManager {
     {
     	// ensure there is always a scene
     	if(sceneStack.size() > 1)
+    	{
     		scenes.get(sceneStack.pop()).unload();
+    		// sets input processor to the input manager of the next scene
+            Gdx.input.setInputProcessor(scenes.get(sceneStack.peek()).getInputManager());
+    	}
     }
 
     public Scene getCurrentScene()

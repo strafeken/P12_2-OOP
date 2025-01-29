@@ -3,15 +3,17 @@ package io.github.team2;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+
+import io.github.team2.Actions.ExitGame;
+import io.github.team2.Actions.PauseGame;
 
 public class GameScene extends Scene {
 	
@@ -35,7 +37,6 @@ public class GameScene extends Scene {
 	
 	private float accumulator = 0f;
 	
-	
 	public GameScene()
 	{
 		
@@ -51,7 +52,7 @@ public class GameScene extends Scene {
         debugRenderer = new Box2DDebugRenderer();
 		
 		em = new EntityManager();
-		
+		im = new InputManager();
 		pm = new PointsManager();
 
 		collisionResolver = new CollisionResolver(em, pm);
@@ -86,6 +87,9 @@ public class GameScene extends Scene {
 		em.addEntities(triangle);
 		
 		world.setContactListener(collisionDetector);
+		
+		im.registerKeyDown(Input.Keys.ESCAPE, new PauseGame(SceneManager.getInstance()));
+		im.registerKeyDown(Input.Keys.X, new ExitGame(SceneManager.getInstance()));
 	}
 
 	@Override
@@ -105,9 +109,6 @@ public class GameScene extends Scene {
 	        world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 	        accumulator -= TIME_STEP;
 	    }
-		
-		if (Gdx.input.isKeyPressed(Keys.X))
-			SceneManager.getInstance().setNextScene(SceneID.MAIN_MENU);
 	}
 
 	@Override

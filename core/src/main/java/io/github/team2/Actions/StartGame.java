@@ -1,0 +1,22 @@
+package io.github.team2.Actions;
+
+import io.github.team2.Action;
+import io.github.team2.SceneID;
+import io.github.team2.SceneManager;
+
+public class StartGame implements Action {
+
+	private SceneManager sm;
+
+    public StartGame(SceneManager sceneManager)
+    {
+        sm = sceneManager;
+    }
+
+    @Override
+    public void execute()
+    {
+        if (sm.getCurrentSceneID() == SceneID.MAIN_MENU)
+            sm.setNextScene(SceneID.GAME_SCENE);
+    }
+}
