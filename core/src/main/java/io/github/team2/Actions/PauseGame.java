@@ -17,6 +17,6 @@ public class PauseGame implements Action {
     public void execute()
     {
         if (sm.getCurrentSceneID() == SceneID.GAME_SCENE)
-            sm.pushScene(SceneID.PAUSE_MENU);
+            sm.overlayScene(SceneID.PAUSE_MENU);
     }
 }

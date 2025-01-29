@@ -12,9 +12,9 @@ public class SceneManager {
 	// singleton
 	private static SceneManager instance;
 
-	private Map<SceneID, Scene> scenes;
+	private final Map<SceneID, Scene> scenes;
 	// handles scene states
-	private Stack<SceneID> sceneStack;
+	private final Stack<SceneID> sceneStack;
 	
 	private SceneManager()
 	{
@@ -37,38 +37,24 @@ public class SceneManager {
 	
 	public void setNextScene(SceneID id)
 	{
-		// unloads the current scene
 		if(!sceneStack.isEmpty())
-		{
-			scenes.get(sceneStack.peek()).unload();
-			sceneStack.pop();
-		}
+			unloadCurrentScene();
 
-		sceneStack.push(id);		
-		scenes.get(id).load();
-		// sets input processor to the input manager of the next scene
-		Gdx.input.setInputProcessor(scenes.get(sceneStack.peek()).getInputManager());
+		loadScene(id);
 	}
 	
 	// used for pause menu
-	public void pushScene(SceneID id)
+	public void overlayScene(SceneID id)
 	{
-        sceneStack.push(id);
-        scenes.get(id).load();
-        // sets input processor to the input manager of the next scene
-        Gdx.input.setInputProcessor(scenes.get(sceneStack.peek()).getInputManager());
+		loadScene(id);
     }
 
 	// used to return to game scene
-    public void popScene()
+    public void removeOverlay()
     {
     	// ensure there is always a scene
     	if(sceneStack.size() > 1)
-    	{
-    		scenes.get(sceneStack.pop()).unload();
-    		// sets input processor to the input manager of the next scene
-            Gdx.input.setInputProcessor(scenes.get(sceneStack.peek()).getInputManager());
-    	}
+    		unloadCurrentScene();
     }
 
     public Scene getCurrentScene()
@@ -98,5 +84,33 @@ public class SceneManager {
     {
         for (SceneID id : sceneStack)
             scenes.get(id).draw(shape);
+    }
+    
+    private void loadScene(SceneID id)
+    {
+    	if (!scenes.containsKey(id))
+    		return;
+
+    	sceneStack.push(id);
+    	scenes.get(id).load();
+    	updateInputProcessor();
+    }
+    
+    private void unloadCurrentScene()
+    {
+        if (sceneStack.isEmpty())
+        	return;
+        
+        scenes.get(sceneStack.pop()).unload();
+        updateInputProcessor();
+    }
+
+    private void updateInputProcessor()
+    {
+        if (sceneStack.isEmpty())
+        	return;
+        
+        // sets input processor to the input manager of the next scene
+        Gdx.input.setInputProcessor(scenes.get(sceneStack.peek()).getInputManager());
     }
 }

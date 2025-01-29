@@ -17,6 +17,6 @@ public class ResumeGame implements Action {
     public void execute()
     {
         if (sm.getCurrentSceneID() == SceneID.PAUSE_MENU)
-            sm.popScene();
+            sm.removeOverlay();
     }
 }
