@@ -25,7 +25,7 @@ public class CollisionDetector implements ContactListener {
         	Entity a = (Entity)userDataA;
         	Entity b = (Entity)userDataB;
         	
-            System.out.println("Collision detected: " + a.getEntityType() + " & " + b.getEntityType());
+//            System.out.println("Collision detected: " + a.getEntityType() + " & " + b.getEntityType());
             collisionResolver.resolveCollision(a, b);
         }
     }
@@ -33,7 +33,7 @@ public class CollisionDetector implements ContactListener {
     @Override
     public void endContact(Contact contact)
     {
-        System.out.println("Collision ended");
+//        System.out.println("Collision ended");
     }
 
 	@Override

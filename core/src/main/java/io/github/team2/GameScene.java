@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -13,29 +14,38 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.team2.Actions.ExitGame;
+import io.github.team2.Actions.Move;
 import io.github.team2.Actions.PauseGame;
 
 public class GameScene extends Scene {
-	
+	/*Box2D
+	 * world physics simulation*/
 	private World world;
 	// render collision debugger
     private Box2DDebugRenderer debugRenderer;
+
+    private static final float TIME_STEP = 1/60f;
+    private static final int VELOCITY_ITERATIONS = 6;  
+    private static final int POSITION_ITERATIONS = 2;
     
+    private float accumulator = 0f;
+    
+    /*Managers*/
     private PointsManager pm;
 
     private CollisionDetector collisionDetector;
     private CollisionResolver collisionResolver;
 
+    private InputMultiplexer multiplexer;
+    
+    private PlayerInputManager playerInputManager;
+    
+    /*Entities*/
 	private Entity droplets[];
 	private Entity bucket;
 	private Entity circle;
 	private Entity triangle;
-	
-	private static final float TIME_STEP = 1/60f;
-	private static final int VELOCITY_ITERATIONS = 6;
-	private static final int POSITION_ITERATIONS = 2;
-	
-	private float accumulator = 0f;
+	private Entity player;
 	
 	public GameScene()
 	{
@@ -76,10 +86,11 @@ public class GameScene extends Scene {
 		circle = new Circle(EntityType.CIRCLE, new Vector2(500, 300), new Vector2(0, 0), 200, Color.RED, 50);
 		circle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
-
 		triangle = new Triangle(EntityType.TRIANGLE, new Vector2(100, 100), new Vector2(0, 0), 200, Color.GREEN, 50, 50);
 		triangle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
-
+		
+		player = new Player(EntityType.PLAYER, "bucket.png", new Vector2(300, 100), new Vector2(0, 0), 200);
+		player.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
 		for (int i = 0; i < droplets.length; ++i)
 			em.addEntities(droplets[i]);
@@ -87,9 +98,16 @@ public class GameScene extends Scene {
 		em.addEntities(bucket);
 		em.addEntities(circle);
 		em.addEntities(triangle);
+		em.addEntities(player);
 		
 		world.setContactListener(collisionDetector);
 		
+		playerInputManager = new PlayerInputManager(player);
+		playerInputManager.registerUserInput();
+		multiplexer = new InputMultiplexer();
+		multiplexer.addProcessor(im);
+		multiplexer.addProcessor(playerInputManager);
+				
 		im.registerKeyDown(Input.Keys.ESCAPE, new PauseGame(SceneManager.getInstance()));
 		im.registerKeyDown(Input.Keys.X, new ExitGame(SceneManager.getInstance()));
 	}
@@ -97,6 +115,8 @@ public class GameScene extends Scene {
 	@Override
 	public void update()
 	{
+		playerInputManager.update();
+		im.update();
 		em.update();
 		
 		// update physics at the end of render() loop
@@ -149,5 +169,10 @@ public class GameScene extends Scene {
         world.dispose();
         
         debugRenderer.dispose();
+	}
+	
+	public InputMultiplexer getInputMultiplexer()
+	{
+		return multiplexer;
 	}
 }

@@ -1,7 +1,9 @@
 package io.github.team2;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.badlogic.gdx.InputProcessor;
 
@@ -10,12 +12,14 @@ public class InputManager implements InputProcessor {
     private Map<Integer, Action> keyDownActions;
     private Map<Integer, Action> keyUpActions;
     private Map<Integer, Action> touchDownActions;
+    private Set<Integer> activeKeys;
 	
 	public InputManager()
 	{
 		keyDownActions = new HashMap<>();
         keyUpActions = new HashMap<>();
         touchDownActions = new HashMap<>();
+        activeKeys = new HashSet<>();
 	}
 	
     public void registerKeyDown(int keycode, Action action)
@@ -36,6 +40,8 @@ public class InputManager implements InputProcessor {
 	@Override
 	public boolean keyDown(int keycode)
 	{
+		activeKeys.add(keycode);
+		
 		Action action = keyDownActions.get(keycode);
 		
 		if (action == null)
@@ -49,6 +55,8 @@ public class InputManager implements InputProcessor {
 	@Override
 	public boolean keyUp(int keycode)
 	{
+		activeKeys.remove(keycode);
+		
 		Action action = keyUpActions.get(keycode);
         
 		if (action == null)
@@ -106,5 +114,21 @@ public class InputManager implements InputProcessor {
 	public boolean scrolled(float amountX, float amountY)
 	{
 		return false;
+	}
+	
+	public void update()
+	{
+		for (Integer key : activeKeys)
+		{
+			Action action = keyDownActions.get(key); 
+			
+			if (action != null)
+				action.execute();	
+		}
+	}
+	
+	public void clearActiveKeys()
+	{
+	    activeKeys.clear();
 	}
 }

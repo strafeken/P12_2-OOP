@@ -80,25 +80,18 @@ public abstract class Entity implements Movement {
 	{
 		return body;
 	}
-	
 
 	public boolean getIsMoving()
 	{
 		return isMoving;
-		
 	}
-	
 	
 	public void setIsMoving(boolean flag)
 	{
-		this.isMoving= flag;
-		
+		this.isMoving = flag;
 	}
 	
-
-
 	public void InitPhysicsBody(World world, BodyDef.BodyType bodyType)
-
 	{
 		body = new PhysicsBody(world, this, bodyType);
 	}

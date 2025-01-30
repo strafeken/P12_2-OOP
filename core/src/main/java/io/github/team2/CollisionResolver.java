@@ -39,17 +39,17 @@ public class CollisionResolver {
     
     private void handlePlayerDropCollision(Entity a, Entity b)
     {
-        System.out.println("handle collision: PLAYER | DROP");
+//        System.out.println("handle collision: PLAYER | DROP");
     }
     
     private void handlePlayerBucketCollision(Entity a, Entity b)
     {
-        System.out.println("handle collision: PLAYER | BUCKET");
+//        System.out.println("handle collision: PLAYER | BUCKET");
     }
     
     private void handleBucketDropCollision(Entity a, Entity b)
     {
-        System.out.println("handle collision: BUCKET | DROP");
+//        System.out.println("handle collision: BUCKET | DROP");
         
         if (a.getEntityType() == EntityType.DROP)
         	em.markForRemoval(a);
@@ -61,6 +61,6 @@ public class CollisionResolver {
 
     private void handleCircleDropCollision(Entity a, Entity b)
     {
-        System.out.println("handle collision: CIRCLE | TRIANGLE");
+//        System.out.println("handle collision: CIRCLE | TRIANGLE");
     }
 }

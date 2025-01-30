@@ -105,12 +105,19 @@ public class SceneManager {
         updateInputProcessor();
     }
 
+    // sets input processor to the input manager of the next scene
     private void updateInputProcessor()
     {
         if (sceneStack.isEmpty())
         	return;
         
-        // sets input processor to the input manager of the next scene
-        Gdx.input.setInputProcessor(scenes.get(sceneStack.peek()).getInputManager());
+        SceneID curr = sceneStack.peek();
+        
+        if (curr == SceneID.GAME_SCENE)
+        	Gdx.input.setInputProcessor(((GameScene)getCurrentScene()).getInputMultiplexer());
+        else 	
+        	Gdx.input.setInputProcessor(getCurrentScene().getInputManager());    
+        
+        getCurrentScene().getInputManager().clearActiveKeys();
     }
 }
