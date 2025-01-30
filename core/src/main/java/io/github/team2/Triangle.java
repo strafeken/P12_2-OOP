@@ -7,33 +7,40 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 public class Triangle extends GameShape {
-	
-	
 	private float offset;
+	private float size;
 	
 	public Triangle()
 	{
 		setEntityType(EntityType.TRIANGLE);
-		setColor(Color.WHITE);
 		setPosition(new Vector2(0, 0));
+		setDirection(new Vector2(0, 0));
 		setSpeed(0);
+		setColor(Color.WHITE);
+		size = 10;
 	}
 	
-	public Triangle(EntityType type, Color color, Vector2 position, float speed, float offset)
+
+	public Triangle(EntityType type, Vector2 position, Vector2 direction, float speed, Color color, float size,  float offset)
 	{
 		setEntityType(type);
-		setColor(color);
+    setColor(color);
 		setPosition(position);
+		setDirection(direction);
 		setSpeed(speed);
-		setOffset(offset);
+    setSize(size);
+    setOffset(offset);
+    
 		
 		// auto calculate width and height
 		this.setWidth(2 * offset);
 		this.setHeight(2 * offset);
 		
 	}
-	
-	public void setOffset(float offset) {
+    
+   
+  
+  public void setOffset(float offset) {
 		this.offset = offset;
 		
 	}
@@ -41,14 +48,38 @@ public class Triangle extends GameShape {
 	public float getOffset() {
 		
 		return this.offset;
+  }
+  
+  
+
+	
+	public float getSize()
+	{
+		return size * 2;
+	}
+	
+	public void setSize(float size)
+	{
+		this.size = size;
 	}
 	
 	
 	@Override
 	public void draw(ShapeRenderer shape)
 	{
+
+
 		shape.setColor(this.getColor());
-		shape.triangle(getPosition().x - offset, getPosition().y - offset, getPosition().x, getPosition().y + offset, getPosition().x + offset, getPosition().y - offset);
+		
+		float x = getPosition().x;
+		float y = getPosition().y;
+		
+		shape.triangle(
+				x - size, y - size, // bottom-left vertex
+				x, y + size, // top vertex
+				x + size, y - size // bottom-right vertex
+				);
+
 	}
 	
 	

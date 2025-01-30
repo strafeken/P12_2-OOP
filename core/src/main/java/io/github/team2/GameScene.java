@@ -3,7 +3,7 @@ package io.github.team2;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -12,12 +12,17 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
+import io.github.team2.Actions.ExitGame;
+import io.github.team2.Actions.PauseGame;
+
 public class GameScene extends Scene {
 	
 	private World world;
 	// render collision debugger
     private Box2DDebugRenderer debugRenderer;
     
+    private PointsManager pm;
+
     private CollisionDetector collisionDetector;
     private CollisionResolver collisionResolver;
 
@@ -31,7 +36,7 @@ public class GameScene extends Scene {
 	private static final int POSITION_ITERATIONS = 2;
 	
 	private float accumulator = 0f;
-
+	
 	public GameScene()
 	{
 		
@@ -42,14 +47,18 @@ public class GameScene extends Scene {
 	{
 		System.out.println("Game Scene => LOAD");
 		
-		world = new World(new Vector2(0, -10), true);
+		world = new World(new Vector2(0, -100), true);
 		
         debugRenderer = new Box2DDebugRenderer();
 		
 		em = new EntityManager();
+		im = new InputManager();
+		pm = new PointsManager();
 
-		collisionResolver = new CollisionResolver(em);
+		collisionResolver = new CollisionResolver(em, pm);
 		collisionDetector = new CollisionDetector(collisionResolver);
+		
+		tm = new TextManager();
 		
 		droplets = new TextureObject[10];
 		
@@ -57,18 +66,20 @@ public class GameScene extends Scene {
 		// TODO: once global screen variable up edit to be dynamic
 		for (int i = 0; i < droplets.length; ++i)
 		{
-			droplets[i] = new Drop(EntityType.DROP, "droplet.png", new Vector2(random.nextInt(600), random.nextInt(440)), 100);
-			droplets[i].InitPhysicsBody(world, BodyDef.BodyType.DynamicBody, true, false);
+			droplets[i] = new Drop(EntityType.DROP, "droplet.png", new Vector2(random.nextInt(600), random.nextInt(440)), new Vector2(0, 0), 100);
+			droplets[i].InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
 		}
 
-		bucket = new Bucket(EntityType.BUCKET, "bucket.png", new Vector2(200, 50), 200);
-		bucket.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody, true, false);
+		bucket = new Bucket(EntityType.BUCKET, "bucket.png", new Vector2(200, 50), new Vector2(0, 0), 200);
+		bucket.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 		
-		circle = new Circle(EntityType.CIRCLE, Color.RED, 50, new Vector2(500, 300), 200);
-		circle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody, false, true);
+		circle = new Circle(EntityType.CIRCLE, new Vector2(500, 300), new Vector2(0, 0), 200, Color.RED, 50);
+		circle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
-		triangle = new Triangle(EntityType.TRIANGLE, Color.GREEN, new Vector2(100, 100), 200, 50);
-		triangle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody, false, false);
+
+		triangle = new Triangle(EntityType.TRIANGLE, new Vector2(100, 100), new Vector2(0, 0), 200, Color.GREEN, 50, 50);
+		triangle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+
 
 		for (int i = 0; i < droplets.length; ++i)
 			em.addEntities(droplets[i]);
@@ -78,6 +89,9 @@ public class GameScene extends Scene {
 		em.addEntities(triangle);
 		
 		world.setContactListener(collisionDetector);
+		
+		im.registerKeyDown(Input.Keys.ESCAPE, new PauseGame(SceneManager.getInstance()));
+		im.registerKeyDown(Input.Keys.X, new ExitGame(SceneManager.getInstance()));
 	}
 
 	@Override
@@ -97,15 +111,16 @@ public class GameScene extends Scene {
 	        world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 	        accumulator -= TIME_STEP;
 	    }
-		
-		if (Gdx.input.isKeyPressed(Keys.X))
-			SceneManager.getInstance().setNextScene(SceneID.MAIN_MENU);
 	}
 
 	@Override
 	public void draw(SpriteBatch batch)
 	{
 		em.draw(batch);
+		
+		tm.draw(batch, "Game Scene", 200, 200, Color.RED);
+		
+		tm.draw(batch, "Points: " + pm.getPoints(), 200, 250, Color.RED);
 	}
 
 	@Override

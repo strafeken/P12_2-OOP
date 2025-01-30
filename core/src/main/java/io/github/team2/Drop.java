@@ -13,14 +13,16 @@ public class Drop extends TextureObject {
 		setEntityType(EntityType.DROP);
 		setTexture(new Texture(texture));
 		setPosition(new Vector2(0, 0));
+		setDirection(new Vector2(0, 0));
 		setSpeed(10);
 	}
 	
-	public Drop(EntityType type, String texture, Vector2 position, float speed)
+	public Drop(EntityType type, String texture, Vector2 position, Vector2 direction, float speed)
 	{
 		setEntityType(type);
 		setTexture(new Texture(texture));
 		setPosition(position);
+		setDirection(direction);
 		setSpeed(speed);
 	}
 	

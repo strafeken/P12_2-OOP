@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public abstract class Entity implements Movement {
 	
 	private Vector2 position;
+	private Vector2 direction;
 	private float speed;
 	private EntityType type;
 	private PhysicsBody body;
@@ -18,17 +19,19 @@ public abstract class Entity implements Movement {
 	public Entity()
 	{
 		position = new Vector2(0, 0);
+		direction = new Vector2(0, 0);
 		speed = 0;
-		type = null;
+		type = EntityType.UNDEFINED;
 		body = null;
 		isMoving = false;
 	}
 	
-	public Entity(Vector2 position, float speed)
+	public Entity(Vector2 position, Vector2 direction, float speed)
 	{
 		this.position = position;
+		this.direction = direction;
 		this.speed = speed;
-		type = null;
+		type = EntityType.UNDEFINED;
 		body = null;
 		isMoving = false;
 	}
@@ -41,6 +44,16 @@ public abstract class Entity implements Movement {
 	public void setPosition(Vector2 position)
 	{
 		this.position = position;
+	}
+	
+	public Vector2 getDirection()
+	{
+		return direction;
+	}
+	
+	public void setDirection(Vector2 direction)
+	{
+		this.direction = direction;
 	}
 	
 	public float getSpeed()
@@ -68,6 +81,7 @@ public abstract class Entity implements Movement {
 		return body;
 	}
 	
+
 	public boolean getIsMoving()
 	{
 		return isMoving;
@@ -82,13 +96,11 @@ public abstract class Entity implements Movement {
 	}
 	
 
-	
-	
-	
-	
-	public void InitPhysicsBody(World world, BodyDef.BodyType bodyType, boolean isTextureObject, boolean isCircle)
+
+	public void InitPhysicsBody(World world, BodyDef.BodyType bodyType)
+
 	{
-		body = new PhysicsBody(world, this, bodyType, isTextureObject, isCircle);
+		body = new PhysicsBody(world, this, bodyType);
 	}
 	
 	public void draw(ShapeRenderer shape)

@@ -5,19 +5,32 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class GameShape extends Entity {
-	
+
 	private Color color;
-	private float width;
+  private float width;
 	private float height;
 	
-
-	public GameShape() {
-		
-
-		
+	
+	public GameShape()
+	{
+		setEntityType(EntityType.UNDEFINED);
+		setPosition(new Vector2(0, 0));
+		setDirection(new Vector2(0, 0));
+		setSpeed(0);
+		color = Color.WHITE;
 	}
-
-	public float getWidth() {
+	
+	public Color getColor()
+	{
+		return color;
+	}
+	
+	public void setColor(Color color)
+	{
+		this.color = color;
+	}
+	
+  	public float getWidth() {
 		
 		return this.width;
 		
@@ -39,18 +52,8 @@ public abstract class GameShape extends Entity {
 		this.height = height;
 	}
 	
-	public Color getColor() {
-		
-		return this.color;
-		
-	}
-	
-	public void setColor(Color color) {
-		
-		this.color = color;
-	}
-	
-	
+
+  
 
 	@Override
 	public void moveUserControlled()
@@ -105,13 +108,10 @@ public abstract class GameShape extends Entity {
 	}
 	
 	
+  
+  
 	public abstract void draw(ShapeRenderer shape);
-	
-	
-	@Override
-	public void update()
-	{
-//		System.out.println(tex.toString() + " XY: " + getX() + " / " + getY());
-	}
+
+	public abstract void update();
 
 }

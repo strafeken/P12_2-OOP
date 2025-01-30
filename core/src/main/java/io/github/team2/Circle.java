@@ -8,29 +8,31 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Circle extends GameShape {
 	
-
 	private float radius;
 	
 	public Circle()
 	{
 		setEntityType(EntityType.CIRCLE);
+		setPosition(new Vector2(0, 0));
+		setDirection(new Vector2(0, 0));
+		setSpeed(0);
 		setColor(Color.WHITE);
 		radius = 10;
-		setPosition(new Vector2(0, 0));
-		setSpeed(0);
 	}
 	
-	public Circle(EntityType type, Color color, float radius, Vector2 position, float speed)
+	public Circle(EntityType type, Vector2 position, Vector2 direction, float speed, Color color, float radius)
 	{
 		setEntityType(type);
-		setColor(color);;
+		setColor(color);
 		setPosition(position);
+		setDirection(direction);
 		setSpeed(speed);
 		this.radius = radius;
 		
 		// set width and height 
 		this.setWidth(radius*2);
 		this.setHeight(radius*2);
+
 	}
 	
 	public float getRadius()
@@ -46,7 +48,9 @@ public class Circle extends GameShape {
 	@Override
 	public void draw(ShapeRenderer shape)
 	{
+
 		shape.setColor(this.getColor());
+
 		shape.circle(getPosition().x, getPosition().y, radius);
 	}
 	

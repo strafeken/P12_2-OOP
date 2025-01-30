@@ -46,22 +46,14 @@ public class EntityManager {
 	
 	public void draw(SpriteBatch batch)
 	{
-		batch.begin();
-		
 		for(Entity entity : entityList)
 			entity.draw(batch);
-		
-		batch.end();
 	}
 	
 	public void draw(ShapeRenderer shape)
 	{
-		shape.begin(ShapeRenderer.ShapeType.Filled);
-		
 		for(Entity entity : entityList)
 			entity.draw(shape);
-		
-		shape.end();
 	}
 	
 	public void update()
