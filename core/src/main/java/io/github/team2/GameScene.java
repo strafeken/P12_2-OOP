@@ -64,9 +64,16 @@ public class GameScene extends Scene {
 		em = new EntityManager();
 		im = new InputManager();
 		pm = new PointsManager();
+		
+		collisionDetector = new CollisionDetector();
+		collisionResolver = new CollisionResolver(em);
+		
+		PointsSystem pointsSystem = new PointsSystem(pm);
 
-		collisionResolver = new CollisionResolver(em, pm);
-		collisionDetector = new CollisionDetector(collisionResolver);
+		collisionDetector.addListener(collisionResolver);
+		collisionDetector.addListener(pointsSystem);
+
+		world.setContactListener(collisionDetector);
 		
 		tm = new TextManager();
 		

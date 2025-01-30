@@ -1,5 +1,8 @@
 package io.github.team2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -7,12 +10,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 
 public class CollisionDetector implements ContactListener {
 	
-	private CollisionResolver collisionResolver;
-	
-	public CollisionDetector(CollisionResolver resolver)
-	{
-		collisionResolver = resolver;
-	}
+	private List<CollisionListener> listeners = new ArrayList<>();
 	
 	@Override
     public void beginContact(Contact contact)
@@ -25,8 +23,10 @@ public class CollisionDetector implements ContactListener {
         	Entity a = (Entity)userDataA;
         	Entity b = (Entity)userDataB;
         	
-//            System.out.println("Collision detected: " + a.getEntityType() + " & " + b.getEntityType());
-            collisionResolver.resolveCollision(a, b);
+        	CollisionType type = CollisionType.getCollisionType(a, b);
+        	
+        	if (type != null)
+                notifyListeners(a, b, type);
         }
     }
 
@@ -47,4 +47,15 @@ public class CollisionDetector implements ContactListener {
 	{
 			
 	}
+	
+	public void addListener(CollisionListener listener)
+	{
+		listeners.add(listener);
+	}
+	
+	private void notifyListeners(Entity a, Entity b, CollisionType type)
+	{
+        for (CollisionListener listener : listeners)
+            listener.onCollision(a, b, type);
+    }
 }
