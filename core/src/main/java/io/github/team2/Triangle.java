@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 public class Triangle extends GameShape {
-	
+	private float offset;
 	private float size;
 	
 	public Triangle()
@@ -20,15 +20,38 @@ public class Triangle extends GameShape {
 		size = 10;
 	}
 	
-	public Triangle(EntityType type, Vector2 position, Vector2 direction, float speed, Color color, float size)
+
+	public Triangle(EntityType type, Vector2 position, Vector2 direction, float speed, Color color, float size,  float offset)
 	{
 		setEntityType(type);
+    setColor(color);
 		setPosition(position);
 		setDirection(direction);
 		setSpeed(speed);
-		setColor(color);
-		this.size = size;
+    setSize(size);
+    setOffset(offset);
+    
+		
+		// auto calculate width and height
+		this.setWidth(2 * offset);
+		this.setHeight(2 * offset);
+		
 	}
+    
+   
+  
+  public void setOffset(float offset) {
+		this.offset = offset;
+		
+	}
+	
+	public float getOffset() {
+		
+		return this.offset;
+  }
+  
+  
+
 	
 	public float getSize()
 	{
@@ -40,10 +63,13 @@ public class Triangle extends GameShape {
 		this.size = size;
 	}
 	
+	
 	@Override
 	public void draw(ShapeRenderer shape)
 	{
-		shape.setColor(getColor());
+
+
+		shape.setColor(this.getColor());
 		
 		float x = getPosition().x;
 		float y = getPosition().y;
@@ -53,18 +79,34 @@ public class Triangle extends GameShape {
 				x, y + size, // top vertex
 				x + size, y - size // bottom-right vertex
 				);
+
 	}
+	
+	
+	// movement controls
 	
 	@Override
 	public void moveUserControlled()
 	{		
+		
         if (getBody() == null)
         	return;
         
-		if (Gdx.input.isKeyPressed(Keys.LEFT))
-			getBody().setLinearVelocity(-getSpeed(), 0);
-		else if (Gdx.input.isKeyPressed(Keys.RIGHT))
-			getBody().setLinearVelocity(getSpeed(), 0);
+		if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+			if (this.checkOutOfBound(this, "LEFT") == false) {
+				this.moveDirection("LEFT");
+			}
+		}
+			
+			
+			//getBody().setLinearVelocity(-getSpeed(), 0);
+		else if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+			if (this.checkOutOfBound(this, "RIGHT") == false) {
+				this.moveDirection("RIGHT");
+			}
+		}
+				
+
 		else
 			getBody().setLinearVelocity(0, 0);
 	}
@@ -73,6 +115,29 @@ public class Triangle extends GameShape {
 	public void moveAIControlled()
 	{
 		
+	}
+	
+	
+	@Override
+	public void moveTo(Vector2 position)
+	{
+		
+	}
+	
+
+	
+	@Override
+	public void rotateTo(float num)
+	{
+		
+	}
+	
+	@Override
+	public boolean checkPosition(Vector2 position)
+	{
+		
+		
+		return false;
 	}
 	
 	@Override

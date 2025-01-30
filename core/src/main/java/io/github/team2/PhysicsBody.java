@@ -72,7 +72,7 @@ public class PhysicsBody {
 	{
 		body.setTransform(x, y, 0);
 	}
-
+	
 	public void setLinearVelocity(float x, float y)
     {
         body.setLinearVelocity(x, y);
@@ -82,6 +82,7 @@ public class PhysicsBody {
     {
         entity.setPosition(new Vector2(body.getPosition().x, body.getPosition().y));
     }
+
 
     public void dispose()
     {

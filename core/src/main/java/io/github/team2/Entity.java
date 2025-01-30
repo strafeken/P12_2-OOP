@@ -6,13 +6,15 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public abstract class Entity implements iMovable {
+public abstract class Entity implements Movement {
 	
 	private Vector2 position;
 	private Vector2 direction;
 	private float speed;
 	private EntityType type;
 	private PhysicsBody body;
+	
+	private boolean isMoving;
 	
 	public Entity()
 	{
@@ -21,6 +23,7 @@ public abstract class Entity implements iMovable {
 		speed = 0;
 		type = EntityType.UNDEFINED;
 		body = null;
+		isMoving = false;
 	}
 	
 	public Entity(Vector2 position, Vector2 direction, float speed)
@@ -30,6 +33,7 @@ public abstract class Entity implements iMovable {
 		this.speed = speed;
 		type = EntityType.UNDEFINED;
 		body = null;
+		isMoving = false;
 	}
 	
 	public Vector2 getPosition()
@@ -77,7 +81,24 @@ public abstract class Entity implements iMovable {
 		return body;
 	}
 	
+
+	public boolean getIsMoving()
+	{
+		return isMoving;
+		
+	}
+	
+	
+	public void setIsMoving(boolean flag)
+	{
+		this.isMoving= flag;
+		
+	}
+	
+
+
 	public void InitPhysicsBody(World world, BodyDef.BodyType bodyType)
+
 	{
 		body = new PhysicsBody(world, this, bodyType);
 	}

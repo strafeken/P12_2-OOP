@@ -63,7 +63,7 @@ public class GameScene extends Scene {
 		droplets = new TextureObject[10];
 		
 		Random random = new Random();
-
+		// TODO: once global screen variable up edit to be dynamic
 		for (int i = 0; i < droplets.length; ++i)
 		{
 			droplets[i] = new Drop(EntityType.DROP, "droplet.png", new Vector2(random.nextInt(600), random.nextInt(440)), new Vector2(0, 0), 100);
@@ -76,8 +76,10 @@ public class GameScene extends Scene {
 		circle = new Circle(EntityType.CIRCLE, new Vector2(500, 300), new Vector2(0, 0), 200, Color.RED, 50);
 		circle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
-		triangle = new Triangle(EntityType.TRIANGLE, new Vector2(100, 100), new Vector2(0, 0), 200, Color.GREEN, 50);
+
+		triangle = new Triangle(EntityType.TRIANGLE, new Vector2(100, 100), new Vector2(0, 0), 200, Color.GREEN, 50, 50);
 		triangle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+
 
 		for (int i = 0; i < droplets.length; ++i)
 			em.addEntities(droplets[i]);

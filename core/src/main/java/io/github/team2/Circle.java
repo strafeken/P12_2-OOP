@@ -23,11 +23,16 @@ public class Circle extends GameShape {
 	public Circle(EntityType type, Vector2 position, Vector2 direction, float speed, Color color, float radius)
 	{
 		setEntityType(type);
+		setColor(color);
 		setPosition(position);
 		setDirection(direction);
 		setSpeed(speed);
-		setColor(color);
 		this.radius = radius;
+		
+		// set width and height 
+		this.setWidth(radius*2);
+		this.setHeight(radius*2);
+
 	}
 	
 	public float getRadius()
@@ -43,9 +48,14 @@ public class Circle extends GameShape {
 	@Override
 	public void draw(ShapeRenderer shape)
 	{
-		shape.setColor(getColor());
+
+		shape.setColor(this.getColor());
+
 		shape.circle(getPosition().x, getPosition().y, radius);
 	}
+	
+	
+	// movement controls
 	
 	@Override
 	public void moveUserControlled()
@@ -53,18 +63,53 @@ public class Circle extends GameShape {
         if (getBody() == null)
         	return;
         
-		if (Gdx.input.isKeyPressed(Keys.A))
-			getBody().setLinearVelocity(-getSpeed(), 0);
-		else if (Gdx.input.isKeyPressed(Keys.D))
-			getBody().setLinearVelocity(getSpeed(), 0);
+		if (Gdx.input.isKeyPressed(Keys.A)) {
+			if (this.checkOutOfBound(this, "LEFT") == false) {
+				this.moveDirection("LEFT");
+			} 
+			
+		}
+			
+			//getBody().setLinearVelocity(-getSpeed(), 0);
+		else if (Gdx.input.isKeyPressed(Keys.D)) {
+			
+			if (this.checkOutOfBound(this, "RIGHT") == false) 
+				this.moveDirection("RIGHT");
+		}
+			
+			
 		else
 			getBody().setLinearVelocity(0, 0);
 	}
+	
+	
 	
 	@Override
 	public void moveAIControlled()
 	{
 		
+	}
+	
+	@Override
+	public void moveTo(Vector2 position)
+	{
+		
+	}
+	
+
+	
+	@Override
+	public void rotateTo(float num)
+	{
+		
+	}
+	
+	@Override
+	public boolean checkPosition(Vector2 position)
+	{
+		
+		
+		return false;
 	}
 	
 	@Override
