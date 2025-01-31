@@ -5,18 +5,16 @@ import io.github.team2.SceneID;
 import io.github.team2.SceneManager;
 
 public class StartGame implements Action {
+    private final SceneManager sm;
 
-	private SceneManager sm;
-
-    public StartGame(SceneManager sceneManager)
-    {
-        sm = sceneManager;
+    public StartGame(SceneManager sceneManager) {
+        this.sm = sceneManager;
     }
 
     @Override
-    public void execute()
-    {
-        if (sm.getCurrentSceneID() == SceneID.MAIN_MENU)
+    public void execute() {
+        if (sm.getCurrentSceneID() == SceneID.MAIN_MENU) {
             sm.setNextScene(SceneID.GAME_SCENE);
+        }
     }
 }

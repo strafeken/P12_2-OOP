@@ -5,18 +5,16 @@ import io.github.team2.SceneID;
 import io.github.team2.SceneManager;
 
 public class ResumeGame implements Action {
+    private final SceneManager sm;
 
-	private SceneManager sm;
-
-    public ResumeGame(SceneManager sceneManager)
-    {
-        sm = sceneManager;
+    public ResumeGame(SceneManager sceneManager) {
+        this.sm = sceneManager;
     }
 
     @Override
-    public void execute()
-    {
-        if (sm.getCurrentSceneID() == SceneID.PAUSE_MENU)
+    public void execute() {
+        if (sm.getCurrentSceneID() == SceneID.PAUSE_MENU) {
             sm.removeOverlay();
+        }
     }
 }
