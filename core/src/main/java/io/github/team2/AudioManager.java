@@ -40,6 +40,11 @@ public class AudioManager {
         }
     }
 
+    public void loadSoundEffect(String id, String path) {
+        Sound sound = Gdx.audio.newSound(Gdx.files.internal(path));
+        soundEffects.put(id, sound);
+    }
+
     public void playSoundEffect(String id) {
         Sound sound = soundEffects.get(id);
         if (sound != null) {
