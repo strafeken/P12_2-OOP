@@ -3,6 +3,11 @@ package io.github.team2.CollisionSystem;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.EntitySystem.EntityType;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.github.team2.GameScene;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.EntitySystem.TextureObject;
 
@@ -28,6 +33,9 @@ public class CollisionResolver implements CollisionListener {
             break;
         case CIRCLE_DROP:
             handleCircleDropCollision(a, b);
+            break;
+        case POWERUP_BUCKET:
+            handlePowerUpBucketCollision(a, b);
             break;
         default:
             System.out.println("Unhandled collision: " + a.getEntityType() + " : " + b.getEntityType());
@@ -61,5 +69,32 @@ public class CollisionResolver implements CollisionListener {
 
     private void handleCircleDropCollision(Entity a, Entity b) {
 //        System.out.println("handle collision: CIRCLE | TRIANGLE");
+    }
+    
+    private void handlePowerUpBucketCollision(Entity a, Entity b) {
+        Entity powerUp = (a.getEntityType() == EntityType.POWERUP) ? a : b;
+        
+        // Count droplets on screen
+        int dropletCount = 0;
+        List<Entity> dropletsToRemove = new ArrayList<>();
+        for (Entity entity : em.getEntities()) {
+            if (entity.getEntityType() == EntityType.DROP) {
+                dropletCount++;
+                dropletsToRemove.add(entity);
+            }
+        }
+        
+        // Award points based on droplets
+        if (GameScene.getInstance().getPointsManager() != null) {
+            GameScene.getInstance().getPointsManager().addPoints(dropletCount * 10);
+        }
+        // Remove all droplets
+        for (Entity droplet : dropletsToRemove) {
+            em.markForRemoval(droplet);
+        }
+        
+        // Remove power-up
+        em.markForRemoval(powerUp);
+        AudioManager.getInstance().playSoundEffect("ding");
     }
 }

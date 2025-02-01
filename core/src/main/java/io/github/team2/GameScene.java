@@ -59,6 +59,20 @@ public class GameScene extends Scene {
 	private Entity triangle;
 	private Entity player;
 
+	private void spawnPowerUp() {
+		Random random = new Random();
+		if (random.nextFloat() <= 0.005f) { // 0.5% chance to spawn power up
+			PowerUp powerUp = new PowerUp(
+				EntityType.POWERUP,
+				"pup1.png",
+				new Vector2(random.nextInt(600), Gdx.graphics.getHeight()),
+				new Vector2(0, 0),
+				100
+			);
+			powerUp.InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
+			em.addEntities(powerUp); // Add to entity manager
+		}
+	}
 	public GameScene() {
         instance = this;
     }
@@ -143,7 +157,7 @@ public class GameScene extends Scene {
 		playerInputManager.update();
 		im.update();
 		em.update();
-
+		spawnPowerUp();
 		// update physics at the end of render() loop
 		// should be under draw() physics will update when game is paused
 		// could add a boolean however it'll be a bit messy

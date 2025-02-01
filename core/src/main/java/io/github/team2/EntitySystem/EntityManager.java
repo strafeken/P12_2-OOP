@@ -24,6 +24,9 @@ public class EntityManager {
 	public void markForRemoval(Entity entity) {
 		entitiesToRemove.add(entity);
 	}
+	public List<Entity> getEntities() {
+        return entityList;
+    }
 
 	public void removeEntity(Entity entity) {
 		entityList.remove(entity);
