@@ -4,6 +4,7 @@ import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.AudioSystem.AudioManager;
+import io.github.team2.EntitySystem.TextureObject;
 
 public class CollisionResolver implements CollisionListener {
 
@@ -42,15 +43,20 @@ public class CollisionResolver implements CollisionListener {
     }
 
     private void handleBucketDropCollision(Entity a, Entity b) {
-//        System.out.println("handle collision: BUCKET | DROP");
+        Entity bucket = (a.getEntityType() == EntityType.BUCKET) ? a : b;
+        Entity drop = (a.getEntityType() == EntityType.DROP) ? a : b;
         
-        // Play the ding sound effect when bucket collides with droplet
-        AudioManager.getInstance().playSoundEffect("ding"); 
-
-        if (a.getEntityType() == EntityType.DROP)
-            em.markForRemoval(a);
-        else
-            em.markForRemoval(b);
+        // Get the top edge Y position of the bucket
+        float bucketTopY = bucket.getPosition().y + ((TextureObject)bucket).getHeight();
+        // Get drop Y position
+        float dropY = drop.getPosition().y;
+        
+        // Only count collision if drop hits near the top edge of bucket (within 10 pixels)
+        if (Math.abs(dropY - bucketTopY) <= 10) {
+            // Play the ding sound effect when bucket top collides with droplet
+            AudioManager.getInstance().playSoundEffect("ding");
+            em.markForRemoval(drop);
+        }
     }
 
     private void handleCircleDropCollision(Entity a, Entity b) {
