@@ -2,6 +2,7 @@ package io.github.team2;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -59,24 +60,26 @@ public class TexButton extends TextureObject {
         }
     }
 
-    @Override
-    public void draw(SpriteBatch batch) {
-        batch.draw(getTexture(), 
-            getPosition().x - buttonWidth/2, 
-            getPosition().y - buttonHeight/2,
-            buttonWidth,
-            buttonHeight);
-            
-        TextManager tm = new TextManager();
-        tm.draw(batch, text, 
-            getPosition().x - buttonWidth/4,
-            getPosition().y + buttonHeight/4, 
-            Color.BLACK);
-    }
-
-    public void onClick() {
-        if (action != null) {
-            action.execute();
-        }
-    }
+    
+	@Override
+	public void draw(SpriteBatch batch) {
+    	// Draw button background
+    	batch.draw(getTexture(), 
+        	getPosition().x - buttonWidth/2, 
+        	getPosition().y - buttonHeight/2,
+        	buttonWidth,
+        	buttonHeight);
+        
+    	// Center text
+    	TextManager tm = new TextManager();
+    	BitmapFont font = tm.getFont();
+    	float scale = font.getScaleX();
+    	float textWidth = text.length() * 8 * scale; // Approximate width
+    	float textHeight = 16 * scale; // Approximate height
+    
+    	float textX = getPosition().x - textWidth/2;
+    	float textY = getPosition().y + textHeight/2;
+    
+    	tm.draw(batch, text, textX, textY, Color.BLACK);
+	}
 }

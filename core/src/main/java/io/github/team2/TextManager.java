@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class TextManager {
 
 	private BitmapFont font;
-
+	public BitmapFont getFont() {
+        return font;
+    }
 	public TextManager() {
 		font = new BitmapFont();
 		font.getData().setScale(2.0f);
