@@ -35,8 +35,25 @@ public class MainMenu extends Scene {
                 new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2),
                 new Vector2(0, 0),
                 0);
-
+        // Create start button
+        StartGame startAction = new StartGame(SceneManager.getInstance());
+        Vector2 centerPos = new Vector2(
+            Gdx.graphics.getWidth()/2 - 20, //button x-axis
+            Gdx.graphics.getHeight()/2 - 200 //button y-axis
+        );
+    
+        TexButton startButton = new TexButton(
+        "Start", 
+        "button.jpg",
+        centerPos,
+        new Vector2(0,0),
+        0,
+        startAction,
+        100,  // width
+        100   // height
+);
         em.addEntities(image);
+        em.addEntities(startButton);
         im.registerKeyDown(Input.Keys.SPACE, new StartGame(SceneManager.getInstance()));
     }
 
