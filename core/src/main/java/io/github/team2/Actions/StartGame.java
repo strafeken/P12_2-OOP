@@ -15,8 +15,10 @@ public class StartGame implements Action {
     @Override
     public void execute() {
         if (sm.getCurrentSceneID() == SceneID.MAIN_MENU) {
-            AudioManager.getInstance().stopMusic(); // Stop main menu music
-            AudioManager.getInstance().playSoundEffect("start"); // Play start sound effect
+            // Stop only mainmenu sound
+            AudioManager.getInstance().stopSoundEffect("mainmenu");
+            // Play start sound effect
+            AudioManager.getInstance().playSoundEffect("start");
             sm.setNextScene(SceneID.GAME_SCENE);
         }
     }
