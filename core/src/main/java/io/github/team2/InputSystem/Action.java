@@ -1,7 +1,7 @@
-package io.github.team2;
+package io.github.team2.InputSystem;
 
 public interface Action {
-	
+
 	void execute();
 
 }

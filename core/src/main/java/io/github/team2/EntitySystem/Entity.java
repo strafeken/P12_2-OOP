@@ -1,4 +1,4 @@
-package io.github.team2;
+package io.github.team2.EntitySystem;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -7,17 +7,16 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class Entity implements Movement {
-	
+
 	private Vector2 position;
 	private Vector2 direction;
 	private float speed;
 	private EntityType type;
 	private PhysicsBody body;
-	
+
 	private boolean isMoving;
-	
-	public Entity()
-	{
+
+	public Entity() {
 		position = new Vector2(0, 0);
 		direction = new Vector2(0, 0);
 		speed = 0;
@@ -25,9 +24,8 @@ public abstract class Entity implements Movement {
 		body = null;
 		isMoving = false;
 	}
-	
-	public Entity(Vector2 position, Vector2 direction, float speed)
-	{
+
+	public Entity(Vector2 position, Vector2 direction, float speed) {
 		this.position = position;
 		this.direction = direction;
 		this.speed = speed;
@@ -35,85 +33,70 @@ public abstract class Entity implements Movement {
 		body = null;
 		isMoving = false;
 	}
-	
-	public Vector2 getPosition()
-	{
+
+	public Vector2 getPosition() {
 		return position;
 	}
-	
-	public void setPosition(Vector2 position)
-	{
+
+	public void setPosition(Vector2 position) {
 		this.position = position;
 	}
-	
-	public Vector2 getDirection()
-	{
+
+	public Vector2 getDirection() {
 		return direction;
 	}
-	
-	public void setDirection(Vector2 direction)
-	{
+
+	public void setDirection(Vector2 direction) {
 		this.direction = direction;
 	}
-	
-	public float getSpeed()
-	{
+
+	public float getSpeed() {
 		return speed;
 	}
-	
-	public void setSpeed(float speed)
-	{
+
+	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
-	
-	public EntityType getEntityType()
-	{
+
+	public EntityType getEntityType() {
 		return type;
 	}
-	
-	public void setEntityType(EntityType type)
-	{
+
+	public void setEntityType(EntityType type) {
 		this.type = type;
 	}
-	
-	public PhysicsBody getBody()
-	{
+
+	public PhysicsBody getBody() {
 		return body;
 	}
 
-	public boolean getIsMoving()
-	{
+	public boolean getIsMoving() {
 		return isMoving;
 	}
-	
-	public void setIsMoving(boolean flag)
-	{
+
+	public void setIsMoving(boolean flag) {
 		this.isMoving = flag;
 	}
-	
-	public void InitPhysicsBody(World world, BodyDef.BodyType bodyType)
-	{
+
+	public void InitPhysicsBody(World world, BodyDef.BodyType bodyType) {
 		body = new PhysicsBody(world, this, bodyType);
 	}
-	
-	public void draw(ShapeRenderer shape)
-	{
-		
+
+	public void draw(ShapeRenderer shape) {
+
 	}
-	
-	public void draw(SpriteBatch batch)
-	{
-		
+
+	public void draw(SpriteBatch batch) {
+
 	}
 
 	public abstract void update();
-	
+
 	// sync position with physics body position
-	public void updateBody()
-	{
-        if (body == null)
-        	return;
-        
-        body.updateEntityPosition(this);
+	public void updateBody() {
+		if (body == null)
+			return;
+
+		body.updateEntityPosition(this);
 	}
 }
