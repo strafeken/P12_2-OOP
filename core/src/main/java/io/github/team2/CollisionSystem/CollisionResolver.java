@@ -3,54 +3,57 @@ package io.github.team2.CollisionSystem;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.EntitySystem.EntityType;
+import io.github.team2.AudioSystem.AudioManager;
 
 public class CollisionResolver implements CollisionListener {
 
-	private EntityManager em;
+    private EntityManager em;
 
-	public CollisionResolver(EntityManager entityManager) {
-		em = entityManager;
-	}
+    public CollisionResolver(EntityManager entityManager) {
+        em = entityManager;
+    }
 
-	@Override
-	public void onCollision(Entity a, Entity b, CollisionType type) {
-		switch (type) {
-		case PLAYER_DROP:
-			handlePlayerDropCollision(a, b);
-			break;
-		case PLAYER_BUCKET:
-			handlePlayerBucketCollision(a, b);
-			break;
-		case BUCKET_DROP:
-			handleBucketDropCollision(a, b);
-			break;
-		case CIRCLE_DROP:
-			handleCircleDropCollision(a, b);
-			break;
-		default:
-			System.out.println("Unhandled collision: " + a.getEntityType() + " : " + b.getEntityType());
-		}
-	}
+    @Override
+    public void onCollision(Entity a, Entity b, CollisionType type) {
+        switch (type) {
+        case PLAYER_DROP:
+            handlePlayerDropCollision(a, b);
+            break;
+        case PLAYER_BUCKET:
+            handlePlayerBucketCollision(a, b);
+            break;
+        case BUCKET_DROP:
+            handleBucketDropCollision(a, b);
+            break;
+        case CIRCLE_DROP:
+            handleCircleDropCollision(a, b);
+            break;
+        default:
+            System.out.println("Unhandled collision: " + a.getEntityType() + " : " + b.getEntityType());
+        }
+    }
 
-	private void handlePlayerDropCollision(Entity a, Entity b) {
+    private void handlePlayerDropCollision(Entity a, Entity b) {
 //        System.out.println("handle collision: PLAYER | DROP");
-	}
+    }
 
-	private void handlePlayerBucketCollision(Entity a, Entity b) {
+    private void handlePlayerBucketCollision(Entity a, Entity b) {
 //        System.out.println("handle collision: PLAYER | BUCKET");
-	}
+    }
 
-	private void handleBucketDropCollision(Entity a, Entity b) {
+    private void handleBucketDropCollision(Entity a, Entity b) {
 //        System.out.println("handle collision: BUCKET | DROP");
+        
+        // Play the ding sound effect when bucket collides with droplet
+        AudioManager.getInstance().playSoundEffect("ding"); 
 
-		if (a.getEntityType() == EntityType.DROP)
-			em.markForRemoval(a);
-		else
-			em.markForRemoval(b);
-	}
+        if (a.getEntityType() == EntityType.DROP)
+            em.markForRemoval(a);
+        else
+            em.markForRemoval(b);
+    }
 
-	private void handleCircleDropCollision(Entity a, Entity b) {
+    private void handleCircleDropCollision(Entity a, Entity b) {
 //        System.out.println("handle collision: CIRCLE | TRIANGLE");
-	}
-
+    }
 }
