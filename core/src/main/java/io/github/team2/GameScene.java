@@ -39,7 +39,7 @@ public class GameScene extends Scene {
 	private static final float TIME_STEP = 1 / 60f;
 	private static final int VELOCITY_ITERATIONS = 6;
 	private static final int POSITION_ITERATIONS = 2;
-
+	
 	private float accumulator = 0f;
 
 	/* Managers */
@@ -54,25 +54,47 @@ public class GameScene extends Scene {
 
 	/* Entities */
 	private Entity droplets[];
+	private static final int MAX_DROPLETS = 10;
+    private static final float POWERUP_SPAWN_CHANCE = 0.005f; // 0.5%
+    private float dropletSpawnTimer = 0;
+    private static final float MIN_SPAWN_INTERVAL = 1f;
+    private static final float MAX_SPAWN_INTERVAL = 3f;
+    private Random random = new Random();
 	private Entity bucket;
 	private Entity circle;
 	private Entity triangle;
 	private Entity player;
-
+	
 	private void spawnPowerUp() {
-		Random random = new Random();
-		if (random.nextFloat() <= 0.005f) { // 0.5% chance to spawn power up
-			PowerUp powerUp = new PowerUp(
-				EntityType.POWERUP,
-				"pup1.png",
-				new Vector2(random.nextInt(600), Gdx.graphics.getHeight()),
-				new Vector2(0, 0),
-				100
-			);
-			powerUp.InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
-			em.addEntities(powerUp); // Add to entity manager
-		}
-	}
+        // Only try spawning if a powerup doesn't already exist
+        boolean powerupExists = false;
+        for (Entity entity : em.getEntities()) {
+            if (entity.getEntityType() == EntityType.POWERUP) {
+                powerupExists = true;
+                break;
+            }
+        }
+        
+        if (!powerupExists && random.nextFloat() <= POWERUP_SPAWN_CHANCE) {
+            PowerUp powerUp = new PowerUp(
+                EntityType.POWERUP,
+                "pup1.png",
+                new Vector2(random.nextInt(600), Gdx.graphics.getHeight()),
+                new Vector2(0, 0),
+                100
+            );
+            powerUp.InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
+            em.addEntities(powerUp);
+        }
+    }
+	private void spawnSingleDroplet() {
+        
+        Drop newDrop = new Drop(EntityType.DROP, "droplet.png",
+            new Vector2(random.nextInt(600), Gdx.graphics.getHeight()), 
+            new Vector2(0, 0), 100);
+        newDrop.InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
+        em.addEntities(newDrop);
+    }
 	public GameScene() {
         instance = this;
     }
@@ -111,13 +133,13 @@ public class GameScene extends Scene {
 
 		droplets = new TextureObject[10];
 
-		Random random = new Random();
-		// TODO: once global screen variable up edit to be dynamic
-		for (int i = 0; i < droplets.length; ++i) {
-			droplets[i] = new Drop(EntityType.DROP, "droplet.png",
-					new Vector2(random.nextInt(600), random.nextInt(440)), new Vector2(0, 0), 100);
-			droplets[i].InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
-		}
+		
+    		for (int i = 0; i < droplets.length; ++i) {
+        		droplets[i] = new Drop(EntityType.DROP, "droplet.png",
+                	new Vector2(random.nextInt(600), random.nextInt(440)), 
+                	new Vector2(0, 0), 100);
+        		droplets[i].InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
+    	}
 
 		bucket = new Bucket(EntityType.BUCKET, "bucket.png", new Vector2(200, 50), new Vector2(0, 0), 200);
 		bucket.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
@@ -158,6 +180,23 @@ public class GameScene extends Scene {
 		im.update();
 		em.update();
 		spawnPowerUp();
+		 // Random spawn interval between MIN and MAX
+		 dropletSpawnTimer += Gdx.graphics.getDeltaTime();
+		 if (dropletSpawnTimer >= MIN_SPAWN_INTERVAL + random.nextFloat() * (MAX_SPAWN_INTERVAL - MIN_SPAWN_INTERVAL)) {
+			 // Count current droplets
+			 int currentDroplets = 0;
+			 for (Entity entity : em.getEntities()) {
+				 if (entity.getEntityType() == EntityType.DROP) {
+					 currentDroplets++;
+				 }
+			 }
+			 
+			 // Only spawn if below MAX_DROPLETS
+			 if (currentDroplets < MAX_DROPLETS) {
+				 spawnSingleDroplet();
+			 }
+			 dropletSpawnTimer = 0;
+		 }
 		// update physics at the end of render() loop
 		// should be under draw() physics will update when game is paused
 		// could add a boolean however it'll be a bit messy
@@ -169,6 +208,7 @@ public class GameScene extends Scene {
 			world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 			accumulator -= TIME_STEP;
 		}
+		
 	}
 
 	@Override

@@ -74,9 +74,10 @@ public class CollisionResolver implements CollisionListener {
     private void handlePowerUpBucketCollision(Entity a, Entity b) {
         Entity powerUp = (a.getEntityType() == EntityType.POWERUP) ? a : b;
         
-        // Count droplets on screen
+        // Count droplets and store for removal
         int dropletCount = 0;
         List<Entity> dropletsToRemove = new ArrayList<>();
+        
         for (Entity entity : em.getEntities()) {
             if (entity.getEntityType() == EntityType.DROP) {
                 dropletCount++;
@@ -88,10 +89,12 @@ public class CollisionResolver implements CollisionListener {
         if (GameScene.getInstance().getPointsManager() != null) {
             GameScene.getInstance().getPointsManager().addPoints(dropletCount * 10);
         }
+        
         // Remove all droplets
         for (Entity droplet : dropletsToRemove) {
             em.markForRemoval(droplet);
         }
+        
         
         // Remove power-up
         em.markForRemoval(powerUp);

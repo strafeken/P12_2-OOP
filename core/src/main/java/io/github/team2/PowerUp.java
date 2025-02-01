@@ -8,7 +8,7 @@ import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.TextureObject;
 
 public class PowerUp extends TextureObject {
-    private float scale = 0.1f; // 50% size
+    private float scale = 0.1f;
     
     public PowerUp(EntityType type, String texture, Vector2 position, Vector2 direction, float speed) {
         setEntityType(type);
@@ -20,12 +20,15 @@ public class PowerUp extends TextureObject {
 
     @Override
     public void draw(SpriteBatch batch) {
+        float drawX = getPosition().x - (getTexture().getWidth() * scale / 2);
+        float drawY = getPosition().y - (getTexture().getHeight() * scale / 2);
         batch.draw(getTexture(), 
-            getPosition().x, 
-            getPosition().y,
-            getTexture().getWidth() * scale,  // 50% width
-            getTexture().getHeight() * scale); // 50% height
+            drawX, 
+            drawY,
+            getTexture().getWidth() * scale,
+            getTexture().getHeight() * scale);
     }
+
 
     @Override
     public void moveAIControlled() {
