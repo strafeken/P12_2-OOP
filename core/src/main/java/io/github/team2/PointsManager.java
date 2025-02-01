@@ -1,12 +1,21 @@
 package io.github.team2;
 
 public class PointsManager {
+    private int points;
+    private int fails;  // New fail counter
 
-	private int points;
+    public PointsManager() {
+        points = 0;
+        fails = 0;      // Initialize fails
+    }
 
-	public PointsManager() {
-		points = 0;
-	}
+    public int getFails() {
+        return fails;
+    }
+
+    public void incrementFails() {
+        fails++;
+    }
 
 	public int getPoints() {
 		return points;

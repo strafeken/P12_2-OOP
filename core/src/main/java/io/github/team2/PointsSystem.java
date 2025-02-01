@@ -5,16 +5,20 @@ import io.github.team2.CollisionSystem.CollisionType;
 import io.github.team2.EntitySystem.Entity;
 
 public class PointsSystem implements CollisionListener {
-	private PointsManager pointsManager;
+    private PointsManager pointsManager;
 
-	public PointsSystem(PointsManager pointsManager) {
-		this.pointsManager = pointsManager;
-	}
+    public PointsSystem(PointsManager pointsManager) {
+        this.pointsManager = pointsManager;
+    }
 
-	@Override
-	public void onCollision(Entity a, Entity b, CollisionType type) {
-		if (type == CollisionType.BUCKET_DROP) {
-			pointsManager.addPoints(10);
-		}
-	}
+    @Override
+    public void onCollision(Entity a, Entity b, CollisionType type) {
+        if (type == CollisionType.BUCKET_DROP) {
+            pointsManager.addPoints(10);
+        }
+    }
+
+    public void handleDropMiss() {
+        pointsManager.incrementFails();
+    }
 }

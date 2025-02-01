@@ -29,22 +29,25 @@ public class Drop extends TextureObject {
 
 	// movement control
 	@Override
-	public void moveAIControlled() {
-		if (this.getIsMoving() == false) {
-
-			this.moveTo(new Vector2(this.getPosition().x, 0));
-		} else {
-
-			if (this.checkPosition(new Vector2(this.getPosition().x, 10)) == false) {
-				this.moveDown();
-
-			} else {
-				this.setIsMoving(false);
-				getBody().setLocation(getPosition().x, Gdx.graphics.getHeight());
-
-			}
-		}
-	}
+    public void moveAIControlled() {
+        if (this.getIsMoving() == false) {
+            this.moveTo(new Vector2(this.getPosition().x, 0));
+        } else {
+            if (this.checkPosition(new Vector2(this.getPosition().x, 10)) == false) {
+                this.moveDown();
+            } else {
+                this.setIsMoving(false);
+                // Check if drop hit bottom
+                if (this.getPosition().y < 0) {
+                    // Increment fail counter through GameScene
+                    if (GameScene.getInstance().getPointsManager() != null) {
+                        GameScene.getInstance().getPointsManager().incrementFails();
+                    }
+                }
+                getBody().setLocation(getPosition().x, Gdx.graphics.getHeight());
+            }
+        }
+    }
 
 	@Override
 	public void moveTo(Vector2 targetPosition) {

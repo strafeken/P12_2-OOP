@@ -28,6 +28,7 @@ import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 
 public class GameScene extends Scene {
+	private static GameScene instance;
 	/*
 	 * Box2D world physics simulation
 	 */
@@ -59,8 +60,16 @@ public class GameScene extends Scene {
 	private Entity player;
 
 	public GameScene() {
+        instance = this;
+    }
 
-	}
+    public static GameScene getInstance() {
+        return instance;
+    }
+
+    public PointsManager getPointsManager() {
+        return pm;
+    }
 
 	@Override
 	public void load() {
@@ -149,14 +158,16 @@ public class GameScene extends Scene {
 	}
 
 	@Override
-	public void draw(SpriteBatch batch) {
-		em.draw(batch);
+    public void draw(SpriteBatch batch) {
+        em.draw(batch);
+		float paddingLeft = 20;
+    	float startY = Gdx.graphics.getHeight() - 20; // Start 20px from top
+    	float lineSpacing = 30; // Space between lines
 
-		tm.draw(batch, "Game Scene", 200, 200, Color.RED);
-
-		tm.draw(batch, "Points: " + pm.getPoints(), 200, 250, Color.RED);
-	}
-
+        tm.draw(batch, "Game Scene", paddingLeft, startY, Color.RED);
+    	tm.draw(batch, "Points: " + pm.getPoints(), paddingLeft, startY - lineSpacing, Color.RED);
+    	tm.draw(batch, "Fails: " + pm.getFails(), paddingLeft, startY - (lineSpacing * 2), Color.RED);
+    }
 	@Override
 	public void draw(ShapeRenderer shape) {
 		em.draw(shape);
