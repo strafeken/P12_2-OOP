@@ -14,12 +14,11 @@ public class StartGame implements Action {
 
     @Override
     public void execute() {
-        if (sm.getCurrentSceneID() == SceneID.MAIN_MENU) {
-            // Stop only mainmenu sound
-            AudioManager.getInstance().stopSoundEffect("mainmenu");
-            // Play start sound effect
-            AudioManager.getInstance().playSoundEffect("start");
-            sm.setNextScene(SceneID.GAME_SCENE);
+        if (sm.getCurrentSceneID() == SceneID.MAIN_MENU || 
+        sm.getCurrentSceneID() == SceneID.GAME_OVER) {
+        AudioManager.getInstance().stopSoundEffect("mainmenu");
+        AudioManager.getInstance().playSoundEffect("start");
+        sm.setNextScene(SceneID.GAME_SCENE);
         }
     }
 }

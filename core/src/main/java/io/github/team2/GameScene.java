@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import io.github.team2.Actions.ExitGame;
 import io.github.team2.Actions.Move;
 import io.github.team2.Actions.PauseGame;
+import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.CollisionSystem.CollisionDetector;
 import io.github.team2.CollisionSystem.CollisionResolver;
 import io.github.team2.EntitySystem.Entity;
@@ -25,6 +26,7 @@ import io.github.team2.EntitySystem.TextureObject;
 import io.github.team2.InputSystem.InputManager;
 import io.github.team2.InputSystem.PlayerInputManager;
 import io.github.team2.SceneSystem.Scene;
+import io.github.team2.SceneSystem.SceneID;
 import io.github.team2.SceneSystem.SceneManager;
 
 public class GameScene extends Scene {
@@ -44,6 +46,7 @@ public class GameScene extends Scene {
 
 	/* Managers */
 	private PointsManager pm;
+	private SceneManager sm;
 
 	private CollisionDetector collisionDetector;
 	private CollisionResolver collisionResolver;
@@ -180,6 +183,13 @@ public class GameScene extends Scene {
 		im.update();
 		em.update();
 		spawnPowerUp();
+		// Check for game over condition
+    	 if (pm.getFails() >= 20) {
+        	//AudioManager.getInstance().playSoundEffect("ding"); 
+        	sm = SceneManager.getInstance(); // Initialize SceneManager
+        	sm.setNextScene(SceneID.GAME_OVER);
+        return;
+    	}
 		 // Random spawn interval between MIN and MAX
 		 dropletSpawnTimer += Gdx.graphics.getDeltaTime();
 		 if (dropletSpawnTimer >= MIN_SPAWN_INTERVAL + random.nextFloat() * (MAX_SPAWN_INTERVAL - MIN_SPAWN_INTERVAL)) {

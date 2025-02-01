@@ -27,6 +27,7 @@ public class GameMaster extends ApplicationAdapter {
         sm.addScene(SceneID.MAIN_MENU, new MainMenu());
         sm.addScene(SceneID.GAME_SCENE, new GameScene());
         sm.addScene(SceneID.PAUSE_MENU, new PauseMenu());
+        sm.addScene(SceneID.GAME_OVER, new GameOverScreen());
 
         sm.setNextScene(SceneID.MAIN_MENU);
 
