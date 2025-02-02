@@ -260,9 +260,4 @@ public class GameScene extends Scene {
 	public InputMultiplexer getInputMultiplexer() {
 		return multiplexer;
 	}
-	@Override
-	protected void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
-	}
 }

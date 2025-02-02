@@ -76,10 +76,4 @@ public class GameOverScreen extends Scene {
 
     @Override
     public void dispose() {}
-
-	@Override
-	protected void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
-	}
 }

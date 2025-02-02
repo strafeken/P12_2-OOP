@@ -92,10 +92,4 @@ public class MainMenu extends Scene {
     public InputManager getInputManager() {
         return im;
     }
-
-	@Override
-	protected void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
-	}
 }
