@@ -37,13 +37,15 @@ public class GameOverScreen extends Scene {
             Gdx.graphics.getHeight()/2 - 200    //button y-axis
         );
     
-        Button restartButton = new Button(
+        restartButton = new Button(
         	1, "Restart", "button.jpg",
             centerPos, startAction,
             100,  // width
             100   // height
         );
+        
 
+        System.out.println("Restart button created: " + restartButton);
         //em.addEntities(restartButton);
         im.registerButton(restartButton);
         im.registerKeyDown(Input.Keys.SPACE, startAction);
@@ -64,9 +66,9 @@ public class GameOverScreen extends Scene {
         tm.draw(batch, "Final Score: " + finalScore, centerX, centerY, Color.WHITE);
         tm.draw(batch, "Press SPACE to Play Again", centerX, centerY - 50, Color.WHITE);
         em.draw(batch);
-        if (restartButton != null) {
-        	restartButton.draw(batch);
-        }
+
+        restartButton.draw(batch);
+        
         
     }
 
