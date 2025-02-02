@@ -108,4 +108,9 @@ public class SceneManager {
 
 		getCurrentScene().getInputManager().clearActiveKeys();
 	}
+	public void resize(int width, int height) {
+	    if (!sceneStack.isEmpty()) {
+	        scenes.get(sceneStack.peek()).resize(width, height);
+	    }
+	}
 }

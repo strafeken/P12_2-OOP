@@ -66,4 +66,10 @@ public class PauseMenu extends Scene {
 	public void dispose() {
 		((TextureObject) image).dispose();
 	}
+
+	@Override
+	protected void resize(int width, int height) {
+		// TODO Auto-generated method stub
+		
+	}
 }
