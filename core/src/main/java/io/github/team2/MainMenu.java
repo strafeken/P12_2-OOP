@@ -41,10 +41,10 @@ public class MainMenu extends Scene {
         StartGame startAction = new StartGame(SceneManager.getInstance());
         Vector2 centerPos = new Vector2(
             Gdx.graphics.getWidth()/2 - 20, //button x-axis
-            Gdx.graphics.getHeight()/2 - 200 //button y-axis
+            Gdx.graphics.getHeight()/2 - 180 //button y-axis
         );
     
-		startButton = new Button(1,"Start", "button.jpg",
+		startButton = new Button(1,"Start", "startBtn.png",
 								centerPos, startAction,
 								100, 100 );
         em.addEntities(image);

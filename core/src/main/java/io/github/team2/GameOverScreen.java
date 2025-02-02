@@ -38,14 +38,14 @@ public class GameOverScreen extends Scene {
         );
     
         restartButton = new Button(
-        	1, "Restart", "button.jpg",
+        	1, "Restart", "restartBtn.png",
             centerPos, startAction,
             100,  // width
             100   // height
         );
         
 
-        System.out.println("Restart button created: " + restartButton);
+
         //em.addEntities(restartButton);
         im.registerButton(restartButton);
         im.registerKeyDown(Input.Keys.SPACE, startAction);
