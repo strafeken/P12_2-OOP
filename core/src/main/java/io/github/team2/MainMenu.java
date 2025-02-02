@@ -19,6 +19,8 @@ public class MainMenu extends Scene {
     private InputManager im;
     private TextManager tm;
     private TextureObject image;
+    
+    private Button startButton;
 
     @Override
     public void load() {
@@ -42,25 +44,21 @@ public class MainMenu extends Scene {
             Gdx.graphics.getHeight()/2 - 200 //button y-axis
         );
     
-        TexButton startButton = new TexButton(
-        "Start", 
-        "button.jpg",
-        centerPos,
-        new Vector2(0,0),
-        0,
-        startAction,
-        100,  // width
-        100   // height
-);
+		startButton = new Button(1,"Start", "button.jpg",
+								centerPos, startAction,
+								100, 100 );
         em.addEntities(image);
-        em.addEntities(startButton);
-        im.registerKeyDown(Input.Keys.SPACE, new StartGame(SceneManager.getInstance()));
+        //em.addEntities(startButton);
+        im.registerKeyDown(Input.Keys.SPACE, startAction);
+        //im.registerTouchDown(startButton.getID(), startButton.getAction());
+        im.registerButton(startButton);
     }
 
     @Override
     public void update() {
         em.update();
         im.update();
+        //startButton.update();
     }
 
     @Override
@@ -68,6 +66,7 @@ public class MainMenu extends Scene {
         em.draw(batch);
         tm.draw(batch, "Main Menu", 200, 200, Color.RED);
         tm.draw(batch, "Press SPACE to Start", 200, 150, Color.WHITE);
+        startButton.draw(batch);
     }
 
     @Override
