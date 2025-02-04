@@ -10,6 +10,7 @@ import io.github.team2.Actions.StartGame;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.EntitySystem.TextureObject;
+import io.github.team2.InputSystem.Button;
 import io.github.team2.InputSystem.InputManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
@@ -19,7 +20,7 @@ public class MainMenu extends Scene {
     private InputManager im;
     private TextManager tm;
     private TextureObject image;
-    
+
     private Button startButton;
 
     @Override
@@ -43,7 +44,7 @@ public class MainMenu extends Scene {
         		SceneManager.screenWidth /2 - 20, //button x-axis
         		SceneManager.screenHeight /2 - 180 //button y-axis
         );
-    
+
 		startButton = new Button(1,"Start", "startBtn.png",
 								centerPos, startAction,
 								100, 100 );
@@ -95,6 +96,6 @@ public class MainMenu extends Scene {
 	@Override
 	protected void resize(int width, int height) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

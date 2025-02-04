@@ -11,7 +11,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.team2.Button;
 import io.github.team2.SceneSystem.SceneManager;
 
 public class InputManager implements InputProcessor {
@@ -41,7 +40,7 @@ public class InputManager implements InputProcessor {
 	public void registerTouchDown(int button, Action action) {
 		touchDownActions.put(button, action);
 	}
-	
+
     public void registerButton(Button button) {
         buttons.add(button);
     }
@@ -83,7 +82,7 @@ public class InputManager implements InputProcessor {
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		/*
 		Action action = touchDownActions.get(button);
-		
+
 		if (action == null)
 			return false;
 
@@ -91,7 +90,7 @@ public class InputManager implements InputProcessor {
 
 		return true;
 		*/
-		
+
 		 Vector2 touchPos = new Vector2(screenX, SceneManager.screenHeight - screenY); // Flip Y-axis
 
 	        for (Button btn : buttons) {
@@ -102,8 +101,8 @@ public class InputManager implements InputProcessor {
 	        }
 	        return false;
 	    }
-		
-	
+
+
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
