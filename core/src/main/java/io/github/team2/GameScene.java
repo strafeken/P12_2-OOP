@@ -93,7 +93,7 @@ public class GameScene extends Scene {
 	private void spawnSingleDroplet() {
         
         Drop newDrop = new Drop(EntityType.DROP, "droplet.png",
-            new Vector2(random.nextFloat(SceneManager.screenWidth), Gdx.graphics.getHeight()), 
+            new Vector2(random.nextFloat(SceneManager.screenWidth), SceneManager.screenHeight), 
             new Vector2(0, 0), 100);
         newDrop.InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
         em.addEntities(newDrop);

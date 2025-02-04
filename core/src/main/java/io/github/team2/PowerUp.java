@@ -1,11 +1,12 @@
 package io.github.team2;
 
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.TextureObject;
+import io.github.team2.SceneSystem.SceneManager;
 
 public class PowerUp extends TextureObject {
     private float scale = 0.1f;
@@ -39,7 +40,7 @@ public class PowerUp extends TextureObject {
                 moveDown();
             } else {
                 setIsMoving(false);
-                getBody().setLocation(getPosition().x, Gdx.graphics.getHeight());
+                getBody().setLocation(getPosition().x, SceneManager.screenHeight);
             }
         }
     }

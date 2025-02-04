@@ -1,6 +1,6 @@
 package io.github.team2;
 
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -33,8 +33,8 @@ public class GameOverScreen extends Scene {
         // Create restart button
         StartGame startAction = new StartGame(sm);
         Vector2 centerPos = new Vector2(
-            Gdx.graphics.getWidth()/2,      //button x-axis
-            Gdx.graphics.getHeight()/2 - 200    //button y-axis
+            SceneManager.screenWidth /2,      //button x-axis
+            SceneManager.screenHeight /2 - 200    //button y-axis
         );
     
         restartButton = new Button(
@@ -59,8 +59,8 @@ public class GameOverScreen extends Scene {
 
     @Override
     public void draw(SpriteBatch batch) {
-        float centerX = Gdx.graphics.getWidth() / 2 - 100;
-        float centerY = Gdx.graphics.getHeight() / 2;
+        float centerX = SceneManager.screenWidth / 2 - 100;
+        float centerY = SceneManager.screenHeight / 2;
         
         tm.draw(batch, "GAME OVER", centerX, centerY + 50, Color.RED);
         tm.draw(batch, "Final Score: " + finalScore, centerX, centerY, Color.WHITE);
