@@ -17,7 +17,14 @@ public class SceneManager {
 	private final Map<SceneID, Scene> scenes;
 	// handles scene states
 	private final Stack<SceneID> sceneStack;
+	
+	
+	static public float screenWidth = Gdx.graphics.getWidth();
+	static public float screenHeight = Gdx.graphics.getHeight();
 
+	static final public float screenLeft = 0;
+	static final public float screenBottom = 0;
+	
 	private SceneManager() {
 		scenes = new HashMap<>();
 		sceneStack = new Stack<>();

@@ -82,7 +82,7 @@ public class GameScene extends Scene {
             PowerUp powerUp = new PowerUp(
                 EntityType.POWERUP,
                 "pup1.png",
-                new Vector2(random.nextInt(600), Gdx.graphics.getHeight()),
+                new Vector2(random.nextFloat(SceneManager.screenWidth) , SceneManager.screenHeight),
                 new Vector2(0, 0),
                 100
             );
@@ -93,7 +93,7 @@ public class GameScene extends Scene {
 	private void spawnSingleDroplet() {
         
         Drop newDrop = new Drop(EntityType.DROP, "droplet.png",
-            new Vector2(random.nextInt(600), Gdx.graphics.getHeight()), 
+            new Vector2(random.nextFloat(SceneManager.screenWidth), SceneManager.screenHeight), 
             new Vector2(0, 0), 100);
         newDrop.InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
         em.addEntities(newDrop);
@@ -139,7 +139,7 @@ public class GameScene extends Scene {
 		
     		for (int i = 0; i < droplets.length; ++i) {
         		droplets[i] = new Drop(EntityType.DROP, "droplet.png",
-                	new Vector2(random.nextInt(600), random.nextInt(440)), 
+                	new Vector2(random.nextFloat(SceneManager.screenWidth), random.nextFloat(SceneManager.screenHeight)), 
                 	new Vector2(0, 0), 100);
         		droplets[i].InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
     	}
@@ -225,7 +225,7 @@ public class GameScene extends Scene {
     public void draw(SpriteBatch batch) {
         em.draw(batch);
 		float paddingLeft = 20;
-    	float startY = Gdx.graphics.getHeight() - 20; // Start 20px from top
+    	float startY = SceneManager.screenHeight - 20; // Start 20px from top
     	float lineSpacing = 30; // Space between lines
 
         tm.draw(batch, "Game Scene", paddingLeft, startY, Color.RED);

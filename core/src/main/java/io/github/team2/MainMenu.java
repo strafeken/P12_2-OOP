@@ -1,6 +1,6 @@
 package io.github.team2;
 
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,6 +19,8 @@ public class MainMenu extends Scene {
     private InputManager im;
     private TextManager tm;
     private TextureObject image;
+    
+    private Button startButton;
 
     @Override
     public void load() {
@@ -32,35 +34,31 @@ public class MainMenu extends Scene {
         AudioManager.getInstance().playSoundEffect("mainmenu");
 
         image = new TextureObject("libgdx.png",
-                new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2),
+                new Vector2(SceneManager.screenWidth / 2, SceneManager.screenHeight / 2),
                 new Vector2(0, 0),
                 0);
         // Create start button
         StartGame startAction = new StartGame(SceneManager.getInstance());
         Vector2 centerPos = new Vector2(
-            Gdx.graphics.getWidth()/2 - 20, //button x-axis
-            Gdx.graphics.getHeight()/2 - 200 //button y-axis
+        		SceneManager.screenWidth /2 - 20, //button x-axis
+        		SceneManager.screenHeight /2 - 180 //button y-axis
         );
     
-        TexButton startButton = new TexButton(
-        "Start", 
-        "button.jpg",
-        centerPos,
-        new Vector2(0,0),
-        0,
-        startAction,
-        100,  // width
-        100   // height
-);
+		startButton = new Button(1,"Start", "startBtn.png",
+								centerPos, startAction,
+								100, 100 );
         em.addEntities(image);
-        em.addEntities(startButton);
-        im.registerKeyDown(Input.Keys.SPACE, new StartGame(SceneManager.getInstance()));
+        //em.addEntities(startButton);
+        im.registerKeyDown(Input.Keys.SPACE, startAction);
+        //im.registerTouchDown(startButton.getID(), startButton.getAction());
+        im.registerButton(startButton);
     }
 
     @Override
     public void update() {
         em.update();
         im.update();
+        //startButton.update();
     }
 
     @Override
@@ -68,6 +66,7 @@ public class MainMenu extends Scene {
         em.draw(batch);
         tm.draw(batch, "Main Menu", 200, 200, Color.RED);
         tm.draw(batch, "Press SPACE to Start", 200, 150, Color.WHITE);
+        startButton.draw(batch);
     }
 
     @Override
