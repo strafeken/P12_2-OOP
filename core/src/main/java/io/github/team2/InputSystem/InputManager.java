@@ -12,6 +12,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.team2.Button;
+import io.github.team2.SceneSystem.SceneManager;
 
 public class InputManager implements InputProcessor {
 
@@ -91,7 +92,7 @@ public class InputManager implements InputProcessor {
 		return true;
 		*/
 		
-		 Vector2 touchPos = new Vector2(screenX, Gdx.graphics.getHeight() - screenY); // Flip Y-axis
+		 Vector2 touchPos = new Vector2(screenX, SceneManager.screenHeight - screenY); // Flip Y-axis
 
 	        for (Button btn : buttons) {
 	            if (btn.checkIsPressed(touchPos)) {

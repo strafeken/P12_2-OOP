@@ -1,6 +1,6 @@
 package io.github.team2;
 
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -34,14 +34,14 @@ public class MainMenu extends Scene {
         AudioManager.getInstance().playSoundEffect("mainmenu");
 
         image = new TextureObject("libgdx.png",
-                new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2),
+                new Vector2(SceneManager.screenWidth / 2, SceneManager.screenHeight / 2),
                 new Vector2(0, 0),
                 0);
         // Create start button
         StartGame startAction = new StartGame(SceneManager.getInstance());
         Vector2 centerPos = new Vector2(
-            Gdx.graphics.getWidth()/2 - 20, //button x-axis
-            Gdx.graphics.getHeight()/2 - 180 //button y-axis
+        		SceneManager.screenWidth /2 - 20, //button x-axis
+        		SceneManager.screenHeight /2 - 180 //button y-axis
         );
     
 		startButton = new Button(1,"Start", "startBtn.png",
