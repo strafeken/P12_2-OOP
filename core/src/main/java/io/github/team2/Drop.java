@@ -1,11 +1,12 @@
 package io.github.team2;
 
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.TextureObject;
+import io.github.team2.SceneSystem.SceneManager;
 
 public class Drop extends TextureObject {
 
@@ -44,7 +45,7 @@ public class Drop extends TextureObject {
                         GameScene.getInstance().getPointsManager().incrementFails();
                     }
                 }
-                getBody().setLocation(getPosition().x, Gdx.graphics.getHeight());
+                getBody().setLocation(getPosition().x, SceneManager.screenHeight);
             }
         }
     }

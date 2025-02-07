@@ -1,6 +1,6 @@
 package io.github.team2;
 
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -31,7 +31,7 @@ public class PauseMenu extends Scene {
 		im = new InputManager();
 		tm = new TextManager();
 
-		image = new TextureObject("libgdx.png", new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2),
+		image = new TextureObject("libgdx.png", new Vector2(SceneManager.screenWidth / 2, SceneManager.screenHeight / 2),
 				new Vector2(0, 0), 0);
 
 		em.addEntities(image);
@@ -65,5 +65,11 @@ public class PauseMenu extends Scene {
 	@Override
 	public void dispose() {
 		((TextureObject) image).dispose();
+	}
+
+	@Override
+	protected void resize(int width, int height) {
+		// TODO Auto-generated method stub
+		
 	}
 }
