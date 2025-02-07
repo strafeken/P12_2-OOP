@@ -90,6 +90,8 @@ public abstract class Entity implements Movement {
 
 	}
 
+	public abstract boolean isOutOfBound(Vector2 direction);
+
 	public abstract void update();
 
 	// sync position with physics body position

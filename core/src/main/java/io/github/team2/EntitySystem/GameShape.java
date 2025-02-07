@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
+import io.github.team2.SceneSystem.SceneManager;
+
 public abstract class GameShape extends Entity {
 
 	private Color color;
@@ -63,6 +65,33 @@ public abstract class GameShape extends Entity {
 
 	}
 
+	@Override 	
+	public  boolean isOutOfBound(Vector2 direction) {
+		
+		
+		Vector2 projectedPos = this.getPosition();
+		projectedPos.add(direction);
+		
+		if (direction.x < 0 && (projectedPos.x - getWidth()/2) < SceneManager.screenLeft) {
+			System.out.println("Hit left");
+			return true;
+		}
+		if (direction.x > 0 && (projectedPos.x + getWidth()/2) > SceneManager.screenWidth) {
+			System.out.println("hit right");
+			return true;
+		}
+		
+		if (direction.y < 0 && (projectedPos.y - getHeight()/2) < SceneManager.screenBottom) {
+			return true;
+		}
+		if (direction.y > 0 && (projectedPos.y + getHeight()/2) > SceneManager.screenHeight) {
+			return true;
+		}
+		
+		return false;
+		
+	}
+	
 	@Override
 	public void moveDirection(String direction) {
 		if (direction == "LEFT") {
@@ -85,23 +114,7 @@ public abstract class GameShape extends Entity {
 
 	}
 
-	public float getSide(String side) {
-		float value = 0;
-		if (side == "TOP")
-			value = this.getPosition().y + (this.getHeight() / 2);
-		if (side == "BOTTOM")
-			value = this.getPosition().y - (this.getHeight() / 2);
 
-		if (side == "LEFT")
-			value = this.getBody().getPosition().x - this.getWidth() / 2;
-		if (side == "RIGHT")
-			value = this.getPosition().x + (this.getWidth() / 2);
-
-//		System.out.println("X:"+ this.getPosition().x + " Y:" +this.getPosition().y + "Value:" +
-//				value);
-
-		return value;
-	}
 
 	public abstract void draw(ShapeRenderer shape);
 

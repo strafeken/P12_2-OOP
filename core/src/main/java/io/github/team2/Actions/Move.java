@@ -17,7 +17,14 @@ public class Move implements Action {
 	@Override
 	public void execute() {
 		if (entity.getBody() != null) {
-			entity.getBody().setLinearVelocity(direction.x * entity.getSpeed(), direction.y * entity.getSpeed());
-		}
+			if ( entity.isOutOfBound(direction) == false) {
+				
+				entity.getBody().setLinearVelocity(direction.x * entity.getSpeed(), direction.y * entity.getSpeed());
+			}
+			else {
+				entity.getBody().setLinearVelocity(0,0);
+			}
+			}
+			
 	}
 }
