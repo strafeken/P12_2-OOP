@@ -24,12 +24,14 @@ public abstract class Scene {
 	public abstract void unload(); // free resources when leaving the scene
 
 	public abstract void dispose(); // permanently free resources when closing the game
-	
+	public EntityManager getEntityManager() {
+        return em;
+    }
 
 	public InputManager getInputManager() {
 		return im;
 	}
 
 	protected abstract void resize(int width, int height);
-	
+
 }

@@ -41,7 +41,7 @@ public class GameScene extends Scene {
 	private static final float TIME_STEP = 1 / 60f;
 	private static final int VELOCITY_ITERATIONS = 6;
 	private static final int POSITION_ITERATIONS = 2;
-	
+
 	private float accumulator = 0f;
 
 	/* Managers */
@@ -67,7 +67,7 @@ public class GameScene extends Scene {
 	private Entity circle;
 	private Entity triangle;
 	private Entity player;
-	
+
 	private void spawnPowerUp() {
         // Only try spawning if a powerup doesn't already exist
         boolean powerupExists = false;
@@ -77,12 +77,12 @@ public class GameScene extends Scene {
                 break;
             }
         }
-        
+
         if (!powerupExists && random.nextFloat() <= POWERUP_SPAWN_CHANCE) {
             PowerUp powerUp = new PowerUp(
                 EntityType.POWERUP,
                 "pup1.png",
-                new Vector2(random.nextFloat(SceneManager.screenWidth) , SceneManager.screenHeight),
+                new Vector2(random.nextFloat() * SceneManager.screenWidth , SceneManager.screenHeight),
                 new Vector2(0, 0),
                 100
             );
@@ -91,9 +91,9 @@ public class GameScene extends Scene {
         }
     }
 	private void spawnSingleDroplet() {
-        
+
         Drop newDrop = new Drop(EntityType.DROP, "droplet.png",
-            new Vector2(random.nextFloat(SceneManager.screenWidth), SceneManager.screenHeight), 
+            new Vector2(random.nextFloat() * SceneManager.screenWidth, SceneManager.screenHeight),
             new Vector2(0, 0), 100);
         newDrop.InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
         em.addEntities(newDrop);
@@ -136,10 +136,10 @@ public class GameScene extends Scene {
 
 		droplets = new TextureObject[10];
 
-		
+
     		for (int i = 0; i < droplets.length; ++i) {
         		droplets[i] = new Drop(EntityType.DROP, "droplet.png",
-                	new Vector2(random.nextFloat(SceneManager.screenWidth), random.nextFloat(SceneManager.screenHeight)), 
+                	new Vector2(random.nextFloat() * SceneManager.screenWidth, random.nextFloat(SceneManager.screenHeight)),
                 	new Vector2(0, 0), 100);
         		droplets[i].InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
     	}
@@ -185,7 +185,7 @@ public class GameScene extends Scene {
 		spawnPowerUp();
 		// Check for game over condition
     	 if (pm.getFails() >= 20) {
-        	//AudioManager.getInstance().playSoundEffect("ding"); 
+        	//AudioManager.getInstance().playSoundEffect("ding");
         	sm = SceneManager.getInstance(); // Initialize SceneManager
         	sm.setNextScene(SceneID.GAME_OVER);
         return;
@@ -200,7 +200,7 @@ public class GameScene extends Scene {
 					 currentDroplets++;
 				 }
 			 }
-			 
+
 			 // Only spawn if below MAX_DROPLETS
 			 if (currentDroplets < MAX_DROPLETS) {
 				 spawnSingleDroplet();
@@ -218,7 +218,7 @@ public class GameScene extends Scene {
 			world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 			accumulator -= TIME_STEP;
 		}
-		
+
 	}
 
 	@Override
@@ -263,6 +263,6 @@ public class GameScene extends Scene {
 	@Override
 	protected void resize(int width, int height) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
