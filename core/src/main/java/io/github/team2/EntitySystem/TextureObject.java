@@ -85,26 +85,7 @@ public class TextureObject extends Entity {
 
 	}
 
-	@Override
-	public void moveTo(Vector2 position) {
 
-	}
-
-	@Override
-	public void moveDirection(String direction) {
-
-	}
-
-	@Override
-	public void rotateTo(float num) {
-
-	}
-
-	@Override
-	public boolean checkPosition(Vector2 position) {
-
-		return false;
-	}
 
 	@Override
 	public void update() {

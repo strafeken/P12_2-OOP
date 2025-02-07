@@ -60,10 +60,7 @@ public abstract class GameShape extends Entity {
 
 	}
 
-	@Override
-	public void moveTo(Vector2 position) {
 
-	}
 
 	@Override 	
 	public  boolean isOutOfBound(Vector2 direction) {
@@ -92,27 +89,7 @@ public abstract class GameShape extends Entity {
 		
 	}
 	
-	@Override
-	public void moveDirection(String direction) {
-		if (direction == "LEFT") {
-			getBody().setLinearVelocity(-getSpeed(), 0);
-		}
-		if (direction == "RIGHT") {
-			getBody().setLinearVelocity(getSpeed(), 0);
-		}
-		if (direction == "UP") {
-			getBody().setLinearVelocity(0, getSpeed());
-		}
-		if (direction == "DOWN") {
-			getBody().setLinearVelocity(0, -getSpeed());
-		}
 
-	}
-
-	@Override
-	public void rotateTo(float num) {
-
-	}
 
 
 

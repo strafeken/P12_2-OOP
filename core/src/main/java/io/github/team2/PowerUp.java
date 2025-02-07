@@ -49,12 +49,12 @@ public class PowerUp extends TextureObject {
         getBody().setLinearVelocity(0, -getSpeed());
     }
 
-    @Override
+    
     public void moveTo(Vector2 targetPosition) {
         setIsMoving(true);
     }
 
-    @Override
+    
     public boolean checkPosition(Vector2 position) {
         return getPosition().y < 0;
     }

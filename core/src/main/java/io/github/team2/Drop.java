@@ -50,7 +50,7 @@ public class Drop extends TextureObject {
         }
     }
 
-	@Override
+
 	public void moveTo(Vector2 targetPosition) {
 
 		this.setIsMoving(true);
@@ -63,7 +63,7 @@ public class Drop extends TextureObject {
 
 	}
 
-	@Override
+	
 	public boolean checkPosition(Vector2 position) {
 		//float threshold = 0.1f;
 		if (this.getPosition().y < 0) {

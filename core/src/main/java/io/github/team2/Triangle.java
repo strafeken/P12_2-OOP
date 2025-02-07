@@ -78,22 +78,6 @@ public class Triangle extends GameShape {
 
 		if (getBody() == null)
 			return;
-
-		if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-			if (this.checkOutOfBound(this, "LEFT") == false) {
-				this.moveDirection("LEFT");
-			}
-		}
-
-		// getBody().setLinearVelocity(-getSpeed(), 0);
-		else if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-			if (this.checkOutOfBound(this, "RIGHT") == false) {
-				this.moveDirection("RIGHT");
-			}
-		}
-
-		else
-			getBody().setLinearVelocity(0, 0);
 	}
 
 	@Override
@@ -101,21 +85,7 @@ public class Triangle extends GameShape {
 
 	}
 
-	@Override
-	public void moveTo(Vector2 position) {
 
-	}
-
-	@Override
-	public void rotateTo(float num) {
-
-	}
-
-	@Override
-	public boolean checkPosition(Vector2 position) {
-
-		return false;
-	}
 
 	@Override
 	public void update() {
