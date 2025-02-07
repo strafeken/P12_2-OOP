@@ -1,144 +1,85 @@
 package io.github.team2.InputSystem;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
-
 import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.InputSystem.KeyboardManager;
 
 public class InputManager implements InputProcessor {
+    protected KeyboardManager keyboardManager;
+    protected MouseManager mouseManager;
 
-	private Map<Integer, Action> keyDownActions;
-	private Map<Integer, Action> keyUpActions;
-	private Map<Integer, Action> touchDownActions;
-	private Set<Integer> activeKeys;
-	private List<Button> buttons;
-
-	public InputManager() {
-		keyDownActions = new HashMap<>();
-		keyUpActions = new HashMap<>();
-		touchDownActions = new HashMap<>();
-		activeKeys = new HashSet<>();
-		buttons = new ArrayList<>();
-	}
-
-	public void registerKeyDown(int keycode, Action action) {
-		keyDownActions.put(keycode, action);
-	}
-
-	public void registerKeyUp(int keycode, Action action) {
-		keyUpActions.put(keycode, action);
-	}
-
-	public void registerTouchDown(int button, Action action) {
-		touchDownActions.put(button, action);
-	}
-
-    public void registerButton(Button button) {
-        buttons.add(button);
+    public InputManager() {
+        keyboardManager = new KeyboardManager();
+        mouseManager = new MouseManager();
     }
 
-	@Override
-	public boolean keyDown(int keycode) {
-		activeKeys.add(keycode);
+    public void registerKeyDown(int keycode, Action action) {
+        keyboardManager.registerKeyDown(keycode, action);
+    }
 
-		Action action = keyDownActions.get(keycode);
+    public void registerKeyUp(int keycode, Action action) {
+        keyboardManager.registerKeyUp(keycode, action);
+    }
 
-		if (action == null)
-			return false;
+    public void registerTouchDown(int button, Action action) {
+        mouseManager.registerTouchDown(button, action);
+    }
 
-		action.execute();
+    public void registerButton(Button button) {
+        mouseManager.registerButton(button);
+    }
 
-		return true;
-	}
+    @Override
+    public boolean keyDown(int keycode) {
+        return keyboardManager.keyDown(keycode);
+    }
 
-	@Override
-	public boolean keyUp(int keycode) {
-		activeKeys.remove(keycode);
+    @Override
+    public boolean keyUp(int keycode) {
+        return keyboardManager.keyUp(keycode);
+    }
 
-		Action action = keyUpActions.get(keycode);
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
 
-		if (action == null)
-			return false;
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return mouseManager.touchDown(screenX, screenY, pointer, button);
+    }
 
-		action.execute();
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
 
-		return true;
-	}
+    @Override
+    public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
 
-	@Override
-	public boolean keyTyped(char character) {
-		return false;
-	}
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
 
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		/*
-		Action action = touchDownActions.get(button);
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
 
-		if (action == null)
-			return false;
+    @Override
+    public boolean scrolled(float amountX, float amountY) {
+        return false;
+    }
 
-		action.execute();
+    public void update() {
+        keyboardManager.update();
+    }
 
-		return true;
-		*/
-
-		 Vector2 touchPos = new Vector2(screenX, SceneManager.screenHeight - screenY); // Flip Y-axis
-
-	        for (Button btn : buttons) {
-	            if (btn.checkIsPressed(touchPos)) {
-	                btn.execute(); // Trigger button action
-	                return true;
-	            }
-	        }
-	        return false;
-	    }
-
-
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		return false;
-	}
-
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(float amountX, float amountY) {
-		return false;
-	}
-
-	public void update() {
-		for (Integer key : activeKeys) {
-			Action action = keyDownActions.get(key);
-
-			if (action != null)
-				action.execute();
-		}
-	}
-
-	public void clearActiveKeys() {
-		activeKeys.clear();
-	}
+    public void clearActiveKeys() {
+        keyboardManager.clearActiveKeys();
+    }
 }
