@@ -1,9 +1,9 @@
 package io.github.team2.InputSystem;
 
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.math.Vector2;
-import io.github.team2.SceneSystem.SceneManager;
-import io.github.team2.InputSystem.KeyboardManager;
+//import com.badlogic.gdx.math.Vector2;
+//import io.github.team2.SceneSystem.SceneManager;
+//import io.github.team2.InputSystem.KeyboardManager;
 
 public class InputManager implements InputProcessor {
     protected KeyboardManager keyboardManager;

@@ -65,7 +65,7 @@ public class Drop extends TextureObject {
 
 	@Override
 	public boolean checkPosition(Vector2 position) {
-		float threshold = 0.1f;
+		//float threshold = 0.1f;
 		if (this.getPosition().y < 0) {
 //			System.out.println("reach");
 			return true;
