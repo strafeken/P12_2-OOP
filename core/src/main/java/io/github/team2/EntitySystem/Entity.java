@@ -4,6 +4,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
+
+import io.github.team2.InputSystem.Action;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class Entity implements Movement {
@@ -15,6 +18,7 @@ public abstract class Entity implements Movement {
 	private PhysicsBody body;
 
 	private boolean isMoving;
+	private Action action;
 
 	public Entity() {
 		position = new Vector2(0, 0);
@@ -23,6 +27,7 @@ public abstract class Entity implements Movement {
 		type = EntityType.UNDEFINED;
 		body = null;
 		isMoving = false;
+		action = null;
 	}
 
 	public Entity(Vector2 position, Vector2 direction, float speed) {
@@ -32,6 +37,7 @@ public abstract class Entity implements Movement {
 		type = EntityType.UNDEFINED;
 		body = null;
 		isMoving = false;
+		action = null;
 	}
 
 	public Vector2 getPosition() {
@@ -77,7 +83,19 @@ public abstract class Entity implements Movement {
 	public void setIsMoving(boolean flag) {
 		this.isMoving = flag;
 	}
+	
+	
+	public void setAction(Action action) {
+		this.action = action;
+		
+	}
 
+	
+	public Action getAction() {
+		return action;
+		
+	}
+	
 	public void InitPhysicsBody(World world, BodyDef.BodyType bodyType) {
 		body = new PhysicsBody(world, this, bodyType);
 	}

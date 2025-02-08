@@ -1,5 +1,7 @@
 package io.github.team2;
 
+import java.awt.Desktop.Action;
+import java.lang.classfile.instruction.NewMultiArrayInstruction;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -13,7 +15,9 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
+import io.github.team2.Actions.Dropping;
 import io.github.team2.Actions.ExitGame;
+import io.github.team2.Actions.Move;
 //import io.github.team2.Actions.Move;
 import io.github.team2.Actions.PauseGame;
 //import io.github.team2.AudioSystem.AudioManager;
@@ -135,12 +139,28 @@ public class GameScene extends Scene {
 		tm = new TextManager();
 
 		droplets = new TextureObject[10];
-
+		
+		
 
     		for (int i = 0; i < droplets.length; ++i) {
-        		droplets[i] = new Drop(EntityType.DROP, "droplet.png",
-                	new Vector2(random.nextFloat() * SceneManager.screenWidth, random.nextFloat(SceneManager.screenHeight)),
-                	new Vector2(0, 0), 100);
+        		
+    			Drop tmpDrop;
+    			
+    			// check if Drop out of bound 
+				tmpDrop = new Drop(EntityType.DROP, "droplet.png",
+		            	new Vector2(random.nextFloat() * SceneManager.screenWidth, random.nextFloat(SceneManager.screenHeight)),
+		            	new Vector2(0, 0), 100);
+				
+				if (tmpDrop.isOutOfBound(new Vector2(0, 0)) == true) {
+					tmpDrop.dispose();
+					i --;
+					System.out.println("recreate");
+					continue;
+					
+				}
+				droplets[i] = tmpDrop;
+        		droplets[i].setAction(new Dropping(droplets[i]));
+        		
         		droplets[i].InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
     	}
 

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
+import io.github.team2.InputSystem.Action;
 import io.github.team2.SceneSystem.SceneManager;
 
 public class TextureObject extends Entity {
@@ -84,6 +85,7 @@ public class TextureObject extends Entity {
 	public void moveAIControlled() {
 
 	}
+	
 
 
 
