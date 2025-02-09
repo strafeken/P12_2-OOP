@@ -73,17 +73,17 @@ public class Triangle extends GameShape {
 
 	// movement controls
 
-	@Override
-	public void moveUserControlled() {
-
-		if (getBody() == null)
-			return;
-	}
-
-	@Override
-	public void moveAIControlled() {
-
-	}
+//	@Override
+//	public void moveUserControlled() {
+//
+//		if (getBody() == null)
+//			return;
+//	}
+//
+//	@Override
+//	public void moveAIControlled() {
+//
+//	}
 
 
 

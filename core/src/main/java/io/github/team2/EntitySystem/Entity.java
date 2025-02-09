@@ -9,7 +9,7 @@ import io.github.team2.InputSystem.Action;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public abstract class Entity implements Movement {
+public abstract class Entity {
 
 	private Vector2 position;
 	private Vector2 direction;
@@ -17,7 +17,6 @@ public abstract class Entity implements Movement {
 	private EntityType type;
 	private PhysicsBody body;
 
-	private boolean isMoving;
 	private Action action;
 
 	public Entity() {
@@ -26,7 +25,6 @@ public abstract class Entity implements Movement {
 		speed = 0;
 		type = EntityType.UNDEFINED;
 		body = null;
-		isMoving = false;
 		action = null;
 	}
 
@@ -36,7 +34,6 @@ public abstract class Entity implements Movement {
 		this.speed = speed;
 		type = EntityType.UNDEFINED;
 		body = null;
-		isMoving = false;
 		action = null;
 	}
 
@@ -76,13 +73,7 @@ public abstract class Entity implements Movement {
 		return body;
 	}
 
-	public boolean getIsMoving() {
-		return isMoving;
-	}
 
-	public void setIsMoving(boolean flag) {
-		this.isMoving = flag;
-	}
 	
 	
 	public void setAction(Action action) {

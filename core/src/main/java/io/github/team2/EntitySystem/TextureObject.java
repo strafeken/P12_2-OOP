@@ -76,18 +76,13 @@ public class TextureObject extends Entity {
 		batch.draw(tex, getPosition().x - tex.getWidth() / 2, getPosition().y - tex.getHeight() / 2);
 	}
 
-	@Override
-	public void moveUserControlled() {
 
-	}
-
-	@Override
-	public void moveAIControlled() {
-
-	}
 	
 
-
+	public void updateMovement() {
+		
+		
+	}
 
 	@Override
 	public void update() {

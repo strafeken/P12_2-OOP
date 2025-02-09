@@ -54,7 +54,7 @@ public class EntityManager {
 
 	public void update() {
 		for (Entity e : entityList) {
-			e.moveUserControlled();
+			//e.moveUserControlled();
 			//e.moveAIControlled();
 			e.update();
 		}

@@ -50,15 +50,15 @@ public abstract class GameShape extends Entity {
 		this.height = height;
 	}
 
-	@Override
-	public void moveUserControlled() {
-
-	}
-
-	@Override
-	public void moveAIControlled() {
-
-	}
+//	@Override
+//	public void moveUserControlled() {
+//
+//	}
+//
+//	@Override
+//	public void moveAIControlled() {
+//
+//	}
 
 
 

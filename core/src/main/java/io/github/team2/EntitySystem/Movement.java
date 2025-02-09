@@ -11,9 +11,9 @@ public interface Movement {
 	// movement
 	
 
-	public void moveAIControlled();
+	//public void moveAIControlled();
 
-	public void moveUserControlled();
+	//public void moveUserControlled();
 
 
 

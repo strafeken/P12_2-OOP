@@ -46,9 +46,8 @@ public class Drop extends TextureObject {
 		return false;
 	}
 
-	@Override
-	public void update() {
-		
+	
+	public void updateMovement() {
 
         if (this.checkPosition() == false) {
         	
@@ -67,7 +66,13 @@ public class Drop extends TextureObject {
             getBody().setLocation(random.nextFloat() * SceneManager.screenWidth, SceneManager.screenHeight);
         }
 		
+	}
+	
+	
+	@Override
+	public void update() {
 		
+		updateMovement();
 		updateBody();
 	}
 

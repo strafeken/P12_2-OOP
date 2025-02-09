@@ -16,11 +16,11 @@ public class Player extends TextureObject {
 		setSpeed(speed);
 	}
 
-	@Override
-	public void moveUserControlled() {
-		if (getBody() == null)
-			return;
-	}
+//	@Override
+//	public void moveUserControlled() {
+//		if (getBody() == null)
+//			return;
+//	}
 
 	@Override
 	public void update() {

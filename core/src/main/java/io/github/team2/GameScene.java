@@ -1,6 +1,6 @@
 package io.github.team2;
 
-import java.awt.Desktop.Action;
+
 import java.lang.classfile.instruction.NewMultiArrayInstruction;
 import java.util.Random;
 
@@ -91,6 +91,7 @@ public class GameScene extends Scene {
                 100
             );
             powerUp.InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
+            powerUp.setAction(new Dropping(powerUp));
             em.addEntities(powerUp);
         }
     }
@@ -144,23 +145,25 @@ public class GameScene extends Scene {
 
     		for (int i = 0; i < droplets.length; ++i) {
         		
-    			Drop tmpDrop;
+    			Drop tmpDrop = null;
     			
     			// check if Drop out of bound 
-				tmpDrop = new Drop(EntityType.DROP, "droplet.png",
-		            	new Vector2(random.nextFloat() * SceneManager.screenWidth, random.nextFloat(SceneManager.screenHeight)),
-		            	new Vector2(0, 0), 100);
-				
-				if (tmpDrop.isOutOfBound(new Vector2(0, 0)) == true) {
-					tmpDrop.dispose();
-					i --;
-					System.out.println("recreate");
-					continue;
-					
-				}
+    			do {
+    				if (tmpDrop == null) {
+    					tmpDrop = new Drop(EntityType.DROP, "droplet.png",
+        		            	new Vector2(random.nextFloat() * SceneManager.screenWidth, random.nextFloat() * SceneManager.screenHeight),
+        		            	new Vector2(0, 0), 100);
+        				
+    				}else {
+    					tmpDrop.setPosition(new Vector2(random.nextFloat() * SceneManager.screenWidth, random.nextFloat() * SceneManager.screenHeight));
+    					
+    				}
+    				
+    			} while (tmpDrop.isOutOfBound(new Vector2(0, 0)) == true);
+    				
+
 				droplets[i] = tmpDrop;
         		droplets[i].setAction(new Dropping(droplets[i]));
-        		
         		droplets[i].InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
     	}
 
