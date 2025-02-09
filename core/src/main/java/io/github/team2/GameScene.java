@@ -139,7 +139,7 @@ public class GameScene extends Scene {
 
     		for (int i = 0; i < droplets.length; ++i) {
         		droplets[i] = new Drop(EntityType.DROP, "droplet.png",
-                	new Vector2(random.nextFloat() * SceneManager.screenWidth, random.nextFloat(SceneManager.screenHeight)),
+                	new Vector2(random.nextFloat() * SceneManager.screenWidth, random.nextFloat() * SceneManager.screenHeight),
                 	new Vector2(0, 0), 100);
         		droplets[i].InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
     	}
