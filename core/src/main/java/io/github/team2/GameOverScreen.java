@@ -27,7 +27,7 @@ public class GameOverScreen extends Scene {
         im = new InputManager();
         tm = new TextManager();
         em = new EntityManager();
-        sm = SceneManager.getInstance();
+        sm = SceneManager.getInstance(SceneManager.class);
 
         finalScore = GameScene.getInstance().getPointsManager().getPoints();
 

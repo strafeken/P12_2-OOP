@@ -36,7 +36,7 @@ public class PauseMenu extends Scene {
 
 		em.addEntities(image);
 
-		im.registerKeyDown(Input.Keys.ESCAPE, new ResumeGame(SceneManager.getInstance()));
+		im.registerKeyDown(Input.Keys.ESCAPE, new ResumeGame(SceneManager.getInstance(SceneManager.class)));
 	}
 
 	@Override

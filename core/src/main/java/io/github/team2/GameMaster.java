@@ -16,7 +16,7 @@ public class GameMaster extends ApplicationAdapter {
 
     @Override
     public void create() {
-        sm = SceneManager.getInstance();
+        sm = SceneManager.getInstance(SceneManager.class);
 
         // Initialize audio with correct paths and volume
         AudioManager.getInstance().loadSoundEffect("start", "sounds/start.mp3");

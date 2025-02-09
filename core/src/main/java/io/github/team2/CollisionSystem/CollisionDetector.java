@@ -32,7 +32,7 @@ public class CollisionDetector implements ContactListener {
 
 	@Override
 	public void endContact(Contact contact) {
-//        System.out.println("Collision ended");
+
 	}
 
 	@Override
