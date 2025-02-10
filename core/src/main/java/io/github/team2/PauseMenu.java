@@ -62,8 +62,5 @@ public class PauseMenu extends Scene {
         textManager.dispose();
     }
 
-    @Override
-    protected void resize(int width, int height) {
-        // Handle resize if needed
-    }
+
 }

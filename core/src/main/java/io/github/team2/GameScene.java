@@ -229,15 +229,29 @@ public class GameScene extends Scene {
     }
 
     private void spawnDroplet() {
-        Drop drop = new Drop(EntityType.DROP,
-                           "droplet.png",
-                           new Vector2(random.nextFloat() * SceneManager.screenWidth,
-                                     SceneManager.screenHeight),
-                           new Vector2(0, 0),
-                           100);
-        drop.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
-        drop.setAction(new Dropping(drop));
-        entityManager.addEntities(drop); // Add this line to add the drop to entity manager
+        // Determine how many droplets to spawn (1-3)
+        int currentDroplets = countCurrentDroplets();
+        int maxNewDroplets = Math.min(3, MAX_DROPLETS - currentDroplets);
+
+        if (maxNewDroplets <= 0) {
+            return;  // Don't spawn if at or over max limit
+        }
+
+        // Randomly choose to spawn 1-3 droplets
+        int dropletsToSpawn = random.nextInt(maxNewDroplets) + 1;
+
+        // Spawn the determined number of droplets
+        for (int i = 0; i < dropletsToSpawn; i++) {
+            Drop drop = new Drop(EntityType.DROP,
+                               "droplet.png",
+                               new Vector2(random.nextFloat() * SceneManager.screenWidth,
+                                         SceneManager.screenHeight),
+                               new Vector2(0, 0),
+                               100);
+            drop.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
+            drop.setAction(new Dropping(drop));
+            entityManager.addEntities(drop);
+        }
     }
 
     private void updatePhysics() {
@@ -264,20 +278,34 @@ public class GameScene extends Scene {
     }
 
     private void drawUI(SpriteBatch batch) {
-        float paddingLeft = 20;
-        float startY = SceneManager.screenHeight - 20;
-        float lineSpacing = 30;
+        float padding = 10 * hudScaleX; // Scale padding with screen size
+        float baseX = padding;
+        float baseY = viewportHeight - padding;
+        float lineSpacing = 30 * hudScaleY; // Vertical spacing between lines
 
-        // Draw UI elements
-        textManager.draw(batch, "Game Scene",
-                        paddingLeft, startY, Color.RED);
-        textManager.draw(batch, "Points: " + GameManager.getInstance().getPointsManager().getPoints(),
-                        paddingLeft, startY - lineSpacing, Color.RED);
-        textManager.draw(batch, "Fails: " + GameManager.getInstance().getPointsManager().getFails(),
-                        paddingLeft, startY - (lineSpacing * 2), Color.RED);
+        // Scale font size with screen
+        textManager.getFont().getData().setScale(2.0f * hudScaleX, 2.0f * hudScaleY);
 
+        // Draw scene title
+        textManager.draw(batch,
+            "Game Scene",
+            baseX,
+            baseY,
+            Color.RED);
 
-        // System.out.println("Current Points: " + GameManager.getInstance().getPointsManager().getPoints());
+        // Draw score below title
+        textManager.draw(batch,
+            "Score: " + gameManager.getPointsManager().getPoints(),
+            baseX,
+            baseY - lineSpacing,
+            Color.RED);
+
+        // Draw fails counter below score
+        textManager.draw(batch,
+            "Fails: " + gameManager.getPointsManager().getFails(),
+            baseX,
+            baseY - (lineSpacing * 2), // Two lines down from the top
+            Color.RED);
     }
 
     @Override
@@ -323,8 +351,6 @@ public class GameScene extends Scene {
         return inputMultiplexer;
     }
 
-    @Override
-    protected void resize(int width, int height) {
-        // Handle resize if needed
-    }
+
+
 }

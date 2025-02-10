@@ -5,15 +5,26 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class TextManager {
+    private BitmapFont font;
+    private float baseScale = 2.0f;
 
-	private BitmapFont font;
-	public BitmapFont getFont() {
+    public TextManager() {
+        font = new BitmapFont();
+        font.getData().setScale(baseScale);
+    }
+
+    // Add getter for font
+    public BitmapFont getFont() {
         return font;
     }
-	public TextManager() {
-		font = new BitmapFont();
-		font.getData().setScale(2.0f);
-	}
+
+    public void setScale(float scaleX, float scaleY) {
+        font.getData().setScale(baseScale * scaleX, baseScale * scaleY);
+    }
+
+    public void resetScale() {
+        font.getData().setScale(baseScale);
+    }
 
 	public TextManager(BitmapFont font) {
 		this.font = font;

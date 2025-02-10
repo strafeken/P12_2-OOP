@@ -93,9 +93,5 @@ public class MainMenu extends Scene {
         return im;
     }
 
-	@Override
-	protected void resize(int width, int height) {
-		// TODO Auto-generated method stub
 
-	}
 }
