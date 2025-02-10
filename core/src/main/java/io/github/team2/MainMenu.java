@@ -39,7 +39,7 @@ public class MainMenu extends Scene {
                 new Vector2(0, 0),
                 0);
         // Create start button
-        StartGame startAction = new StartGame(SceneManager.getInstance());
+        StartGame startAction = new StartGame(SceneManager.getInstance(SceneManager.class));
         Vector2 centerPos = new Vector2(
         		SceneManager.screenWidth /2 - 20, //button x-axis
         		SceneManager.screenHeight /2 - 180 //button y-axis

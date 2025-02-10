@@ -144,6 +144,7 @@ public class GameScene extends Scene {
 		
 
     		for (int i = 0; i < droplets.length; ++i) {
+
         		
     			Drop tmpDrop = null;
     			
@@ -164,6 +165,7 @@ public class GameScene extends Scene {
 
 				droplets[i] = tmpDrop;
         		droplets[i].setAction(new Dropping(droplets[i]));
+
         		droplets[i].InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
     	}
 
@@ -197,8 +199,8 @@ public class GameScene extends Scene {
 		multiplexer.addProcessor(im);
 		multiplexer.addProcessor(playerInputManager);
 
-		im.registerKeyDown(Input.Keys.ESCAPE, new PauseGame(SceneManager.getInstance()));
-		im.registerKeyDown(Input.Keys.X, new ExitGame(SceneManager.getInstance()));
+		im.registerKeyDown(Input.Keys.ESCAPE, new PauseGame(SceneManager.getInstance(SceneManager.class)));
+		im.registerKeyDown(Input.Keys.X, new ExitGame(SceneManager.getInstance(SceneManager.class)));
 	}
 
 	@Override
@@ -210,7 +212,7 @@ public class GameScene extends Scene {
 		// Check for game over condition
     	 if (pm.getFails() >= 20) {
         	//AudioManager.getInstance().playSoundEffect("ding");
-        	sm = SceneManager.getInstance(); // Initialize SceneManager
+        	sm = SceneManager.getInstance(SceneManager.class); // Initialize SceneManager
         	sm.setNextScene(SceneID.GAME_OVER);
         return;
     	}
