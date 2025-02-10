@@ -1,7 +1,7 @@
 package io.github.team2;
 
 
-import java.lang.classfile.instruction.NewMultiArrayInstruction;
+//import java.lang.classfile.instruction.NewMultiArrayInstruction;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -140,28 +140,28 @@ public class GameScene extends Scene {
 		tm = new TextManager();
 
 		droplets = new TextureObject[10];
-		
-		
+
+
 
     		for (int i = 0; i < droplets.length; ++i) {
 
-        		
+
     			Drop tmpDrop = null;
-    			
-    			// check if Drop out of bound 
+
+    			// check if Drop out of bound
     			do {
     				if (tmpDrop == null) {
     					tmpDrop = new Drop(EntityType.DROP, "droplet.png",
         		            	new Vector2(random.nextFloat() * SceneManager.screenWidth, random.nextFloat() * SceneManager.screenHeight),
         		            	new Vector2(0, 0), 100);
-        				
+
     				}else {
     					tmpDrop.setPosition(new Vector2(random.nextFloat() * SceneManager.screenWidth, random.nextFloat() * SceneManager.screenHeight));
-    					
+
     				}
-    				
+
     			} while (tmpDrop.isOutOfBound(new Vector2(0, 0)) == true);
-    				
+
 
 				droplets[i] = tmpDrop;
         		droplets[i].setAction(new Dropping(droplets[i]));
@@ -193,7 +193,7 @@ public class GameScene extends Scene {
 		world.setContactListener(collisionDetector);
 
 		playerInputManager = new PlayerInputManager(player);
-		
+
 		playerInputManager.registerUserInput();
 		multiplexer = new InputMultiplexer();
 		multiplexer.addProcessor(im);
