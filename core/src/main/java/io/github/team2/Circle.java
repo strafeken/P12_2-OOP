@@ -54,49 +54,23 @@ public class Circle extends GameShape {
 
 	// movement controls
 
-	@Override
-	public void moveUserControlled() {
-		if (getBody() == null)
-			return;
+//	@Override
+//	public void moveUserControlled() {
+//		if (getBody() == null)
+//			return;
+//
+//		
+//	}
+//
+//	@Override
+//	public void moveAIControlled() {
+//
+//	}
+//
 
-		if (Gdx.input.isKeyPressed(Keys.A)) {
-			if (this.checkOutOfBound(this, "LEFT") == false) {
-				this.moveDirection("LEFT");
-			}
 
-		}
+	
 
-		// getBody().setLinearVelocity(-getSpeed(), 0);
-		else if (Gdx.input.isKeyPressed(Keys.D)) {
-
-			if (this.checkOutOfBound(this, "RIGHT") == false)
-				this.moveDirection("RIGHT");
-		}
-
-		else
-			getBody().setLinearVelocity(0, 0);
-	}
-
-	@Override
-	public void moveAIControlled() {
-
-	}
-
-	@Override
-	public void moveTo(Vector2 position) {
-
-	}
-
-	@Override
-	public void rotateTo(float num) {
-
-	}
-
-	@Override
-	public boolean checkPosition(Vector2 position) {
-
-		return false;
-	}
 
 	@Override
 	public void update() {

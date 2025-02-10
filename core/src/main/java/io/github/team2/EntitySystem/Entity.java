@@ -4,9 +4,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
+
+import io.github.team2.InputSystem.Action;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public abstract class Entity implements Movement {
+public abstract class Entity {
 
 	private Vector2 position;
 	private Vector2 direction;
@@ -14,7 +17,7 @@ public abstract class Entity implements Movement {
 	private EntityType type;
 	private PhysicsBody body;
 
-	private boolean isMoving;
+	private Action action;
 
 	public Entity() {
 		position = new Vector2(0, 0);
@@ -22,7 +25,7 @@ public abstract class Entity implements Movement {
 		speed = 0;
 		type = EntityType.UNDEFINED;
 		body = null;
-		isMoving = false;
+		action = null;
 	}
 
 	public Entity(Vector2 position, Vector2 direction, float speed) {
@@ -31,7 +34,7 @@ public abstract class Entity implements Movement {
 		this.speed = speed;
 		type = EntityType.UNDEFINED;
 		body = null;
-		isMoving = false;
+		action = null;
 	}
 
 	public Vector2 getPosition() {
@@ -70,14 +73,20 @@ public abstract class Entity implements Movement {
 		return body;
 	}
 
-	public boolean getIsMoving() {
-		return isMoving;
+
+	
+	
+	public void setAction(Action action) {
+		this.action = action;
+		
 	}
 
-	public void setIsMoving(boolean flag) {
-		this.isMoving = flag;
+	
+	public Action getAction() {
+		return action;
+		
 	}
-
+	
 	public void InitPhysicsBody(World world, BodyDef.BodyType bodyType) {
 		body = new PhysicsBody(world, this, bodyType);
 	}
@@ -89,6 +98,8 @@ public abstract class Entity implements Movement {
 	public void draw(SpriteBatch batch) {
 
 	}
+
+	public abstract boolean isOutOfBound(Vector2 direction);
 
 	public abstract void update();
 

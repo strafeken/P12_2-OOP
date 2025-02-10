@@ -26,44 +26,15 @@ public class Bucket extends TextureObject {
 		setSpeed(speed);
 	}
 
-	@Override
-	public void moveUserControlled() {
-		if (getBody() == null)
-			return;
+//	@Override
+//	public void moveUserControlled() {
+//		if (getBody() == null)
+//			return;
+//
+//		
+//	}
 
-		if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-			if (this.checkOutOfBound(this, "LEFT") == false) {
-				this.moveDirection("LEFT");
-			}
 
-		}
-
-		// getBody().setLinearVelocity(-getSpeed(), 0);
-		else if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-			if (this.checkOutOfBound(this, "RIGHT") == false)
-				this.moveDirection("RIGHT");
-			// getBody().setLinearVelocity(getSpeed(), 0);
-
-		} else
-			getBody().setLinearVelocity(0, 0);
-	}
-
-	@Override
-	public void moveDirection(String direction) {
-		if (direction == "LEFT") {
-			getBody().setLinearVelocity(-getSpeed(), 0);
-		}
-		if (direction == "RIGHT") {
-			getBody().setLinearVelocity(getSpeed(), 0);
-		}
-		if (direction == "UP") {
-			getBody().setLinearVelocity(0, getSpeed());
-		}
-		if (direction == "DOWN") {
-			getBody().setLinearVelocity(0, -getSpeed());
-		}
-
-	}
 
 	@Override
 	public void update() {

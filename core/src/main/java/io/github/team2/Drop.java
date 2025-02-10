@@ -1,6 +1,8 @@
 package io.github.team2;
 
 
+import java.util.Random;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
@@ -8,8 +10,9 @@ import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.TextureObject;
 import io.github.team2.SceneSystem.SceneManager;
 
-public class Drop extends TextureObject {
 
+public class Drop extends TextureObject {
+	
 	// private float dropSpeed = 100;
 
 	public Drop(String texture) {
@@ -26,56 +29,50 @@ public class Drop extends TextureObject {
 		setPosition(position);
 		setDirection(direction);
 		setSpeed(speed);
+		
 	}
 
-	// movement control
-	@Override
-    public void moveAIControlled() {
-        if (this.getIsMoving() == false) {
-            this.moveTo(new Vector2(this.getPosition().x, 0));
-        } else {
-            if (this.checkPosition(new Vector2(this.getPosition().x, 10)) == false) {
-                this.moveDown();
-            } else {
-                this.setIsMoving(false);
-                // Check if drop hit bottom
-                if (this.getPosition().y < 0) {
-                    // Increment fail counter through GameScene
-                    if (GameScene.getInstance().getPointsManager() != null) {
-                        GameScene.getInstance().getPointsManager().incrementFails();
-                    }
-                }
-                getBody().setLocation(getPosition().x, SceneManager.screenHeight);
-            }
-        }
-    }
 
-	@Override
-	public void moveTo(Vector2 targetPosition) {
+	
 
-		this.setIsMoving(true);
+	
+	public boolean checkPosition() {
 
-	}
-
-	public void moveDown() {
-
-		this.getBody().setLinearVelocity(0, -this.getSpeed());
-
-	}
-
-	@Override
-	public boolean checkPosition(Vector2 position) {
-		//float threshold = 0.1f;
 		if (this.getPosition().y < 0) {
-//			System.out.println("reach");
+
 			return true;
 		}
 
 		return false;
 	}
 
+	
+	public void updateMovement() {
+
+        if (this.checkPosition() == false) {
+        	
+        	if (getAction() != null) getAction().execute();
+        	
+        } else {
+            
+            // Check if drop hit bottom
+            //if (this.getPosition().y < 0) {
+                // Increment fail counter through GameScene
+                if (GameScene.getInstance().getPointsManager() != null) {
+                    GameScene.getInstance().getPointsManager().incrementFails();
+                }
+            //}
+            Random random =new Random();
+            getBody().setLocation(random.nextFloat() * SceneManager.screenWidth, SceneManager.screenHeight);
+        }
+		
+	}
+	
+	
 	@Override
 	public void update() {
+		
+		updateMovement();
 		updateBody();
 	}
 

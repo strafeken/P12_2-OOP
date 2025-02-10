@@ -1,5 +1,7 @@
 package io.github.team2;
 
+
+import java.lang.classfile.instruction.NewMultiArrayInstruction;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -13,7 +15,9 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
+import io.github.team2.Actions.Dropping;
 import io.github.team2.Actions.ExitGame;
+import io.github.team2.Actions.Move;
 //import io.github.team2.Actions.Move;
 import io.github.team2.Actions.PauseGame;
 //import io.github.team2.AudioSystem.AudioManager;
@@ -87,6 +91,7 @@ public class GameScene extends Scene {
                 100
             );
             powerUp.InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
+            powerUp.setAction(new Dropping(powerUp));
             em.addEntities(powerUp);
         }
     }
@@ -135,17 +140,37 @@ public class GameScene extends Scene {
 		tm = new TextManager();
 
 		droplets = new TextureObject[10];
-
+		
+		
 
     		for (int i = 0; i < droplets.length; ++i) {
-        		droplets[i] = new Drop(EntityType.DROP, "droplet.png",
-                	new Vector2(random.nextFloat() * SceneManager.screenWidth, random.nextFloat() * SceneManager.screenHeight),
-                	new Vector2(0, 0), 100);
+
+        		
+    			Drop tmpDrop = null;
+    			
+    			// check if Drop out of bound 
+    			do {
+    				if (tmpDrop == null) {
+    					tmpDrop = new Drop(EntityType.DROP, "droplet.png",
+        		            	new Vector2(random.nextFloat() * SceneManager.screenWidth, random.nextFloat() * SceneManager.screenHeight),
+        		            	new Vector2(0, 0), 100);
+        				
+    				}else {
+    					tmpDrop.setPosition(new Vector2(random.nextFloat() * SceneManager.screenWidth, random.nextFloat() * SceneManager.screenHeight));
+    					
+    				}
+    				
+    			} while (tmpDrop.isOutOfBound(new Vector2(0, 0)) == true);
+    				
+
+				droplets[i] = tmpDrop;
+        		droplets[i].setAction(new Dropping(droplets[i]));
+
         		droplets[i].InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
     	}
 
-		bucket = new Bucket(EntityType.BUCKET, "bucket.png", new Vector2(200, 50), new Vector2(0, 0), 200);
-		bucket.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+		//bucket = new Bucket(EntityType.BUCKET, "bucket.png", new Vector2(200, 50), new Vector2(0, 0), 200);
+		//bucket.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
 		circle = new Circle(EntityType.CIRCLE, new Vector2(500, 300), new Vector2(0, 0), 200, Color.RED, 50);
 		circle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
@@ -160,7 +185,7 @@ public class GameScene extends Scene {
 		for (int i = 0; i < droplets.length; ++i)
 			em.addEntities(droplets[i]);
 
-		em.addEntities(bucket);
+		//em.addEntities(bucket);
 		em.addEntities(circle);
 		em.addEntities(triangle);
 		em.addEntities(player);
@@ -168,6 +193,7 @@ public class GameScene extends Scene {
 		world.setContactListener(collisionDetector);
 
 		playerInputManager = new PlayerInputManager(player);
+		
 		playerInputManager.registerUserInput();
 		multiplexer = new InputMultiplexer();
 		multiplexer.addProcessor(im);
