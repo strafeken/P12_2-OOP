@@ -12,6 +12,10 @@ public class PlayerEntityManager {
         playerEntities = new ArrayList<>();
     }
 
+    public Entity getPlayer() {
+        return playerEntities.isEmpty() ? null : playerEntities.get(0);
+    }
+
     public void addEntity(Entity entity) {
         if (entity.getEntityType() == EntityType.PLAYER) {
             playerEntities.add(entity);

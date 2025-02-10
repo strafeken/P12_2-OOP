@@ -2,7 +2,7 @@ package io.github.team2;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputMultiplexer;
+//import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -39,7 +39,7 @@ public class GameScene extends Scene {
     private GameManager gameManager;
     private CollisionDetector collisionDetector;
     private CollisionResolver collisionResolver;
-    private InputMultiplexer inputMultiplexer;
+    //private InputMultiplexer inputMultiplexer;
     private PlayerInputManager playerInputManager;
 
     // Game entities
@@ -79,7 +79,7 @@ public class GameScene extends Scene {
         // Initialize entity manager
         entityManager = new EntityManager();
 
-        // Initialize collision system
+        // Initialize collision system directly with detector and resolver
         collisionDetector = new CollisionDetector();
         collisionResolver = new CollisionResolver(entityManager);
 
@@ -91,7 +91,7 @@ public class GameScene extends Scene {
 
         // Initialize input system
         inputManager = new InputManager();
-        inputMultiplexer = new InputMultiplexer();
+        //inputMultiplexer = new InputMultiplexer();
     }
 
     private void initializeEntities() {
@@ -150,21 +150,31 @@ public class GameScene extends Scene {
     }
 
     private void initializeInput() {
+        // Initialize player input
         playerInputManager = new PlayerInputManager(player);
         playerInputManager.registerUserInput();
-
-        inputMultiplexer.addProcessor(inputManager);
-        inputMultiplexer.addProcessor(playerInputManager);
 
         // Register global inputs
         inputManager.registerKeyDown(Input.Keys.ESCAPE,
             new PauseGame(SceneManager.getInstance(SceneManager.class)));
         inputManager.registerKeyDown(Input.Keys.X,
             new ExitGame(SceneManager.getInstance(SceneManager.class)));
+
+        // Make sure to update both input managers
+        inputManager.update();
+        playerInputManager.update();
     }
+
+        //inputMultiplexer.addProcessor(inputManager);
+        //inputMultiplexer.addProcessor(playerInputManager);
+
+        // Register global inputs
+    //}
 
     @Override
     public void update() {
+        inputManager.update();
+        playerInputManager.update();
         updateInput();
         updateEntities();
         updateSpawning();
@@ -347,9 +357,9 @@ public class GameScene extends Scene {
         }
     }
 
-    public InputMultiplexer getInputMultiplexer() {
+    /*public InputMultiplexer getInputMultiplexer() {
         return inputMultiplexer;
-    }
+    }*/
 
 
 

@@ -19,10 +19,10 @@ public class GameMaster extends ApplicationAdapter {
     public void create() {
         batch = new SpriteBatch();
         shape = new ShapeRenderer();
-        
+
         am = AudioManager.getInstance();
         sm = SceneManager.getInstance(SceneManager.class);
-        
+
         // initialize audio with correct paths and volume
         am.loadSoundEffect("start", "sounds/start.mp3");
         am.loadSoundEffect("ding", "sounds/ding.mp3");
@@ -33,19 +33,19 @@ public class GameMaster extends ApplicationAdapter {
         sm.addScene(SceneID.GAME_SCENE, new GameScene());
         sm.addScene(SceneID.PAUSE_MENU, new PauseMenu());
         sm.addScene(SceneID.GAME_OVER, new GameOverScreen());
-        
+        sm.addScene(SceneID.SETTINGS_MENU, new SettingsMenu());
         sm.setNextScene(SceneID.MAIN_MENU);
     }
 
     @Override
     public void render() {
         ScreenUtils.clear(0, 0, 0.2f, 1);
-        
+
         sm.update();
         batch.begin();
         sm.draw(batch);
         batch.end();
-        
+
         shape.begin(ShapeRenderer.ShapeType.Filled);
         sm.draw(shape);
         shape.end();
