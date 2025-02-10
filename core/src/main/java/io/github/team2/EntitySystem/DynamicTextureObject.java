@@ -11,31 +11,15 @@ public abstract class DynamicTextureObject extends TextureObject {
 
     public DynamicTextureObject(Texture texture) {
         super();
+        setTexture(texture); // Properly set the texture through parent class
         this.direction = new Vector2(0, 0);
         this.speed = 0;
     }
 
-    public TextureRegion getTextureRegion() {
-        return textureRegion;
-    }
-
-    public void setTextureRegion(TextureRegion textureRegion) {
-        this.textureRegion = textureRegion;
-    }
-
-    public Vector2 getDirection() {
-        return direction;
-    }
-
-    public void setDirection(Vector2 direction) {
-        this.direction = direction;
-    }
-
-    public float getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(float speed) {
-        this.speed = speed;
+    // Add constructor that takes texture path
+    public DynamicTextureObject(String texturePath) {
+        super(texturePath); // Use parent's constructor that handles texture loading
+        this.direction = new Vector2(0, 0);
+        this.speed = 0;
     }
 }
