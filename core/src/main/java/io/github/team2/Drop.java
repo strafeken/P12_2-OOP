@@ -38,21 +38,21 @@ public class Drop extends DynamicTextureObject {
     }
 
     private void handleDropMiss() {
-        if (GameScene.getInstance().getPointsManager() != null) {
-            GameScene.getInstance().getPointsManager().incrementFails();
-        }
+        GameManager.getInstance().getPointsManager().incrementFails();
     }
 
     @Override
     public void update() {
-        if (!isOutOfBounds()) {
-            if (getAction() != null) {
-                getAction().execute();
+        if (getBody() != null) {  // Add null check
+            if (!isOutOfBounds()) {
+                if (getAction() != null) {
+                    getAction().execute();
+                }
+            } else {
+                handleDropMiss();
+                resetPosition();
             }
-        } else {
-            handleDropMiss();
-            resetPosition();
+            updateBody();
         }
-        updateBody();
     }
 }

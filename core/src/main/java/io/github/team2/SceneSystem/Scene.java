@@ -2,36 +2,49 @@ package io.github.team2.SceneSystem;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-
-import io.github.team2.TextManager;
+import com.badlogic.gdx.InputProcessor;
 import io.github.team2.EntitySystem.EntityManager;
+import io.github.team2.CollisionSystem.CollisionManager;
 import io.github.team2.InputSystem.InputManager;
+import io.github.team2.AudioSystem.AudioManager;
+import io.github.team2.TextManager;
+
 
 public abstract class Scene {
+    protected EntityManager entityManager;
+    protected CollisionManager collisionManager;
+    protected InputManager inputManager;
+    protected AudioManager audioManager;
+    protected TextManager textManager;
 
-	protected EntityManager em;
-	protected InputManager im;
-	protected TextManager tm;
-
-	public abstract void load(); // load assets and heavy resources
-
-	public abstract void update();
-
-	public abstract void draw(SpriteBatch batch);
-
-	public abstract void draw(ShapeRenderer shape);
-
-	public abstract void unload(); // free resources when leaving the scene
-
-	public abstract void dispose(); // permanently free resources when closing the game
-	public EntityManager getEntityManager() {
-        return em;
+    public Scene() {
+        entityManager = new EntityManager();
+        audioManager = AudioManager.getInstance();
+        inputManager = new InputManager();
+        textManager = new TextManager();
     }
 
-	public InputManager getInputManager() {
-		return im;
-	}
+    public abstract void load();
+    public abstract void update();
+    public abstract void draw(SpriteBatch batch);
+    public abstract void draw(ShapeRenderer shape);
+    public abstract void unload();
+    public abstract void dispose();
+    protected abstract void resize(int width, int height);
 
-	protected abstract void resize(int width, int height);
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
 
+    public CollisionManager getCollisionManager() {
+        return collisionManager;
+    }
+
+    public InputManager getInputManager() {
+        return inputManager;
+    }
+
+    public AudioManager getAudioManager() {
+        return audioManager;
+    }
 }

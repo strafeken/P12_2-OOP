@@ -1,75 +1,69 @@
 package io.github.team2;
 
-
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-
 import io.github.team2.Actions.ResumeGame;
 import io.github.team2.EntitySystem.Entity;
-import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.EntitySystem.TextureObject;
-import io.github.team2.InputSystem.InputManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 
 public class PauseMenu extends Scene {
+    private Entity image;
 
-	private Entity image;
+    public PauseMenu() {
+        super(); // Initialize base components
+    }
 
-	public PauseMenu() {
+    @Override
+    public void load() {
+        System.out.println("Pause Menu => LOAD");
 
-	}
+        image = new TextureObject("libgdx.png",
+            new Vector2(SceneManager.screenWidth / 2, SceneManager.screenHeight / 2),
+            new Vector2(0, 0), 0);
 
-	@Override
-	public void load() {
-		System.out.println("Pause Menu => LOAD");
+        entityManager.addEntities(image);
+        inputManager.registerKeyDown(Input.Keys.ESCAPE,
+            new ResumeGame(SceneManager.getInstance(SceneManager.class)));
+    }
 
-		em = new EntityManager();
-		im = new InputManager();
-		tm = new TextManager();
+    @Override
+    public void update() {
+        entityManager.update();
+    }
 
-		image = new TextureObject("libgdx.png", new Vector2(SceneManager.screenWidth / 2, SceneManager.screenHeight / 2),
-				new Vector2(0, 0), 0);
+    @Override
+    public void draw(SpriteBatch batch) {
+        entityManager.draw(batch);
+        textManager.draw(batch, "Pause Menu", 200, 150, Color.RED);
+    }
 
-		em.addEntities(image);
+    @Override
+    public void draw(ShapeRenderer shape) {
+        // No shapes to draw
+    }
 
-		im.registerKeyDown(Input.Keys.ESCAPE, new ResumeGame(SceneManager.getInstance(SceneManager.class)));
-	}
+    @Override
+    public void unload() {
+        System.out.println("Pause Menu => UNLOAD");
+        dispose();
+    }
 
-	@Override
-	public void update() {
+    @Override
+    public void dispose() {
+        if (image instanceof TextureObject) {
+            ((TextureObject) image).dispose();
+        }
+        entityManager.dispose();
+        textManager.dispose();
+    }
 
-	}
-
-	@Override
-	public void draw(SpriteBatch batch) {
-		em.draw(batch);
-
-		tm.draw(batch, "Pause Menu", 200, 150, Color.RED);
-	}
-
-	@Override
-	public void draw(ShapeRenderer shape) {
-
-	}
-
-	@Override
-	public void unload() {
-		System.out.println("Pause Menu => UNLOAD");
-		image = null;
-	}
-
-	@Override
-	public void dispose() {
-		((TextureObject) image).dispose();
-	}
-
-	@Override
-	protected void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    protected void resize(int width, int height) {
+        // Handle resize if needed
+    }
 }

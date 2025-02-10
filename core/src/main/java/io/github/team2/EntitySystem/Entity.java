@@ -74,20 +74,20 @@ public abstract class Entity {
 	}
 
 
-	
-	
+
+
 	public void setAction(Action action) {
 		this.action = action;
-		
+
 	}
 
-	
+
 	public Action getAction() {
 		return action;
-		
+
 	}
-	
-	public void InitPhysicsBody(World world, BodyDef.BodyType bodyType) {
+
+	public void initPhysicsBody(World world, BodyDef.BodyType bodyType) {
 		body = new PhysicsBody(world, this, bodyType);
 	}
 
