@@ -47,22 +47,19 @@ public class CollisionResolver implements CollisionListener {
     }
 
     private void handlePlayerDropCollision(Entity a, Entity b) {
-    	//        System.out.println("handle collision: PLAYER | DROP");
+        Entity bucket = (a.getEntityType() == EntityType.BUCKET) ? a : b;
+        Entity drop = (a.getEntityType() == EntityType.DROP) ? a : b;
 
-    	 Entity bucket = (a.getEntityType() == EntityType.BUCKET) ? a : b;
-         Entity drop = (a.getEntityType() == EntityType.DROP) ? a : b;
+        float bucketTopY = bucket.getPosition().y + ((TextureObject)bucket).getHeight();
+        float dropY = drop.getPosition().y;
 
-         // Get the top edge Y position of the bucket
-         float bucketTopY = bucket.getPosition().y + ((TextureObject)bucket).getHeight();
-         // Get drop Y position
-         float dropY = drop.getPosition().y;
-
-         // Only count collision if drop hits near the top edge of bucket (within 10 pixels)
-         if (Math.abs(dropY - bucketTopY) <= 10) {
-             // Play the ding sound effect when bucket top collides with droplet
-             AudioManager.getInstance().playSoundEffect("ding");
-             em.markForRemoval(drop);
-         }
+        if (Math.abs(dropY - bucketTopY) <= 10) {
+            AudioManager.getInstance().playSoundEffect("ding");
+            if (GameScene.getInstance().getPointsManager() != null) {
+                GameScene.getInstance().getPointsManager().addPoints(10);
+            }
+            em.markForRemoval(drop);
+        }
     }
 
 
