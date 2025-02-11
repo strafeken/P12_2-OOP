@@ -8,7 +8,7 @@ public class GameManager extends Singleton<GameManager> {
     private static GameManager instance;
     private PointsManager pointsManager;
     private PlayerEntityManager playerEntityManager;
-    private PlayerInputManager playerInputManager;  // Add this field
+    private PlayerInputManager playerInputManager;  
 
     private GameManager() {
         pointsManager = new PointsManager();
@@ -35,7 +35,7 @@ public class GameManager extends Singleton<GameManager> {
         return playerEntityManager;
     }
 
-    // Add this method
+    
     public PlayerInputManager getPlayerInputManager() {
         return playerInputManager;
     }

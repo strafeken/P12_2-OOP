@@ -16,10 +16,6 @@ import io.github.team2.SceneSystem.*;
 import java.util.Random;
 import com.badlogic.gdx.utils.Array;
 
-/**
- * Scene class responsible for game rendering and entity management
- * Follows SRP by handling only scene-specific operations
- */
 public class GameScene extends Scene {
     // Physics constants
     private static final float TIME_STEP = 1/60f;
@@ -160,7 +156,7 @@ public class GameScene extends Scene {
         inputManager.registerKeyDown(Input.Keys.X,
             new ExitGame(SceneManager.getInstance(SceneManager.class)));
 
-        // Make sure to update both input managers
+
         inputManager.update();
         playerInputManager.update();
     }
