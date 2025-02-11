@@ -67,9 +67,11 @@ public class GameScene extends Scene {
     private static final float MIN_SPAWN_INTERVAL = 1f;
     private static final float MAX_SPAWN_INTERVAL = 3f;
     private Random random = new Random();
+    
+    // this need change to its own entity types?  
 	private Entity bucket;
 	private Entity circle;
-	private Entity triangle;
+	private Triangle triangle;
 	private Entity player;
 
 	private void spawnPowerUp() {
@@ -172,12 +174,14 @@ public class GameScene extends Scene {
 		//bucket = new Bucket(EntityType.BUCKET, "bucket.png", new Vector2(200, 50), new Vector2(0, 0), 200);
 		//bucket.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
-		circle = new Circle(EntityType.CIRCLE, new Vector2(500, 300), new Vector2(0, 0), 200, Color.RED, 50);
+		circle = new Circle(EntityType.CIRCLE, new Vector2(500, 400), new Vector2(0, 0), 200, Color.RED, 50);
 		circle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
-		triangle = new Triangle(EntityType.TRIANGLE, new Vector2(100, 100), new Vector2(0, 0), 200, Color.GREEN, 50,
+		triangle = new Triangle(EntityType.TRIANGLE, new Vector2(200, 200), new Vector2(0, 0), 200, Color.GREEN, 50,
 				50);
 		triangle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+		// init triangle movement
+		triangle.addActionMoveMap();
 
 		player = new Player(EntityType.PLAYER, "bucket.png", new Vector2(300, 100), new Vector2(0, 0), 200);
 		player.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);

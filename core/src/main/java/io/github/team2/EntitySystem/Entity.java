@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 
+import io.github.team2.Actions.MoveCommand;
 import io.github.team2.InputSystem.Action;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -86,6 +87,11 @@ public abstract class Entity {
 		return action;
 		
 	}
+	// TODO: adjust in future 
+	public Action getAction(MoveCommand moveKey) {
+		
+		return null;
+	}
 	
 	public void InitPhysicsBody(World world, BodyDef.BodyType bodyType) {
 		body = new PhysicsBody(world, this, bodyType);
@@ -102,6 +108,7 @@ public abstract class Entity {
 	public abstract boolean isOutOfBound(Vector2 direction);
 
 	public abstract void update();
+	//public abstract void addActionMoveMap();
 
 	// sync position with physics body position
 	public void updateBody() {
@@ -110,4 +117,6 @@ public abstract class Entity {
 
 		body.updateEntityPosition(this);
 	}
+
+
 }

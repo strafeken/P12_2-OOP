@@ -50,15 +50,7 @@ public abstract class GameShape extends Entity {
 		this.height = height;
 	}
 
-//	@Override
-//	public void moveUserControlled() {
-//
-//	}
-//
-//	@Override
-//	public void moveAIControlled() {
-//
-//	}
+
 
 
 
@@ -70,7 +62,7 @@ public abstract class GameShape extends Entity {
 		projectedPos.add(direction);
 		
 		if (direction.x < 0 && (projectedPos.x - getWidth()/2) < SceneManager.screenLeft) {
-			System.out.println("Hit left");
+			System.out.println("Hit left ");
 			return true;
 		}
 		if (direction.x > 0 && (projectedPos.x + getWidth()/2) > SceneManager.screenWidth) {
