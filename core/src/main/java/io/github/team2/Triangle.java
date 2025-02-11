@@ -94,6 +94,12 @@ public class Triangle extends GameShape {
 	// public void addActionMoveMap(MoveCommand moveKey, Action moveAction) {
 	// moveMap.put(moveKey, moveAction);
 
+
+	
+
+	
+	
+	
 	public void setCurrentActionState(MoveCommand moveState) {
 		currentActionState = moveState;
 	}
@@ -128,11 +134,11 @@ public class Triangle extends GameShape {
 	
 	
 	public boolean checkPositionLeft() {
-	    return this.getPosition().x <= SceneManager.screenLeft;
+	    return (this.getPosition().x - getWidth()/2) <= SceneManager.screenLeft;
 	}
 
 	public boolean checkPositionRight() {
-	    return (this.getPosition().x + getWidth()) >= SceneManager.screenWidth;
+	    return (this.getPosition().x + getWidth()/2) >= SceneManager.screenWidth;
 	}
 	
 	
@@ -151,6 +157,7 @@ public class Triangle extends GameShape {
 			
 			// change dir if reach 
 			if (this.checkPositionLeft()) {
+				
 				this.setCurrentActionState(MoveCommand.right);
 			}
 
