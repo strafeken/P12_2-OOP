@@ -65,6 +65,9 @@ public class AudioManager {
             music.setVolume(volume);
         }
     }
+    public float getVolume() {
+    	return volume;
+    }
 
     public void stopMusic() {
         if (music != null) {

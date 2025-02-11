@@ -47,6 +47,7 @@ public class GameScene extends Scene {
     private Entity circle;
     private Entity triangle;
     private Entity player;
+    private Button settingsButton;
 
     // Spawn control
     private float dropletSpawnTimer;
@@ -68,6 +69,16 @@ public class GameScene extends Scene {
         initializeManagers();
         initializeEntities();
         initializeInput();
+        settingsButton = new Button(
+            200,
+            "Settings",
+            "settingsBtn.png",
+            new Vector2(SceneManager.screenWidth - 80, SceneManager.screenHeight - 80), 
+            () -> SceneManager.getInstance(SceneManager.class).overlayScene(SceneID.SETTINGS_MENU),
+            70,
+            70
+        );
+        inputManager.registerButton(settingsButton);
     }
 
     private void initializeWorld() {
@@ -180,6 +191,7 @@ public class GameScene extends Scene {
         updateSpawning();
         updatePhysics();
         checkGameOver();
+        settingsButton.update();
     }
 
     private void updateInput() {
@@ -285,6 +297,7 @@ public class GameScene extends Scene {
     public void draw(SpriteBatch batch) {
         entityManager.draw(batch);
         drawUI(batch);
+        settingsButton.draw(batch);
     }
 
     private void drawUI(SpriteBatch batch) {

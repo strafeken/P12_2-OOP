@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.Gdx;
 import io.github.team2.Actions.ResumeGame;
+import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.InputSystem.Button;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
@@ -14,10 +15,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SettingsMenu extends Scene {
+    private ShapeRenderer shapeRenderer;
     private Map<String, Button> keyBindButtons;
     private Button backButton;
     private boolean waitingForKey = false;
     private String currentBinding = "";
+
+    private float sliderX = 200;
+    private float sliderY = 300;
+    private float sliderWidth = 200;
+    private float sliderHeight = 20;
+    private boolean draggingSlider = false;
 
     @Override
     public void load() {
@@ -32,6 +40,9 @@ public class SettingsMenu extends Scene {
 
         inputManager.registerButton(backButton);
         createKeyBindButtons();
+        
+        // Initialize ShapeRenderer
+        shapeRenderer = new ShapeRenderer();
     }
 
     private void createKeyBindButtons() {
@@ -54,7 +65,6 @@ public class SettingsMenu extends Scene {
         }
     }
 
-
     @Override
     public void update() {
         if (waitingForKey) {
@@ -67,6 +77,9 @@ public class SettingsMenu extends Scene {
                 }
             }
         }
+        // Update slider
+        updateVolumeSlider();
+
         inputManager.update();
     }
 
@@ -90,11 +103,59 @@ public class SettingsMenu extends Scene {
         }
 
         backButton.draw(batch);
+
+        // Draw volume slider last
+        drawVolumeSlider(batch);
     }
 
     private void startBinding(String action) {
         waitingForKey = true;
         currentBinding = action;
+    }
+
+    private void updateVolumeSlider() {
+        // Check if the mouse is within the slider bounds
+        if (Gdx.input.isTouched()) {
+            float touchX = Gdx.input.getX();
+            float touchY = Gdx.graphics.getHeight() - Gdx.input.getY(); // invert y
+            boolean inSlider = (touchX >= sliderX && touchX <= sliderX + sliderWidth
+                && touchY >= sliderY && touchY <= sliderY + sliderHeight);
+
+            if (inSlider) {
+                draggingSlider = true;
+            }
+        } else {
+            draggingSlider = false;
+        }
+
+        // If we’re dragging, adjust volume
+        if (draggingSlider) {
+            float touchX = Gdx.input.getX();
+            // Convert position to 0.0 - 1.0 range
+            float normalized = Math.min(1f, Math.max(0f, (touchX - sliderX) / sliderWidth));
+            AudioManager.getInstance().setVolume(normalized);
+        }
+    }
+
+    private void drawVolumeSlider(SpriteBatch batch) {
+        float volume = AudioManager.getInstance().getVolume();
+        
+        // End SpriteBatch before using ShapeRenderer
+        batch.end();
+        
+        // Use the instance variable instead of null
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.GRAY);
+        shapeRenderer.rect(sliderX, sliderY, sliderWidth, sliderHeight);
+
+        // Draw the slider "thumb"
+        shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.rect(sliderX, sliderY, sliderWidth * volume, sliderHeight);
+        shapeRenderer.end();
+        
+        // Resume SpriteBatch for text
+        batch.begin();
+        textManager.draw(batch, "Volume: " + (int)(volume * 100) + "%", sliderX, sliderY + 40, Color.WHITE);
     }
 
     @Override
@@ -110,5 +171,9 @@ public class SettingsMenu extends Scene {
     @Override
     public void dispose() {
         // Cleanup
+        if (shapeRenderer != null) {
+            shapeRenderer.dispose();
+            shapeRenderer = null;
+        }
     }
 }
