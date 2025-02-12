@@ -9,7 +9,7 @@ public abstract class Static extends Entity {
     }
 
     public Static(Vector2 position) {
-        super(position, new Vector2(0, 0), 0);
+        super(position, new Vector2(0, 0));
     }
 
     @Override

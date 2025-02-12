@@ -1,19 +1,44 @@
 package io.github.team2.EntitySystem;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.math.Vector2;
 
+import io.github.team2.Actions.Move;
+import io.github.team2.Actions.TriangleBehaviour;
+import io.github.team2.InputSystem.Action;
 
-public abstract class Dynamics extends Entity {
+
+public abstract class Dynamics <S extends Enum<S>, A extends Enum<A>>  extends Entity{
     protected float speed;
+    
+    // TODO: when done shift to dynamic class
+    
+    private HashMap<A, Action> moveMap;
+    // movment states can move to dynamic
+    private S currentState;
+    private A currentActionState;
+    
 
     public Dynamics(float speed) {
         super();
         this.speed = speed;
+        
+        moveMap = new HashMap<>();
+        currentState = null;
+        currentActionState = null;
+       
     }
 
-    public Dynamics(Vector2 position, Vector2 direction, float speed) {
-        super(position, direction, speed);
+    public Dynamics(Vector2 position, Vector2 direction, float speed, S state, A actionState) {
+        super(position, direction);
         this.speed = speed;
+        
+        moveMap = new HashMap<>();
+        currentState = state;
+        currentActionState = actionState;
+        
+        
     }
 
     public float getSpeed() {
@@ -23,7 +48,71 @@ public abstract class Dynamics extends Entity {
     public void setSpeed(float speed) {
         this.speed = speed;
     }
+    
+    
+    
+    
+    public  HashMap<A, Action> getMoveMap() {
+        return (HashMap<A, Action>) moveMap;
+    }
 
+    public void setCurrentActionState(A actionState) {
+        currentActionState = actionState;  // Cast needed if `currentActionState` is strongly typed
+    }
+
+    public A getCurrentActionState() {
+        return currentActionState;  
+    }
+
+    public void setCurrentState(S state) {
+        currentState = state;  
+    }
+
+    public S  getCurrentState() {
+        return currentState;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    /*
+    public HashMap<TriangleBehaviour.Move, Action> getMoveMap() {
+		return moveMap;
+	}
+
+
+
+	public void setCurrentActionState(TriangleBehaviour.Move moveState) {
+		currentActionState = moveState;
+	}
+
+	public TriangleBehaviour.Move getCurrentActionState() {
+		return currentActionState;
+	}
+
+	public void setCurrentState(TriangleBehaviour.State state) {
+		currentState = state;
+	}
+
+	public TriangleBehaviour.State getCurrentState() {
+		return currentState;
+	}
+
+	abstract public void initActionMoveMap();
+	*/
+    
+    
+	public void clearMoveMap() {
+
+		moveMap.clear();
+	}
+  
+    
+    
     @Override
     public void update() {
         // Update position based on direction and speed

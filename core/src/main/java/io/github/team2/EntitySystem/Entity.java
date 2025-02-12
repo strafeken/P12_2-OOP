@@ -29,10 +29,10 @@ public abstract class Entity {
 		action = null;
 	}
 
-	public Entity(Vector2 position, Vector2 direction, float speed) {
+	public Entity(Vector2 position, Vector2 direction) {
 		this.position = position;
 		this.direction = direction;
-		this.speed = speed;
+		
 		type = EntityType.UNDEFINED;
 		body = null;
 		action = null;

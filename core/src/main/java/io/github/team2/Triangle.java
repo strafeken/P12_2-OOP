@@ -11,55 +11,46 @@ import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.GameShape;
 import io.github.team2.InputSystem.Action;
 import io.github.team2.SceneSystem.SceneManager;
-  
+import io.github.team2.EntitySystem.DynamicGameShape;
 import io.github.team2.EntitySystem.Dynamics;
 
 
-public class Triangle extends Dynamics {
+public class Triangle extends DynamicGameShape {
     private float size;
     private float offset;
-    private Color color;
+    //private Color color;
   
-    // TODO: when done shift to dynamic class
-    private HashMap<TriangleBehaviour.Move, Action> moveMap;
-    // movment states can move to dynamic
-    private TriangleBehaviour.State currentState;
-    private TriangleBehaviour.Move currentActionState;
+
     
   
  
 
     public Triangle() {
-        super(0);
+        super();
         setEntityType(EntityType.TRIANGLE);
         setPosition(new Vector2(0, 0));
-        this.color = Color.WHITE;
+        //this.color = Color.WHITE;
         this.size = 10;
         this.offset = 0;
-      
-        moveMap = new HashMap<>();
-        currentState = TriangleBehaviour.State.IDLE;
-        currentActionState = TriangleBehaviour.Move.NONE;
         initActionMoveMap();
+      
+
     }
 
-    public Triangle(EntityType type, Vector2 position, Vector2 direction, float speed, Color color, float size, float offset) {
-        super(position, direction, speed);
+    public Triangle(EntityType type, Vector2 position, Vector2 direction, float speed, Color color, float size, float offset , S state, A actionState) {
+        super(position, direction, speed, color , state, actionState);
         setEntityType(type);
-        this.color = color;
+        //this.color = color;
         this.size = size;
         this.offset = offset;
       
-        moveMap = new HashMap<>();
-        currentState = TriangleBehaviour.State.IDLE;
-        currentActionState = TriangleBehaviour.Move.NONE;
         initActionMoveMap();
-        
-      /*
+       
+      
         // auto calculate width and height
         this.setWidth(2 * offset);
         this.setHeight(2 * offset);
-      */
+      
       
     }
   
@@ -114,44 +105,22 @@ public class Triangle extends Dynamics {
   
   
   
-    
-
-	// TODO: move to dynamic class
-
-	public void setCurrentActionState(TriangleBehaviour.Move moveState) {
-		currentActionState = moveState;
-	}
-
-	public TriangleBehaviour.Move getCurrentActionState() {
-		return currentActionState;
-	}
-
-	public void setCurrentState(TriangleBehaviour.State state) {
-		currentState = state;
-	}
-
-	public TriangleBehaviour.State getCurrentState() {
-		return currentState;
-	}
-
+   @Override
 	public void initActionMoveMap() {
 
-		moveMap.put(TriangleBehaviour.Move.LEFT, new Move(this, new Vector2(-1, 0)));
-		moveMap.put(TriangleBehaviour.Move.RIGHT, new Move(this, new Vector2(1, 0)));
+		getMoveMap().put(TriangleBehaviour.Move.LEFT, new Move(this, new Vector2(-1, 0)));
+		getMoveMap().put(TriangleBehaviour.Move.RIGHT, new Move(this, new Vector2(1, 0)));
 
 	}
 
-	public void clearMoveMap() {
 
-		moveMap.clear();
-	}
   
   
 
 	@Override
 	public <E extends Enum<E>> Action getAction(E moveKey) {
 
-		Action action = moveMap.get(moveKey);
+		Action action = getMoveMap().get(moveKey);
 
 		return action;
 	}
