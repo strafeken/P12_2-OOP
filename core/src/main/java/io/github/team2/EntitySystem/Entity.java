@@ -75,18 +75,19 @@ public abstract class Entity {
 	}
 
 
-	
-	
+
+
 	public void setAction(Action action) {
 		this.action = action;
-		
+
 	}
 
-	
+
 	public Action getAction() {
 		return action;
-		
+
 	}
+
 	// TODO: adjust in future 
 	public <E extends Enum<E>> Action getAction(E moveKey) {
 		
@@ -94,8 +95,10 @@ public abstract class Entity {
 	}
 	
 	
-	
-	public void InitPhysicsBody(World world, BodyDef.BodyType bodyType) {
+
+
+	public void initPhysicsBody(World world, BodyDef.BodyType bodyType) {
+
 		body = new PhysicsBody(world, this, bodyType);
 	}
 

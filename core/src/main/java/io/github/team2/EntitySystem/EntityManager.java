@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 
 public class EntityManager {
 
@@ -66,12 +68,23 @@ public class EntityManager {
 	}
 
 	public void dispose() {
-		for (Entity entity : entityList) {
-			if (entity.getBody() != null)
-				entity.getBody().dispose();
+        List<Entity> entitiesToDispose = new ArrayList<>(entityList);
 
-			if (entity instanceof TextureObject)
-				((TextureObject) entity).dispose();
-		}
-	}
+        // First null out physics bodies
+        for (Entity entity : entitiesToDispose) {
+            if (entity.getBody() != null) {
+                entity.getBody().dispose();
+            }
+        }
+
+        // Then dispose textures
+        for (Entity entity : entitiesToDispose) {
+            if (entity instanceof TextureObject) {
+                ((TextureObject) entity).dispose();
+            }
+        }
+
+        entityList.clear();
+        entitiesToRemove.clear();
+    }
 }

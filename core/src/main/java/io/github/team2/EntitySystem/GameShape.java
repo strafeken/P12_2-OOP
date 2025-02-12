@@ -4,56 +4,55 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
+
 import io.github.team2.SceneSystem.SceneManager;
 
-public abstract class GameShape extends Entity {
 
-	private Color color;
-	private float width;
-	private float height;
-
-	public GameShape() {
-		setEntityType(EntityType.UNDEFINED);
-		setPosition(new Vector2(0, 0));
-		setDirection(new Vector2(0, 0));
-		setSpeed(0);
-		color = Color.WHITE;
-	}
-
-	public Color getColor() {
-		return color;
-	}
-
-	public void setColor(Color color) {
-		this.color = color;
-	}
-
-	public float getWidth() {
-
-		return this.width;
-
-	}
-
-	public void setWidth(float width) {
-
-		this.width = width;
-	}
-
-	public float getHeight() {
-
-		return this.height;
-
-	}
-
-	public void setHeight(float height) {
-
-		this.height = height;
-	}
+	
 
 
 
+public abstract class GameShape extends Static {
+    protected Color color;
+    protected float width;
+    protected float height;
 
+    public GameShape() {
+        super();
+        setEntityType(EntityType.UNDEFINED);
+        setPosition(new Vector2(0, 0));
+        setDirection(new Vector2(0, 0));
+        setSpeed(0);
+        color = Color.WHITE;
+    }
 
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public float getWidth() {
+        return this.width;
+    }
+
+    public void setWidth(float width) {
+        this.width = width;
+    }
+
+    public float getHeight() {
+        return this.height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
+    
+  
+  
+    
 	@Override 	
 	public  boolean isOutOfBound(Vector2 direction) {
 		
@@ -78,15 +77,14 @@ public abstract class GameShape extends Entity {
 		}
 		
 		return false;
-		
+    
 	}
-	
-
-
-
-
-	public abstract void draw(ShapeRenderer shape);
-
-	public abstract void update();
+		
+    
+    @Override
+    public abstract void draw(ShapeRenderer shape);
+  
+  
+	  //public abstract void update();
 
 }

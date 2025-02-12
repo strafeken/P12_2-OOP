@@ -19,6 +19,7 @@ public class MouseManager {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector2 touchPos = new Vector2(screenX, SceneManager.screenHeight - screenY);
 
+        // Check buttons first
         for (Button btn : buttons) {
             if (btn.checkIsPressed(touchPos)) {
                 btn.execute();
@@ -26,6 +27,7 @@ public class MouseManager {
             }
         }
 
+        // Then check other actions
         Action action = touchDownActions.get(button);
         if (action != null) {
             action.execute();

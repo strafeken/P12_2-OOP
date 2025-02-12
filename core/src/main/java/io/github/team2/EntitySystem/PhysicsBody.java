@@ -48,7 +48,7 @@ public class PhysicsBody {
 			return circle;
 		case TRIANGLE:
 			PolygonShape triangle = new PolygonShape();
-			float triangleSize = ((Triangle) entity).getSize() / 2;
+			float triangleSize = ((Triangle) entity).getSize();
 			triangle.setAsBox(triangleSize, triangleSize);
 			return triangle;
 		default:
@@ -86,6 +86,17 @@ public class PhysicsBody {
 	}
 
 	public void dispose() {
-		body.getWorld().destroyBody(body);
-	}
+        if (body != null && world != null) {
+            world.destroyBody(body);
+            body = null;
+        }
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public Body getBody() {
+        return body;
+    }
 }

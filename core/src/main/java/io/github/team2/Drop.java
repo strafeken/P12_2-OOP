@@ -1,55 +1,62 @@
 package io.github.team2;
 
-import java.util.HashMap;
-import java.util.Random;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-
-import io.github.team2.Actions.DropBehaviour;
-import io.github.team2.Actions.Move;
-
+import java.util.Random;
 import io.github.team2.EntitySystem.EntityType;
-import io.github.team2.EntitySystem.TextureObject;
-import io.github.team2.InputSystem.Action;
+import io.github.team2.EntitySystem.DynamicTextureObject;
 import io.github.team2.SceneSystem.SceneManager;
 
-public class Drop extends TextureObject {
 
-	// private float dropSpeed = 100;
+import java.util.HashMap;
+import io.github.team2.Actions.DropBehaviour;
+import io.github.team2.Actions.Move;
+// maybe dn
+import io.github.team2.InputSystem.Action;
 
-	// TODO: when done shift to dynamic class
-	private HashMap<DropBehaviour.Move, Action> moveMap;
-	// movment states can move to dynamic
-	private DropBehaviour.State currentState;
-	private DropBehaviour.Move currentActionState;
 
-	public Drop(String texture) {
-		setEntityType(EntityType.DROP);
-		setTexture(new Texture(texture));
-		setPosition(new Vector2(0, 0));
-		setDirection(new Vector2(0, 0));
-		setSpeed(10);
 
-		moveMap = new HashMap<>();
-		currentState = DropBehaviour.State.IDLE;
-		currentActionState = DropBehaviour.Move.NONE;
-		initActionMoveMap();
-	}
 
-	public Drop(EntityType type, String texture, Vector2 position, Vector2 direction, float speed) {
-		setEntityType(type);
-		setTexture(new Texture(texture));
-		setPosition(position);
-		setDirection(direction);
-		setSpeed(speed);
 
-		moveMap = new HashMap<>();
-		currentState = DropBehaviour.State.IDLE;
-		currentActionState = DropBehaviour.Move.NONE;
-		initActionMoveMap();
+public class Drop extends DynamicTextureObject {
+    
+  
+    // TODO: when done shift to dynamic class
+    private HashMap<DropBehaviour.Move, Action> moveMap;
+    // movment states can move to dynamic
+    private DropBehaviour.State currentState;
+    private DropBehaviour.Move currentActionState;
 
-	}
+  
+    public Drop(String texture) {
+        super(new Texture(texture));
+        setEntityType(EntityType.DROP);
+        setPosition(new Vector2(0, 0));
+        setSpeed(10);
+      
+        moveMap = new HashMap<>();
+        currentState = DropBehaviour.State.IDLE;
+        currentActionState = DropBehaviour.Move.NONE;
+        initActionMoveMap();
+    }
+
+    public Drop(EntityType type, String texture, Vector2 position, Vector2 direction, float speed) {
+        super(new Texture(texture));
+        setEntityType(type);
+        setPosition(position);
+        setDirection(direction);
+        setSpeed(speed);
+      
+        moveMap = new HashMap<>();
+		    currentState = DropBehaviour.State.IDLE;
+		    currentActionState = DropBehaviour.Move.NONE;
+		    initActionMoveMap();
+      
+    }
+  
+  
+  
+  
 
 	public boolean checkPosition() {
 
@@ -61,6 +68,27 @@ public class Drop extends TextureObject {
 		return false;
 	}
 
+  
+  
+
+    public boolean isOutOfBounds() {
+        return getPosition().y < 0;
+    }
+
+    private void resetPosition() {
+        Random random = new Random();
+        getBody().setLocation(
+            random.nextFloat() * SceneManager.screenWidth,
+            SceneManager.screenHeight
+        );
+    }
+
+    private void handleDropMiss() {
+        GameManager.getInstance().getPointsManager().incrementFails();
+    }
+  
+  
+  
 	// TODO: move to dynamic class
 	
 	@Override
@@ -97,7 +125,9 @@ public class Drop extends TextureObject {
 
 		moveMap.clear();
 	}
-
+  
+  
+  
 	public void updateMovement() {
 		
 		
@@ -152,29 +182,29 @@ public class Drop extends TextureObject {
 
 	}
 
-	/*
-	 * 
-	 * 
-	 * if (this.checkPosition() == false) {
-	 * 
-	 * if (getAction() != null) getAction().execute();
-	 * 
-	 * } else {
-	 * 
-	 * // Check if drop hit bottom //if (this.getPosition().y < 0) { // Increment
-	 * fail counter through GameScene if (GameScene.getInstance().getPointsManager()
-	 * != null) { GameScene.getInstance().getPointsManager().incrementFails(); } //}
-	 * Random random =new Random(); getBody().setLocation(random.nextFloat() *
-	 * SceneManager.screenWidth, SceneManager.screenHeight); }
-	 * 
-	 * }
-	 */
-
+  
+/*
 	@Override
 	public void update() {
 
 		updateMovement();
 		updateBody();
 	}
+  */
+
+    @Override
+    public void update() {
+        if (getBody() != null) {  // Add null check
+            if (!isOutOfBounds()) {
+                if (getAction() != null) {
+                    getAction().execute();
+                }
+            } else {
+                handleDropMiss();
+                resetPosition();
+            }
+            updateBody();
+        }
+    }
 
 }

@@ -16,13 +16,13 @@ public class SceneManager extends Singleton<SceneManager> {
 	private final Map<SceneID, Scene> scenes;
 	// handles scene states
 	private final Stack<SceneID> sceneStack;
-	
+
 	static public float screenWidth = Gdx.graphics.getWidth();
 	static public float screenHeight = Gdx.graphics.getHeight();
 
 	static final public float screenLeft = 0;
 	static final public float screenBottom = 0;
-	
+
 	public SceneManager() {
 		scenes = new HashMap<>();
 		sceneStack = new Stack<>();
@@ -61,8 +61,10 @@ public class SceneManager extends Singleton<SceneManager> {
 
 	// run the update function of the current scene
 	public void update() {
-		if (!sceneStack.isEmpty())
+		if (!sceneStack.isEmpty()) {
+			scenes.get(sceneStack.peek()).getInputManager().update();
 			scenes.get(sceneStack.peek()).update();
+		}
 	}
 
 	public void draw(SpriteBatch batch) {
@@ -94,19 +96,16 @@ public class SceneManager extends Singleton<SceneManager> {
 
 	// sets input processor to the input manager of the next scene
 	private void updateInputProcessor() {
-		if (sceneStack.isEmpty())
-			return;
+        if (sceneStack.isEmpty())
+            return;
 
-		SceneID curr = sceneStack.peek();
+        SceneID curr = sceneStack.peek();
+        Scene currentScene = getCurrentScene();
 
-		if (curr == SceneID.GAME_SCENE)
-			Gdx.input.setInputProcessor(((GameScene) getCurrentScene()).getInputMultiplexer());
-		else
-			Gdx.input.setInputProcessor(getCurrentScene().getInputManager());
+        // Just clear active keys without setting input processor
+        currentScene.getInputManager().clearActiveKeys();
+    }
 
-		getCurrentScene().getInputManager().clearActiveKeys();
-	}
-	
 	public void resize(int width, int height) {
 	    if (!sceneStack.isEmpty())
 	        scenes.get(sceneStack.peek()).resize(width, height);

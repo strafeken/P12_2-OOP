@@ -1,79 +1,35 @@
 package io.github.team2;
 
-
-//import java.lang.classfile.instruction.NewMultiArrayInstruction;
-import java.util.Random;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputMultiplexer;
+//import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
-
-import io.github.team2.Actions.Dropping;
-import io.github.team2.Actions.ExitGame;
-import io.github.team2.Actions.Move;
-//import io.github.team2.Actions.Move;
-import io.github.team2.Actions.PauseGame;
-//import io.github.team2.AudioSystem.AudioManager;
-import io.github.team2.CollisionSystem.CollisionDetector;
-import io.github.team2.CollisionSystem.CollisionResolver;
-import io.github.team2.EntitySystem.Entity;
-import io.github.team2.EntitySystem.EntityManager;
-import io.github.team2.EntitySystem.EntityType;
-import io.github.team2.EntitySystem.TextureObject;
-import io.github.team2.InputSystem.InputManager;
-import io.github.team2.InputSystem.PlayerInputManager;
-import io.github.team2.SceneSystem.Scene;
-import io.github.team2.SceneSystem.SceneID;
-import io.github.team2.SceneSystem.SceneManager;
+import com.badlogic.gdx.physics.box2d.*;
+import io.github.team2.Actions.*;
+import io.github.team2.CollisionSystem.*;
+import io.github.team2.EntitySystem.*;
+import io.github.team2.InputSystem.*;
+import io.github.team2.SceneSystem.*;
+import java.util.Random;
+import com.badlogic.gdx.utils.Array;
 
 public class GameScene extends Scene {
-	private static GameScene instance;
-	/*
-	 * Box2D world physics simulation
-	 */
-	private World world;
-	// render collision debugger
-	private Box2DDebugRenderer debugRenderer;
-
-	private static final float TIME_STEP = 1 / 60f;
-	private static final int VELOCITY_ITERATIONS = 6;
-	private static final int POSITION_ITERATIONS = 2;
-
-	private float accumulator = 0f;
-
-	/* Managers */
-	private PointsManager pm;
-	private SceneManager sm;
-
-	private CollisionDetector collisionDetector;
-	private CollisionResolver collisionResolver;
-
-	private InputMultiplexer multiplexer;
-
-	private PlayerInputManager playerInputManager;
-
-	/* Entities */
-	private Entity droplets[];
-	private static final int MAX_DROPLETS = 10;
-    private static final float POWERUP_SPAWN_CHANCE = 0.005f; // 0.5%
-    private float dropletSpawnTimer = 0;
+    // Physics constants
+    private static final float TIME_STEP = 1/60f;
+    private static final int VELOCITY_ITERATIONS = 6;
+    private static final int POSITION_ITERATIONS = 2;
+    private static final int MAX_DROPLETS = 10;
+    private static final float POWERUP_SPAWN_CHANCE = 0.005f;
     private static final float MIN_SPAWN_INTERVAL = 1f;
     private static final float MAX_SPAWN_INTERVAL = 3f;
-    private Random random = new Random();
-    
-    // this need change to its own entity types?  
-	private Entity bucket;
-	private Entity circle;
-	private Entity triangle;
-	private Entity player;
 
+
+    
+
+/* check if need remove 
 	private void spawnPowerUp() {
         // Only try spawning if a powerup doesn't already exist
         boolean powerupExists = false;
@@ -83,214 +39,359 @@ public class GameScene extends Scene {
                 break;
             }
         }
+     */
 
-        if (!powerupExists && random.nextFloat() <= POWERUP_SPAWN_CHANCE) {
-            PowerUp powerUp = new PowerUp(
-                EntityType.POWERUP,
-                "pup1.png",
-                new Vector2(random.nextFloat() * SceneManager.screenWidth , SceneManager.screenHeight),
-                new Vector2(0, 0),
-                100
-            );
-            powerUp.InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
-            powerUp.setAction(new Dropping(powerUp));
-            em.addEntities(powerUp);
+
+    // Physics world
+    private World world;
+    private Box2DDebugRenderer debugRenderer;
+    private float accumulator;
+
+    // Managers
+    private GameManager gameManager;
+    private CollisionDetector collisionDetector;
+    private CollisionResolver collisionResolver;
+    //private InputMultiplexer inputMultiplexer;
+    private PlayerInputManager playerInputManager;
+
+    // Game entities
+    private Entity[] droplets;
+    private Entity circle;
+    private Entity triangle;
+    private Entity player;
+
+    // Spawn control
+    private float dropletSpawnTimer;
+    private Random random;
+
+    public GameScene() {
+        super();
+        this.gameManager = GameManager.getInstance(); // Use singleton instead of new instance
+        random = new Random();
+        accumulator = 0f;
+        dropletSpawnTimer = 0f;
+
+    }
+
+    @Override
+    public void load() {
+        System.out.println("Game Scene => LOAD");
+        initializeWorld();
+        initializeManagers();
+        initializeEntities();
+        initializeInput();
+    }
+
+    private void initializeWorld() {
+        world = new World(new Vector2(0, -100), true);
+        debugRenderer = new Box2DDebugRenderer();
+    }
+
+    private void initializeManagers() {
+        // Initialize entity manager
+        entityManager = new EntityManager();
+
+        // Initialize collision system directly with detector and resolver
+        collisionDetector = new CollisionDetector();
+        collisionResolver = new CollisionResolver(entityManager);
+
+        // Setup collision listeners
+        PointsSystem pointsSystem = new PointsSystem(gameManager.getPointsManager());
+        collisionDetector.addListener(collisionResolver);
+        collisionDetector.addListener(pointsSystem);
+        world.setContactListener(collisionDetector);
+
+        // Initialize input system
+        inputManager = new InputManager();
+        //inputMultiplexer = new InputMultiplexer();
+    }
+
+    private void initializeEntities() {
+        // Initialize static entities
+        circle = new Circle(EntityType.CIRCLE,
+                          new Vector2(500, 300),
+                          new Vector2(0, 0),
+                          200, Color.RED, 50);
+        circle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+
+        triangle = new Triangle(EntityType.TRIANGLE,
+                             new Vector2(100, 100),
+                             new Vector2(0, 0),
+                             200, Color.GREEN, 50, 50);
+        triangle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+
+        // Initialize player
+        player = new Player(EntityType.PLAYER,
+                          "bucket.png",
+                          new Vector2(300, 100),
+                          new Vector2(0, 0),
+                          200);
+        player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+
+        gameManager.getPlayerEntityManager().addEntity(player);
+
+        // Initialize droplets
+        initializeDroplets();
+
+        // Add entities to manager
+        entityManager.addEntities(circle);
+        entityManager.addEntities(triangle);
+        entityManager.addEntities(player);
+    }
+
+    private void initializeDroplets() {
+        droplets = new Entity[MAX_DROPLETS];
+        for (int i = 0; i < droplets.length; i++) {
+            Drop drop = createDrop();
+            droplets[i] = drop;
+            entityManager.addEntities(drop);
         }
     }
-	private void spawnSingleDroplet() {
 
-        Drop newDrop = new Drop(EntityType.DROP, "droplet.png",
-            new Vector2(random.nextFloat() * SceneManager.screenWidth, SceneManager.screenHeight),
-            new Vector2(0, 0), 100);
-        newDrop.InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
-        em.addEntities(newDrop);
-    }
-	public GameScene() {
-        instance = this;
-    }
+    private Drop createDrop() {
+        Drop drop = new Drop(EntityType.DROP,
+                         "droplet.png",
+                         new Vector2(random.nextFloat() * SceneManager.screenWidth,
+                                   random.nextFloat() * SceneManager.screenHeight),
+                         new Vector2(0, 0),
+                         100);
 
-    public static GameScene getInstance() {
-        return instance;
+        drop.setAction(new Dropping(drop));
+        drop.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
+        return drop;
     }
 
-    public PointsManager getPointsManager() {
-        return pm;
-    }
+    private void initializeInput() {
+        // Initialize player input
+        playerInputManager = new PlayerInputManager(player);
+        playerInputManager.registerUserInput();
 
-	@Override
-	public void load() {
-		System.out.println("Game Scene => LOAD");
-
-		world = new World(new Vector2(0, -100), true);
-
-		debugRenderer = new Box2DDebugRenderer();
-
-		em = new EntityManager();
-		im = new InputManager();
-		pm = new PointsManager();
-
-		collisionDetector = new CollisionDetector();
-		collisionResolver = new CollisionResolver(em);
-
-		PointsSystem pointsSystem = new PointsSystem(pm);
-
-		collisionDetector.addListener(collisionResolver);
-		collisionDetector.addListener(pointsSystem);
-
-		world.setContactListener(collisionDetector);
-
-		tm = new TextManager();
-
-		droplets = new TextureObject[10];
+        // Register global inputs
+        inputManager.registerKeyDown(Input.Keys.ESCAPE,
+            new PauseGame(SceneManager.getInstance(SceneManager.class)));
+        inputManager.registerKeyDown(Input.Keys.X,
+            new ExitGame(SceneManager.getInstance(SceneManager.class)));
 
 
-
-    		for (int i = 0; i < droplets.length; ++i) {
-
-
-    			Drop tmpDrop = null;
-
-    			// check if Drop out of bound
-    			do {
-    				if (tmpDrop == null) {
-    					tmpDrop = new Drop(EntityType.DROP, "droplet.png",
-        		            	new Vector2(random.nextFloat() * SceneManager.screenWidth, random.nextFloat() * SceneManager.screenHeight),
-        		            	new Vector2(0, 0), 100);
-
-    				}else {
-    					tmpDrop.setPosition(new Vector2(random.nextFloat() * SceneManager.screenWidth, random.nextFloat() * SceneManager.screenHeight));
-
-    				}
-
-    			} while (tmpDrop.isOutOfBound(new Vector2(0, 0)) == true);
-
-
+  /* check 
+  
 				droplets[i] = tmpDrop;
         		//droplets[i].setAction(new Dropping(droplets[i]));
 
-        		droplets[i].InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
-    	}
+*/
 
-		//bucket = new Bucket(EntityType.BUCKET, "bucket.png", new Vector2(200, 50), new Vector2(0, 0), 200);
-		//bucket.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+        inputManager.update();
+        playerInputManager.update();
+    }
 
+
+        //inputMultiplexer.addProcessor(inputManager);
+        //inputMultiplexer.addProcessor(playerInputManager);
+
+        // Register global inputs
+    //}
+
+    @Override
+    public void update() {
+        inputManager.update();
+        playerInputManager.update();
+        updateInput();
+        updateEntities();
+        updateSpawning();
+        updatePhysics();
+        checkGameOver();
+    }
+
+    private void updateInput() {
+        playerInputManager.update();
+        inputManager.update();
+    }
+
+
+  /* check 
 		circle = new Circle(EntityType.CIRCLE, new Vector2(500, 400), new Vector2(0, 0), 200, Color.RED, 50);
 		circle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
 		triangle = new Triangle(EntityType.TRIANGLE, new Vector2(200, 200), new Vector2(0, 0), 200, Color.GREEN, 50,
 				50);
 		triangle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+  */
 
-		player = new Player(EntityType.PLAYER, "bucket.png", new Vector2(300, 100), new Vector2(0, 0), 200);
-		player.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
-
-		for (int i = 0; i < droplets.length; ++i)
-			em.addEntities(droplets[i]);
-
-		//em.addEntities(bucket);
-		em.addEntities(circle);
-		em.addEntities(triangle);
-		em.addEntities(player);
-
-		world.setContactListener(collisionDetector);
-
-		playerInputManager = new PlayerInputManager(player);
-
-		playerInputManager.registerUserInput();
-		multiplexer = new InputMultiplexer();
-		multiplexer.addProcessor(im);
-		multiplexer.addProcessor(playerInputManager);
-
-		im.registerKeyDown(Input.Keys.ESCAPE, new PauseGame(SceneManager.getInstance(SceneManager.class)));
-		im.registerKeyDown(Input.Keys.X, new ExitGame(SceneManager.getInstance(SceneManager.class)));
-	}
-
-	@Override
-	public void update() {
-		playerInputManager.update();
-		im.update();
-		em.update();
-		spawnPowerUp();
-		// Check for game over condition
-    	 if (pm.getFails() >= 20) {
-        	//AudioManager.getInstance().playSoundEffect("ding");
-        	sm = SceneManager.getInstance(SceneManager.class); // Initialize SceneManager
-        	sm.setNextScene(SceneID.GAME_OVER);
-        return;
-    	}
-		 // Random spawn interval between MIN and MAX
-		 dropletSpawnTimer += Gdx.graphics.getDeltaTime();
-		 if (dropletSpawnTimer >= MIN_SPAWN_INTERVAL + random.nextFloat() * (MAX_SPAWN_INTERVAL - MIN_SPAWN_INTERVAL)) {
-			 // Count current droplets
-			 int currentDroplets = 0;
-			 for (Entity entity : em.getEntities()) {
-				 if (entity.getEntityType() == EntityType.DROP) {
-					 currentDroplets++;
-				 }
-			 }
-
-			 // Only spawn if below MAX_DROPLETS
-			 if (currentDroplets < MAX_DROPLETS) {
-				 spawnSingleDroplet();
-			 }
-			 dropletSpawnTimer = 0;
-		 }
-		// update physics at the end of render() loop
-		// should be under draw() physics will update when game is paused
-		// could add a boolean however it'll be a bit messy
-		float deltaTime = Gdx.graphics.getDeltaTime();
-
-		accumulator += deltaTime;
-
-		while (accumulator >= TIME_STEP) {
-			world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
-			accumulator -= TIME_STEP;
-		}
-
-	}
-
-	@Override
-    public void draw(SpriteBatch batch) {
-        em.draw(batch);
-		float paddingLeft = 20;
-    	float startY = SceneManager.screenHeight - 20; // Start 20px from top
-    	float lineSpacing = 30; // Space between lines
-
-        tm.draw(batch, "Game Scene", paddingLeft, startY, Color.RED);
-    	tm.draw(batch, "Points: " + pm.getPoints(), paddingLeft, startY - lineSpacing, Color.RED);
-    	tm.draw(batch, "Fails: " + pm.getFails(), paddingLeft, startY - (lineSpacing * 2), Color.RED);
+    private void updateEntities() {
+        entityManager.update();
     }
-	@Override
-	public void draw(ShapeRenderer shape) {
-		em.draw(shape);
 
-		debugRenderer.render(world, shape.getProjectionMatrix());
-	}
+    private void updateSpawning() {
+        spawnPowerUp();
+        updateDropletSpawning();
+    }
 
-	@Override
-	public void unload() {
-		System.out.println("Game Scene => UNLOAD");
 
-		dispose();
-	}
+    private void spawnPowerUp() {
+        if (!isPowerUpPresent() && random.nextFloat() <= POWERUP_SPAWN_CHANCE) {
+            PowerUp powerUp = new PowerUp(
+                EntityType.POWERUP,
+                "pup1.png",
+                new Vector2(random.nextFloat() * SceneManager.screenWidth,
+                          SceneManager.screenHeight),
+                new Vector2(0, 0),
+                100
+            );
+            powerUp.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
+            powerUp.setAction(new Dropping(powerUp));
+            entityManager.addEntities(powerUp);
+        }
+    }
 
-	@Override
-	public void dispose() {
-		System.out.println("Game Scene => DISPOSE");
+    private boolean isPowerUpPresent() {
+        return entityManager.getEntities().stream()
+            .anyMatch(e -> e.getEntityType() == EntityType.POWERUP);
+    }
 
-		em.dispose();
+    private void updateDropletSpawning() {
+        dropletSpawnTimer += Gdx.graphics.getDeltaTime();
+        if (shouldSpawnDroplet()) {
+            spawnDroplet();
+            dropletSpawnTimer = 0;
+        }
+    }
 
-		world.dispose();
+    private boolean shouldSpawnDroplet() {
+        float spawnInterval = MIN_SPAWN_INTERVAL +
+            random.nextFloat() * (MAX_SPAWN_INTERVAL - MIN_SPAWN_INTERVAL);
+        return dropletSpawnTimer >= spawnInterval &&
+               countCurrentDroplets() < MAX_DROPLETS;
+    }
 
-		debugRenderer.dispose();
-	}
+    private int countCurrentDroplets() {
+        return (int) entityManager.getEntities().stream()
+            .filter(e -> e.getEntityType() == EntityType.DROP)
+            .count();
+    }
 
-	public InputMultiplexer getInputMultiplexer() {
-		return multiplexer;
-	}
-	@Override
-	protected void resize(int width, int height) {
-		// TODO Auto-generated method stub
+    private void spawnDroplet() {
+        // Determine how many droplets to spawn (1-3)
+        int currentDroplets = countCurrentDroplets();
+        int maxNewDroplets = Math.min(3, MAX_DROPLETS - currentDroplets);
 
-	}
+        if (maxNewDroplets <= 0) {
+            return;  // Don't spawn if at or over max limit
+        }
+
+        // Randomly choose to spawn 1-3 droplets
+        int dropletsToSpawn = random.nextInt(maxNewDroplets) + 1;
+
+        // Spawn the determined number of droplets
+        for (int i = 0; i < dropletsToSpawn; i++) {
+            Drop drop = new Drop(EntityType.DROP,
+                               "droplet.png",
+                               new Vector2(random.nextFloat() * SceneManager.screenWidth,
+                                         SceneManager.screenHeight),
+                               new Vector2(0, 0),
+                               100);
+            drop.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
+            drop.setAction(new Dropping(drop));
+            entityManager.addEntities(drop);
+        }
+    }
+
+    private void updatePhysics() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        accumulator += deltaTime;
+
+        while (accumulator >= TIME_STEP) {
+            world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+            accumulator -= TIME_STEP;
+        }
+    }
+
+    private void checkGameOver() {
+        if (gameManager.getPointsManager().getFails() >= 20) {
+            System.out.println("Game Over triggered! Fails: " + gameManager.getPointsManager().getFails());
+            // Switch scene first, then GameManager will handle state
+            SceneManager.getInstance(SceneManager.class).setNextScene(SceneID.GAME_OVER);
+        }
+    }
+    @Override
+    public void draw(SpriteBatch batch) {
+        entityManager.draw(batch);
+        drawUI(batch);
+    }
+
+    private void drawUI(SpriteBatch batch) {
+        float padding = 10 * hudScaleX; // Scale padding with screen size
+        float baseX = padding;
+        float baseY = viewportHeight - padding;
+        float lineSpacing = 30 * hudScaleY; // Vertical spacing between lines
+
+        // Scale font size with screen
+        textManager.getFont().getData().setScale(2.0f * hudScaleX, 2.0f * hudScaleY);
+
+        // Draw scene title
+        textManager.draw(batch,
+            "Game Scene",
+            baseX,
+            baseY,
+            Color.RED);
+
+        // Draw score below title
+        textManager.draw(batch,
+            "Score: " + gameManager.getPointsManager().getPoints(),
+            baseX,
+            baseY - lineSpacing,
+            Color.RED);
+
+        // Draw fails counter below score
+        textManager.draw(batch,
+            "Fails: " + gameManager.getPointsManager().getFails(),
+            baseX,
+            baseY - (lineSpacing * 2), // Two lines down from the top
+            Color.RED);
+    }
+
+    @Override
+    public void draw(ShapeRenderer shape) {
+        entityManager.draw(shape);
+        debugRenderer.render(world, shape.getProjectionMatrix());
+    }
+
+    @Override
+    public void unload() {
+        System.out.println("Game Scene => UNLOAD");
+        try {
+            // Stop physics simulation updates
+            accumulator = 0;
+
+            // Let all entities clean up their physics bodies and other resources
+            if (entityManager != null) {
+                entityManager.dispose();
+            }
+
+            // Now dispose remaining resources (including disposing the physics world)
+            dispose();
+        } catch (Exception e) {
+            System.err.println("Error during unload: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void dispose() {
+        System.out.println("Game Scene => DISPOSE");
+        if (debugRenderer != null) {
+            debugRenderer.dispose();
+            debugRenderer = null;
+        }
+        if (world != null) {
+            world.dispose();
+            world = null;
+        }
+    }
+
+    /*public InputMultiplexer getInputMultiplexer() {
+        return inputMultiplexer;
+    }*/
+
+
+
 }
