@@ -1,11 +1,8 @@
 package io.github.team2;
 
-import java.text.BreakIterator;
-import java.util.HashMap;
-import java.util.Random;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
+import java.util.HashMap;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -123,12 +120,6 @@ public class Triangle extends GameShape {
 		moveMap.clear();
 	}
 
-//	@Override
-//	public Action getAction(TriangleState.Move moveKey) {
-//		Action action = moveMap.get(moveKey);
-//
-//		return action;
-//	}
 
 	@Override
 	public <E extends Enum<E>> Action getAction(E moveKey) {
