@@ -1,6 +1,6 @@
 package io.github.team2.Actions;
 
-public class TriangleState {
+public class TriangleBehaviour {
 	
 	
 	public enum State {

@@ -1,6 +1,6 @@
 package io.github.team2.Actions;
 
-public class DropState {
+public class DropBehaviour {
 	
 	public enum State {
 		IDLE, MOVING

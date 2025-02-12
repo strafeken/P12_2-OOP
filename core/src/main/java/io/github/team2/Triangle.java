@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.team2.Actions.Move;
-import io.github.team2.Actions.TriangleState;
+import io.github.team2.Actions.TriangleBehaviour;
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.GameShape;
 import io.github.team2.InputSystem.Action;
@@ -18,10 +18,10 @@ public class Triangle extends GameShape {
 	private float offset;
 	private float size;
 	// TODO: when done shift to dynamic class
-	private HashMap<TriangleState.Move, Action> moveMap;
+	private HashMap<TriangleBehaviour.Move, Action> moveMap;
 	// movment states can move to dynamic
-	private TriangleState.State currentState;
-	private TriangleState.Move currentActionState;
+	private TriangleBehaviour.State currentState;
+	private TriangleBehaviour.Move currentActionState;
 
 	public Triangle() {
 		setEntityType(EntityType.TRIANGLE);
@@ -31,8 +31,8 @@ public class Triangle extends GameShape {
 		setColor(Color.WHITE);
 		size = 10;
 		moveMap = new HashMap<>();
-		currentState = TriangleState.State.IDLE;
-		currentActionState = TriangleState.Move.NONE;
+		currentState = TriangleBehaviour.State.IDLE;
+		currentActionState = TriangleBehaviour.Move.NONE;
 		initActionMoveMap();
 
 	}
@@ -47,8 +47,8 @@ public class Triangle extends GameShape {
 		setSize(size);
 		setOffset(offset);
 		moveMap = new HashMap<>();
-		currentState = TriangleState.State.IDLE;
-		currentActionState = TriangleState.Move.NONE;
+		currentState = TriangleBehaviour.State.IDLE;
+		currentActionState = TriangleBehaviour.Move.NONE;
 		initActionMoveMap();
 
 		// auto calculate width and height
@@ -92,26 +92,26 @@ public class Triangle extends GameShape {
 
 	// TODO: move to dynamic class
 
-	public void setCurrentActionState(TriangleState.Move moveState) {
+	public void setCurrentActionState(TriangleBehaviour.Move moveState) {
 		currentActionState = moveState;
 	}
 
-	public TriangleState.Move getCurrentActionState() {
+	public TriangleBehaviour.Move getCurrentActionState() {
 		return currentActionState;
 	}
 
-	public void setCurrentState(TriangleState.State state) {
+	public void setCurrentState(TriangleBehaviour.State state) {
 		currentState = state;
 	}
 
-	public TriangleState.State getCurrentState() {
+	public TriangleBehaviour.State getCurrentState() {
 		return currentState;
 	}
 
 	public void initActionMoveMap() {
 
-		moveMap.put(TriangleState.Move.LEFT, new Move(this, new Vector2(-1, 0)));
-		moveMap.put(TriangleState.Move.RIGHT, new Move(this, new Vector2(1, 0)));
+		moveMap.put(TriangleBehaviour.Move.LEFT, new Move(this, new Vector2(-1, 0)));
+		moveMap.put(TriangleBehaviour.Move.RIGHT, new Move(this, new Vector2(1, 0)));
 
 	}
 
@@ -144,13 +144,13 @@ public class Triangle extends GameShape {
 
 	public void updateMovement() {
 		// move from default
-		if (getCurrentState() == TriangleState.State.IDLE) {
+		if (getCurrentState() == TriangleBehaviour.State.IDLE) {
 
-			setCurrentActionState(TriangleState.Move.LEFT);
-			setCurrentState(TriangleState.State.MOVING);
+			setCurrentActionState(TriangleBehaviour.Move.LEFT);
+			setCurrentState(TriangleBehaviour.State.MOVING);
 		} 
 		
-		else if (getCurrentState() == TriangleState.State.MOVING) {
+		else if (getCurrentState() == TriangleBehaviour.State.MOVING) {
 			switch (getCurrentActionState()) {
 			// move left at start
 			case NONE:
@@ -163,7 +163,7 @@ public class Triangle extends GameShape {
 				// change dir if reach
 				if (checkPositionLeft()) {
 
-					setCurrentActionState(TriangleState.Move.RIGHT);
+					setCurrentActionState(TriangleBehaviour.Move.RIGHT);
 				}
 
 				break;
@@ -171,7 +171,7 @@ public class Triangle extends GameShape {
 			case RIGHT:
 				// change dir if reach
 				if (checkPositionRight()) {
-					setCurrentActionState(TriangleState.Move.LEFT);
+					setCurrentActionState(TriangleBehaviour.Move.LEFT);
 				}
 				break;
 

@@ -6,7 +6,7 @@ import java.util.Random;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.team2.Actions.DropState;
+import io.github.team2.Actions.DropBehaviour;
 import io.github.team2.Actions.Move;
 
 import io.github.team2.EntitySystem.EntityType;
@@ -19,10 +19,10 @@ public class Drop extends TextureObject {
 	// private float dropSpeed = 100;
 
 	// TODO: when done shift to dynamic class
-	private HashMap<DropState.Move, Action> moveMap;
+	private HashMap<DropBehaviour.Move, Action> moveMap;
 	// movment states can move to dynamic
-	private DropState.State currentState;
-	private DropState.Move currentActionState;
+	private DropBehaviour.State currentState;
+	private DropBehaviour.Move currentActionState;
 
 	public Drop(String texture) {
 		setEntityType(EntityType.DROP);
@@ -32,8 +32,8 @@ public class Drop extends TextureObject {
 		setSpeed(10);
 
 		moveMap = new HashMap<>();
-		currentState = DropState.State.IDLE;
-		currentActionState = DropState.Move.NONE;
+		currentState = DropBehaviour.State.IDLE;
+		currentActionState = DropBehaviour.Move.NONE;
 		initActionMoveMap();
 	}
 
@@ -45,8 +45,8 @@ public class Drop extends TextureObject {
 		setSpeed(speed);
 
 		moveMap = new HashMap<>();
-		currentState = DropState.State.IDLE;
-		currentActionState = DropState.Move.NONE;
+		currentState = DropBehaviour.State.IDLE;
+		currentActionState = DropBehaviour.Move.NONE;
 		initActionMoveMap();
 
 	}
@@ -71,25 +71,25 @@ public class Drop extends TextureObject {
 		return action;
 	}
 
-	public void setCurrentActionState(DropState.Move moveState) {
+	public void setCurrentActionState(DropBehaviour.Move moveState) {
 		currentActionState = moveState;
 	}
 
-	public DropState.Move getCurrentActionState() {
+	public DropBehaviour.Move getCurrentActionState() {
 		return currentActionState;
 	}
 
-	public void setCurrentState(DropState.State state) {
+	public void setCurrentState(DropBehaviour.State state) {
 		currentState = state;
 	}
 
-	public DropState.State getCurrentState() {
+	public DropBehaviour.State getCurrentState() {
 		return currentState;
 	}
 
 	public void initActionMoveMap() {
 
-		moveMap.put(DropState.Move.DROP, new Move(this, new Vector2(0, -1)));
+		moveMap.put(DropBehaviour.Move.DROP, new Move(this, new Vector2(0, -1)));
 
 	}
 
@@ -101,13 +101,13 @@ public class Drop extends TextureObject {
 	public void updateMovement() {
 		
 		
-		if (getCurrentState() == DropState.State.IDLE) {
+		if (getCurrentState() == DropBehaviour.State.IDLE) {
 
-			setCurrentActionState(DropState.Move.DROP);
-			setCurrentState(DropState.State.MOVING);
+			setCurrentActionState(DropBehaviour.Move.DROP);
+			setCurrentState(DropBehaviour.State.MOVING);
 		} 
 		
-		else if (getCurrentState() == DropState.State.MOVING) {
+		else if (getCurrentState() == DropBehaviour.State.MOVING) {
 
 			
 			switch (getCurrentActionState()) {
