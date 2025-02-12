@@ -166,7 +166,7 @@ public class GameScene extends Scene {
 
 
 				droplets[i] = tmpDrop;
-        		droplets[i].setAction(new Dropping(droplets[i]));
+        		//droplets[i].setAction(new Dropping(droplets[i]));
 
         		droplets[i].InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
     	}
