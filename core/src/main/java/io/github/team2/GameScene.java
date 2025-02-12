@@ -144,7 +144,7 @@ public class GameScene extends Scene {
         		droplets[i].InitPhysicsBody(world, BodyDef.BodyType.DynamicBody);
     	}
 
-		bucket = new Bucket(EntityType.BUCKET, "bucket.png", new Vector2(200, 50), new Vector2(0, 0), 200);
+		bucket = new Bucket(EntityType.BUCKET, "bucket.png", new Vector2(200, 50), new Vector2(0, 0), new Vector2(0, 0), 200);
 		bucket.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
 		circle = new Circle(EntityType.CIRCLE, new Vector2(500, 300), new Vector2(0, 0), 200, Color.RED, 50);
@@ -154,7 +154,7 @@ public class GameScene extends Scene {
 				50);
 		triangle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
-		player = new Player(EntityType.PLAYER, "bucket.png", new Vector2(300, 100), new Vector2(0, 0), 200);
+		player = new Player(EntityType.PLAYER, "bucket.png", new Vector2(300, 100), new Vector2(0, 0),  new Vector2(0, 0), 200);
 		player.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
 		for (int i = 0; i < droplets.length; ++i)

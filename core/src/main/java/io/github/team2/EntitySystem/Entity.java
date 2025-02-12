@@ -10,24 +10,28 @@ public abstract class Entity implements Movement {
 
 	private Vector2 position;
 	private Vector2 direction;
+	private Vector2 rotation;
 	private float speed;
 	private EntityType type;
 	private PhysicsBody body;
 
 	private boolean isMoving;
+	
 
 	public Entity() {
 		position = new Vector2(0, 0);
 		direction = new Vector2(0, 0);
+		rotation = new Vector2(0, 0);
 		speed = 0;
 		type = EntityType.UNDEFINED;
 		body = null;
 		isMoving = false;
 	}
 
-	public Entity(Vector2 position, Vector2 direction, float speed) {
+	public Entity(Vector2 position, Vector2 direction, Vector2 rotation, float speed) {
 		this.position = position;
 		this.direction = direction;
+		this.rotation = rotation;
 		this.speed = speed;
 		type = EntityType.UNDEFINED;
 		body = null;
@@ -37,17 +41,25 @@ public abstract class Entity implements Movement {
 	public Vector2 getPosition() {
 		return position;
 	}
-
+	
 	public void setPosition(Vector2 position) {
 		this.position = position;
 	}
-
+	
 	public Vector2 getDirection() {
 		return direction;
 	}
 
 	public void setDirection(Vector2 direction) {
 		this.direction = direction;
+	}
+	
+	public Vector2 getRotation() {
+		return rotation;
+	}
+
+	public void setRotation(Vector2 rotation) {
+		this.rotation = rotation;
 	}
 
 	public float getSpeed() {
@@ -98,5 +110,6 @@ public abstract class Entity implements Movement {
 			return;
 
 		body.updateEntityPosition(this);
+		body.updateEntityRotation(this);
 	}
 }

@@ -8,11 +8,12 @@ import io.github.team2.EntitySystem.TextureObject;
 
 public class Player extends TextureObject {
 
-	public Player(EntityType type, String texture, Vector2 position, Vector2 direction, float speed) {
+	public Player(EntityType type, String texture, Vector2 position, Vector2 direction, Vector2 rotation, float speed) {
 		setEntityType(type);
 		setTexture(new Texture(texture));
 		setPosition(position);
 		setDirection(direction);
+		setRotation(rotation);
 		setSpeed(speed);
 	}
 

@@ -16,11 +16,14 @@ public class TextureObject extends Entity {
 		tex = new Texture(texture);
 	}
 
-	public TextureObject(String texture, Vector2 position, Vector2 direction, float speed) {
+	public TextureObject(String texture, Vector2 position, Vector2 direction, Vector2 rotation, float speed) {
 		tex = new Texture(texture);
 		setPosition(position);
 		setDirection(direction);
+		setRotation(rotation);
 		setSpeed(speed);
+		
+		
 	}
 
 	public Texture getTexture() {
@@ -38,6 +41,7 @@ public class TextureObject extends Entity {
 	public float getHeight() {
 		return tex.getHeight();
 	}
+	
 
 	public float getSide(String side) {
 		float value = 0;
@@ -59,8 +63,22 @@ public class TextureObject extends Entity {
 
 	@Override
 	public void draw(SpriteBatch batch) {
-		batch.draw(tex, getPosition().x - tex.getWidth() / 2, getPosition().y - tex.getHeight() / 2);
+		if (getBody() == null) return;
+	    float angle = getBody().getAngle() * (180f / (float) Math.PI); // Convert radians to degrees
+
+	    batch.draw(
+	        tex, // Texture
+	        getPosition().x - tex.getWidth() / 2, getPosition().y - tex.getHeight() / 2, // Position
+	        tex.getWidth() / 2, tex.getHeight() / 2, // Origin (center for rotation)
+	        tex.getWidth(), tex.getHeight(), // Width & Height
+	        1, 1, // Scale X, Scale Y
+	        angle, // Rotation angle in degrees
+	        0, 0, tex.getWidth(), tex.getHeight(), // Source rectangle (full texture)
+	        false, false // Flip X, Flip Y
+	    );
 	}
+	
+	
 
 	@Override
 	public void moveUserControlled() {

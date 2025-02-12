@@ -17,9 +17,9 @@ public class TexButton extends TextureObject {
     private float buttonHeight;
 
 
-    public TexButton(String text, String texture, Vector2 position, Vector2 direction, 
+    public TexButton(String text, String texture, Vector2 position, Vector2 direction, Vector2 rotation, 
                     float speed, Action action, float width, float height) {
-        super(texture, position, direction, speed);
+        super(texture, position, direction,rotation, speed);
         this.text = text;
         this.action = action;
         this.buttonWidth = width;

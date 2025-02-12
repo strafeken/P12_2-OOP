@@ -15,15 +15,20 @@ public class Bucket extends TextureObject {
 		setTexture(new Texture(texture));
 		setPosition(new Vector2(0, 0));
 		setDirection(new Vector2(0, 0));
+		setRotation(new Vector2(0, 0));
 		setSpeed(0);
+		
+		
 	}
 
-	public Bucket(EntityType type, String texture, Vector2 position, Vector2 direction, float speed) {
+	public Bucket(EntityType type, String texture, Vector2 position, Vector2 direction, Vector2 rotation, float speed) {
 		setEntityType(type);
 		setTexture(new Texture(texture));
 		setPosition(position);
 		setDirection(direction);
+		setRotation(rotation);
 		setSpeed(speed);
+		
 	}
 
 	@Override
@@ -62,6 +67,12 @@ public class Bucket extends TextureObject {
 		if (direction == "DOWN") {
 			getBody().setLinearVelocity(0, -getSpeed());
 		}
+		if (direction == "CLOCKWISE") {
+			getBody().setAngularVelocity( -Math.abs(getSpeed()) ); 
+		}
+	    if (direction == "ANTICLOCKWISE") {
+	    	getBody().setAngularVelocity( Math.abs(getSpeed()) );   
+	    }
 
 	}
 

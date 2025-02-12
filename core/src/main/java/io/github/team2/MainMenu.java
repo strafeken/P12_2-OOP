@@ -36,7 +36,7 @@ public class MainMenu extends Scene {
 
         image = new TextureObject("libgdx.png",
                 new Vector2(SceneManager.screenWidth / 2, SceneManager.screenHeight / 2),
-                new Vector2(0, 0),
+                new Vector2(0, 0),new Vector2(0, 0),
                 0);
         // Create start button
         StartGame startAction = new StartGame(SceneManager.getInstance());

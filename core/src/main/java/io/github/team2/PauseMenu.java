@@ -32,7 +32,7 @@ public class PauseMenu extends Scene {
 		tm = new TextManager();
 
 		image = new TextureObject("libgdx.png", new Vector2(SceneManager.screenWidth / 2, SceneManager.screenHeight / 2),
-				new Vector2(0, 0), 0);
+				new Vector2(0, 0),new Vector2(0, 0), 0);
 
 		em.addEntities(image);
 
