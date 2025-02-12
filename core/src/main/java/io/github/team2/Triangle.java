@@ -1,5 +1,6 @@
 package io.github.team2;
 
+import java.text.BreakIterator;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -10,7 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.team2.Actions.Move;
-import io.github.team2.Actions.MoveCommand;
+import io.github.team2.Actions.TriangleState;
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.GameShape;
 import io.github.team2.InputSystem.Action;
@@ -20,8 +21,10 @@ public class Triangle extends GameShape {
 	private float offset;
 	private float size;
 	// TODO: when done shift to dynamic class
-	private HashMap<MoveCommand, Action> moveMap;
-	private MoveCommand currentActionState;
+	private HashMap<TriangleState.Move, Action> moveMap;
+	// movment states can move to dynamic
+	private TriangleState.State currentState;
+	private TriangleState.Move currentActionState;
 
 	public Triangle() {
 		setEntityType(EntityType.TRIANGLE);
@@ -31,7 +34,9 @@ public class Triangle extends GameShape {
 		setColor(Color.WHITE);
 		size = 10;
 		moveMap = new HashMap<>();
-		currentActionState = MoveCommand.none;
+		currentState = TriangleState.State.IDLE;
+		currentActionState = TriangleState.Move.NONE;
+		initActionMoveMap();
 
 	}
 
@@ -45,7 +50,9 @@ public class Triangle extends GameShape {
 		setSize(size);
 		setOffset(offset);
 		moveMap = new HashMap<>();
-		currentActionState = MoveCommand.none;
+		currentState = TriangleState.State.IDLE;
+		currentActionState = TriangleState.Move.NONE;
+		initActionMoveMap();
 
 		// auto calculate width and height
 		this.setWidth(2 * offset);
@@ -88,30 +95,26 @@ public class Triangle extends GameShape {
 
 	// TODO: move to dynamic class
 
-	// TODO : should add moves here or in game scene ? allow entity to add themself
-	// in game scene ?
-
-	// public void addActionMoveMap(MoveCommand moveKey, Action moveAction) {
-	// moveMap.put(moveKey, moveAction);
-
-
-	
-
-	
-	
-	
-	public void setCurrentActionState(MoveCommand moveState) {
+	public void setCurrentActionState(TriangleState.Move moveState) {
 		currentActionState = moveState;
 	}
 
-	public MoveCommand getCurrentActionState() {
+	public TriangleState.Move getCurrentActionState() {
 		return currentActionState;
 	}
 
-	public void addActionMoveMap() {
+	public void setCurrentState(TriangleState.State state) {
+		currentState = state;
+	}
 
-		moveMap.put(MoveCommand.left, new Move(this, new Vector2(-1, 0)));
-		moveMap.put(MoveCommand.right, new Move(this, new Vector2(1, 0)));
+	public TriangleState.State getCurrentState() {
+		return currentState;
+	}
+
+	public void initActionMoveMap() {
+
+		moveMap.put(TriangleState.Move.LEFT, new Move(this, new Vector2(-1, 0)));
+		moveMap.put(TriangleState.Move.RIGHT, new Move(this, new Vector2(1, 0)));
 
 	}
 
@@ -120,8 +123,16 @@ public class Triangle extends GameShape {
 		moveMap.clear();
 	}
 
+//	@Override
+//	public Action getAction(TriangleState.Move moveKey) {
+//		Action action = moveMap.get(moveKey);
+//
+//		return action;
+//	}
+
 	@Override
-	public Action getAction(MoveCommand moveKey) {
+	public <E extends Enum<E>> Action getAction(E moveKey) {
+
 		Action action = moveMap.get(moveKey);
 
 		return action;
@@ -131,53 +142,61 @@ public class Triangle extends GameShape {
 
 		return true;
 	}
-	
-	
+
 	public boolean checkPositionLeft() {
-	    return (this.getPosition().x - getWidth()/2) <= SceneManager.screenLeft;
+		return (getPosition().x - getWidth() / 2) <= SceneManager.screenLeft;
 	}
 
 	public boolean checkPositionRight() {
-	    return (this.getPosition().x + getWidth()/2) >= SceneManager.screenWidth;
+		return (getPosition().x + getWidth() / 2) >= SceneManager.screenWidth;
 	}
-	
-	
 
 	public void updateMovement() {
 		// move from default
+		if (getCurrentState() == TriangleState.State.IDLE) {
+
+			setCurrentActionState(TriangleState.Move.LEFT);
+			setCurrentState(TriangleState.State.MOVING);
+		} 
 		
-		
-		switch (this.getCurrentActionState()) {
-		// move right at start
-		case none:
-			this.setCurrentActionState(MoveCommand.left);
-			break;
-			
-		case left:
-			
-			// change dir if reach 
-			if (this.checkPositionLeft()) {
-				
-				this.setCurrentActionState(MoveCommand.right);
+		else if (getCurrentState() == TriangleState.State.MOVING) {
+			switch (getCurrentActionState()) {
+			// move left at start
+			case NONE:
+				// state not changed
+				System.out.println("Triangle state stuck in NONE");
+				return;
+
+			case LEFT:
+
+				// change dir if reach
+				if (checkPositionLeft()) {
+
+					setCurrentActionState(TriangleState.Move.RIGHT);
+				}
+
+				break;
+
+			case RIGHT:
+				// change dir if reach
+				if (checkPositionRight()) {
+					setCurrentActionState(TriangleState.Move.LEFT);
+				}
+				break;
+
+			default:
+				System.out.println("Unknown direction");
+				break;
 			}
 
-			break;
-			
-		case right:
-			// change dir if reach 
-			if (this.checkPositionRight()) {
-				this.setCurrentActionState(MoveCommand.left);
-			}
-			break;
+			getAction(getCurrentActionState()).execute();
 
-		default:
-			System.out.println("Unknown direction");
-			break;
 		}
-		
-		this.getAction(this.getCurrentActionState()).execute();
-		
 
+		else {
+			System.out.println("Unknown state");
+
+		}
 
 	}
 

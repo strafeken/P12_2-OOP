@@ -88,10 +88,12 @@ public abstract class Entity {
 		
 	}
 	// TODO: adjust in future 
-	public Action getAction(MoveCommand moveKey) {
+	public <E extends Enum<E>> Action getAction(E moveKey) {
 		
 		return null;
 	}
+	
+	
 	
 	public void InitPhysicsBody(World world, BodyDef.BodyType bodyType) {
 		body = new PhysicsBody(world, this, bodyType);

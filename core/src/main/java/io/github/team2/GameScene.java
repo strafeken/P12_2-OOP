@@ -71,7 +71,7 @@ public class GameScene extends Scene {
     // this need change to its own entity types?  
 	private Entity bucket;
 	private Entity circle;
-	private Triangle triangle;
+	private Entity triangle;
 	private Entity player;
 
 	private void spawnPowerUp() {
@@ -180,8 +180,6 @@ public class GameScene extends Scene {
 		triangle = new Triangle(EntityType.TRIANGLE, new Vector2(200, 200), new Vector2(0, 0), 200, Color.GREEN, 50,
 				50);
 		triangle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
-		// init triangle movement
-		triangle.addActionMoveMap();
 
 		player = new Player(EntityType.PLAYER, "bucket.png", new Vector2(300, 100), new Vector2(0, 0), 200);
 		player.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
