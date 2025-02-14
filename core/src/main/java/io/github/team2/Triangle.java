@@ -135,7 +135,7 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
 		
 		else if (getCurrentState() == TriangleBehaviour.State.MOVING) {
 			switch (getCurrentActionState()) {
-			// move left at start
+			
 			case NONE:
 				// state not changed
 				System.out.println("Triangle state stuck in NONE");
@@ -175,14 +175,14 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
 	}
   
   
-  /*
+  
 	@Override
 	public void update() {
 //		System.out.println("Triangle  XY: " + getX() + " / " + getY());
 		updateMovement();
 		updateBody();
 	}
-  */
+  
   
 
 }

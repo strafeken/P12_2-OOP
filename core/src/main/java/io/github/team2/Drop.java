@@ -85,8 +85,7 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 	 
 
 	public void updateMovement() {
-		System.out.println(getCurrentActionState());
-		System.out.println(getCurrentState());
+
 		
 		if (getCurrentState() == DropBehaviour.State.IDLE) {
 
