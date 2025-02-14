@@ -43,6 +43,7 @@ public class SettingsMenu extends Scene {
         
         // Initialize ShapeRenderer
         shapeRenderer = new ShapeRenderer();
+        
     }
 
     private void createKeyBindButtons() {
@@ -114,7 +115,6 @@ public class SettingsMenu extends Scene {
     }
 
     private void updateVolumeSlider() {
-        // Check if the mouse is within the slider bounds
         if (Gdx.input.isTouched()) {
             float touchX = Gdx.input.getX();
             float touchY = Gdx.graphics.getHeight() - Gdx.input.getY(); // invert y
@@ -128,40 +128,45 @@ public class SettingsMenu extends Scene {
             draggingSlider = false;
         }
 
-        // If we’re dragging, adjust volume
+        // Adjust volume only while dragging
         if (draggingSlider) {
             float touchX = Gdx.input.getX();
             // Convert position to 0.0 - 1.0 range
             float normalized = Math.min(1f, Math.max(0f, (touchX - sliderX) / sliderWidth));
+
+            // Update the music volume
             AudioManager.getInstance().setVolume(normalized);
+
+            // Optional debug log:
+            Gdx.app.log("SettingsMenu", "Volume updated to: " + AudioManager.getInstance().getVolume());
         }
     }
 
+
     private void drawVolumeSlider(SpriteBatch batch) {
         float volume = AudioManager.getInstance().getVolume();
-        
-        // End SpriteBatch before using ShapeRenderer
+        System.out.println("Drawing volume slider at: " + volume);
+
         batch.end();
-        
-        // Use the instance variable instead of null
+
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.GRAY);
         shapeRenderer.rect(sliderX, sliderY, sliderWidth, sliderHeight);
 
-        // Draw the slider "thumb"
         shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.rect(sliderX, sliderY, sliderWidth * volume, sliderHeight);
         shapeRenderer.end();
-        
-        // Resume SpriteBatch for text
+
         batch.begin();
         textManager.draw(batch, "Volume: " + (int)(volume * 100) + "%", sliderX, sliderY + 40, Color.WHITE);
     }
+
 
     @Override
     public void draw(ShapeRenderer shape) {
         // No shapes to draw
     }
+    
 
     @Override
     public void unload() {
