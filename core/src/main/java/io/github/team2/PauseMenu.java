@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import io.github.team2.Actions.ResumeGame;
 import io.github.team2.EntitySystem.Entity;
-import io.github.team2.EntitySystem.TextureObject;
+import io.github.team2.EntitySystem.StaticTextureObject;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 
@@ -22,9 +22,9 @@ public class PauseMenu extends Scene {
     public void load() {
         System.out.println("Pause Menu => LOAD");
 
-        image = new TextureObject("libgdx.png",
+        image = new StaticTextureObject("libgdx.png",
             new Vector2(SceneManager.screenWidth / 2, SceneManager.screenHeight / 2),
-            new Vector2(0, 0), 0);
+            new Vector2(0, 0));
 
         entityManager.addEntities(image);
         inputManager.registerKeyDown(Input.Keys.ESCAPE,
@@ -55,8 +55,8 @@ public class PauseMenu extends Scene {
 
     @Override
     public void dispose() {
-        if (image instanceof TextureObject) {
-            ((TextureObject) image).dispose();
+        if (image instanceof StaticTextureObject) {
+            ((StaticTextureObject) image).dispose();
         }
         entityManager.dispose();
         textManager.dispose();

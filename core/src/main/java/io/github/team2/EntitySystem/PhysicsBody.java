@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 import io.github.team2.Circle;
+import io.github.team2.Drop;
 import io.github.team2.Triangle;
 
 public class PhysicsBody {
@@ -51,9 +52,16 @@ public class PhysicsBody {
 			float triangleSize = ((Triangle) entity).getSize();
 			triangle.setAsBox(triangleSize, triangleSize);
 			return triangle;
+		/*	
+		case DROP:
+			PolygonShape boxDrop = new PolygonShape();
+			Drop textureEntity = (Drop) entity;
+			box.setAsBox(textureEntity.getWidth() / 2, textureEntity.getHeight() / 2);
+			return box;	
+		*/
 		default:
 			PolygonShape box = new PolygonShape();
-			TextureObject textureEntity = (TextureObject) entity;
+			DynamicTextureObject textureEntity = (DynamicTextureObject) entity;
 			box.setAsBox(textureEntity.getWidth() / 2, textureEntity.getHeight() / 2);
 			return box;
 		}

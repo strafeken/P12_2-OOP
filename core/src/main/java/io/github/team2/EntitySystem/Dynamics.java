@@ -1,19 +1,46 @@
 package io.github.team2.EntitySystem;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.math.Vector2;
 
+import io.github.team2.Actions.Move;
+import io.github.team2.Actions.TriangleBehaviour;
+import io.github.team2.InputSystem.Action;
 
-public abstract class Dynamics extends Entity {
+
+public abstract class Dynamics <S extends Enum<S>, A extends Enum<A>>  extends Entity{
     protected float speed;
+    private Action action;
+    
+
+    
+    private HashMap<A, Action> moveMap;
+    private S currentState;
+    private A currentActionState;
+    
 
     public Dynamics(float speed) {
         super();
         this.speed = speed;
+        
+        moveMap = new HashMap<>();
+        currentState = null;
+        currentActionState = null;
+        action = null;
+       
     }
 
-    public Dynamics(Vector2 position, Vector2 direction, float speed) {
-        super(position, direction, speed);
+    public Dynamics(Vector2 position, Vector2 direction, float speed, S state, A actionState) {
+        super(position, direction);
         this.speed = speed;
+        
+        moveMap = new HashMap<>();
+        currentState = state;
+        currentActionState = actionState;
+        action = null;
+        
+        
     }
 
     public float getSpeed() {
@@ -23,7 +50,53 @@ public abstract class Dynamics extends Entity {
     public void setSpeed(float speed) {
         this.speed = speed;
     }
+    
+    
+	// TODO: adjust in future 
+	public <E extends Enum<E>> Action getAction(E moveKey) {
+		
+		action = moveMap.get(moveKey);
+		
+		
+		
+		return action;
+	}
+	
+    
+    public  HashMap<A, Action> getMoveMap() {
+        return (HashMap<A, Action>) moveMap;
+    }
 
+    public void setCurrentActionState(A actionState) {
+        currentActionState = actionState;  // Cast needed if `currentActionState` is strongly typed
+    }
+
+    public A getCurrentActionState() {
+        return currentActionState;  
+    }
+
+    public void setCurrentState(S state) {
+        currentState = state;  
+    }
+
+    public S  getCurrentState() {
+        return currentState;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+	public void clearMoveMap() {
+
+		moveMap.clear();
+	}
+  
+    
+    
     @Override
     public void update() {
         // Update position based on direction and speed

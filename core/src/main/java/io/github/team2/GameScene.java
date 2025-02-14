@@ -16,10 +16,8 @@ import io.github.team2.SceneSystem.*;
 import java.util.Random;
 import com.badlogic.gdx.utils.Array;
 
-/**
- * Scene class responsible for game rendering and entity management
- * Follows SRP by handling only scene-specific operations
- */
+import io.github.team2.Actions.PlayerBehaviour;
+
 public class GameScene extends Scene {
     // Physics constants
     private static final float TIME_STEP = 1/60f;
@@ -29,6 +27,22 @@ public class GameScene extends Scene {
     private static final float POWERUP_SPAWN_CHANCE = 0.005f;
     private static final float MIN_SPAWN_INTERVAL = 1f;
     private static final float MAX_SPAWN_INTERVAL = 3f;
+
+
+    
+
+/* check if need remove 
+	private void spawnPowerUp() {
+        // Only try spawning if a powerup doesn't already exist
+        boolean powerupExists = false;
+        for (Entity entity : em.getEntities()) {
+            if (entity.getEntityType() == EntityType.POWERUP) {
+                powerupExists = true;
+                break;
+            }
+        }
+     */
+
 
     // Physics world
     private World world;
@@ -53,6 +67,9 @@ public class GameScene extends Scene {
     private float dropletSpawnTimer;
     private Random random;
 
+    
+
+    
     public GameScene() {
         super();
         this.gameManager = GameManager.getInstance(); // Use singleton instead of new instance
@@ -69,6 +86,7 @@ public class GameScene extends Scene {
         initializeManagers();
         initializeEntities();
         initializeInput();
+
         settingsButton = new Button(
             200,
             "Settings",
@@ -79,12 +97,16 @@ public class GameScene extends Scene {
             70
         );
         inputManager.registerButton(settingsButton);
+
     }
 
     private void initializeWorld() {
-        world = new World(new Vector2(0, -100), true);
+        world = new World(new Vector2(0, 0), true);
         debugRenderer = new Box2DDebugRenderer();
     }
+    
+    
+    
 
     private void initializeManagers() {
         // Initialize entity manager
@@ -106,36 +128,52 @@ public class GameScene extends Scene {
     }
 
     private void initializeEntities() {
-        // Initialize static entities
-        circle = new Circle(EntityType.CIRCLE,
-                          new Vector2(500, 300),
-                          new Vector2(0, 0),
-                          200, Color.RED, 50);
-        circle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+    	
+    	try {
+    		
+    		
+    		
+            // Initialize static entities
+            circle = new Circle(EntityType.CIRCLE,
+                              new Vector2(500, 300),
+                              new Vector2(0, 0),
+                               Color.RED, 50);
+            circle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
-        triangle = new Triangle(EntityType.TRIANGLE,
-                             new Vector2(100, 100),
-                             new Vector2(0, 0),
-                             200, Color.GREEN, 50, 50);
-        triangle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+            triangle = new Triangle(EntityType.TRIANGLE,
+                                 new Vector2(100, 100),
+                                 new Vector2(0, 0),
+                                 200, Color.GREEN, 50, 50,
+                                 TriangleBehaviour.State.IDLE, TriangleBehaviour.Move.NONE);
+            
+            triangle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
-        // Initialize player
-        player = new Player(EntityType.PLAYER,
-                          "bucket.png",
-                          new Vector2(300, 100),
-                          new Vector2(0, 0),
-                          200);
-        player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+            // Initialize player
+            player = new Player(EntityType.PLAYER,
+                              "bucket.png",
+                              new Vector2(300, 100),
+                              new Vector2(0, 0),200, PlayerBehaviour.State.IDLE, PlayerBehaviour.Move.NONE
+                              );
+            
+            player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
-        gameManager.getPlayerEntityManager().addEntity(player);
+            gameManager.getPlayerEntityManager().addEntity(player);
 
-        // Initialize droplets
-        initializeDroplets();
+            // Initialize droplets
+            initializeDroplets();
 
-        // Add entities to manager
-        entityManager.addEntities(circle);
-        entityManager.addEntities(triangle);
-        entityManager.addEntities(player);
+            // Add entities to manager
+            entityManager.addEntities(circle);
+            entityManager.addEntities(triangle);
+            entityManager.addEntities(player);
+    		
+    		
+		} catch (Exception e) {
+			
+			System.out.println("error in game scene add area" + e);
+		}
+    	
+    
     }
 
     private void initializeDroplets() {
@@ -153,9 +191,9 @@ public class GameScene extends Scene {
                          new Vector2(random.nextFloat() * SceneManager.screenWidth,
                                    random.nextFloat() * SceneManager.screenHeight),
                          new Vector2(0, 0),
-                         100);
+                         100, DropBehaviour.State.IDLE, DropBehaviour.Move.NONE );
 
-        drop.setAction(new Dropping(drop));
+        //drop.setAction(new Dropping(drop));
         drop.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
         return drop;
     }
@@ -176,7 +214,11 @@ public class GameScene extends Scene {
             new PauseGame(SceneManager.getInstance(SceneManager.class)));
         inputManager.registerKeyDown(Input.Keys.X,
             new ExitGame(SceneManager.getInstance(SceneManager.class)));
+        inputManager.update();
+        playerInputManager.update();
+
     }
+
 
         //inputMultiplexer.addProcessor(inputManager);
         //inputMultiplexer.addProcessor(playerInputManager);
@@ -186,7 +228,10 @@ public class GameScene extends Scene {
 
     @Override
     public void update() {
-        inputManager.update();
+
+        
+    	try {
+        	inputManager.update();
         playerInputManager.update();
         updateInput();
         updateEntities();
@@ -194,12 +239,19 @@ public class GameScene extends Scene {
         updatePhysics();
         checkGameOver();
         settingsButton.update();
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("error in game scene" + e);
+		}
+    	
+
     }
 
     private void updateInput() {
         playerInputManager.update();
         inputManager.update();
     }
+
 
     private void updateEntities() {
         entityManager.update();
@@ -210,6 +262,7 @@ public class GameScene extends Scene {
         updateDropletSpawning();
     }
 
+
     private void spawnPowerUp() {
         if (!isPowerUpPresent() && random.nextFloat() <= POWERUP_SPAWN_CHANCE) {
             PowerUp powerUp = new PowerUp(
@@ -218,10 +271,10 @@ public class GameScene extends Scene {
                 new Vector2(random.nextFloat() * SceneManager.screenWidth,
                           SceneManager.screenHeight),
                 new Vector2(0, 0),
-                100
-            );
+                100, DropBehaviour.State.IDLE, DropBehaviour.Move.NONE);
+            
             powerUp.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
-            powerUp.setAction(new Dropping(powerUp));
+            //powerUp.setAction(new Dropping(powerUp));
             entityManager.addEntities(powerUp);
         }
     }
@@ -271,9 +324,10 @@ public class GameScene extends Scene {
                                new Vector2(random.nextFloat() * SceneManager.screenWidth,
                                          SceneManager.screenHeight),
                                new Vector2(0, 0),
-                               100);
+                               100, DropBehaviour.State.IDLE, DropBehaviour.Move.NONE);
+            
             drop.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
-            drop.setAction(new Dropping(drop));
+            //drop.setAction(new Dropping(drop));
             entityManager.addEntities(drop);
         }
     }
@@ -377,5 +431,7 @@ public class GameScene extends Scene {
     }*/
 
 
+
+    
 
 }

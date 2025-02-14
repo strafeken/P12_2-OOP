@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import io.github.team2.Actions.StartGame;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.EntitySystem.EntityManager;
-import io.github.team2.EntitySystem.TextureObject;
+import io.github.team2.EntitySystem.StaticTextureObject;
 import io.github.team2.InputSystem.Button;
 import io.github.team2.InputSystem.InputManager;
 import io.github.team2.SceneSystem.Scene;
@@ -18,7 +18,7 @@ public class MainMenu extends Scene {
     private EntityManager em;
     private InputManager im;
     private TextManager tm;
-    private TextureObject image;
+    private StaticTextureObject image;
     private Button startButton;
 
     @Override
@@ -34,10 +34,9 @@ public class MainMenu extends Scene {
         AudioManager.getInstance().playSoundEffect("mainmenu");
 
         // Setup background image
-        image = new TextureObject("libgdx.png",
+        image = new StaticTextureObject("libgdx.png",
                 new Vector2(SceneManager.screenWidth / 2, SceneManager.screenHeight / 2),
-                new Vector2(0, 0),
-                0);
+                new Vector2(0, 0));
         em.addEntities(image);
 
         // Create start action first
