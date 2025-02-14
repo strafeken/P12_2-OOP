@@ -38,6 +38,7 @@ public class SceneManager extends Singleton<SceneManager> {
 
 		loadScene(id);
 	}
+	
 
 	// used for pause menu
 	public void overlayScene(SceneID id) {
@@ -110,4 +111,5 @@ public class SceneManager extends Singleton<SceneManager> {
 	    if (!sceneStack.isEmpty())
 	        scenes.get(sceneStack.peek()).resize(width, height);
 	}
+	
 }

@@ -33,7 +33,7 @@ public class SettingsMenu extends Scene {
         keyBindButtons = new HashMap<>();
 
         // Add back button with null texture (will use default rendering)
-        backButton = new Button(1, "Back", null,  //change null to your png for button
+        backButton = new Button(1, "Back", "backBtn.png",  //change null to your png for button
             new Vector2(100, 50),
             () -> SceneManager.getInstance(SceneManager.class).removeOverlay(),
             100, 50);
@@ -54,7 +54,7 @@ public class SettingsMenu extends Scene {
             Button bindButton = new Button(
                 id++,
                 "Change",
-                null,  //change null to your png for button for keybind.
+                "keyboard.png",  //change null to your png for button for keybind.
                 new Vector2(400, y),
                 () -> startBinding(action),
                 80, 30
