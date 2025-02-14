@@ -15,10 +15,10 @@ import io.github.team2.EntitySystem.DynamicGameShape;
 import io.github.team2.EntitySystem.Dynamics;
 
 
-public class Triangle extends DynamicGameShape {
+public class Triangle extends DynamicGameShape<TriangleBehaviour.State, TriangleBehaviour.Move> {
     private float size;
     private float offset;
-    //private Color color;
+    
   
 
     
@@ -29,7 +29,7 @@ public class Triangle extends DynamicGameShape {
         super();
         setEntityType(EntityType.TRIANGLE);
         setPosition(new Vector2(0, 0));
-        //this.color = Color.WHITE;
+        
         this.size = 10;
         this.offset = 0;
         initActionMoveMap();
@@ -37,13 +37,17 @@ public class Triangle extends DynamicGameShape {
 
     }
 
-    public Triangle(EntityType type, Vector2 position, Vector2 direction, float speed, Color color, float size, float offset , S state, A actionState) {
+    public Triangle(EntityType type, Vector2 position, Vector2 direction, float speed, Color color, float size, float offset,
+    	TriangleBehaviour.State state, TriangleBehaviour.Move actionState) {
         super(position, direction, speed, color , state, actionState);
+        //super(position, direction, speed, color);
         setEntityType(type);
-        //this.color = color;
+        
         this.size = size;
         this.offset = offset;
-      
+        
+        //super.setCurrentState(TriangleBehaviour.State.IDLE);
+        //super.setCurrentActionState(TriangleBehaviour.Move.NONE);
         initActionMoveMap();
        
       

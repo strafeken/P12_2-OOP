@@ -117,7 +117,9 @@ public class GameScene extends Scene {
         triangle = new Triangle(EntityType.TRIANGLE,
                              new Vector2(100, 100),
                              new Vector2(0, 0),
-                             200, Color.GREEN, 50, 50);
+                             200, Color.GREEN, 50, 50,
+                             TriangleBehaviour.State.IDLE, TriangleBehaviour.Move.NONE);
+        
         triangle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
         // Initialize player

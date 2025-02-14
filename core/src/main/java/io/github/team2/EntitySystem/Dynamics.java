@@ -15,7 +15,6 @@ public abstract class Dynamics <S extends Enum<S>, A extends Enum<A>>  extends E
     // TODO: when done shift to dynamic class
     
     private HashMap<A, Action> moveMap;
-    // movment states can move to dynamic
     private S currentState;
     private A currentActionState;
     

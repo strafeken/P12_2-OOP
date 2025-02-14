@@ -152,13 +152,9 @@ public class Drop extends DynamicTextureObject {
 				// check if reach 
 				if (checkPosition()) {
 					
-					// Increment fail counter through GameScene
-	                if (GameScene.getInstance().getPointsManager() != null) {
-	                    GameScene.getInstance().getPointsManager().incrementFails();
-	                }
-	           
-	            Random random =new Random();
-	            getBody().setLocation(random.nextFloat() * SceneManager.screenWidth, SceneManager.screenHeight);
+					
+					handleDropMiss();
+					resetPosition();
 	            
 				}
 				break;
@@ -195,6 +191,9 @@ public class Drop extends DynamicTextureObject {
     @Override
     public void update() {
         if (getBody() != null) {  // Add null check
+        	
+        	updateMovement();
+        	/*
             if (!isOutOfBounds()) {
                 if (getAction() != null) {
                     getAction().execute();
@@ -203,6 +202,7 @@ public class Drop extends DynamicTextureObject {
                 handleDropMiss();
                 resetPosition();
             }
+            */
             updateBody();
         }
     }

@@ -8,7 +8,7 @@ import io.github.team2.Actions.Move;
 import io.github.team2.Actions.TriangleBehaviour;
 import io.github.team2.SceneSystem.SceneManager;
 
-public class DynamicGameShape extends Dynamics<S,A> {
+public class DynamicGameShape <S extends Enum<S>, A extends Enum<A>> extends Dynamics<S,A> {
 
 	protected Color color;
 	protected float width;
@@ -24,7 +24,7 @@ public class DynamicGameShape extends Dynamics<S,A> {
 
 	public DynamicGameShape(Vector2 position, Vector2 direction, float speed, Color color , S state, A actionState) {
 		super(position, direction, speed,  state,actionState);
-
+		
 		color = this.color;
 
 
