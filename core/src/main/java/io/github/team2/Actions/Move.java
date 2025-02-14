@@ -23,16 +23,16 @@ public class Move implements Action {
 				
 				
 				
-				//entity.getBody().setLinearVelocity(direction.x * ((Dynamics)entity).getSpeed(), direction.y * ((Dynamics)entity).getSpeed());
+				entity.getBody().setLinearVelocity(direction.x * ((Dynamics)entity).getSpeed(), direction.y * ((Dynamics)entity).getSpeed());
 			}
 			else {
 				
 				if ( entity.isOutOfBound(direction) == false) {
 					
-					//entity.getBody().setLinearVelocity(direction.x * ((Dynamics)entity).getSpeed(), direction.y * ((Dynamics)entity).getSpeed());
+					entity.getBody().setLinearVelocity(direction.x * ((Dynamics)entity).getSpeed(), direction.y * ((Dynamics)entity).getSpeed());
 				}
 				else {
-					//entity.getBody().setLinearVelocity(0,0);
+					entity.getBody().setLinearVelocity(0,0);
 				}
 				
 			}

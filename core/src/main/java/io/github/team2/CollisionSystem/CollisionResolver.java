@@ -3,7 +3,6 @@ package io.github.team2.CollisionSystem;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.EntitySystem.EntityType;
-import io.github.team2.EntitySystem.TextureObject;
 import io.github.team2.GameManager;
 import io.github.team2.AudioSystem.AudioManager;
 import java.util.ArrayList;
@@ -79,17 +78,17 @@ public class CollisionResolver implements CollisionListener {
     }
 
     private void handleBucketDropCollision(Entity a, Entity b) {
-        Entity bucket = (a.getEntityType() == EntityType.BUCKET) ? a : b;
-        Entity drop = (a.getEntityType() == EntityType.DROP) ? a : b;
-
-        float bucketTopY = bucket.getPosition().y + ((TextureObject)bucket).getHeight();
-        float dropY = drop.getPosition().y;
-
-        if (Math.abs(dropY - bucketTopY) <= 10) {
-            AudioManager.getInstance().playSoundEffect("ding");
-            GameManager.getInstance().getPointsManager().addPoints(10);
-            em.markForRemoval(drop);
-        }
+//        Entity bucket = (a.getEntityType() == EntityType.BUCKET) ? a : b;
+//        Entity drop = (a.getEntityType() == EntityType.DROP) ? a : b;
+//
+//        float bucketTopY = bucket.getPosition().y + ((DynamicTextureObject)bucket).getHeight();
+//        float dropY = drop.getPosition().y;
+//
+//        if (Math.abs(dropY - bucketTopY) <= 10) {
+//            AudioManager.getInstance().playSoundEffect("ding");
+//            GameManager.getInstance().getPointsManager().addPoints(10);
+//            em.markForRemoval(drop);
+//        }
     }
 
     private void handleCircleDropCollision(Entity a, Entity b) {

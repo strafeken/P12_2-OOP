@@ -11,6 +11,7 @@ import io.github.team2.InputSystem.Action;
 
 public abstract class Dynamics <S extends Enum<S>, A extends Enum<A>>  extends Entity{
     protected float speed;
+    private Action action;
     
 
     
@@ -26,6 +27,7 @@ public abstract class Dynamics <S extends Enum<S>, A extends Enum<A>>  extends E
         moveMap = new HashMap<>();
         currentState = null;
         currentActionState = null;
+        action = null;
        
     }
 
@@ -36,6 +38,7 @@ public abstract class Dynamics <S extends Enum<S>, A extends Enum<A>>  extends E
         moveMap = new HashMap<>();
         currentState = state;
         currentActionState = actionState;
+        action = null;
         
         
     }
@@ -49,7 +52,16 @@ public abstract class Dynamics <S extends Enum<S>, A extends Enum<A>>  extends E
     }
     
     
-    
+	// TODO: adjust in future 
+	public <E extends Enum<E>> Action getAction(E moveKey) {
+		
+		action = moveMap.get(moveKey);
+		
+		
+		
+		return action;
+	}
+	
     
     public  HashMap<A, Action> getMoveMap() {
         return (HashMap<A, Action>) moveMap;

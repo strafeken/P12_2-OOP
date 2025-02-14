@@ -8,7 +8,7 @@ import io.github.team2.Actions.Move;
 import java.util.HashMap;
 import io.github.team2.Actions.TriangleBehaviour;
 import io.github.team2.EntitySystem.EntityType;
-import io.github.team2.EntitySystem.GameShape;
+import io.github.team2.EntitySystem.StaticGameShape;
 import io.github.team2.InputSystem.Action;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.EntitySystem.DynamicGameShape;
@@ -17,7 +17,7 @@ import io.github.team2.EntitySystem.Dynamics;
 
 public class Triangle extends DynamicGameShape<TriangleBehaviour.State, TriangleBehaviour.Move> {
     private float size;
-    private float offset;
+    //private float offset;
     
   
 
@@ -31,7 +31,7 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
         setPosition(new Vector2(0, 0));
         
         this.size = 10;
-        this.offset = 0;
+        //this.offset = 0;
         initActionMoveMap();
       
 
@@ -45,7 +45,7 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
         setEntityType(type);
         
         this.size = size;
-        this.offset = offset;
+        //this.offset = offset;
         
         //super.setCurrentState(TriangleBehaviour.State.IDLE);
         //super.setCurrentActionState(TriangleBehaviour.Move.NONE);
@@ -53,8 +53,8 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
        
       
         // auto calculate width and height
-        this.setWidth(2 * offset);
-        this.setHeight(2 * offset);
+        this.setWidth(2 * size);
+        this.setHeight(2 * size);
       
       
     }
@@ -69,25 +69,7 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
         this.size = size;
     }
 
-    public float getOffset() {
-        return offset;
-    }
 
-    public void setOffset(float offset) {
-        this.offset = offset;
-    }
-
-  
-  
-  
-  
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    public Color getColor() {
-        return color;
-    }
 
     @Override
     public void draw(ShapeRenderer shape) {

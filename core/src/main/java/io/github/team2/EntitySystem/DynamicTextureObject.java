@@ -74,5 +74,9 @@ public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>
 		
 	}
 	
+	public void dispose() {
+		tex.dispose();
+	}
+	
     
 }

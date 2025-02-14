@@ -18,7 +18,7 @@ public abstract class Entity {
 	private EntityType type;
 	private PhysicsBody body;
 
-	private Action action;
+	
 
 	public Entity() {
 		position = new Vector2(0, 0);
@@ -26,7 +26,7 @@ public abstract class Entity {
 		//speed = 0;
 		type = EntityType.UNDEFINED;
 		body = null;
-		action = null;
+		
 	}
 
 	public Entity(Vector2 position, Vector2 direction) {
@@ -35,7 +35,7 @@ public abstract class Entity {
 		
 		type = EntityType.UNDEFINED;
 		body = null;
-		action = null;
+		
 	}
 
 	public Vector2 getPosition() {
@@ -70,7 +70,7 @@ public abstract class Entity {
 
 
 
-
+/*
 	public void setAction(Action action) {
 		this.action = action;
 
@@ -81,13 +81,8 @@ public abstract class Entity {
 		return action;
 
 	}
+*/
 
-	// TODO: adjust in future 
-	public <E extends Enum<E>> Action getAction(E moveKey) {
-		
-		return null;
-	}
-	
 	
 
 

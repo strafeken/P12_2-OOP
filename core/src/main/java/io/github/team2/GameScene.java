@@ -15,6 +15,7 @@ import io.github.team2.InputSystem.*;
 import io.github.team2.SceneSystem.*;
 import java.util.Random;
 import com.badlogic.gdx.utils.Array;
+
 import io.github.team2.Actions.PlayerBehaviour;
 
 public class GameScene extends Scene {
@@ -89,7 +90,7 @@ public class GameScene extends Scene {
     }
 
     private void initializeWorld() {
-        world = new World(new Vector2(0, -100), true);
+        world = new World(new Vector2(0, 0), true);
         debugRenderer = new Box2DDebugRenderer();
     }
     
@@ -125,7 +126,7 @@ public class GameScene extends Scene {
             circle = new Circle(EntityType.CIRCLE,
                               new Vector2(500, 300),
                               new Vector2(0, 0),
-                              200, Color.RED, 50);
+                               Color.RED, 50);
             circle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
             triangle = new Triangle(EntityType.TRIANGLE,
@@ -158,7 +159,7 @@ public class GameScene extends Scene {
     		
 		} catch (Exception e) {
 			
-			System.out.println("error in game scene" + e);
+			System.out.println("error in game scene add area" + e);
 		}
     	
     
@@ -262,10 +263,10 @@ public class GameScene extends Scene {
                 new Vector2(random.nextFloat() * SceneManager.screenWidth,
                           SceneManager.screenHeight),
                 new Vector2(0, 0),
-                100
-            );
+                100, DropBehaviour.State.IDLE, DropBehaviour.Move.NONE);
+            
             powerUp.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
-            powerUp.setAction(new Dropping(powerUp));
+            //powerUp.setAction(new Dropping(powerUp));
             entityManager.addEntities(powerUp);
         }
     }

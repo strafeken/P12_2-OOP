@@ -12,18 +12,29 @@ import io.github.team2.SceneSystem.SceneManager;
 
 
 
-public abstract class GameShape extends Static {
+public abstract class StaticGameShape extends Static {
     protected Color color;
     protected float width;
     protected float height;
 
-    public GameShape() {
+    public StaticGameShape() {
         super();
         setEntityType(EntityType.UNDEFINED);
         setPosition(new Vector2(0, 0));
         setDirection(new Vector2(0, 0));
         //setSpeed(0);
         color = Color.WHITE;
+    }
+    
+    public StaticGameShape( Vector2 position, Vector2 direction,  Color color) {
+        super(position,  direction);
+        
+
+        
+//        setPosition(new Vector2(0, 0));
+//        setDirection(new Vector2(0, 0));
+        //setSpeed(0);
+        this.color = color;
     }
 
     public Color getColor() {

@@ -37,7 +37,7 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 			DropBehaviour.State state, DropBehaviour.Move actionState) {
 		
 		super(texture, position, direction, speed, state, actionState);
-		System.out.println("check if still work in drop");
+		
 
 		setEntityType(type);
 		
@@ -83,39 +83,11 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 	 }
 	 
 	 
-	/*
-	 * // TODO: move to dynamic class
-	 * 
-	 * @Override public <E extends Enum<E>> Action getAction(E moveKey) {
-	 * 
-	 * Action action = moveMap.get(moveKey);
-	 * 
-	 * return action; }
-	 * 
-	 * public void setCurrentActionState(DropBehaviour.Move moveState) {
-	 * currentActionState = moveState; }
-	 * 
-	 * public DropBehaviour.Move getCurrentActionState() { return
-	 * currentActionState; }
-	 * 
-	 * public void setCurrentState(DropBehaviour.State state) { currentState =
-	 * state; }
-	 * 
-	 * public DropBehaviour.State getCurrentState() { return currentState; }
-	 * 
-	 * public void initActionMoveMap() {
-	 * 
-	 * moveMap.put(DropBehaviour.Move.DROP, new Move(this, new Vector2(0, -1)));
-	 * 
-	 * }
-	 * 
-	 * public void clearMoveMap() {
-	 * 
-	 * moveMap.clear(); }
-	 */
 
 	public void updateMovement() {
-
+		System.out.println(getCurrentActionState());
+		System.out.println(getCurrentState());
+		
 		if (getCurrentState() == DropBehaviour.State.IDLE) {
 
 			setCurrentActionState(DropBehaviour.Move.DROP);
