@@ -21,7 +21,7 @@ public class DynamicGameShape <S extends Enum<S>, A extends Enum<A>> extends Dyn
 	public DynamicGameShape(Vector2 position, Vector2 direction, float speed, Color color , S state, A actionState) {
 		super(position, direction, speed,  state,actionState);
 		
-		color = this.color;
+		this.color = color;
         System.out.println("check if still work in game shape ");
 
 

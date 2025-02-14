@@ -19,6 +19,9 @@ public class StartGame implements Action {
 
     @Override
     public void execute() {
+    	
+    	try {
+    	
         if (sm.getCurrentSceneID() == SceneID.MAIN_MENU ||
             sm.getCurrentSceneID() == SceneID.GAME_OVER) {
 
@@ -43,5 +46,11 @@ public class StartGame implements Action {
                 }
             }
         }
+        
+        } catch (Exception e) {
+			
+			System.out.println("error in game start " + e);
+		}
+        
     }
 }

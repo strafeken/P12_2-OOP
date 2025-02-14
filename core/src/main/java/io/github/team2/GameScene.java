@@ -65,6 +65,9 @@ public class GameScene extends Scene {
     private float dropletSpawnTimer;
     private Random random;
 
+    
+
+    
     public GameScene() {
         super();
         this.gameManager = GameManager.getInstance(); // Use singleton instead of new instance
@@ -89,6 +92,9 @@ public class GameScene extends Scene {
         world = new World(new Vector2(0, -100), true);
         debugRenderer = new Box2DDebugRenderer();
     }
+    
+    
+    
 
     private void initializeManagers() {
         // Initialize entity manager
@@ -110,39 +116,52 @@ public class GameScene extends Scene {
     }
 
     private void initializeEntities() {
-        // Initialize static entities
-        circle = new Circle(EntityType.CIRCLE,
-                          new Vector2(500, 300),
-                          new Vector2(0, 0),
-                          200, Color.RED, 50);
-        circle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+    	
+    	try {
+    		
+    		
+    		
+            // Initialize static entities
+            circle = new Circle(EntityType.CIRCLE,
+                              new Vector2(500, 300),
+                              new Vector2(0, 0),
+                              200, Color.RED, 50);
+            circle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
-        triangle = new Triangle(EntityType.TRIANGLE,
-                             new Vector2(100, 100),
-                             new Vector2(0, 0),
-                             200, Color.GREEN, 50, 50,
-                             TriangleBehaviour.State.IDLE, TriangleBehaviour.Move.NONE);
-        
-        triangle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+            triangle = new Triangle(EntityType.TRIANGLE,
+                                 new Vector2(100, 100),
+                                 new Vector2(0, 0),
+                                 200, Color.GREEN, 50, 50,
+                                 TriangleBehaviour.State.IDLE, TriangleBehaviour.Move.NONE);
+            
+            triangle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
-        // Initialize player
-        player = new Player(EntityType.PLAYER,
-                          "bucket.png",
-                          new Vector2(300, 100),
-                          new Vector2(0, 0),200, PlayerBehaviour.State.IDLE, PlayerBehaviour.Move.NONE
-                          );
-        
-        player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+            // Initialize player
+            player = new Player(EntityType.PLAYER,
+                              "bucket.png",
+                              new Vector2(300, 100),
+                              new Vector2(0, 0),200, PlayerBehaviour.State.IDLE, PlayerBehaviour.Move.NONE
+                              );
+            
+            player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
-        gameManager.getPlayerEntityManager().addEntity(player);
+            gameManager.getPlayerEntityManager().addEntity(player);
 
-        // Initialize droplets
-        initializeDroplets();
+            // Initialize droplets
+            initializeDroplets();
 
-        // Add entities to manager
-        entityManager.addEntities(circle);
-        entityManager.addEntities(triangle);
-        entityManager.addEntities(player);
+            // Add entities to manager
+            entityManager.addEntities(circle);
+            entityManager.addEntities(triangle);
+            entityManager.addEntities(player);
+    		
+    		
+		} catch (Exception e) {
+			
+			System.out.println("error in game scene" + e);
+		}
+    	
+    
     }
 
     private void initializeDroplets() {
@@ -199,13 +218,24 @@ public class GameScene extends Scene {
 
     @Override
     public void update() {
-        inputManager.update();
-        playerInputManager.update();
-        updateInput();
-        updateEntities();
-        updateSpawning();
-        updatePhysics();
-        checkGameOver();
+        
+    	try {
+        	inputManager.update();
+            playerInputManager.update();
+            updateInput();
+            updateEntities();
+            updateSpawning();
+            updatePhysics();
+            checkGameOver();
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("error in game scene" + e);
+		}
+    	
+    	
+    	
+    	
+
     }
 
     private void updateInput() {
@@ -391,5 +421,7 @@ public class GameScene extends Scene {
     }*/
 
 
+
+    
 
 }
