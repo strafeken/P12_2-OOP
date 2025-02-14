@@ -15,6 +15,7 @@ import io.github.team2.InputSystem.*;
 import io.github.team2.SceneSystem.*;
 import java.util.Random;
 import com.badlogic.gdx.utils.Array;
+import io.github.team2.Actions.PlayerBehaviour;
 
 public class GameScene extends Scene {
     // Physics constants
@@ -128,8 +129,9 @@ public class GameScene extends Scene {
         player = new Player(EntityType.PLAYER,
                           "bucket.png",
                           new Vector2(300, 100),
-                          new Vector2(0, 0),
-                          200);
+                          new Vector2(0, 0),200, PlayerBehaviour.State.IDLE, PlayerBehaviour.Move.NONE
+                          );
+        
         player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
         gameManager.getPlayerEntityManager().addEntity(player);
