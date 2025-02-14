@@ -2,7 +2,9 @@ package io.github.team2.Actions;
 
 import com.badlogic.gdx.math.Vector2;
 
+import io.github.team2.EntitySystem.Dynamics;
 import io.github.team2.EntitySystem.Entity;
+import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.InputSystem.Action;
 
 public class Move implements Action {
@@ -17,13 +19,25 @@ public class Move implements Action {
 	@Override
 	public void execute() {
 		if (entity.getBody() != null) {
-			if ( entity.isOutOfBound(direction) == false) {
+			if (entity.getEntityType() == EntityType.DROP) {
 				
-				entity.getBody().setLinearVelocity(direction.x * entity.getSpeed(), direction.y * entity.getSpeed());
+				
+				
+				entity.getBody().setLinearVelocity(direction.x * ((Dynamics)entity).getSpeed(), direction.y * ((Dynamics)entity).getSpeed());
 			}
 			else {
-				entity.getBody().setLinearVelocity(0,0);
+				
+				if ( entity.isOutOfBound(direction) == false) {
+					
+					entity.getBody().setLinearVelocity(direction.x * ((Dynamics)entity).getSpeed(), direction.y * ((Dynamics)entity).getSpeed());
+				}
+				else {
+					entity.getBody().setLinearVelocity(0,0);
+				}
+				
 			}
+			
+			
 			}
 			
 	}

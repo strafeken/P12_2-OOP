@@ -36,8 +36,11 @@ public class EntityManager {
 		if (entity.getBody() != null)
 			entity.getBody().dispose();
 
-		if (entity instanceof TextureObject)
-			((TextureObject) entity).dispose();
+		if (entity instanceof DynamicTextureObject)
+			((DynamicTextureObject) entity).dispose();
+		
+		if (entity instanceof StaticTextureObject)
+			((StaticTextureObject) entity).dispose();
 	}
 
 	public Entity get(int index) {
@@ -79,8 +82,12 @@ public class EntityManager {
 
         // Then dispose textures
         for (Entity entity : entitiesToDispose) {
-            if (entity instanceof TextureObject) {
-                ((TextureObject) entity).dispose();
+            if (entity instanceof StaticTextureObject) {
+                ((StaticTextureObject) entity).dispose();
+            }
+            
+            if (entity instanceof DynamicTextureObject) {
+                ((DynamicTextureObject) entity).dispose();
             }
         }
 

@@ -5,19 +5,24 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import java.util.Random;
 import io.github.team2.EntitySystem.EntityType;
+import io.github.team2.Actions.DropBehaviour;
+import io.github.team2.Actions.Move;
 import io.github.team2.EntitySystem.DynamicTextureObject;
 import io.github.team2.SceneSystem.SceneManager;
 
 
-public class PowerUp extends DynamicTextureObject {
+public class PowerUp extends DynamicTextureObject<DropBehaviour.State, DropBehaviour.Move> {
     private static final float SCALE = 0.1f;
 
-    public PowerUp(EntityType type, String texture, Vector2 position, Vector2 direction, float speed) {
+    public PowerUp(EntityType type, String texture, Vector2 position, Vector2 direction, float speed,
+    				DropBehaviour.State state, DropBehaviour.Move actionState) {
         super(new Texture(texture));
         setEntityType(type);
         setPosition(position);
         setDirection(direction);
         setSpeed(speed);
+        
+        initActionMoveMap();
     }
 
     @Override
@@ -41,12 +46,61 @@ public class PowerUp extends DynamicTextureObject {
             SceneManager.screenHeight
         );
     }
+    
+    
+	  public void initActionMoveMap() {
+			 
+		  getMoveMap().put(DropBehaviour.Move.DROP, new Move(this, new Vector2(0, -1)));
+	 
+	 }
+    
+	  
+	  public void updateMovement() {
 
+			if (getCurrentState() == DropBehaviour.State.IDLE) {
+
+				setCurrentActionState(DropBehaviour.Move.DROP);
+				setCurrentState(DropBehaviour.State.MOVING);
+			}
+
+			else if (getCurrentState() == DropBehaviour.State.MOVING) {
+
+				switch (getCurrentActionState()) {
+
+				case NONE:
+					// state not changed
+					System.out.println("drop state stuck in NONE");
+					break;
+
+				case DROP:
+
+					// check if reach
+					if (!isOutOfBounds()) {
+
+						
+						resetPosition();
+
+					}
+					break;
+
+				default:
+
+					System.out.println("Unknown direction drop");
+					break;
+				}
+
+				getAction(getCurrentActionState()).execute();
+
+			}
+	  }
+	  
+	  
+	  
     @Override
     public void update() {
         if (!isOutOfBounds()) {
-            if (getAction() != null) {
-                getAction().execute();
+            if (getAction(getCurrentActionState()) != null) {
+                getAction(getCurrentActionState()).execute();
             }
         } else {
             resetPosition();

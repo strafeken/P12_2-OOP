@@ -5,13 +5,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.Static;
+import io.github.team2.EntitySystem.StaticGameShape;
 
 
-public class Circle extends Static {
+public class Circle extends StaticGameShape {
     private float radius;
-    private Color color;
-    private float width;
-    private float height;
+
 
     public Circle() {
         super();
@@ -22,11 +21,13 @@ public class Circle extends Static {
         updateDimensions();
     }
 
-    public Circle(EntityType type, Vector2 position, Vector2 direction, float speed, Color color, float radius) {
-        super(position);
+    public Circle(EntityType type, Vector2 position, Vector2 direction , Color color, float radius) {
+        
+        super( position,  direction,   color);
+        //System.out.println("check if still circle ");
         setEntityType(type);
-        setDirection(direction);
-        setSpeed(speed);
+//        setDirection(direction);
+        //setSpeed(speed);
         this.color = color;
         this.radius = radius;
         updateDimensions();
@@ -46,13 +47,7 @@ public class Circle extends Static {
         updateDimensions();
     }
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
 
-    public Color getColor() {
-        return color;
-    }
 
     @Override
     public void draw(ShapeRenderer shape) {
