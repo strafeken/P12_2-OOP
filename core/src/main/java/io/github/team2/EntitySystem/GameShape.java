@@ -22,7 +22,7 @@ public abstract class GameShape extends Static {
         setEntityType(EntityType.UNDEFINED);
         setPosition(new Vector2(0, 0));
         setDirection(new Vector2(0, 0));
-        setSpeed(0);
+        //setSpeed(0);
         color = Color.WHITE;
     }
 

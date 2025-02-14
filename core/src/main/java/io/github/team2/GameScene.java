@@ -80,6 +80,8 @@ public class GameScene extends Scene {
         initializeManagers();
         initializeEntities();
         initializeInput();
+        System.out.println("check if still work 3 ");
+        
     }
 
     private void initializeWorld() {
@@ -156,7 +158,7 @@ public class GameScene extends Scene {
                          new Vector2(random.nextFloat() * SceneManager.screenWidth,
                                    random.nextFloat() * SceneManager.screenHeight),
                          new Vector2(0, 0),
-                         100);
+                         100, DropBehaviour.State.IDLE, DropBehaviour.Move.NONE );
 
         drop.setAction(new Dropping(drop));
         drop.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
@@ -209,15 +211,6 @@ public class GameScene extends Scene {
         inputManager.update();
     }
 
-
-  /* check 
-		circle = new Circle(EntityType.CIRCLE, new Vector2(500, 400), new Vector2(0, 0), 200, Color.RED, 50);
-		circle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
-
-		triangle = new Triangle(EntityType.TRIANGLE, new Vector2(200, 200), new Vector2(0, 0), 200, Color.GREEN, 50,
-				50);
-		triangle.InitPhysicsBody(world, BodyDef.BodyType.KinematicBody);
-  */
 
     private void updateEntities() {
         entityManager.update();
@@ -290,9 +283,10 @@ public class GameScene extends Scene {
                                new Vector2(random.nextFloat() * SceneManager.screenWidth,
                                          SceneManager.screenHeight),
                                new Vector2(0, 0),
-                               100);
+                               100, DropBehaviour.State.IDLE, DropBehaviour.Move.NONE);
+            
             drop.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
-            drop.setAction(new Dropping(drop));
+            //drop.setAction(new Dropping(drop));
             entityManager.addEntities(drop);
         }
     }

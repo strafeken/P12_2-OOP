@@ -40,6 +40,7 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
     public Triangle(EntityType type, Vector2 position, Vector2 direction, float speed, Color color, float size, float offset,
     	TriangleBehaviour.State state, TriangleBehaviour.Move actionState) {
         super(position, direction, speed, color , state, actionState);
+        System.out.println("check if still work triangle ");
         //super(position, direction, speed, color);
         setEntityType(type);
         

@@ -4,22 +4,75 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public abstract class DynamicTextureObject extends TextureObject {
-    private TextureRegion textureRegion;
-    private Vector2 direction;
-    private float speed;
+import io.github.team2.SceneSystem.SceneManager;
+
+public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>> extends Dynamics<S,A> {
+    //private TextureRegion textureRegion;
+    //private Vector2 direction;
+    private Texture tex;
+    
 
     public DynamicTextureObject(Texture texture) {
-        super();
+        super(0);
         setTexture(texture); // Properly set the texture through parent class
-        this.direction = new Vector2(0, 0);
-        this.speed = 0;
+        
+        
     }
 
     // Add constructor that takes texture path
-    public DynamicTextureObject(String texturePath) {
-        super(texturePath); // Use parent's constructor that handles texture loading
-        this.direction = new Vector2(0, 0);
-        this.speed = 0;
+    public DynamicTextureObject(String texturePath, Vector2 position, Vector2 direction, float speed, S state, A actionState) {
+    	super(position, direction, speed, state, actionState);
+        
+        
+    	tex = new Texture(texturePath);
+    	
+        
+        	
+        
     }
+    
+	public Texture getTexture() {
+		return tex;
+	}
+
+	public void setTexture(Texture texture) {
+		tex = texture;
+	}
+
+	public float getWidth() {
+		return tex.getWidth();
+	}
+
+	public float getHeight() {
+		return tex.getHeight();
+	}
+	
+	@Override 	
+	public  boolean isOutOfBound(Vector2 direction) {
+		
+		
+		Vector2 projectedPos = this.getPosition();
+		projectedPos.add(direction);
+		
+		if (direction.x < 0 && (projectedPos.x - getWidth()/2) < SceneManager.screenLeft) {
+			System.out.println("Hit left");
+			return true;
+		}
+		if (direction.x > 0 && (projectedPos.x + getWidth()/2) > SceneManager.screenWidth) {
+			System.out.println("hit right");
+			return true;
+		}
+		
+		if (direction.y < 0 && (projectedPos.y - getHeight()/2) < SceneManager.screenBottom) {
+			return true;
+		}
+		if (direction.y > 0 && (projectedPos.y + getHeight()/2) > SceneManager.screenHeight) {
+			return true;
+		}
+		
+		return false;
+		
+	}
+	
+    
 }

@@ -2,6 +2,7 @@ package io.github.team2.Actions;
 
 import com.badlogic.gdx.math.Vector2;
 
+import io.github.team2.EntitySystem.Dynamics;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.InputSystem.Action;
 
@@ -18,9 +19,14 @@ public class Dropping implements Action {
 	@Override
 	public void execute() {
 		if (entity.getBody() != null) {
+			
 
-			entity.getBody().setLinearVelocity(direction.x * entity.getSpeed(), direction.y * entity.getSpeed());
-
+			
+			//entity.getBody().setLinearVelocity(direction.x * entity.getSpeed(), direction.y * entity.getSpeed());
+			
+			
+			//entity.getBody().setLinearVelocity(direction.x * ((Dynamics<Enum<S>, Enum<A>>)entity).getSpeed(), direction.y * ((Dynamics<Enum<S>, Enum<A>>)entity).getSpeed());
+			
 		}
 
 	}

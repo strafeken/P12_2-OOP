@@ -14,7 +14,7 @@ public abstract class Entity {
 
 	private Vector2 position;
 	private Vector2 direction;
-	private float speed;
+	//private float speed;
 	private EntityType type;
 	private PhysicsBody body;
 
@@ -23,7 +23,7 @@ public abstract class Entity {
 	public Entity() {
 		position = new Vector2(0, 0);
 		direction = new Vector2(0, 0);
-		speed = 0;
+		//speed = 0;
 		type = EntityType.UNDEFINED;
 		body = null;
 		action = null;
@@ -54,13 +54,7 @@ public abstract class Entity {
 		this.direction = direction;
 	}
 
-	public float getSpeed() {
-		return speed;
-	}
 
-	public void setSpeed(float speed) {
-		this.speed = speed;
-	}
 
 	public EntityType getEntityType() {
 		return type;

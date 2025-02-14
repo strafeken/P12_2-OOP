@@ -12,7 +12,7 @@ import io.github.team2.InputSystem.Action;
 public abstract class Dynamics <S extends Enum<S>, A extends Enum<A>>  extends Entity{
     protected float speed;
     
-    // TODO: when done shift to dynamic class
+
     
     private HashMap<A, Action> moveMap;
     private S currentState;
@@ -76,33 +76,6 @@ public abstract class Dynamics <S extends Enum<S>, A extends Enum<A>>  extends E
     
     
     
-    
-    
-    /*
-    public HashMap<TriangleBehaviour.Move, Action> getMoveMap() {
-		return moveMap;
-	}
-
-
-
-	public void setCurrentActionState(TriangleBehaviour.Move moveState) {
-		currentActionState = moveState;
-	}
-
-	public TriangleBehaviour.Move getCurrentActionState() {
-		return currentActionState;
-	}
-
-	public void setCurrentState(TriangleBehaviour.State state) {
-		currentState = state;
-	}
-
-	public TriangleBehaviour.State getCurrentState() {
-		return currentState;
-	}
-
-	abstract public void initActionMoveMap();
-	*/
     
     
 	public void clearMoveMap() {

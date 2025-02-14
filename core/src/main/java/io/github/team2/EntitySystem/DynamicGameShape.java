@@ -26,6 +26,7 @@ public class DynamicGameShape <S extends Enum<S>, A extends Enum<A>> extends Dyn
 		super(position, direction, speed,  state,actionState);
 		
 		color = this.color;
+        System.out.println("check if still work in game shape ");
 
 
 	}
@@ -39,7 +40,7 @@ public class DynamicGameShape <S extends Enum<S>, A extends Enum<A>> extends Dyn
 	}
 
 	public float getWidth() {
-		return this.width;
+		return width;
 	}
 
 	public void setWidth(float width) {
@@ -47,7 +48,7 @@ public class DynamicGameShape <S extends Enum<S>, A extends Enum<A>> extends Dyn
 	}
 
 	public float getHeight() {
-		return this.height;
+		return height;
 	}
 
 	public void setHeight(float height) {

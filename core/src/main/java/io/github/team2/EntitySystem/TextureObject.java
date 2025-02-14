@@ -23,7 +23,7 @@ public class TextureObject extends Entity {
 		tex = new Texture(texture);
 		setPosition(position);
 		setDirection(direction);
-		setSpeed(speed);
+		//setSpeed(speed);
 	}
 
 	public Texture getTexture() {

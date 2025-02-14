@@ -23,10 +23,12 @@ public class Circle extends Static {
     }
 
     public Circle(EntityType type, Vector2 position, Vector2 direction, float speed, Color color, float radius) {
+        
         super(position);
+        System.out.println("check if still circle ");
         setEntityType(type);
         setDirection(direction);
-        setSpeed(speed);
+        //setSpeed(speed);
         this.color = color;
         this.radius = radius;
         updateDimensions();

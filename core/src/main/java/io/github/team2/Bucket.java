@@ -15,7 +15,7 @@ public class Bucket extends TextureObject {
 		setTexture(new Texture(texture));
 		setPosition(new Vector2(0, 0));
 		setDirection(new Vector2(0, 0));
-		setSpeed(0);
+		//setSpeed(0);
 	}
 
 	public Bucket(EntityType type, String texture, Vector2 position, Vector2 direction, float speed) {
@@ -23,7 +23,7 @@ public class Bucket extends TextureObject {
 		setTexture(new Texture(texture));
 		setPosition(position);
 		setDirection(direction);
-		setSpeed(speed);
+		//setSpeed(speed);
 	}
 
 //	@Override
