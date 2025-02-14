@@ -14,7 +14,7 @@ public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>
     
 
     public DynamicTextureObject(Texture texture) {
-        super(0);
+        super();
         setTexture(texture); // Properly set the texture through parent class
         
         

@@ -52,13 +52,7 @@ public class PhysicsBody {
 			float triangleSize = ((Triangle) entity).getSize();
 			triangle.setAsBox(triangleSize, triangleSize);
 			return triangle;
-		/*	
-		case DROP:
-			PolygonShape boxDrop = new PolygonShape();
-			Drop textureEntity = (Drop) entity;
-			box.setAsBox(textureEntity.getWidth() / 2, textureEntity.getHeight() / 2);
-			return box;	
-		*/
+
 		default:
 			PolygonShape box = new PolygonShape();
 			DynamicTextureObject textureEntity = (DynamicTextureObject) entity;

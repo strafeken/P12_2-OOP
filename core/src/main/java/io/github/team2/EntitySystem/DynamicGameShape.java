@@ -11,7 +11,7 @@ public class DynamicGameShape <S extends Enum<S>, A extends Enum<A>> extends Dyn
 	protected float height;
 
 	public DynamicGameShape() {
-		super(0);
+		super();
 		setEntityType(EntityType.UNDEFINED);
 
 		color = Color.WHITE;

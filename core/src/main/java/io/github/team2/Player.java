@@ -1,9 +1,7 @@
 package io.github.team2;
 
-import com.badlogic.gdx.graphics.Texture;
+
 import com.badlogic.gdx.math.Vector2;
-
-
 import io.github.team2.Actions.PlayerBehaviour;
 import io.github.team2.EntitySystem.DynamicTextureObject;
 import io.github.team2.EntitySystem.EntityType;
@@ -16,6 +14,7 @@ public class Player extends DynamicTextureObject<PlayerBehaviour.State, PlayerBe
 		
 		super(texture, position, direction, speed, state, actionState);
 		setEntityType(type);
+		
 //		setTexture(new Texture(texture));
 //		setPosition(position);
 //		setDirection(direction);

@@ -78,7 +78,7 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 	
 	  public void initActionMoveMap() {
 	 
-		  getMoveMap().put(DropBehaviour.Move.DROP, new Move(this, new Vector2(0, -1)));
+		  getActionMap().put(DropBehaviour.Move.DROP, new Move(this, new Vector2(0, -1)));
 	 
 	 }
 	 

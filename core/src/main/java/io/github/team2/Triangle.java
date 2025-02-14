@@ -95,8 +95,8 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
    @Override
 	public void initActionMoveMap() {
 
-		getMoveMap().put(TriangleBehaviour.Move.LEFT, new Move(this, new Vector2(-1, 0)));
-		getMoveMap().put(TriangleBehaviour.Move.RIGHT, new Move(this, new Vector2(1, 0)));
+	   getActionMap().put(TriangleBehaviour.Move.LEFT, new Move(this, new Vector2(-1, 0)));
+	   getActionMap().put(TriangleBehaviour.Move.RIGHT, new Move(this, new Vector2(1, 0)));
 
 	}
 
@@ -107,7 +107,7 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
 	@Override
 	public <E extends Enum<E>> Action getAction(E moveKey) {
 
-		Action action = getMoveMap().get(moveKey);
+		Action action = getActionMap().get(moveKey);
 
 		return action;
 	}

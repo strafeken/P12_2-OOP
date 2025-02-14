@@ -14,7 +14,6 @@ public abstract class Entity {
 
 	private Vector2 position;
 	private Vector2 direction;
-	//private float speed;
 	private EntityType type;
 	private PhysicsBody body;
 
@@ -23,7 +22,6 @@ public abstract class Entity {
 	public Entity() {
 		position = new Vector2(0, 0);
 		direction = new Vector2(0, 0);
-		//speed = 0;
 		type = EntityType.UNDEFINED;
 		body = null;
 		
@@ -70,22 +68,6 @@ public abstract class Entity {
 
 
 
-/*
-	public void setAction(Action action) {
-		this.action = action;
-
-	}
-
-
-	public Action getAction() {
-		return action;
-
-	}
-*/
-
-	
-
-
 	public void initPhysicsBody(World world, BodyDef.BodyType bodyType) {
 
 		body = new PhysicsBody(world, this, bodyType);
@@ -99,11 +81,6 @@ public abstract class Entity {
 
 	}
 
-	public abstract boolean isOutOfBound(Vector2 direction);
-
-	public abstract void update();
-
-
 	// sync position with physics body position
 	public void updateBody() {
 		if (body == null)
@@ -111,6 +88,13 @@ public abstract class Entity {
 
 		body.updateEntityPosition(this);
 	}
+	
+	
+
+	public abstract boolean isOutOfBound(Vector2 direction);
+
+	public abstract void update();
+
 
 
 }
