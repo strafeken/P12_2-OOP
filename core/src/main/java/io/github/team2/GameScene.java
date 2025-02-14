@@ -73,7 +73,7 @@ public class GameScene extends Scene {
             200,
             "Settings",
             "settingsBtn.png",
-            new Vector2(SceneManager.screenWidth - 80, SceneManager.screenHeight - 80), 
+            new Vector2(SceneManager.screenWidth - 80, SceneManager.screenHeight - 80),
             () -> SceneManager.getInstance(SceneManager.class).overlayScene(SceneID.SETTINGS_MENU),
             70,
             70
@@ -161,19 +161,21 @@ public class GameScene extends Scene {
     }
 
     private void initializeInput() {
-        // Initialize player input
-        playerInputManager = new PlayerInputManager(player);
-        playerInputManager.registerUserInput();
+        // Get the PlayerInputManager from GameManager
+        playerInputManager = GameManager.getInstance().getPlayerInputManager();
+
+        // Make sure player reference is up to date
+        if (playerInputManager != null) {
+            System.out.println("[DEBUG] Updating player reference in PlayerInputManager");
+            playerInputManager.setPlayer(player);
+            playerInputManager.registerUserInput();
+        }
 
         // Register global inputs
         inputManager.registerKeyDown(Input.Keys.ESCAPE,
             new PauseGame(SceneManager.getInstance(SceneManager.class)));
         inputManager.registerKeyDown(Input.Keys.X,
             new ExitGame(SceneManager.getInstance(SceneManager.class)));
-
-        // Make sure to update both input managers
-        inputManager.update();
-        playerInputManager.update();
     }
 
         //inputMultiplexer.addProcessor(inputManager);
