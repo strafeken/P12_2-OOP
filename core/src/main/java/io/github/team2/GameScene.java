@@ -160,7 +160,7 @@ public class GameScene extends Scene {
                          new Vector2(0, 0),
                          100, DropBehaviour.State.IDLE, DropBehaviour.Move.NONE );
 
-        drop.setAction(new Dropping(drop));
+        //drop.setAction(new Dropping(drop));
         drop.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
         return drop;
     }

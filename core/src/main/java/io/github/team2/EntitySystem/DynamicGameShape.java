@@ -1,11 +1,7 @@
 package io.github.team2.EntitySystem;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-
-import io.github.team2.Actions.Move;
-import io.github.team2.Actions.TriangleBehaviour;
 import io.github.team2.SceneSystem.SceneManager;
 
 public class DynamicGameShape <S extends Enum<S>, A extends Enum<A>> extends Dynamics<S,A> {

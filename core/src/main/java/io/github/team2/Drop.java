@@ -37,7 +37,7 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 			DropBehaviour.State state, DropBehaviour.Move actionState) {
 		
 		super(texture, position, direction, speed, state, actionState);
-
+		System.out.println("check if still work in drop");
 
 		setEntityType(type);
 		
