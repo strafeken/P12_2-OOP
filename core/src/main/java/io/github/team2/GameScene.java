@@ -61,6 +61,7 @@ public class GameScene extends Scene {
     private Entity circle;
     private Entity triangle;
     private Entity player;
+    private Button settingsButton;
 
     // Spawn control
     private float dropletSpawnTimer;
@@ -85,8 +86,18 @@ public class GameScene extends Scene {
         initializeManagers();
         initializeEntities();
         initializeInput();
-        System.out.println("check if still work 3 ");
-        
+
+        settingsButton = new Button(
+            200,
+            "Settings",
+            "settingsBtn.png",
+            new Vector2(SceneManager.screenWidth - 80, SceneManager.screenHeight - 80),
+            () -> SceneManager.getInstance(SceneManager.class).overlayScene(SceneID.SETTINGS_MENU),
+            70,
+            70
+        );
+        inputManager.registerButton(settingsButton);
+
     }
 
     private void initializeWorld() {
@@ -188,26 +199,24 @@ public class GameScene extends Scene {
     }
 
     private void initializeInput() {
-        // Initialize player input
-        playerInputManager = new PlayerInputManager(player);
-        playerInputManager.registerUserInput();
+        // Get the PlayerInputManager from GameManager
+        playerInputManager = GameManager.getInstance().getPlayerInputManager();
+
+        // Make sure player reference is up to date
+        if (playerInputManager != null) {
+            System.out.println("[DEBUG] Updating player reference in PlayerInputManager");
+            playerInputManager.setPlayer(player);
+            playerInputManager.registerUserInput();
+        }
 
         // Register global inputs
         inputManager.registerKeyDown(Input.Keys.ESCAPE,
             new PauseGame(SceneManager.getInstance(SceneManager.class)));
         inputManager.registerKeyDown(Input.Keys.X,
             new ExitGame(SceneManager.getInstance(SceneManager.class)));
-
-
-  /* check 
-  
-				droplets[i] = tmpDrop;
-        		//droplets[i].setAction(new Dropping(droplets[i]));
-
-*/
-
         inputManager.update();
         playerInputManager.update();
+
     }
 
 
@@ -219,22 +228,21 @@ public class GameScene extends Scene {
 
     @Override
     public void update() {
+
         
     	try {
         	inputManager.update();
-            playerInputManager.update();
-            updateInput();
-            updateEntities();
-            updateSpawning();
-            updatePhysics();
-            checkGameOver();
+        playerInputManager.update();
+        updateInput();
+        updateEntities();
+        updateSpawning();
+        updatePhysics();
+        checkGameOver();
+        settingsButton.update();
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println("error in game scene" + e);
 		}
-    	
-    	
-    	
     	
 
     }
@@ -345,6 +353,7 @@ public class GameScene extends Scene {
     public void draw(SpriteBatch batch) {
         entityManager.draw(batch);
         drawUI(batch);
+        settingsButton.draw(batch);
     }
 
     private void drawUI(SpriteBatch batch) {

@@ -1,11 +1,10 @@
 package io.github.team2.InputSystem;
 
+import com.badlogic.gdx.Gdx;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import com.badlogic.gdx.Gdx;
 
 public class KeyboardManager {
     private Map<Integer, Action> keyDownActions;
@@ -18,24 +17,6 @@ public class KeyboardManager {
         activeKeys = new HashSet<>();
     }
 
-    public boolean keyDown(int keycode) {
-        activeKeys.add(keycode);
-        Action action = keyDownActions.get(keycode);
-        if (action == null)
-            return false;
-        action.execute();
-        return true;
-    }
-
-    public boolean keyUp(int keycode) {
-        activeKeys.remove(keycode);
-        Action action = keyUpActions.get(keycode);
-        if (action == null)
-            return false;
-        action.execute();
-        return true;
-    }
-
     public void registerKeyDown(int keycode, Action action) {
         keyDownActions.put(keycode, action);
     }
@@ -45,7 +26,9 @@ public class KeyboardManager {
     }
 
     public void update() {
-        // Check for new key presses
+        Set<Integer> keysToRemove = new HashSet<>();
+
+        // Handle key presses
         keyDownActions.forEach((keycode, action) -> {
             if (Gdx.input.isKeyJustPressed(keycode)) {
                 activeKeys.add(keycode);
@@ -53,10 +36,10 @@ public class KeyboardManager {
             }
         });
 
-        // Check for key releases
+        // Handle key releases
         activeKeys.forEach(keycode -> {
             if (!Gdx.input.isKeyPressed(keycode)) {
-                activeKeys.remove(keycode);
+                keysToRemove.add(keycode);
                 Action action = keyUpActions.get(keycode);
                 if (action != null) {
                     action.execute();
@@ -64,23 +47,23 @@ public class KeyboardManager {
             }
         });
 
-        // Check held keys
-        activeKeys.forEach(keycode -> {
-            if (Gdx.input.isKeyPressed(keycode)) {
-                Action action = keyDownActions.get(keycode);
-                if (action != null) {
-                    action.execute();
-                }
-            }
-        });
+        // Remove released keys
+        activeKeys.removeAll(keysToRemove);
     }
 
-    public void clearActiveKeys() {
-        activeKeys.clear();
+    public void clearBinding(int keycode) {
+        keyDownActions.remove(keycode);
+        keyUpActions.remove(keycode);
+        activeKeys.remove(keycode);
     }
+
     public void clearAllBindings() {
         keyDownActions.clear();
         keyUpActions.clear();
+        activeKeys.clear();
+    }
+
+    public void clearActiveKeys() {
         activeKeys.clear();
     }
 }
