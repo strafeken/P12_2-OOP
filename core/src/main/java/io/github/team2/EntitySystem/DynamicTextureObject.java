@@ -1,6 +1,7 @@
 package io.github.team2.EntitySystem;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -72,6 +73,11 @@ public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>
 		
 		return false;
 		
+	}
+	
+	@Override
+	public void draw(SpriteBatch batch) {
+		batch.draw(tex, getPosition().x - tex.getWidth() / 2, getPosition().y - tex.getHeight() / 2);
 	}
 	
 	public void dispose() {
