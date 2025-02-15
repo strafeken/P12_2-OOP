@@ -21,8 +21,8 @@ public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>
     }
 
     // Add constructor that takes texture path
-    public DynamicTextureObject(String texturePath, Vector2 position, Vector2 direction, float speed, S state, A actionState) {
-    	super(position, direction, speed, state, actionState);
+    public DynamicTextureObject(String texturePath, Vector2 position, Vector2 direction,Vector2 rotation, float speed, S state, A actionState) {
+    	super(position, direction,rotation, speed, state, actionState);
         
         
     	tex = new Texture(texturePath);
@@ -77,7 +77,25 @@ public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>
 	
 	@Override
 	public void draw(SpriteBatch batch) {
-		batch.draw(tex, getPosition().x - tex.getWidth() / 2, getPosition().y - tex.getHeight() / 2);
+	    if (getTexture() == null) return; // ✅ Ensure texture exists before drawing
+
+	    float angleDegrees = (float) Math.toDegrees(getBody().getAngle()); // ✅ Convert radians to degrees
+	    Vector2 position = getBody().getPosition(); // ✅ Get entity position
+
+	    batch.draw(
+	        getTexture(),
+	        position.x - getTexture().getWidth() / 2, // Centered X
+	        position.y - getTexture().getHeight() / 2, // Centered Y
+	        getTexture().getWidth() / 2, // Origin X (pivot point)
+	        getTexture().getHeight() / 2, // Origin Y (pivot point)
+	        getTexture().getWidth(),
+	        getTexture().getHeight(),
+	        1f, 1f, // Scale
+	        angleDegrees, // ✅ Rotation angle in degrees
+	        0, 0, // Texture region start
+	        getTexture().getWidth(), getTexture().getHeight(), // Texture region size
+	        false, false // Flip options
+	    );
 	}
 	
 	public void dispose() {
