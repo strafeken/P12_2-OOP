@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import io.github.team2.Actions.ResumeGame;
 import io.github.team2.EntitySystem.Entity;
+import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.StaticTextureObject;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
@@ -22,7 +23,7 @@ public class PauseMenu extends Scene {
     public void load() {
         System.out.println("Pause Menu => LOAD");
 
-        image = new StaticTextureObject("libgdx.png",
+        image = new StaticTextureObject(EntityType.UNDEFINED, "libgdx.png",
             new Vector2(SceneManager.screenWidth / 2, SceneManager.screenHeight / 2),
             new Vector2(0, 0));
 

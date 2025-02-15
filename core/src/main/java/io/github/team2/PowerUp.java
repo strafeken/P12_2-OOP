@@ -22,7 +22,7 @@ public class PowerUp extends DynamicTextureObject<DropBehaviour.State, DropBehav
         setDirection(direction);
         setSpeed(speed);
         
-        initActionMoveMap();
+        initActionMap();
     }
 
     @Override
@@ -48,9 +48,9 @@ public class PowerUp extends DynamicTextureObject<DropBehaviour.State, DropBehav
     }
     
     
-	  public void initActionMoveMap() {
+	  public void initActionMap() {
 			 
-		  getMoveMap().put(DropBehaviour.Move.DROP, new Move(this, new Vector2(0, -1)));
+		 getActionMap().put(DropBehaviour.Move.DROP, new Move(this, new Vector2(0, -1)));
 	 
 	 }
     
@@ -98,6 +98,7 @@ public class PowerUp extends DynamicTextureObject<DropBehaviour.State, DropBehav
 	  
     @Override
     public void update() {
+    	/*
         if (!isOutOfBounds()) {
             if (getAction(getCurrentActionState()) != null) {
                 getAction(getCurrentActionState()).execute();
@@ -105,6 +106,9 @@ public class PowerUp extends DynamicTextureObject<DropBehaviour.State, DropBehav
         } else {
             resetPosition();
         }
+        */
+        
+        updateMovement();
         updateBody();
     }
 

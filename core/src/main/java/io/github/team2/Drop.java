@@ -15,40 +15,25 @@ import io.github.team2.InputSystem.Action;
 
 public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviour.Move> {
 
-	// TODO: when done shift to dynamic class
-	// private HashMap<DropBehaviour.Move, Action> moveMap;
-	// movment states can move to dynamic
-//    private DropBehaviour.State currentState;
-//    private DropBehaviour.Move currentActionState;
+
 
 	public Drop(String texture) {
 		super(new Texture(texture));
 		setEntityType(EntityType.DROP);
 		setPosition(new Vector2(0, 0));
-		setSpeed(10);
-
-		// moveMap = new HashMap<>();
-//        currentState = DropBehaviour.State.IDLE;
-//        currentActionState = DropBehaviour.Move.NONE;
-		initActionMoveMap();
+		initActionMap();
 	}
 
 	public Drop(EntityType type, String texture, Vector2 position, Vector2 direction, Vector2 rotation, float speed,
 			DropBehaviour.State state, DropBehaviour.Move actionState) {
-		
-		super(texture, position, direction, rotation, speed, state, actionState);
+
+		super(type, texture, position, direction, rotation, speed, state, actionState);
+
 		
 
-		setEntityType(type);
+		//setEntityType(type);
 		
-//		setPosition(position);
-//		setDirection(direction);
-//		setSpeed(speed);
-
-//		moveMap = new HashMap<>();
-//	    currentState = DropBehaviour.State.IDLE;
-//	    currentActionState = DropBehaviour.Move.NONE;
-		initActionMoveMap();
+		initActionMap();
 
 	}
 
@@ -62,9 +47,9 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 		return false;
 	}
 
-	public boolean isOutOfBounds() {
-		return getPosition().y < 0;
-	}
+//	public boolean isOutOfBounds() {
+//		return getPosition().y < 0;
+//	}
 
 	private void resetPosition() {
 		Random random = new Random();
@@ -76,17 +61,17 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 	}
 
 	
-	  public void initActionMoveMap() {
+	@Override
+	public void initActionMap() {
 	 
-		  getMoveMap().put(DropBehaviour.Move.DROP, new Move(this, new Vector2(0, -1)));
+		  getActionMap().put(DropBehaviour.Move.DROP, new Move(this, new Vector2(0, -1)));
 	 
 	 }
 	 
 	 
 
 	public void updateMovement() {
-		System.out.println(getCurrentActionState());
-		System.out.println(getCurrentState());
+
 		
 		if (getCurrentState() == DropBehaviour.State.IDLE) {
 
@@ -132,11 +117,6 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 
 	}
 
-	/*
-	 * @Override public void update() {
-	 * 
-	 * updateMovement(); updateBody(); }
-	 */
 
 	@Override
 	public void update() {

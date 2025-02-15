@@ -7,7 +7,6 @@ import com.badlogic.gdx.physics.box2d.World;
 
 
 import io.github.team2.InputSystem.Action;
-
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class Entity {
@@ -15,7 +14,7 @@ public abstract class Entity {
 	private Vector2 position;
 	private Vector2 direction;
 	private Vector2 rotation;
-	//private float speed;
+
 	private EntityType type;
 	private PhysicsBody body;
 
@@ -25,18 +24,18 @@ public abstract class Entity {
 		position = new Vector2(0, 0);
 		direction = new Vector2(0, 0);
 		rotation = new Vector2(1, 0);
-		//speed = 0;
 		type = EntityType.UNDEFINED;
 		body = null;
 		
 	}
 
-	public Entity(Vector2 position, Vector2 direction, Vector2 rotation) {
-		this.position = position;
+
+	public Entity(EntityType type, Vector2 position, Vector2 direction, Vector2 rotation) {
+	  this.type  = type;	
+    this.position = position;
 		this.direction = direction;
-		this.rotation = rotation;
-		
-		type = EntityType.UNDEFINED;
+  	this.rotation = rotation;
+
 		body = null;
 		
 	}
@@ -80,22 +79,6 @@ public abstract class Entity {
 
 
 
-/*
-	public void setAction(Action action) {
-		this.action = action;
-
-	}
-
-
-	public Action getAction() {
-		return action;
-
-	}
-*/
-
-	
-
-
 	public void initPhysicsBody(World world, BodyDef.BodyType bodyType) {
 
 		body = new PhysicsBody(world, this, bodyType);
@@ -109,11 +92,6 @@ public abstract class Entity {
 
 	}
 
-	public abstract boolean isOutOfBound(Vector2 direction);
-
-	public abstract void update();
-
-
 	// sync position with physics body position
 	public void updateBody() {
 		if (body == null)
@@ -122,6 +100,13 @@ public abstract class Entity {
 		body.updateEntityPosition(this);
 		body.updateEntityRotation(this);
 	}
+	
+	
+
+
+
+	public abstract void update();
+
 
 
 }

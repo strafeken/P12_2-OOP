@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import io.github.team2.Actions.StartGame;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.EntitySystem.EntityManager;
+import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.StaticTextureObject;
 import io.github.team2.InputSystem.Button;
 import io.github.team2.InputSystem.InputManager;
@@ -34,7 +35,7 @@ public class MainMenu extends Scene {
         AudioManager.getInstance().playSoundEffect("mainmenu");
 
         // Setup background image
-        image = new StaticTextureObject("libgdx.png",
+        image = new StaticTextureObject(EntityType.UNDEFINED, "libgdx.png",
                 new Vector2(SceneManager.screenWidth / 2, SceneManager.screenHeight / 2),
                 new Vector2(0, 0));
         em.addEntities(image);

@@ -8,33 +8,21 @@ import com.badlogic.gdx.math.Vector2;
 import io.github.team2.SceneSystem.SceneManager;
 
 
-	
-
-
 
 public abstract class StaticGameShape extends Static {
-    protected Color color;
-    protected float width;
-    protected float height;
+    private Color color;
+    private float width;
+    private float height;
 
     public StaticGameShape() {
         super();
-        setEntityType(EntityType.UNDEFINED);
-        setPosition(new Vector2(0, 0));
-        setDirection(new Vector2(0, 0));
-        //setSpeed(0);
-        color = Color.WHITE;
+        
     }
     
-    public StaticGameShape( Vector2 position, Vector2 direction,  Color color) {
-        super(position,  direction);
-        
-
-        
-//        setPosition(new Vector2(0, 0));
-//        setDirection(new Vector2(0, 0));
-        //setSpeed(0);
+    public StaticGameShape(EntityType type, Vector2 position, Vector2 direction,  Color color) {
+        super(type ,position,  direction);
         this.color = color;
+        
     }
 
     public Color getColor() {
@@ -64,38 +52,9 @@ public abstract class StaticGameShape extends Static {
   
   
     
-	@Override 	
-	public  boolean isOutOfBound(Vector2 direction) {
-		
-		
-		Vector2 projectedPos = this.getPosition();
-		projectedPos.add(direction);
-		
-		if (direction.x < 0 && (projectedPos.x - getWidth()/2) < SceneManager.screenLeft) {
-			System.out.println("Hit left ");
-			return true;
-		}
-		if (direction.x > 0 && (projectedPos.x + getWidth()/2) > SceneManager.screenWidth) {
-			System.out.println("hit right");
-			return true;
-		}
-		
-		if (direction.y < 0 && (projectedPos.y - getHeight()/2) < SceneManager.screenBottom) {
-			return true;
-		}
-		if (direction.y > 0 && (projectedPos.y + getHeight()/2) > SceneManager.screenHeight) {
-			return true;
-		}
-		
-		return false;
-    
-	}
-		
-    
     @Override
     public abstract void draw(ShapeRenderer shape);
   
-  
-	  //public abstract void update();
+
 
 }

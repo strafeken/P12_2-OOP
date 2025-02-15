@@ -1,25 +1,30 @@
 package io.github.team2.EntitySystem;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+
+
 import io.github.team2.SceneSystem.SceneManager;
 
-public class DynamicGameShape <S extends Enum<S>, A extends Enum<A>> extends Dynamics<S,A> {
+public abstract class  DynamicGameShape <S extends Enum<S>, A extends Enum<A>> extends Dynamics<S,A> {
 
-	protected Color color;
-	protected float width;
-	protected float height;
+	private Color color;
+	private float width;
+	private float height;
 
 	public DynamicGameShape() {
-		super(0);
+		super();
 		setEntityType(EntityType.UNDEFINED);
 
 		color = Color.WHITE;
 
 	}
 
-	public DynamicGameShape(Vector2 position, Vector2 direction,Vector2 rotation, float speed, Color color , S state, A actionState) {
-		super(position, direction, rotation, speed,  state,actionState);
+
+	public DynamicGameShape(EntityType type, Vector2 position, Vector2 direction,Vector2 rotation, float speed, Color color , S state, A actionState) {
+		super(type, position, direction, rotation, speed,  state,actionState);
+
 		
 		this.color = color;
         System.out.println("check if still work in game shape ");
@@ -76,9 +81,12 @@ public class DynamicGameShape <S extends Enum<S>, A extends Enum<A>> extends Dyn
 		return false;
 
 	}
+	
+	public void initActionMap() {
+		
+	};
 
-	public void initActionMoveMap() {
-
-	}
-
+	
+	public abstract void draw(ShapeRenderer shapeRenderer);
+	
 }

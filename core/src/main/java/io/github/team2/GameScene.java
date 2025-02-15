@@ -31,17 +31,6 @@ public class GameScene extends Scene {
 
     
 
-/* check if need remove 
-	private void spawnPowerUp() {
-        // Only try spawning if a powerup doesn't already exist
-        boolean powerupExists = false;
-        for (Entity entity : em.getEntities()) {
-            if (entity.getEntityType() == EntityType.POWERUP) {
-                powerupExists = true;
-                break;
-            }
-        }
-     */
 
 
     // Physics world
@@ -135,13 +124,13 @@ public class GameScene extends Scene {
     		
             // Initialize static entities
             circle = new Circle(EntityType.CIRCLE,
-                              new Vector2(500, 300),
+                              new Vector2(500, 400),
                               new Vector2(0, 0),
                                Color.RED, 50);
             circle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
             triangle = new Triangle(EntityType.TRIANGLE,
-                                 new Vector2(100, 100),
+                                 new Vector2(100, 250),
                                  new Vector2(0, 0),
                                  new Vector2(1,0), 200, Color.GREEN, 50, 50,
                                  TriangleBehaviour.State.IDLE, TriangleBehaviour.Move.NONE);
@@ -151,7 +140,7 @@ public class GameScene extends Scene {
             // Initialize player
             player = new Player(EntityType.PLAYER,
                               "bucket.png",
-                              new Vector2(300, 100),
+                              new Vector2(300, 50),
                               new Vector2(0, 0), new Vector2(100,0) , 200, PlayerBehaviour.State.IDLE, PlayerBehaviour.Move.NONE
                               );
             
