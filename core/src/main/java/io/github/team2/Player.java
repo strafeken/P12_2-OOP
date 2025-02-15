@@ -8,12 +8,12 @@ import io.github.team2.EntitySystem.EntityType;
 
 public class Player extends DynamicTextureObject<PlayerBehaviour.State, PlayerBehaviour.Move > {
 
-	public Player(EntityType type, String texture, Vector2 position, Vector2 direction, float speed,
+	public Player(EntityType type, String texture, Vector2 position, Vector2 direction, Vector2 rotation, float speed,
 			PlayerBehaviour.State state, PlayerBehaviour.Move actionState) {
 		
+		super(type, texture, position, direction,rotation, speed, state, actionState);
 		
-		super(type, texture, position, direction, speed, state, actionState);
-		
+
 		
 
 
@@ -24,5 +24,6 @@ public class Player extends DynamicTextureObject<PlayerBehaviour.State, PlayerBe
 	@Override
 	public void update() {
 		updateBody();
+		
 	}
 }

@@ -66,7 +66,7 @@ public class PhysicsBody {
 	}
 
 	public void setLocation(float x, float y) {
-		body.setTransform(x, y, 0);
+		body.setTransform(x, y, body.getAngle());
 	}
 
 	public void setLinearVelocity(float x, float y) {
@@ -75,6 +75,14 @@ public class PhysicsBody {
 
 	public void updateEntityPosition(Entity entity) {
 		entity.setPosition(new Vector2(body.getPosition().x, body.getPosition().y));
+		updateEntityRotation(entity);
+	}
+	
+
+	public void updateEntityRotation(Entity entity) {
+		float angle = body.getAngle(); // Get rotation in radians
+		Vector2 newRotation = new Vector2((float) Math.cos(angle), (float) Math.sin(angle)); // Convert to Vector2
+		entity.setRotation(newRotation); // Update entity's rotation as a Vector2
 	}
 
 	public void updatePhysics(float deltaTime) {
@@ -101,4 +109,34 @@ public class PhysicsBody {
     public Body getBody() {
         return body;
     }
+    
+    public float getAngle() {
+        if (body != null) {
+            return body.getAngle(); // ✅ Gets rotation in radians
+        }
+        return 0; // ✅ Default to 0 if body is null (prevents errors)
+    }
+
+
+
+    public void setTransform(Vector2 position, float newAngle) {
+        if (body == null) {
+            System.out.println("[ERROR] setTransform() called on null body!");
+            return;
+        }
+
+        System.out.println("[DEBUG] Applying Transform: Position = " + position + ", Angle = " + newAngle);
+
+        // ✅ Ensure setTransform does not repeatedly call itself
+        if (body.getAngle() != newAngle) { 
+            body.setTransform(position, newAngle);
+        } else {
+            System.out.println("[DEBUG] setTransform skipped - Angle unchanged.");
+        }
+    }
+
+	private float newAngle() {
+		// TODO Auto-generated method stub
+		return newAngle();
+	}
 }

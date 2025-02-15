@@ -9,6 +9,7 @@ public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Ent
 	private HashMap<A, Action> ActionMap;
 	private S currentState;
 	private A currentActionState;
+  private Vector2 rotation;
 
 	public Dynamics() {
 		super();
@@ -19,8 +20,8 @@ public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Ent
 
 	}
 
-	public Dynamics(EntityType type, Vector2 position, Vector2 direction, float speed, S state, A actionState) {
-		super(type,position, direction);
+	public Dynamics(EntityType type, Vector2 position, Vector2 direction, Vector2 rotation, float speed, S state, A actionState) {
+		super(type,position, direction, rotation);
 		this.speed = speed;
 
 		ActionMap = new HashMap<>();
@@ -36,6 +37,7 @@ public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Ent
 	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
+
 
 	public <E extends Enum<E>> Action getAction(E moveKey) {
 

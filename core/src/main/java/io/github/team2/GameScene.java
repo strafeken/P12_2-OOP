@@ -132,7 +132,7 @@ public class GameScene extends Scene {
             triangle = new Triangle(EntityType.TRIANGLE,
                                  new Vector2(100, 250),
                                  new Vector2(0, 0),
-                                 200, Color.GREEN, 50, 50,
+                                 new Vector2(1,0), 200, Color.GREEN, 50, 50,
                                  TriangleBehaviour.State.IDLE, TriangleBehaviour.Move.NONE);
             
             triangle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
@@ -141,7 +141,7 @@ public class GameScene extends Scene {
             player = new Player(EntityType.PLAYER,
                               "bucket.png",
                               new Vector2(300, 50),
-                              new Vector2(0, 0),200, PlayerBehaviour.State.IDLE, PlayerBehaviour.Move.NONE
+                              new Vector2(0, 0), new Vector2(100,0) , 200, PlayerBehaviour.State.IDLE, PlayerBehaviour.Move.NONE
                               );
             
             player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
@@ -179,7 +179,7 @@ public class GameScene extends Scene {
                          "droplet.png",
                          new Vector2(random.nextFloat() * SceneManager.screenWidth,
                                    random.nextFloat() * SceneManager.screenHeight),
-                         new Vector2(0, 0),
+                         new Vector2(0, 0), new Vector2(0, 0),
                          100, DropBehaviour.State.IDLE, DropBehaviour.Move.NONE );
 
         //drop.setAction(new Dropping(drop));
@@ -312,7 +312,7 @@ public class GameScene extends Scene {
                                "droplet.png",
                                new Vector2(random.nextFloat() * SceneManager.screenWidth,
                                          SceneManager.screenHeight),
-                               new Vector2(0, 0),
+                               new Vector2(0, 0), new Vector2(0, 0),
                                100, DropBehaviour.State.IDLE, DropBehaviour.Move.NONE);
             
             drop.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);

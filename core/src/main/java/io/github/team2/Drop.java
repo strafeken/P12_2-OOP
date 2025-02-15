@@ -24,10 +24,11 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 		initActionMap();
 	}
 
-	public Drop(EntityType type, String texture, Vector2 position, Vector2 direction, float speed,
+	public Drop(EntityType type, String texture, Vector2 position, Vector2 direction, Vector2 rotation, float speed,
 			DropBehaviour.State state, DropBehaviour.Move actionState) {
-		
-		super(type, texture, position, direction, speed, state, actionState);
+
+		super(type, texture, position, direction, rotation, speed, state, actionState);
+
 		
 
 		//setEntityType(type);

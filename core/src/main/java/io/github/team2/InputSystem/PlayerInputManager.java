@@ -3,6 +3,7 @@ package io.github.team2.InputSystem;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import io.github.team2.Actions.Move;
+import io.github.team2.Actions.Rotate;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.GameManager;
 import java.util.Map;
@@ -82,6 +83,17 @@ public class PlayerInputManager extends InputManager {
                         keyboardManager.registerKeyUp(keycode, new Move(player, new Vector2(0, 0)));
                         System.out.println("[DEBUG] Registered RIGHT with key: " + Input.Keys.toString(keycode));
                         break;
+                    case "ROTATE_CLOCKWISE": 
+                        keyboardManager.registerKeyDown(keycode, new Rotate(player, new Vector2(1, 0)));
+                        keyboardManager.registerKeyUp(keycode, new Rotate(player, new Vector2(0, 0)));
+                        System.out.println("[DEBUG] Registered CLOCKWISE with key: " + Input.Keys.toString(keycode));
+                        break;
+                    case "ROTATE_ANTICLOCKWISE": 
+                        keyboardManager.registerKeyDown(keycode, new Rotate(player, new Vector2(-1, 0)));
+                        keyboardManager.registerKeyUp(keycode, new Rotate(player, new Vector2(0, 0)));
+                        System.out.println("[DEBUG] Registered ANTICLOCKWISE with key: " + Input.Keys.toString(keycode));
+                        break;
+
                 }
             }
             System.out.println("[DEBUG] All bindings registered successfully");

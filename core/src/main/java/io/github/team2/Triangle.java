@@ -32,9 +32,10 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
 
     }
 
-    public Triangle(EntityType type, Vector2 position, Vector2 direction, float speed, Color color, float size, float offset,
+    public Triangle(EntityType type, Vector2 position, Vector2 direction, Vector2 rotation, float speed, Color color, float size, float offset,
     	TriangleBehaviour.State state, TriangleBehaviour.Move actionState) {
-        super(type, position, direction, speed, color , state, actionState);
+
+        super(type, position, direction,rotation, speed, color , state, actionState);
         this.size = size;
         initActionMap();
        
