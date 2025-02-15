@@ -18,6 +18,7 @@ public abstract class Dynamics <S extends Enum<S>, A extends Enum<A>>  extends E
     private HashMap<A, Action> moveMap;
     private S currentState;
     private A currentActionState;
+	private Vector2 rotation;
     
 
     public Dynamics(float speed) {
@@ -31,8 +32,8 @@ public abstract class Dynamics <S extends Enum<S>, A extends Enum<A>>  extends E
        
     }
 
-    public Dynamics(Vector2 position, Vector2 direction, float speed, S state, A actionState) {
-        super(position, direction);
+    public Dynamics(Vector2 position, Vector2 direction, Vector2 rotation, float speed, S state, A actionState) {
+        super(position, direction, rotation);
         this.speed = speed;
         
         moveMap = new HashMap<>();

@@ -3,6 +3,7 @@ package io.github.team2.InputSystem;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import io.github.team2.Actions.Move;
+import io.github.team2.Actions.Rotate;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.GameManager;
 import java.util.Map;
@@ -82,6 +83,20 @@ public class PlayerInputManager extends InputManager {
                         keyboardManager.registerKeyUp(keycode, new Move(player, new Vector2(0, 0)));
                         System.out.println("[DEBUG] Registered RIGHT with key: " + Input.Keys.toString(keycode));
                         break;
+                    case "ROTATE_CLOCKWISE": // ✅ Rotate Clockwise when pressing E
+                        keyboardManager.registerKeyDown(keycode, new Rotate(player, new Vector2(1, 0)));
+                        keyboardManager.registerKeyUp(keycode, new Rotate(player, new Vector2(0, 0))); // Stop rotation when released
+                        break;
+                    case "ROTATE_ANTICLOCKWISE": // ✅ Check when "Q" is pressed
+                        System.out.println("[DEBUG] Registering ROTATE_ANTICLOCKWISE with key: " + Input.Keys.toString(keycode));
+                        keyboardManager.registerKeyDown(keycode, () -> {
+                            System.out.println("[DEBUG] Q Pressed - Rotate Anticlockwise");
+                            new Rotate(player, new Vector2(-1, 0)).execute();
+                        });
+                        keyboardManager.registerKeyUp(keycode, () -> {
+                            System.out.println("[DEBUG] Q Released - Stop Rotation");
+                            new Rotate(player, new Vector2(0, 0)).execute();
+                        });
                 }
             }
             System.out.println("[DEBUG] All bindings registered successfully");

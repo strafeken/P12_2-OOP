@@ -27,6 +27,8 @@ public class InputManager {
         keyBindings.put("MOVE_LEFT", Input.Keys.A);
         keyBindings.put("MOVE_DOWN", Input.Keys.S);
         keyBindings.put("MOVE_RIGHT", Input.Keys.D);
+        keyBindings.put("ROTATE_CLOCKWISE", Input.Keys.E);
+        keyBindings.put("ROTATE_ANTICLOCKWISE", Input.Keys.Q);
         // Don't automatically register - let caller decide when to register
     }
 
