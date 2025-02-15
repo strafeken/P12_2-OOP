@@ -3,7 +3,6 @@ package io.github.team2.InputSystem;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import io.github.team2.Actions.Move;
-import io.github.team2.Actions.Rotate;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.GameManager;
 import java.util.Map;
@@ -83,15 +82,6 @@ public class PlayerInputManager extends InputManager {
                         keyboardManager.registerKeyUp(keycode, new Move(player, new Vector2(0, 0)));
                         System.out.println("[DEBUG] Registered RIGHT with key: " + Input.Keys.toString(keycode));
                         break;
-                    case "ROTATE_LEFT":
-                        keyboardManager.registerKeyDown(Input.Keys.Q, new Rotate(player, new Vector2(-1, 0)));
-                        keyboardManager.registerKeyUp(Input.Keys.Q, new Rotate(player, new Vector2(0, 0)));
-                    
-                    case "ROTATE_RIGHT":
-                        keyboardManager.registerKeyDown(Input.Keys.E, new Rotate(player, new Vector2(1, 0)));
-                        keyboardManager.registerKeyUp(Input.Keys.E, new Rotate(player, new Vector2(0, 0)));
-
-                
                 }
             }
             System.out.println("[DEBUG] All bindings registered successfully");
@@ -108,5 +98,4 @@ public class PlayerInputManager extends InputManager {
             registerUserInput();
         }
     }
-
 }

@@ -82,14 +82,6 @@ public class PhysicsBody {
 	public void updateEntityPosition(Entity entity) {
 		entity.setPosition(new Vector2(body.getPosition().x, body.getPosition().y));
 	}
-	
-	public void updateEntityRotation(Entity entity) {
-		if (body == null) return;
-	    float angle = body.getAngle();
-	    Vector2 rotation = new Vector2((float) Math.cos(angle), (float) Math.sin(angle)); // Convert angle to unit direction vector
-	    entity.setRotation(rotation); // Set the rotation as a direction vector
-//	    System.out.println("Entity Rotation Updated: " + rotation);
-	}
 
 	public void updatePhysics(float deltaTime) {
 		float accumulator = 0;
@@ -102,34 +94,17 @@ public class PhysicsBody {
 	}
 
 	public void dispose() {
-//         if (body != null && world != null) {
-//             world.destroyBody(body);
-//             body = null;
-//         }
-//     }
+        if (body != null && world != null) {
+            world.destroyBody(body);
+            body = null;
+        }
+    }
 
-//     public World getWorld() {
-//         return world;
-//     }
+    public World getWorld() {
+        return world;
+    }
 
-//     public Body getBody() {
-//         return body;
-//     }
-// }
-		body.getWorld().destroyBody(body);
-	}
-
-	public float getAngle() {
-	    return body.getAngle();
-	}
-
-	public void setTransform(Vector2 position, float newAngle) {
-		body.setTransform(position, newAngle);
-		
-	}
-
-	public void setAngularVelocity(float f) {
-		body.setAngularVelocity(f);
-		
-	}
+    public Body getBody() {
+        return body;
+    }
 }

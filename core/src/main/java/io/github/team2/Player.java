@@ -10,11 +10,11 @@ import io.github.team2.EntitySystem.EntityType;
 
 public class Player extends DynamicTextureObject<PlayerBehaviour.State, PlayerBehaviour.Move > {
 
-	public Player(EntityType type, String texture, Vector2 position, Vector2 direction, Vector2 rotation, float speed,
+	public Player(EntityType type, String texture, Vector2 position, Vector2 direction, float speed,
 			PlayerBehaviour.State state, PlayerBehaviour.Move actionState) {
 		
 		
-		super(texture, position, direction, rotation, speed, state, actionState);
+		super(texture, position, direction, speed, state, actionState);
 		setEntityType(type);
 //		setTexture(new Texture(texture));
 //		setPosition(position);
@@ -23,8 +23,6 @@ public class Player extends DynamicTextureObject<PlayerBehaviour.State, PlayerBe
 		//setSpeed(speed);
 
 	}
-
-
 
 
 
