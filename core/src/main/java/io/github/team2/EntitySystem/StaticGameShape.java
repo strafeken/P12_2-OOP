@@ -51,39 +51,10 @@ public abstract class StaticGameShape extends Static {
     
   
   
-//    
-//	@Override 	
-//	public  boolean isOutOfBound(Vector2 direction) {
-//		
-//		
-//		Vector2 projectedPos = this.getPosition();
-//		projectedPos.add(direction);
-//		
-//		if (direction.x < 0 && (projectedPos.x - getWidth()/2) < SceneManager.screenLeft) {
-//			System.out.println("Hit left ");
-//			return true;
-//		}
-//		if (direction.x > 0 && (projectedPos.x + getWidth()/2) > SceneManager.screenWidth) {
-//			System.out.println("hit right");
-//			return true;
-//		}
-//		
-//		if (direction.y < 0 && (projectedPos.y - getHeight()/2) < SceneManager.screenBottom) {
-//			return true;
-//		}
-//		if (direction.y > 0 && (projectedPos.y + getHeight()/2) > SceneManager.screenHeight) {
-//			return true;
-//		}
-//		
-//		return false;
-//    
-//	}
-//		
     
     @Override
     public abstract void draw(ShapeRenderer shape);
   
-  
-	  //public abstract void update();
+
 
 }
