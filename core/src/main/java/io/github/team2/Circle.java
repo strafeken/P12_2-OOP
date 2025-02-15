@@ -15,24 +15,20 @@ public class Circle extends StaticGameShape {
     public Circle() {
         super();
         setEntityType(EntityType.CIRCLE);
-        setPosition(new Vector2(0, 0));
-        this.color = Color.WHITE;
         this.radius = 10;
         updateDimensions();
     }
 
     public Circle(EntityType type, Vector2 position, Vector2 direction , Color color, float radius) {
-        
-        super(type, position,  direction,   color);
-        setEntityType(type);
-
+        super(type, position,  direction,color);
         this.radius = radius;
         updateDimensions();
     }
 
     private void updateDimensions() {
-        this.width = radius * 2;
-        this.height = radius * 2;
+        setWidth(radius * 2);
+        setHeight(radius * 2);
+        
     }
 
     public float getRadius() {
@@ -48,7 +44,7 @@ public class Circle extends StaticGameShape {
 
     @Override
     public void draw(ShapeRenderer shape) {
-        shape.setColor(color);
+        shape.setColor(getColor());
         Vector2 pos = getPosition();
         shape.circle(pos.x, pos.y, radius);
     }

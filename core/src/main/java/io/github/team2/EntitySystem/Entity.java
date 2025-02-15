@@ -30,7 +30,6 @@ public abstract class Entity {
 	public Entity(EntityType type, Vector2 position, Vector2 direction) {
 		this.position = position;
 		this.direction = direction;
-		
 		this.type  = type;
 		body = null;
 		
@@ -91,7 +90,7 @@ public abstract class Entity {
 	
 	
 
-	public abstract boolean isOutOfBound(Vector2 direction);
+
 
 	public abstract void update();
 

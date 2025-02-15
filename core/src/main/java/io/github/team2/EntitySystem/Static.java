@@ -12,10 +12,10 @@ public abstract class Static extends Entity {
         super(type, position, direction);
     }
 
-    @Override
-    public boolean isOutOfBound(Vector2 direction) {
-        return false; // Static objects don't move, so they can't be out of bounds
-    }
+//    @Override
+//    public boolean isOutOfBound(Vector2 direction) {
+//        return false; // Static objects don't move, so they can't be out of bounds
+//    }
 
     @Override
     public void update() {
