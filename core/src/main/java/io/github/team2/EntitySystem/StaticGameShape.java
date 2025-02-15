@@ -22,18 +22,14 @@ public abstract class StaticGameShape extends Static {
         setEntityType(EntityType.UNDEFINED);
         setPosition(new Vector2(0, 0));
         setDirection(new Vector2(0, 0));
-        //setSpeed(0);
         color = Color.WHITE;
     }
     
-    public StaticGameShape( Vector2 position, Vector2 direction,  Color color) {
-        super(position,  direction);
+    public StaticGameShape(EntityType type, Vector2 position, Vector2 direction,  Color color) {
+        super(type ,position,  direction);
         
 
-        
-//        setPosition(new Vector2(0, 0));
-//        setDirection(new Vector2(0, 0));
-        //setSpeed(0);
+
         this.color = color;
     }
 

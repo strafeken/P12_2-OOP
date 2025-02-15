@@ -32,13 +32,6 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 
 		//setEntityType(type);
 		
-//		setPosition(position);
-//		setDirection(direction);
-//		setSpeed(speed);
-
-//		moveMap = new HashMap<>();
-//	    currentState = DropBehaviour.State.IDLE;
-//	    currentActionState = DropBehaviour.Move.NONE;
 		initActionMap();
 
 	}
@@ -53,9 +46,9 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 		return false;
 	}
 
-	public boolean isOutOfBounds() {
-		return getPosition().y < 0;
-	}
+//	public boolean isOutOfBounds() {
+//		return getPosition().y < 0;
+//	}
 
 	private void resetPosition() {
 		Random random = new Random();
@@ -67,7 +60,8 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 	}
 
 	
-	  public void initActionMap() {
+	@Override
+	public void initActionMap() {
 	 
 		  getActionMap().put(DropBehaviour.Move.DROP, new Move(this, new Vector2(0, -1)));
 	 
@@ -122,11 +116,6 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 
 	}
 
-	/*
-	 * @Override public void update() {
-	 * 
-	 * updateMovement(); updateBody(); }
-	 */
 
 	@Override
 	public void update() {

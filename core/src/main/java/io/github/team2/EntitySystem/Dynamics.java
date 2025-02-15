@@ -19,7 +19,7 @@ public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Ent
 
 	}
 
-	public Dynamics(EntityType type,Vector2 position, Vector2 direction, float speed, S state, A actionState) {
+	public Dynamics(EntityType type, Vector2 position, Vector2 direction, float speed, S state, A actionState) {
 		super(type,position, direction);
 		this.speed = speed;
 

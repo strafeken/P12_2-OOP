@@ -23,12 +23,9 @@ public class Circle extends StaticGameShape {
 
     public Circle(EntityType type, Vector2 position, Vector2 direction , Color color, float radius) {
         
-        super( position,  direction,   color);
-        //System.out.println("check if still circle ");
+        super(type, position,  direction,   color);
         setEntityType(type);
-//        setDirection(direction);
-        //setSpeed(speed);
-        this.color = color;
+
         this.radius = radius;
         updateDimensions();
     }

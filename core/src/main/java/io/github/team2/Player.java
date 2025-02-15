@@ -13,14 +13,14 @@ public class Player extends DynamicTextureObject<PlayerBehaviour.State, PlayerBe
 		
 		
 		super(type, texture, position, direction, speed, state, actionState);
-		//setEntityType(type);
+		
 		
 
 
 	}
 
 	
-
+	
 	@Override
 	public void update() {
 		updateBody();

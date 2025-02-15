@@ -22,8 +22,8 @@ public class StaticTextureObject extends Static {
 		tex = new Texture(texture);
 	}
 
-	public StaticTextureObject(String texture, Vector2 position, Vector2 direction) {
-		super( position,  direction);
+	public StaticTextureObject(EntityType type, String texture, Vector2 position, Vector2 direction) {
+		super(type, position,  direction);
 		tex = new Texture(texture);
 
 

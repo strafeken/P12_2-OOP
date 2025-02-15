@@ -8,8 +8,8 @@ public abstract class Static extends Entity {
         super();
     }
 
-    public Static(Vector2 position,  Vector2 direction) {
-        super(position, direction);
+    public Static(EntityType type, Vector2 position,  Vector2 direction) {
+        super(type, position, direction);
     }
 
     @Override

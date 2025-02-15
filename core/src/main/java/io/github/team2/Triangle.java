@@ -27,7 +27,6 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
         setPosition(new Vector2(0, 0));
         
         this.size = 10;
-        //this.offset = 0;
         initActionMap();
       
 
@@ -36,18 +35,9 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
     public Triangle(EntityType type, Vector2 position, Vector2 direction, float speed, Color color, float size, float offset,
     	TriangleBehaviour.State state, TriangleBehaviour.Move actionState) {
         super(type, position, direction, speed, color , state, actionState);
-        System.out.println("check if still work triangle ");
-        //super(position, direction, speed, color);
-        //setEntityType(type);
-        
         this.size = size;
-        //this.offset = offset;
-        
-        //super.setCurrentState(TriangleBehaviour.State.IDLE);
-        //super.setCurrentActionState(TriangleBehaviour.Move.NONE);
         initActionMap();
        
-      
         // auto calculate width and height
         this.setWidth(2 * size);
         this.setHeight(2 * size);
@@ -91,18 +81,6 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
 	   getActionMap().put(TriangleBehaviour.Move.LEFT, new Move(this, new Vector2(-1, 0)));
 	   getActionMap().put(TriangleBehaviour.Move.RIGHT, new Move(this, new Vector2(1, 0)));
 
-	}
-
-
-  
-  
-
-	@Override
-	public <E extends Enum<E>> Action getAction(E moveKey) {
-
-		Action action = getActionMap().get(moveKey);
-
-		return action;
 	}
 
 
