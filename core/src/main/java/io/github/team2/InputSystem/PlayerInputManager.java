@@ -83,20 +83,17 @@ public class PlayerInputManager extends InputManager {
                         keyboardManager.registerKeyUp(keycode, new Move(player, new Vector2(0, 0)));
                         System.out.println("[DEBUG] Registered RIGHT with key: " + Input.Keys.toString(keycode));
                         break;
-                    case "ROTATE_CLOCKWISE": // ✅ Rotate Clockwise when pressing E
+                    case "ROTATE_CLOCKWISE": 
                         keyboardManager.registerKeyDown(keycode, new Rotate(player, new Vector2(1, 0)));
-                        keyboardManager.registerKeyUp(keycode, new Rotate(player, new Vector2(0, 0))); // Stop rotation when released
+                        keyboardManager.registerKeyUp(keycode, new Rotate(player, new Vector2(0, 0)));
+                        System.out.println("[DEBUG] Registered CLOCKWISE with key: " + Input.Keys.toString(keycode));
                         break;
-                    case "ROTATE_ANTICLOCKWISE": // ✅ Check when "Q" is pressed
-                        System.out.println("[DEBUG] Registering ROTATE_ANTICLOCKWISE with key: " + Input.Keys.toString(keycode));
-                        keyboardManager.registerKeyDown(keycode, () -> {
-                            System.out.println("[DEBUG] Q Pressed - Rotate Anticlockwise");
-                            new Rotate(player, new Vector2(-1, 0)).execute();
-                        });
-                        keyboardManager.registerKeyUp(keycode, () -> {
-                            System.out.println("[DEBUG] Q Released - Stop Rotation");
-                            new Rotate(player, new Vector2(0, 0)).execute();
-                        });
+                    case "ROTATE_ANTICLOCKWISE": 
+                        keyboardManager.registerKeyDown(keycode, new Rotate(player, new Vector2(-1, 0)));
+                        keyboardManager.registerKeyUp(keycode, new Rotate(player, new Vector2(0, 0)));
+                        System.out.println("[DEBUG] Registered ANTICLOCKWISE with key: " + Input.Keys.toString(keycode));
+                        break;
+
                 }
             }
             System.out.println("[DEBUG] All bindings registered successfully");
