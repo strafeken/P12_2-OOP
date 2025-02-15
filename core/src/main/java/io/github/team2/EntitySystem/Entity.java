@@ -27,11 +27,11 @@ public abstract class Entity {
 		
 	}
 
-	public Entity(Vector2 position, Vector2 direction) {
+	public Entity(EntityType type, Vector2 position, Vector2 direction) {
 		this.position = position;
 		this.direction = direction;
 		
-		type = EntityType.UNDEFINED;
+		this.type  = type;
 		body = null;
 		
 	}

@@ -17,12 +17,8 @@ import io.github.team2.EntitySystem.Dynamics;
 
 public class Triangle extends DynamicGameShape<TriangleBehaviour.State, TriangleBehaviour.Move> {
     private float size;
-    //private float offset;
-    
-  
 
     
-  
  
 
     public Triangle() {
@@ -32,24 +28,24 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
         
         this.size = 10;
         //this.offset = 0;
-        initActionMoveMap();
+        initActionMap();
       
 
     }
 
     public Triangle(EntityType type, Vector2 position, Vector2 direction, float speed, Color color, float size, float offset,
     	TriangleBehaviour.State state, TriangleBehaviour.Move actionState) {
-        super(position, direction, speed, color , state, actionState);
+        super(type, position, direction, speed, color , state, actionState);
         System.out.println("check if still work triangle ");
         //super(position, direction, speed, color);
-        setEntityType(type);
+        //setEntityType(type);
         
         this.size = size;
         //this.offset = offset;
         
         //super.setCurrentState(TriangleBehaviour.State.IDLE);
         //super.setCurrentActionState(TriangleBehaviour.Move.NONE);
-        initActionMoveMap();
+        initActionMap();
        
       
         // auto calculate width and height
@@ -73,7 +69,7 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
 
     @Override
     public void draw(ShapeRenderer shape) {
-        shape.setColor(color);
+        shape.setColor(getColor());
         Vector2 pos = getPosition();
         float x = pos.x;
         float y = pos.y;
@@ -85,15 +81,12 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
         );
     }
 
-    @Override
-    public boolean isOutOfBound(Vector2 direction) {
-        return false; // Implement boundary checking if needed
-    }
+
   
   
   
    @Override
-	public void initActionMoveMap() {
+	public void initActionMap() {
 
 	   getActionMap().put(TriangleBehaviour.Move.LEFT, new Move(this, new Vector2(-1, 0)));
 	   getActionMap().put(TriangleBehaviour.Move.RIGHT, new Move(this, new Vector2(1, 0)));
@@ -112,10 +105,6 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
 		return action;
 	}
 
-	public boolean checkPosition() {
-
-		return true;
-	}
 
 	public boolean checkPositionLeft() {
 		return (getPosition().x - getWidth() / 2) <= SceneManager.screenLeft;

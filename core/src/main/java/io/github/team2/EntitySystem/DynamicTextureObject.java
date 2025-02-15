@@ -9,20 +9,20 @@ import io.github.team2.SceneSystem.SceneManager;
 
 public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>> extends Dynamics<S,A> {
     //private TextureRegion textureRegion;
-    //private Vector2 direction;
+    
     private Texture tex;
     
 
     public DynamicTextureObject(Texture texture) {
         super();
-        setTexture(texture); // Properly set the texture through parent class
+        tex = texture; // Properly set the texture through parent class
         
         
     }
 
     // Add constructor that takes texture path
-    public DynamicTextureObject(String texturePath, Vector2 position, Vector2 direction, float speed, S state, A actionState) {
-    	super(position, direction, speed, state, actionState);
+    public DynamicTextureObject(EntityType type, String texturePath, Vector2 position, Vector2 direction, float speed, S state, A actionState) {
+    	super(type, position, direction, speed, state, actionState);
         
         
     	tex = new Texture(texturePath);
@@ -47,6 +47,16 @@ public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>
 	public float getHeight() {
 		return tex.getHeight();
 	}
+	
+
+	
+	@Override
+	public void draw(SpriteBatch batch) {
+		batch.draw(tex, getPosition().x - tex.getWidth() / 2, getPosition().y - tex.getHeight() / 2);
+	}
+	
+	
+	
 	
 	@Override 	
 	public  boolean isOutOfBound(Vector2 direction) {
@@ -75,10 +85,10 @@ public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>
 		
 	}
 	
-	@Override
-	public void draw(SpriteBatch batch) {
-		batch.draw(tex, getPosition().x - tex.getWidth() / 2, getPosition().y - tex.getHeight() / 2);
-	}
+	
+	public void initActionMap() {
+		
+	};	
 	
 	public void dispose() {
 		tex.dispose();

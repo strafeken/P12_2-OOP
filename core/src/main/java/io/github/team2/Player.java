@@ -12,18 +12,14 @@ public class Player extends DynamicTextureObject<PlayerBehaviour.State, PlayerBe
 			PlayerBehaviour.State state, PlayerBehaviour.Move actionState) {
 		
 		
-		super(texture, position, direction, speed, state, actionState);
-		setEntityType(type);
+		super(type, texture, position, direction, speed, state, actionState);
+		//setEntityType(type);
 		
-//		setTexture(new Texture(texture));
-//		setPosition(position);
-//		setDirection(direction);
-		
-		//setSpeed(speed);
+
 
 	}
 
-
+	
 
 	@Override
 	public void update() {

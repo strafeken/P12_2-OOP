@@ -19,8 +19,8 @@ public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Ent
 
 	}
 
-	public Dynamics(Vector2 position, Vector2 direction, float speed, S state, A actionState) {
-		super(position, direction);
+	public Dynamics(EntityType type,Vector2 position, Vector2 direction, float speed, S state, A actionState) {
+		super(type,position, direction);
 		this.speed = speed;
 
 		ActionMap = new HashMap<>();
@@ -84,13 +84,12 @@ public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Ent
 		updateBody();
 	}
 
-	/**
-	 * Check if the entity is moving
-	 * 
-	 * @return true if the entity has non-zero speed and direction
-	 */
-//	
-//	public boolean isMoving() {
-//		return speed != 0 && !getDirection().isZero();
-//	}
+	
+	
+	public abstract boolean isOutOfBound(Vector2 direction);
+	
+	public abstract void initActionMap();
+	
+	
+	
 }

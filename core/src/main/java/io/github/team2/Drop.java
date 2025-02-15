@@ -15,31 +15,22 @@ import io.github.team2.InputSystem.Action;
 
 public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviour.Move> {
 
-	// TODO: when done shift to dynamic class
-	// private HashMap<DropBehaviour.Move, Action> moveMap;
-	// movment states can move to dynamic
-//    private DropBehaviour.State currentState;
-//    private DropBehaviour.Move currentActionState;
+
 
 	public Drop(String texture) {
 		super(new Texture(texture));
 		setEntityType(EntityType.DROP);
 		setPosition(new Vector2(0, 0));
-		setSpeed(10);
-
-		// moveMap = new HashMap<>();
-//        currentState = DropBehaviour.State.IDLE;
-//        currentActionState = DropBehaviour.Move.NONE;
-		initActionMoveMap();
+		initActionMap();
 	}
 
 	public Drop(EntityType type, String texture, Vector2 position, Vector2 direction, float speed,
 			DropBehaviour.State state, DropBehaviour.Move actionState) {
 		
-		super(texture, position, direction, speed, state, actionState);
+		super(type, texture, position, direction, speed, state, actionState);
 		
 
-		setEntityType(type);
+		//setEntityType(type);
 		
 //		setPosition(position);
 //		setDirection(direction);
@@ -48,7 +39,7 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 //		moveMap = new HashMap<>();
 //	    currentState = DropBehaviour.State.IDLE;
 //	    currentActionState = DropBehaviour.Move.NONE;
-		initActionMoveMap();
+		initActionMap();
 
 	}
 
@@ -76,7 +67,7 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 	}
 
 	
-	  public void initActionMoveMap() {
+	  public void initActionMap() {
 	 
 		  getActionMap().put(DropBehaviour.Move.DROP, new Move(this, new Vector2(0, -1)));
 	 
