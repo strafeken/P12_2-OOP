@@ -50,12 +50,6 @@ public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>
 	
 
 	
-	@Override
-	public void draw(SpriteBatch batch) {
-		batch.draw(tex, getPosition().x - tex.getWidth() / 2, getPosition().y - tex.getHeight() / 2);
-	}
-	
-	
 	
 	
 	@Override 	
