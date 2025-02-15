@@ -11,7 +11,7 @@ import io.github.team2.InputSystem.Action;
 public class Rotate implements Action {
 	private final Entity entity;
 	private final Vector2 direction;
-	private static final float ROTATION_SPEED = 7.0f; // Adjust for faster/slower rotation
+	private static final float ROTATION_SPEED = 7.0f; 
 
 	public Rotate(Entity entity, Vector2 direction) {
 		this.entity = entity;
@@ -20,30 +20,28 @@ public class Rotate implements Action {
 
 	@Override
 	public void execute() {
-		if (entity.getBody() == null) return; // Prevent null pointer errors
+		if (entity.getBody() == null) return; 
 
-		float rotationSpeed = ROTATION_SPEED * Gdx.graphics.getDeltaTime(); // Scale speed properly
-		float currentAngle = entity.getBody().getAngle(); // Get current angle in radians
+		float rotationSpeed = ROTATION_SPEED * Gdx.graphics.getDeltaTime(); 
+		float currentAngle = entity.getBody().getAngle(); 
 
-		// 🔹 Update the rotation based on direction.x
-		if (direction.x < 0) { // Anticlockwise (Q)
+		
+		if (direction.x < 0) { 
 	        currentAngle += rotationSpeed;
 	        System.out.println("[DEBUG] Rotating Anticlockwise: New Angle = " + currentAngle);
 	    } 
-	    else if (direction.x > 0) { // Clockwise (E)
+	    else if (direction.x > 0) { 
 	        currentAngle -= rotationSpeed;
 	        System.out.println("[DEBUG] Rotating Clockwise: New Angle = " + currentAngle);
 	    } 
 	    else {
 	        System.out.println("[DEBUG] Stopping Rotation");
 	    }
-
-		// 🔹 Convert new angle into a Vector2 direction
+		
 		Vector2 newRotation = new Vector2((float) Math.cos(currentAngle), (float) Math.sin(currentAngle));
-
-		// 🔹 Apply the new rotation as a direction vector
+		
 		entity.setRotation(newRotation);
-		// ✅ Ensure setTransform() is only called when body is valid
+		
 	    if (entity.getBody() != null) {
 	        entity.getBody().setTransform(entity.getBody().getPosition(), currentAngle);
 	    }

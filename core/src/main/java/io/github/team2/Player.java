@@ -29,5 +29,6 @@ public class Player extends DynamicTextureObject<PlayerBehaviour.State, PlayerBe
 	@Override
 	public void update() {
 		updateBody();
+		
 	}
 }
