@@ -25,14 +25,8 @@ public class GameScene extends Scene {
     private static final int VELOCITY_ITERATIONS = 6;
     private static final int POSITION_ITERATIONS = 2;
     private static final int MAX_DROPLETS = 10;
-    private static final float POWERUP_SPAWN_CHANCE = 0.005f;
     private static final float MIN_SPAWN_INTERVAL = 1f;
     private static final float MAX_SPAWN_INTERVAL = 3f;
-
-
-    
-
-
 
     // Physics world
     private World world;
@@ -56,10 +50,7 @@ public class GameScene extends Scene {
     // Spawn control
     private float dropletSpawnTimer;
     private Random random;
-
-    
-
-    
+ 
     public GameScene() {
         super();
         this.gameManager = GameManager.getInstance(); // Use singleton instead of new instance
@@ -248,30 +239,7 @@ public class GameScene extends Scene {
     }
 
     private void updateSpawning() {
-        spawnPowerUp();
         updateDropletSpawning();
-    }
-
-
-    private void spawnPowerUp() {
-        if (!isPowerUpPresent() && random.nextFloat() <= POWERUP_SPAWN_CHANCE) {
-            PowerUp powerUp = new PowerUp(
-                EntityType.POWERUP,
-                "pup1.png",
-                new Vector2(random.nextFloat() * DisplayManager.getScreenWidth(),
-                          DisplayManager.getScreenHeight()),
-                new Vector2(0, 0),
-                100, DropBehaviour.State.IDLE, DropBehaviour.Move.NONE);
-            
-            powerUp.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
-            //powerUp.setAction(new Dropping(powerUp));
-            entityManager.addEntities(powerUp);
-        }
-    }
-
-    private boolean isPowerUpPresent() {
-        return entityManager.getEntities().stream()
-            .anyMatch(e -> e.getEntityType() == EntityType.POWERUP);
     }
 
     private void updateDropletSpawning() {
@@ -419,9 +387,4 @@ public class GameScene extends Scene {
     /*public InputMultiplexer getInputMultiplexer() {
         return inputMultiplexer;
     }*/
-
-
-
-    
-
 }

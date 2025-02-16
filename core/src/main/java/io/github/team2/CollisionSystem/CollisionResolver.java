@@ -35,12 +35,6 @@ public class CollisionResolver implements CollisionListener {
                 case CIRCLE_DROP:
                     handleCircleDropCollision(a, b);
                     break;
-                case POWERUP_BUCKET:
-                    handlePowerUpBucketCollision(a, b);
-                    break;
-                case POWERUP_PLAYER:
-                    handlePowerUpPlayerCollision(a, b);
-                    break;
                 default:
                     System.out.println("Unhandled collision: " + a.getEntityType() + " : " + b.getEntityType());
             }
@@ -62,11 +56,6 @@ public class CollisionResolver implements CollisionListener {
             System.out.println("PointsManager is null!");
         }
         em.markForRemoval(drop);
-    }
-
-    private void handlePowerUpPlayerCollision(Entity a, Entity b) {
-        Entity powerUp = (a.getEntityType() == EntityType.POWERUP) ? a : b;
-        handlePowerUpEffect(powerUp);
     }
 
     private void handlePlayerBucketCollision(Entity a, Entity b) {
