@@ -80,9 +80,15 @@ public class PhysicsBody {
 	
 
 	public void updateEntityRotation(Entity entity) {
-		float angle = body.getAngle(); // Get rotation in radians
-		Vector2 newRotation = new Vector2((float) Math.cos(angle), (float) Math.sin(angle)); // Convert to Vector2
-		entity.setRotation(newRotation); // Update entity's rotation as a Vector2
+		
+		 if ( entity instanceof Dynamics<?,?>) {
+			float angle = body.getAngle(); // Get rotation in radians
+			Vector2 newRotation = new Vector2((float) Math.cos(angle), (float) Math.sin(angle)); // Convert to Vector2
+			((Dynamics< ?,? >)entity).setRotation(newRotation); // Update entity's rotation as a Vector2
+		
+			
+		}
+
 	}
 
 	public void updatePhysics(float deltaTime) {
