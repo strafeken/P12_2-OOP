@@ -3,8 +3,10 @@ package io.github.team2.SceneSystem;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import io.github.team2.EntitySystem.EntityManager;
-
+import io.github.team2.InputSystem.IManager;
 import io.github.team2.InputSystem.InputManager;
+import io.github.team2.InputSystem.KeyboardManager;
+import io.github.team2.InputSystem.MouseManager;
 import io.github.team2.Utils.DisplayManager;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.TextManager;
@@ -13,7 +15,9 @@ import io.github.team2.TextManager;
 public abstract class Scene {
     protected EntityManager entityManager;
     //protected CollisionManager collisionManager;
-    protected InputManager inputManager;
+//    protected InputManager inputManager;
+    protected KeyboardManager keyboardManager;
+    protected MouseManager mouseManager;
     protected AudioManager audioManager;
     protected TextManager textManager;
 
@@ -26,7 +30,9 @@ public abstract class Scene {
     public Scene() {
         entityManager = new EntityManager();
         audioManager = AudioManager.getInstance();
-        inputManager = new InputManager();
+//        inputManager = new InputManager();
+        keyboardManager = new KeyboardManager();
+        mouseManager = new MouseManager();
         textManager = new TextManager();
 
         // Initialize viewport with default values
@@ -71,9 +77,9 @@ public abstract class Scene {
     }
 
 
-    public InputManager getInputManager() {
-        return inputManager;
-    }
+//    public InputManager getInputManager() {
+//        return inputManager;
+//    }
 
     public AudioManager getAudioManager() {
         return audioManager;

@@ -3,7 +3,7 @@ package io.github.team2.CollisionSystem;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.EntitySystem.EntityType;
-import io.github.team2.GameManager;
+//import io.github.team2.GameManager;
 import io.github.team2.AudioSystem.AudioManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,12 +49,12 @@ public class CollisionResolver implements CollisionListener {
         Entity drop = (a.getEntityType() == EntityType.DROP) ? a : b;
 
         AudioManager.getInstance().playSoundEffect("ding");
-        if (GameManager.getInstance().getPointsManager() != null) {
-            GameManager.getInstance().getPointsManager().addPoints(10);
-            //System.out.println("Points added: 10, Total: " + GameManager.getInstance().getPointsManager().getPoints());
-        } else {
-            System.out.println("PointsManager is null!");
-        }
+//        if (GameManager.getInstance().getPointsManager() != null) {
+//            GameManager.getInstance().getPointsManager().addPoints(10);
+//            //System.out.println("Points added: 10, Total: " + GameManager.getInstance().getPointsManager().getPoints());
+//        } else {
+//            System.out.println("PointsManager is null!");
+//        }
         em.markForRemoval(drop);
     }
 
@@ -105,7 +105,7 @@ public class CollisionResolver implements CollisionListener {
         }
 
         // Award points based on droplets
-        GameManager.getInstance().getPointsManager().addPoints(dropletCount * 10);
+//        GameManager.getInstance().getPointsManager().addPoints(dropletCount * 10);
 
         // Remove all droplets
         for (Entity droplet : dropletsToRemove) {

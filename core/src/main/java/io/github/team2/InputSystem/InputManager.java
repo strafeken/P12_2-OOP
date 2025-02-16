@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import io.github.team2.Actions.Move;
 import io.github.team2.EntitySystem.Entity;
-import io.github.team2.GameManager;
+//import io.github.team2.GameManager;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -45,28 +45,22 @@ public class InputManager {
 
     public void clearAllBindings() {
         if (keyboardManager != null) {
-            keyboardManager.clearAllBindings();
-            keyboardManager.clearActiveKeys();
+//            keyboardManager.clearAllBindings();
+//            keyboardManager.clearActiveKeys();
         }
         keyBindings.clear();
     }
 
     public void registerUserInput() {
         System.out.println("[DEBUG] Starting to register user input...");
-        GameManager gameManager = GameManager.getInstance();
-        if (gameManager == null || gameManager.getPlayerEntityManager() == null) {
-            System.out.println("[ERROR] GameManager or PlayerEntityManager is null");
-            return;
-        }
-
-        Entity player = gameManager.getPlayerEntityManager().getPlayer();
-        if (player == null) {
-            System.out.println("[ERROR] Player is null");
-            return;
-        }
+//        GameManager gameManager = GameManager.getInstance();
+//        if (gameManager == null) {
+//            System.out.println("[ERROR] GameManager or PlayerEntityManager is null");
+//            return;
+//        }
 
         try {
-            keyboardManager.clearAllBindings();
+//            keyboardManager.clearAllBindings();
             System.out.println("[DEBUG] Current keyBindings: " + keyBindings);
 
             for (Map.Entry<String, Integer> entry : keyBindings.entrySet()) {
@@ -74,24 +68,24 @@ public class InputManager {
                 int keycode = entry.getValue();
                 System.out.println("[DEBUG] Registering " + action + " with key: " + Input.Keys.toString(keycode));
 
-                switch (action) {
-                    case "MOVE_UP":
-                        registerKeyDown(keycode, new Move(player, new Vector2(0, 1)));
-                        registerKeyUp(keycode, new Move(player, new Vector2(0, 0)));
-                        break;
-                    case "MOVE_LEFT":
-                        registerKeyDown(keycode, new Move(player, new Vector2(-1, 0)));
-                        registerKeyUp(keycode, new Move(player, new Vector2(0, 0)));
-                        break;
-                    case "MOVE_DOWN":
-                        registerKeyDown(keycode, new Move(player, new Vector2(0, -1)));
-                        registerKeyUp(keycode, new Move(player, new Vector2(0, 0)));
-                        break;
-                    case "MOVE_RIGHT":
-                        registerKeyDown(keycode, new Move(player, new Vector2(1, 0)));
-                        registerKeyUp(keycode, new Move(player, new Vector2(0, 0)));
-                        break;
-                }
+//                switch (action) {
+//                    case "MOVE_UP":
+//                        registerKeyDown(keycode, new Move(player, new Vector2(0, 1)));
+//                        registerKeyUp(keycode, new Move(player, new Vector2(0, 0)));
+//                        break;
+//                    case "MOVE_LEFT":
+//                        registerKeyDown(keycode, new Move(player, new Vector2(-1, 0)));
+//                        registerKeyUp(keycode, new Move(player, new Vector2(0, 0)));
+//                        break;
+//                    case "MOVE_DOWN":
+//                        registerKeyDown(keycode, new Move(player, new Vector2(0, -1)));
+//                        registerKeyUp(keycode, new Move(player, new Vector2(0, 0)));
+//                        break;
+//                    case "MOVE_RIGHT":
+//                        registerKeyDown(keycode, new Move(player, new Vector2(1, 0)));
+//                        registerKeyUp(keycode, new Move(player, new Vector2(0, 0)));
+//                        break;
+//                }
             }
             System.out.println("[DEBUG] All bindings registered successfully");
         } catch (Exception e) {
@@ -104,9 +98,9 @@ public class InputManager {
         if (keyboardManager != null) {
             keyboardManager.update();
         }
-        if (mouseManager != null && Gdx.input.isTouched()) {
-            mouseManager.touchDown(Gdx.input.getX(), Gdx.input.getY(), 0, 0);
-        }
+//        if (mouseManager != null && Gdx.input.isTouched()) {
+//            mouseManager.touchDown(Gdx.input.getX(), Gdx.input.getY(), 0, 0);
+//        }
     }
 
     public void registerKeyDown(int keycode, Action action) {
@@ -122,9 +116,9 @@ public class InputManager {
     }
 
     public void registerButton(Button button) {
-        if (mouseManager != null) {
-            mouseManager.registerButton(button);
-        }
+//        if (mouseManager != null) {
+//            mouseManager.registerButton(button);
+//        }
     }
 
     protected String getActionForKey(int keycode) {
@@ -146,7 +140,7 @@ public class InputManager {
 
     public void clearActiveKeys() {
         if (keyboardManager != null) {
-            keyboardManager.clearActiveKeys();
+//            keyboardManager.clearActiveKeys();
         }
     }
 }

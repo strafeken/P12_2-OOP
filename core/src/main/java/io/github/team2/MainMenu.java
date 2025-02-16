@@ -1,5 +1,6 @@
 package io.github.team2;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -41,29 +42,27 @@ public class MainMenu extends Scene {
                 new Vector2(0, 0));
         em.addEntities(image);
 
-        // Create start action first
         StartGame startAction = new StartGame(SceneManager.getInstance(SceneManager.class));
 
-        // Create and setup start button
-        Vector2 centerPos = new Vector2(
-                DisplayManager.getScreenWidth() / 2 - 50,  // Center the button
-                DisplayManager.getScreenHeight() / 2 - 180
-        );
+        Vector2 centerPos = new Vector2(DisplayManager.getScreenWidth() / 2 - 50, DisplayManager.getScreenHeight() / 2 - 180);
 
-        startButton = new Button(1, "Start", "startBtn.png",
-                               centerPos, startAction,
-                               100, 100);
+//        startButton = new Button(1, "Start", "startBtn.png",
+//                               centerPos, startAction,
+//                               100, 100);
+        startButton = new Button("startBtn.png", centerPos, startAction, 100, 100);
 
-        // Register both keyboard and mouse inputs
-        im.registerKeyDown(Input.Keys.SPACE, startAction);
-        im.registerButton(startButton);
+        keyboardManager.registerKeyUp(Input.Keys.SPACE, startAction);
+        mouseManager.registerClickable(startButton);
+        
+        startButton.update();  // Make sure button gets updated
     }
 
     @Override
     public void update() {
         em.update();
-        im.update();
-        startButton.update();  // Make sure button gets updated
+        keyboardManager.update();
+        if (Gdx.input.isTouched())
+        	mouseManager.update();
     }
 
     @Override
@@ -90,10 +89,5 @@ public class MainMenu extends Scene {
         System.out.println("Main Menu => DISPOSE");
         em.dispose();
         AudioManager.getInstance().stopMusic(); // Stop music when leaving menu
-    }
-
-    @Override
-    public InputManager getInputManager() {
-        return im;
     }
 }

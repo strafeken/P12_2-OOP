@@ -29,13 +29,13 @@ public class PauseMenu extends Scene {
             new Vector2(0, 0));
 
         entityManager.addEntities(image);
-        inputManager.registerKeyDown(Input.Keys.ESCAPE,
-            new ResumeGame(SceneManager.getInstance(SceneManager.class)));
+        keyboardManager.registerKeyUp(Input.Keys.ESCAPE, new ResumeGame(SceneManager.getInstance(SceneManager.class)));
     }
 
     @Override
     public void update() {
         entityManager.update();
+        keyboardManager.update();
     }
 
     @Override
@@ -63,6 +63,4 @@ public class PauseMenu extends Scene {
         entityManager.dispose();
         textManager.dispose();
     }
-
-
 }

@@ -30,7 +30,6 @@ public class SceneManager extends Singleton<SceneManager> {
 		loadScene(id);
 	}
 	
-
 	// used for pause menu
 	public void overlayScene(SceneID id) {
 		loadScene(id);
@@ -54,7 +53,7 @@ public class SceneManager extends Singleton<SceneManager> {
 	// run the update function of the current scene
 	public void update() {
 		if (!sceneStack.isEmpty()) {
-			scenes.get(sceneStack.peek()).getInputManager().update();
+//			scenes.get(sceneStack.peek()).getInputManager().update();
 			scenes.get(sceneStack.peek()).update();
 		}
 	}
@@ -95,12 +94,11 @@ public class SceneManager extends Singleton<SceneManager> {
         Scene currentScene = getCurrentScene();
 
         // Just clear active keys without setting input processor
-        currentScene.getInputManager().clearActiveKeys();
+//        currentScene.getInputManager().clearActiveKeys();
     }
 
 	public void resize(int width, int height) {
 	    if (!sceneStack.isEmpty())
 	        scenes.get(sceneStack.peek()).resize(width, height);
 	}
-	
 }

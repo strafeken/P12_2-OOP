@@ -34,8 +34,8 @@ public class SettingsMenu extends Scene {
     @Override
     public void load() {
         keyBindButtons = new HashMap<>();
-        PlayerInputManager playerInputManager = GameManager.getInstance().getPlayerInputManager();
-        currentBindings = new HashMap<>(playerInputManager.getKeyBindings());
+//        PlayerInputManager playerInputManager = GameManager.getInstance().getPlayerInputManager();
+//        currentBindings = new HashMap<>(playerInputManager.getKeyBindings());
 
         // Initialize audio manager
         AudioManager audioManager = AudioManager.getInstance();
@@ -43,15 +43,15 @@ public class SettingsMenu extends Scene {
         audioManager.loadSoundEffect("ding", "sounds/ding.mp3");
         audioManager.loadSoundEffect("mainmenu", "sounds/mainmenu.mp3");
 
-        backButton = new Button(1, "Back", "backBtn.png",
-            new Vector2(100, 50),
-            () -> {
-                GameManager.getInstance().getPlayerInputManager().setKeyBindings(currentBindings);
-                SceneManager.getInstance(SceneManager.class).removeOverlay();
-            },
-            100, 50);
+//        backButton = new Button(1, "Back", "backBtn.png",
+//            new Vector2(100, 50),
+//            () -> {
+////                GameManager.getInstance().getPlayerInputManager().setKeyBindings(currentBindings);
+//                SceneManager.getInstance(SceneManager.class).removeOverlay();
+//            },
+//            100, 50);
 
-        inputManager.registerButton(backButton);
+//        inputManager.registerButton(backButton);
         createKeyBindButtons();
         shapeRenderer = new ShapeRenderer();
     }
@@ -59,19 +59,19 @@ public class SettingsMenu extends Scene {
     private void createKeyBindButtons() {
         float y = 400;
         int id = 2;
-        for (String action : currentBindings.keySet()) {
-            Button bindButton = new Button(
-                id++,
-                "Change",
-                "keyboard.png",
-                new Vector2(400, y),
-                () -> startBinding(action),
-                80, 30
-            );
-            keyBindButtons.put(action, bindButton);
-            inputManager.registerButton(bindButton);
-            y -= 50;
-        }
+//        for (String action : currentBindings.keySet()) {
+//            Button bindButton = new Button(
+//                id++,
+//                "Change",
+//                "keyboard.png",
+//                new Vector2(400, y),
+//                () -> startBinding(action),
+//                80, 30
+//            );
+//            keyBindButtons.put(action, bindButton);
+////            inputManager.registerButton(bindButton);
+//            y -= 50;
+//        }
     }
 
     @Override
@@ -92,7 +92,7 @@ public class SettingsMenu extends Scene {
 
                     } else {
                         currentBindings.put(currentBinding, i);
-                        GameManager.getInstance().getPlayerInputManager().setKeyBindings(currentBindings);
+//                        GameManager.getInstance().getPlayerInputManager().setKeyBindings(currentBindings);
 
                     }
                     waitingForKey = false;
@@ -103,7 +103,7 @@ public class SettingsMenu extends Scene {
         }
 
         updateVolumeSlider();
-        inputManager.update();
+//        inputManager.update();
 
         if (errorTimer > 0) {
             errorTimer -= Gdx.graphics.getDeltaTime();
