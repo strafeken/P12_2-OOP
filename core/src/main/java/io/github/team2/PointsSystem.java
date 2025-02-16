@@ -13,12 +13,8 @@ public class PointsSystem implements CollisionListener {
 
     @Override
     public void onCollision(Entity a, Entity b, CollisionType type) {
-        if (type == CollisionType.BUCKET_DROP) {
+        if (type == CollisionType.PLAYER_DROP) {
             pointsManager.addPoints(10);
         }
-    }
-
-    public void handleDropMiss() {
-        pointsManager.incrementFails();
     }
 }

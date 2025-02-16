@@ -34,9 +34,8 @@ public class GameScene extends Scene {
     private float accumulator;
 
     // Managers
-//    private GameManager gameManager;
     private CollisionDetector collisionDetector;
-    private CollisionResolver collisionResolver;
+    private PointsManager pointsManager;
     //private InputMultiplexer inputMultiplexer;
 //    private PlayerInputManager playerInputManager;
     private PInputManager playerInputManager;
@@ -91,17 +90,14 @@ public class GameScene extends Scene {
     
 
     private void initializeManagers() {
-        // Initialize entity manager
         entityManager = new EntityManager();
 
-        // Initialize collision system directly with detector and resolver
         collisionDetector = new CollisionDetector();
-        collisionResolver = new CollisionResolver(entityManager);
-
-        // Setup collision listeners
-//        PointsSystem pointsSystem = new PointsSystem(gameManager.getPointsManager());
-        collisionDetector.addListener(collisionResolver);
-//        collisionDetector.addListener(pointsSystem);
+        collisionDetector.addListener(new CollisionAudioHandler());
+        collisionDetector.addListener(new CollisionRemovalHandler(entityManager));
+        pointsManager = new PointsManager();
+        collisionDetector.addListener(new PointsSystem(pointsManager));
+        
         world.setContactListener(collisionDetector);
 
         // Initialize input system
@@ -332,19 +328,12 @@ public class GameScene extends Scene {
             baseY,
             Color.RED);
 
-//        // Draw score below title
-//        textManager.draw(batch,
-//            "Score: " + gameManager.getPointsManager().getPoints(),
-//            baseX,
-//            baseY - lineSpacing,
-//            Color.RED);
-//
-//        // Draw fails counter below score
-//        textManager.draw(batch,
-//            "Fails: " + gameManager.getPointsManager().getFails(),
-//            baseX,
-//            baseY - (lineSpacing * 2), // Two lines down from the top
-//            Color.RED);
+        // Draw score below title
+        textManager.draw(batch,
+            "Score: " + pointsManager.getPoints(),
+            baseX,
+            baseY - lineSpacing,
+            Color.RED);
     }
 
     @Override
