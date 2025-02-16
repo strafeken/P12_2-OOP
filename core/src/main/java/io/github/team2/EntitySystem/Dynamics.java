@@ -9,7 +9,7 @@ public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Ent
 	private HashMap<A, Action> ActionMap;
 	private S currentState;
 	private A currentActionState;
-  private Vector2 rotation;
+	private Vector2 rotation;
 
 	public Dynamics() {
 		super();
@@ -20,10 +20,11 @@ public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Ent
 
 	}
 
-	public Dynamics(EntityType type, Vector2 position, Vector2 direction, Vector2 rotation, float speed, S state, A actionState) {
-		super(type,position, direction, rotation);
+	public Dynamics(EntityType type, Vector2 position, Vector2 direction, Vector2 rotation, float speed, S state,
+			A actionState) {
+		super(type, position, direction);
 		this.speed = speed;
-
+		this.rotation = rotation;
 		ActionMap = new HashMap<>();
 		currentState = state;
 		currentActionState = actionState;
@@ -37,7 +38,14 @@ public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Ent
 	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
+	
+	public Vector2 getRotation() {
+		return rotation;
+	}
 
+	public void setRotation(Vector2 rotation) {
+		this.rotation = rotation;
+	}
 
 	public <E extends Enum<E>> Action getAction(E moveKey) {
 
@@ -49,13 +57,11 @@ public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Ent
 	public HashMap<A, Action> getActionMap() {
 		return (HashMap<A, Action>) ActionMap;
 	}
-	
 
 	public void clearActionMap() {
 
 		ActionMap.clear();
 	}
-	
 
 	public void setCurrentActionState(A actionState) {
 		currentActionState = actionState; // Cast needed if `currentActionState` is strongly typed
@@ -73,7 +79,6 @@ public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Ent
 		return currentState;
 	}
 
-
 	@Override
 	public void update() {
 		// Update position based on direction and speed
@@ -86,12 +91,8 @@ public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Ent
 		updateBody();
 	}
 
-	
-	
 	public abstract boolean isOutOfBound(Vector2 direction);
-	
+
 	public abstract void initActionMap();
-	
-	
-	
+
 }
