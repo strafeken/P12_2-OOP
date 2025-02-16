@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import io.github.team2.Actions.Move;
 import io.github.team2.Actions.Rotate;
 import io.github.team2.EntitySystem.Entity;
-import io.github.team2.GameManager;
 import java.util.Map;
 
 public class PlayerInputManager extends InputManager {

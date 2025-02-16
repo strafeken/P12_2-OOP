@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 import io.github.team2.Circle;
-import io.github.team2.Drop;
 import io.github.team2.Triangle;
 
 public class PhysicsBody {
