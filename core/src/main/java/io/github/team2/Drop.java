@@ -5,13 +5,10 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.Random;
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.DynamicTextureObject;
-import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.Utils.DisplayManager;
 
-import java.util.HashMap;
 import io.github.team2.Actions.DropBehaviour;
 import io.github.team2.Actions.Move;
-// maybe dn
-import io.github.team2.InputSystem.Action;
 
 public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviour.Move> {
 
@@ -53,7 +50,7 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 
 	private void resetPosition() {
 		Random random = new Random();
-		getBody().setLocation(random.nextFloat() * SceneManager.screenWidth, SceneManager.screenHeight);
+		getBody().setLocation(random.nextFloat() * DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
 	}
 
 	private void handleDropMiss() {

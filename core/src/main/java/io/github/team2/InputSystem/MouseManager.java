@@ -1,7 +1,8 @@
 package io.github.team2.InputSystem;
 
 import com.badlogic.gdx.math.Vector2;
-import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.Utils.DisplayManager;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,7 @@ public class MouseManager {
     }
 
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Vector2 touchPos = new Vector2(screenX, SceneManager.screenHeight - screenY);
+        Vector2 touchPos = new Vector2(screenX, DisplayManager.getScreenHeight() - screenY);
 
         // Check buttons first
         for (Button btn : buttons) {

@@ -14,6 +14,7 @@ import io.github.team2.InputSystem.Button;
 import io.github.team2.InputSystem.InputManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.Utils.DisplayManager;
 
 public class MainMenu extends Scene {
     private EntityManager em;
@@ -36,7 +37,7 @@ public class MainMenu extends Scene {
 
         // Setup background image
         image = new StaticTextureObject(EntityType.UNDEFINED, "libgdx.png",
-                new Vector2(SceneManager.screenWidth / 2, SceneManager.screenHeight / 2),
+                new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2),
                 new Vector2(0, 0));
         em.addEntities(image);
 
@@ -45,8 +46,8 @@ public class MainMenu extends Scene {
 
         // Create and setup start button
         Vector2 centerPos = new Vector2(
-                SceneManager.screenWidth / 2 - 50,  // Center the button
-                SceneManager.screenHeight / 2 - 180
+                DisplayManager.getScreenWidth() / 2 - 50,  // Center the button
+                DisplayManager.getScreenHeight() / 2 - 180
         );
 
         startButton = new Button(1, "Start", "startBtn.png",

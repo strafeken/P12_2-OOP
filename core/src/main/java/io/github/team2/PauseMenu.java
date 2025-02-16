@@ -11,6 +11,7 @@ import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.StaticTextureObject;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.Utils.DisplayManager;
 
 public class PauseMenu extends Scene {
     private Entity image;
@@ -24,7 +25,7 @@ public class PauseMenu extends Scene {
         System.out.println("Pause Menu => LOAD");
 
         image = new StaticTextureObject(EntityType.UNDEFINED, "libgdx.png",
-            new Vector2(SceneManager.screenWidth / 2, SceneManager.screenHeight / 2),
+            new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2),
             new Vector2(0, 0));
 
         entityManager.addEntities(image);

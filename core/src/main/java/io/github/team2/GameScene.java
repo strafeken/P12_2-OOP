@@ -13,8 +13,9 @@ import io.github.team2.CollisionSystem.*;
 import io.github.team2.EntitySystem.*;
 import io.github.team2.InputSystem.*;
 import io.github.team2.SceneSystem.*;
+import io.github.team2.Utils.DisplayManager;
+
 import java.util.Random;
-import com.badlogic.gdx.utils.Array;
 
 import io.github.team2.Actions.PlayerBehaviour;
 
@@ -80,7 +81,7 @@ public class GameScene extends Scene {
             200,
             "Settings",
             "settingsBtn.png",
-            new Vector2(SceneManager.screenWidth - 80, SceneManager.screenHeight - 80),
+            new Vector2(DisplayManager.getScreenWidth() - 80, DisplayManager.getScreenHeight() - 80),
             () -> SceneManager.getInstance(SceneManager.class).overlayScene(SceneID.SETTINGS_MENU),
             70,
             70
@@ -177,8 +178,8 @@ public class GameScene extends Scene {
     private Drop createDrop() {
         Drop drop = new Drop(EntityType.DROP,
                          "droplet.png",
-                         new Vector2(random.nextFloat() * SceneManager.screenWidth,
-                                   random.nextFloat() * SceneManager.screenHeight),
+                         new Vector2(random.nextFloat() * DisplayManager.getScreenWidth(),
+                                   random.nextFloat() * DisplayManager.getScreenHeight()),
                          new Vector2(0, 0), new Vector2(0, 0),
                          100, DropBehaviour.State.IDLE, DropBehaviour.Move.NONE );
 
@@ -257,8 +258,8 @@ public class GameScene extends Scene {
             PowerUp powerUp = new PowerUp(
                 EntityType.POWERUP,
                 "pup1.png",
-                new Vector2(random.nextFloat() * SceneManager.screenWidth,
-                          SceneManager.screenHeight),
+                new Vector2(random.nextFloat() * DisplayManager.getScreenWidth(),
+                          DisplayManager.getScreenHeight()),
                 new Vector2(0, 0),
                 100, DropBehaviour.State.IDLE, DropBehaviour.Move.NONE);
             
@@ -310,8 +311,8 @@ public class GameScene extends Scene {
         for (int i = 0; i < dropletsToSpawn; i++) {
             Drop drop = new Drop(EntityType.DROP,
                                "droplet.png",
-                               new Vector2(random.nextFloat() * SceneManager.screenWidth,
-                                         SceneManager.screenHeight),
+                               new Vector2(random.nextFloat() * DisplayManager.getScreenWidth(),
+                                         DisplayManager.getScreenHeight()),
                                new Vector2(0, 0), new Vector2(0, 0),
                                100, DropBehaviour.State.IDLE, DropBehaviour.Move.NONE);
             

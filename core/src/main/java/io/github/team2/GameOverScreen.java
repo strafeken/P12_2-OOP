@@ -9,6 +9,7 @@ import io.github.team2.Actions.StartGame;
 import io.github.team2.InputSystem.Button;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.Utils.DisplayManager;
 
 public class GameOverScreen extends Scene {
     private int finalScore;
@@ -26,8 +27,8 @@ public class GameOverScreen extends Scene {
         // Create restart button
         StartGame startAction = new StartGame(SceneManager.getInstance(SceneManager.class));
         Vector2 centerPos = new Vector2(
-            SceneManager.screenWidth / 2,
-            SceneManager.screenHeight / 2 - 200
+            DisplayManager.getScreenWidth() / 2,
+            DisplayManager.getScreenHeight() / 2 - 200
         );
 
         restartButton = new Button(1, "Restart", "restartBtn.png",
@@ -45,8 +46,8 @@ public class GameOverScreen extends Scene {
 
     @Override
     public void draw(SpriteBatch batch) {
-        float centerX = SceneManager.screenWidth / 2 - 100;
-        float centerY = SceneManager.screenHeight / 2;
+        float centerX = DisplayManager.getScreenWidth() / 2 - 100;
+        float centerY = DisplayManager.getScreenHeight() / 2;
 
         textManager.draw(batch, "GAME OVER", centerX, centerY + 50, Color.RED);
         textManager.draw(batch, "Final Score: " + finalScore, centerX, centerY, Color.WHITE);

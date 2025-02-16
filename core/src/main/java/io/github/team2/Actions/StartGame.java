@@ -9,6 +9,7 @@ import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.InputSystem.Action;
 import io.github.team2.SceneSystem.SceneID;
 import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.Utils.DisplayManager;
 
 public class StartGame implements Action {
     private final SceneManager sm;
@@ -36,7 +37,7 @@ public class StartGame implements Action {
             for (Entity entity : sm.getCurrentScene().getEntityManager().getEntities()) {
                 if (entity.getEntityType() == EntityType.DROP) {
                     Drop drop = (Drop)entity;
-                    float halfHeight = SceneManager.screenHeight / 2;
+                    float halfHeight = DisplayManager.getScreenHeight() / 2;
                     if (drop.getPosition().y < halfHeight) {
                         // Position randomly above half screen height
                         float newY = halfHeight + (float)(Math.random() * halfHeight);

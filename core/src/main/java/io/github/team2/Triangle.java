@@ -5,14 +5,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.team2.Actions.Move;
-import java.util.HashMap;
 import io.github.team2.Actions.TriangleBehaviour;
 import io.github.team2.EntitySystem.EntityType;
-import io.github.team2.EntitySystem.StaticGameShape;
-import io.github.team2.InputSystem.Action;
-import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.Utils.DisplayManager;
 import io.github.team2.EntitySystem.DynamicGameShape;
-import io.github.team2.EntitySystem.Dynamics;
 
 
 public class Triangle extends DynamicGameShape<TriangleBehaviour.State, TriangleBehaviour.Move> {
@@ -86,11 +82,11 @@ public class Triangle extends DynamicGameShape<TriangleBehaviour.State, Triangle
 
 
 	public boolean checkPositionLeft() {
-		return (getPosition().x - getWidth() / 2) <= SceneManager.screenLeft;
+		return (getPosition().x - getWidth() / 2) <= DisplayManager.getScreenOriginX();
 	}
 
 	public boolean checkPositionRight() {
-		return (getPosition().x + getWidth() / 2) >= SceneManager.screenWidth;
+		return (getPosition().x + getWidth() / 2) >= DisplayManager.getScreenWidth();
 	}
 
 	public void updateMovement() {

@@ -2,10 +2,9 @@ package io.github.team2.EntitySystem;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.Utils.DisplayManager;
 
 public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>> extends Dynamics<S,A> {
     //private TextureRegion textureRegion;
@@ -59,19 +58,19 @@ public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>
 		Vector2 projectedPos = this.getPosition();
 		projectedPos.add(direction);
 		
-		if (direction.x < 0 && (projectedPos.x - getWidth()/2) < SceneManager.screenLeft) {
+		if (direction.x < 0 && (projectedPos.x - getWidth()/2) < DisplayManager.getScreenOriginX()) {
 			System.out.println("Hit left");
 			return true;
 		}
-		if (direction.x > 0 && (projectedPos.x + getWidth()/2) > SceneManager.screenWidth) {
+		if (direction.x > 0 && (projectedPos.x + getWidth()/2) > DisplayManager.getScreenWidth()) {
 			System.out.println("hit right");
 			return true;
 		}
 		
-		if (direction.y < 0 && (projectedPos.y - getHeight()/2) < SceneManager.screenBottom) {
+		if (direction.y < 0 && (projectedPos.y - getHeight()/2) < DisplayManager.getScreenOriginY()) {
 			return true;
 		}
-		if (direction.y > 0 && (projectedPos.y + getHeight()/2) > SceneManager.screenHeight) {
+		if (direction.y > 0 && (projectedPos.y + getHeight()/2) > DisplayManager.getScreenHeight()) {
 			return true;
 		}
 		

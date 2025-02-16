@@ -8,7 +8,7 @@ import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.Actions.DropBehaviour;
 import io.github.team2.Actions.Move;
 import io.github.team2.EntitySystem.DynamicTextureObject;
-import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.Utils.DisplayManager;
 
 
 public class PowerUp extends DynamicTextureObject<DropBehaviour.State, DropBehaviour.Move> {
@@ -42,8 +42,8 @@ public class PowerUp extends DynamicTextureObject<DropBehaviour.State, DropBehav
     private void resetPosition() {
         Random random = new Random();
         getBody().setLocation(
-            random.nextFloat() * SceneManager.screenWidth,
-            SceneManager.screenHeight
+            random.nextFloat() * DisplayManager.getScreenWidth(),
+            DisplayManager.getScreenHeight()
         );
     }
     

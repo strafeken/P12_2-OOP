@@ -2,10 +2,10 @@ package io.github.team2.SceneSystem;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.InputProcessor;
 import io.github.team2.EntitySystem.EntityManager;
 
 import io.github.team2.InputSystem.InputManager;
+import io.github.team2.Utils.DisplayManager;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.TextManager;
 
@@ -30,8 +30,8 @@ public abstract class Scene {
         textManager = new TextManager();
 
         // Initialize viewport with default values
-        viewportWidth = SceneManager.screenWidth;
-        viewportHeight = SceneManager.screenHeight;
+        viewportWidth = DisplayManager.getScreenWidth();
+        viewportHeight = DisplayManager.getScreenHeight();
         hudScaleX = 1f;
         hudScaleY = 1f;
     }
@@ -42,12 +42,12 @@ public abstract class Scene {
         viewportHeight = height;
 
         // Calculate HUD scaling factors
-        hudScaleX = width / SceneManager.screenWidth;
-        hudScaleY = height / SceneManager.screenHeight;
+        hudScaleX = width / DisplayManager.getScreenWidth();
+        hudScaleY = height / DisplayManager.getScreenHeight();
 
         // Update SceneManager's screen dimensions
-        SceneManager.screenWidth = width;
-        SceneManager.screenHeight = height;
+//        DisplayManager.getScreenWidth() = width;
+//        DisplayManager.getScreenHeight() = height;
 
         // Allow scenes to perform additional resize operations
         onResize(width, height);
