@@ -29,7 +29,7 @@ public class SettingsMenu extends Scene {
     private static final float START_Y = 420;
     private static final float SPACING = 55;
     private static final float LEFT_MARGIN = 180;
-    private static final float TEXT_WIDTH = 200; // Estimated width for text
+    private static final float TEXT_WIDTH = 150; // Estimated width for text
     private static final float PANEL_LEFT = 80;  // Panel left edge
     private static final float PANEL_RIGHT = Gdx.graphics.getWidth() - 160;  // Panel right edge
     private static final float VOLUME_TEXT_OFFSET = 60;  // Increased spacing above volume slider
@@ -37,8 +37,8 @@ public class SettingsMenu extends Scene {
     // Volume control fields - moved below key bindings
     private float sliderX;
     private float sliderY;
-    private float sliderWidth = 250;
-    private float sliderHeight = 20;
+    private float sliderWidth = 300;
+    private float sliderHeight = 18;
     private boolean draggingSlider = false;
     
     // Colors
