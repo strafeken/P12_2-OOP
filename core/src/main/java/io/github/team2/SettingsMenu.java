@@ -133,16 +133,14 @@ public class SettingsMenu extends Scene {
 
                     if (currentBinding != null) {
                         // Check for duplicate key bindings
-                        if (keyBindings.containsValue(newKeyCode) && !keyBindings.containsKey(currentBinding)) {
+                        if (keyBindings.containsValue(newKeyCode) || !keyBindings.containsKey(currentBinding)) {
                             errorMessage = Input.Keys.toString(newKeyCode) + " is already assigned to another action.";
                             errorTimer = 3.0f;
                         } else {
+                            playerInputManager.changeKeyBinding(keyBindings.get(currentBinding), newKeyCode, true);
+                            playerInputManager.changeKeyBinding(keyBindings.get(currentBinding), newKeyCode, false);
                             keyBindings.put(currentBinding, newKeyCode);
                         }
-                    } else {
-                        // Call changeKeyBinding here
-                        playerInputManager.changeKeyBinding(keyBindings.get(currentBinding), newKeyCode, true);
-                        keyBindings.put(currentBinding, newKeyCode);  // Update the key binding map
                     }
 
                     waitingForNewKey = false;  // Reset the flag to stop waiting
@@ -159,7 +157,6 @@ public class SettingsMenu extends Scene {
         updateVolumeSlider();
 
         gameInputManager.update();
-        playerInputManager.update();
     }
 
     @Override
@@ -235,7 +232,6 @@ public class SettingsMenu extends Scene {
     public void dispose() {
         // Dispose resources
     }
-    
 
     private void updateVolumeSlider() {
         if (Gdx.input.isTouched()) {
