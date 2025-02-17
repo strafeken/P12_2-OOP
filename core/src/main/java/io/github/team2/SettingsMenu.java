@@ -59,6 +59,9 @@ public class SettingsMenu extends Scene {
     private final Color sliderBackgroundColor = new Color(0.2f, 0.2f, 0.25f, 1);
     private final Color sliderFillColor = new Color(0.4f, 0.7f, 1f, 1);
     private final Color sliderHandleColor = new Color(0.9f, 0.9f, 1f, 1);
+    
+    private String errorMessage = "";
+    private float errorTimer = 0;
 
     public SettingsMenu() {
     	super();
@@ -94,8 +97,8 @@ public class SettingsMenu extends Scene {
 
     private void createButtonsForKeyBindings() {
         Map<Integer, Action> keyDownActions = playerInputManager.getKeyboardManager().getKeyDownActions();
-        System.out.println("Settings Scene => SUCCESS");
-        float yPos = 500;
+        
+        float y = START_Y;
 
         // Create a button for each key
         for (Integer key : keyDownActions.keySet()) {
@@ -103,18 +106,21 @@ public class SettingsMenu extends Scene {
             System.out.println(keyName);
             Action action = keyDownActions.get(key);
 
-            Button button = new Button("keyboard.png", new Vector2(100, yPos), () -> {
-//                selectedButton = button;
+            Button button = new Button("keyboard.png", new Vector2(PANEL_RIGHT - 52, y - 15), () -> {
                 waitingForNewKey = true;
                 currentBinding = keyName;  // Set current binding when the button is clicked
-            }, 200, 50);
+            }, 32, 32);
 
             buttons.add(button);
-            yPos -= 60;
+            gameInputManager.registerClickable(button);
+            y -= SPACING;
 
             // Store the initial key bindings in the map
             keyBindings.put(keyName, key);
         }
+        
+        sliderY = START_Y - (keyBindings.size() * SPACING) - VOLUME_TEXT_OFFSET;
+        sliderX = LEFT_MARGIN;
     }
 
     @Override
@@ -126,8 +132,17 @@ public class SettingsMenu extends Scene {
                     int newKeyCode = i;  // Capture the pressed key's code
 
                     if (currentBinding != null) {
-                        // Update the key binding in the map without using button text
-                        keyBindings.put(currentBinding, newKeyCode);
+                        // Check for duplicate key bindings
+                        if (keyBindings.containsValue(newKeyCode) && !keyBindings.containsKey(currentBinding)) {
+                            errorMessage = Input.Keys.toString(newKeyCode) + " is already assigned to another action.";
+                            errorTimer = 3.0f;
+                        } else {
+                            keyBindings.put(currentBinding, newKeyCode);
+                        }
+                    } else {
+                        // Call changeKeyBinding here
+                        playerInputManager.changeKeyBinding(keyBindings.get(currentBinding), newKeyCode, true);
+                        keyBindings.put(currentBinding, newKeyCode);  // Update the key binding map
                     }
 
                     waitingForNewKey = false;  // Reset the flag to stop waiting
@@ -149,7 +164,10 @@ public class SettingsMenu extends Scene {
 
     @Override
     public void draw(SpriteBatch batch) {
-        float y = 500;  // Starting position for the text
+    	textManager.draw(batch, "SETTINGS", LEFT_MARGIN, TITLE_Y, titleColor);
+    	
+    	float y = START_Y;  // Starting position for the text
+        
         for (int i = 0; i < buttons.size(); i++) {
             Button button = buttons.get(i);
 
@@ -161,32 +179,34 @@ public class SettingsMenu extends Scene {
             // If waiting for a new key press for the current binding, show the prompt
             if (waitingForNewKey && currentBinding != null && currentBinding.equals(keyName)) {
                 displayText += ": (Press any key)";
-                textManager.draw(batch, displayText, 100, y, Color.YELLOW);  // Display prompt in yellow
+                textManager.draw(batch, displayText, LEFT_MARGIN, y, Color.YELLOW);  // Display prompt in yellow
             } else {
-                textManager.draw(batch, displayText, 100, y, Color.WHITE);  // Display the current key binding
+                textManager.draw(batch, displayText, LEFT_MARGIN, y, Color.WHITE);  // Display the current key binding
             }
 
             button.draw(batch);  // Draw the button
-            y -= 60;  // Move down for the next button
+            y -= SPACING;  // Move down for the next button
         }
-        
-        textManager.draw(batch, "SETTINGS", LEFT_MARGIN, TITLE_Y, titleColor);
-        
-        float volume = audioManager.getVolume();
-        textManager.draw(batch, (int)(volume * 100) + "%", sliderX + sliderWidth + 20, sliderY + sliderHeight/2 + 6, textColor);
+ 
         
         // Draw volume controls header with increased spacing
         textManager.draw(batch, "VOLUME", LEFT_MARGIN, sliderY + VOLUME_TEXT_OFFSET, titleColor);
         
+        float volume = audioManager.getVolume();
+        textManager.draw(batch, (int)(volume * 100) + "%", sliderX + sliderWidth + 20, sliderY + sliderHeight/2 + 6, textColor);
+        
         // Draw back button
         backButton.draw(batch);
+        
+        if (errorTimer > 0) {
+            errorTimer -= Gdx.graphics.getDeltaTime();
+            textManager.draw(batch, errorMessage, LEFT_MARGIN, 60, Color.RED);
+        }
     }
 
 
     @Override
     public void draw(ShapeRenderer shape) {
-    	float volume = audioManager.getVolume();
-
 //        shape.setColor(backgroundColor);
 //        shape.rect(80, 30, Gdx.graphics.getWidth() - 160, Gdx.graphics.getHeight() - 60);
         
@@ -195,6 +215,7 @@ public class SettingsMenu extends Scene {
     	shape.rect(sliderX, sliderY, sliderWidth, sliderHeight);
 
         // Draw filled portion
+    	float volume = audioManager.getVolume();
     	shape.setColor(sliderFillColor);
     	shape.rect(sliderX, sliderY, sliderWidth * volume, sliderHeight);
 

@@ -25,6 +25,10 @@ public class KeyboardManager {
         keyUpActions.put(keycode, action);
     }
     
+    public Map<Integer, Action> getKeyDownActions() {
+    	return keyDownActions;
+    }
+    
     public void changeKeyBinding(int oldKeycode, int newKeycode, boolean isKeyDown) {
         if (isKeyDown) {
             Action action = keyDownActions.get(oldKeycode);
