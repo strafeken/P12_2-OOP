@@ -64,16 +64,16 @@ public class SettingsMenu extends Scene {
         audioManager.loadSoundEffect("ding", "sounds/ding.mp3");
         audioManager.loadSoundEffect("mainmenu", "sounds/mainmenu.mp3");
 
-        backButton = new Button(1, "Back", "backBtn.png",
-        	    new Vector2(PANEL_LEFT + 40, 50), // Position inside panel with margin
-        	    () -> {
-        	        GameManager.getInstance().getPlayerInputManager().setKeyBindings(currentBindings);
-        	        SceneManager.getInstance(SceneManager.class).removeOverlay();
-        	    },
-        	    80, 32
-        	     
-        	);
-        inputManager.registerButton(backButton);
+//        backButton = new Button("backBtn.png",
+//        	    new Vector2(PANEL_LEFT + 40, 50), // Position inside panel with margin
+//        	    () -> {
+//        	        GameManager.getInstance().getPlayerInputManager().setKeyBindings(currentBindings);
+//        	        SceneManager.getInstance(SceneManager.class).removeOverlay();
+//        	    },
+//        	    80, 32
+//        	     
+//        	);
+//        inputManager.registerButton(backButton);
 
         createKeyBindButtons();
         shapeRenderer = new ShapeRenderer();
@@ -90,21 +90,21 @@ public class SettingsMenu extends Scene {
         float y = START_Y;
         int id = 2;
 
-        for (String action : currentBindings.keySet()) {
-            // Position buttons near right edge of panel
-            Button bindButton = new Button(
-                id++,
-                "Change",
-                "keyboard.png",
-                new Vector2(PANEL_RIGHT - 52, y - 15), 
-                () -> startBinding(action),
-                32,
-                32
-            );
-            keyBindButtons.put(action, bindButton);
-            inputManager.registerButton(bindButton);
-            y -= SPACING;
-        }
+//        for (String action : currentBindings.keySet()) {
+//            // Position buttons near right edge of panel
+//            Button bindButton = new Button(
+//                id++,
+//                "Change",
+//                "keyboard.png",
+//                new Vector2(PANEL_RIGHT - 52, y - 15), 
+//                () -> startBinding(action),
+//                32,
+//                32
+//            );
+//            keyBindButtons.put(action, bindButton);
+//            inputManager.registerButton(bindButton);
+//            y -= SPACING;
+//        }
     }
 
     @Override
@@ -125,7 +125,7 @@ public class SettingsMenu extends Scene {
                         AudioManager.getInstance().playSoundEffect("ding");
                     } else {
                         currentBindings.put(currentBinding, i);
-                        GameManager.getInstance().getPlayerInputManager().setKeyBindings(currentBindings);
+//                        GameManager.getInstance().getPlayerInputManager().setKeyBindings(currentBindings);
                         AudioManager.getInstance().playSoundEffect("start");
                     }
                     waitingForKey = false;
