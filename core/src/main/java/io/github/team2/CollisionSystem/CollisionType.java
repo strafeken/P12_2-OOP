@@ -4,15 +4,11 @@ import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityType;
 
 public enum CollisionType {
-	PLAYER_DROP, PLAYER_BUCKET, BUCKET_DROP, CIRCLE_DROP, POWERUP_BUCKET, POWERUP_PLAYER;
+	PLAYER_DROP, CIRCLE_DROP;
 
     public static CollisionType getCollisionType(Entity a, Entity b) {
         if (isPair(a, b, EntityType.PLAYER, EntityType.DROP)) return PLAYER_DROP;
-        if (isPair(a, b, EntityType.POWERUP, EntityType.PLAYER)) return POWERUP_PLAYER;
-        if (isPair(a, b, EntityType.PLAYER, EntityType.BUCKET)) return PLAYER_BUCKET;
-        if (isPair(a, b, EntityType.BUCKET, EntityType.DROP)) return BUCKET_DROP;
         if (isPair(a, b, EntityType.CIRCLE, EntityType.DROP)) return CIRCLE_DROP;
-        if (isPair(a, b, EntityType.POWERUP, EntityType.BUCKET)) return POWERUP_BUCKET;
         return null;
     }
 

@@ -3,7 +3,7 @@ package io.github.team2.Actions;
 //import com.badlogic.gdx.math.Vector2;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.Drop;
-import io.github.team2.GameManager;
+//import io.github.team2.GameManager;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.InputSystem.Action;
@@ -29,7 +29,7 @@ public class StartGame implements Action {
             // Stop main menu music and play start sound
             AudioManager.getInstance().stopSoundEffect("mainmenu");
             AudioManager.getInstance().playSoundEffect("start");
-            GameManager.getInstance().resetGame();
+//            GameManager.getInstance().resetGame();
             // Set next scene to game scene
             sm.setNextScene(SceneID.GAME_SCENE);
 

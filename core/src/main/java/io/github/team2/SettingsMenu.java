@@ -52,8 +52,8 @@ public class SettingsMenu extends Scene {
     @Override
     public void load() {
         keyBindButtons = new HashMap<>();
-        PlayerInputManager playerInputManager = GameManager.getInstance().getPlayerInputManager();
-        currentBindings = new HashMap<>(playerInputManager.getKeyBindings());
+//        PlayerInputManager playerInputManager = GameManager.getInstance().getPlayerInputManager();
+//        currentBindings = new HashMap<>(playerInputManager.getKeyBindings());
 
         // Calculate the position of the volume slider based on number of key bindings
         calculateVolumeSliderPosition();
@@ -74,6 +74,7 @@ public class SettingsMenu extends Scene {
         	     
         	);
         inputManager.registerButton(backButton);
+
         createKeyBindButtons();
         shapeRenderer = new ShapeRenderer();
     }
@@ -88,6 +89,7 @@ public class SettingsMenu extends Scene {
     private void createKeyBindButtons() {
         float y = START_Y;
         int id = 2;
+
         for (String action : currentBindings.keySet()) {
             // Position buttons near right edge of panel
             Button bindButton = new Button(
@@ -134,7 +136,7 @@ public class SettingsMenu extends Scene {
         }
 
         updateVolumeSlider();
-        inputManager.update();
+//        inputManager.update();
 
         if (errorTimer > 0) {
             errorTimer -= Gdx.graphics.getDeltaTime();

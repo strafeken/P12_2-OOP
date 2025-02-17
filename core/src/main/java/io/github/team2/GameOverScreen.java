@@ -22,7 +22,7 @@ public class GameOverScreen extends Scene {
     @Override
     public void load() {
         System.out.println("Game Over Screen => LOAD");
-        finalScore = GameManager.getInstance().getPointsManager().getPoints();
+//        finalScore = GameManager.getInstance().getPointsManager().getPoints();
 
         // Create restart button
         StartGame startAction = new StartGame(SceneManager.getInstance(SceneManager.class));
@@ -31,16 +31,19 @@ public class GameOverScreen extends Scene {
             DisplayManager.getScreenHeight() / 2 - 200
         );
 
-        restartButton = new Button(1, "Restart", "restartBtn.png",
-                                 centerPos, startAction, 100, 100);
+//        restartButton = new Button(1, "Restart", "restartBtn.png",
+//                                 centerPos, startAction, 100, 100);
 
-        inputManager.registerButton(restartButton);
-        inputManager.registerKeyDown(Input.Keys.SPACE, startAction);
+//        iManager.registerKeyDown(Input.Keys.SPACE, StartGame);
+//        inputManager.registerButton(restartButton);
+//        inputManager.registerKeyDown(Input.Keys.SPACE, startAction);
+        
     }
 
     @Override
     public void update() {
-        inputManager.update();
+//        inputManager.update();
+//        iManager.update();
         entityManager.update();
     }
 

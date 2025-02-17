@@ -42,6 +42,7 @@ public class GameMaster extends ApplicationAdapter {
         ScreenUtils.clear(0, 0, 0.2f, 1);
 
         sm.update();
+
         batch.begin();
         sm.draw(batch);
         batch.end();

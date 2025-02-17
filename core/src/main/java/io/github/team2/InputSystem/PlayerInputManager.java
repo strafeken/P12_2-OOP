@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import io.github.team2.Actions.Move;
 import io.github.team2.Actions.Rotate;
 import io.github.team2.EntitySystem.Entity;
+
 import java.util.Map;
 
 public class PlayerInputManager extends InputManager {
@@ -28,7 +29,7 @@ public class PlayerInputManager extends InputManager {
         System.out.println("[DEBUG] PlayerInputManager setting new bindings: " + newBindings);
 
         // Clear ALL existing bindings first
-        keyboardManager.clearAllBindings();
+//        keyboardManager.clearAllBindings();
         keyBindings.clear();
 
         if (newBindings != null && !newBindings.isEmpty()) {
@@ -54,7 +55,7 @@ public class PlayerInputManager extends InputManager {
         }
 
         try {
-            keyboardManager.clearAllBindings();
+//            keyboardManager.clearAllBindings();
             System.out.println("[DEBUG] Current keyBindings: " + keyBindings);
 
             for (Map.Entry<String, Integer> entry : keyBindings.entrySet()) {

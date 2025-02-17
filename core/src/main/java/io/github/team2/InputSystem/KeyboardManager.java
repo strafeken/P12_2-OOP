@@ -7,14 +7,14 @@ import java.util.Map;
 import java.util.Set;
 
 public class KeyboardManager {
-    private Map<Integer, Action> keyDownActions;
+	private Map<Integer, Action> keyDownActions;
     private Map<Integer, Action> keyUpActions;
-    private Set<Integer> activeKeys;
+    private Set<Integer> previousPressedKeys;
 
     public KeyboardManager() {
         keyDownActions = new HashMap<>();
         keyUpActions = new HashMap<>();
-        activeKeys = new HashSet<>();
+        previousPressedKeys = new HashSet<>();
     }
 
     public void registerKeyDown(int keycode, Action action) {
@@ -24,46 +24,33 @@ public class KeyboardManager {
     public void registerKeyUp(int keycode, Action action) {
         keyUpActions.put(keycode, action);
     }
-
+    
     public void update() {
-        Set<Integer> keysToRemove = new HashSet<>();
+        Set<Integer> currentPressedKeys = new HashSet<>();
+        Set<Integer> keysToCheck = new HashSet<>();
+        
+        keysToCheck.addAll(keyDownActions.keySet());
+        keysToCheck.addAll(keyUpActions.keySet());
 
-        // Handle key presses
-        keyDownActions.forEach((keycode, action) -> {
-            if (Gdx.input.isKeyJustPressed(keycode)) {
-                activeKeys.add(keycode);
-                action.execute();
-            }
-        });
-
-        // Handle key releases
-        activeKeys.forEach(keycode -> {
-            if (!Gdx.input.isKeyPressed(keycode)) {
-                keysToRemove.add(keycode);
-                Action action = keyUpActions.get(keycode);
-                if (action != null) {
+        for (Integer key : keysToCheck) {
+            if (Gdx.input.isKeyPressed(key)) {
+                currentPressedKeys.add(key);
+                // execute the key down action every frame the key is held
+                Action action = keyDownActions.get(key);
+                
+                if (action != null)
                     action.execute();
+            } else {
+                // if the key was pressed in the previous frame and now is released, trigger key up
+                if (previousPressedKeys.contains(key)) {
+                    Action action = keyUpActions.get(key);
+                    
+                    if (action != null)
+                        action.execute();
                 }
             }
-        });
-
-        // Remove released keys
-        activeKeys.removeAll(keysToRemove);
-    }
-
-    public void clearBinding(int keycode) {
-        keyDownActions.remove(keycode);
-        keyUpActions.remove(keycode);
-        activeKeys.remove(keycode);
-    }
-
-    public void clearAllBindings() {
-        keyDownActions.clear();
-        keyUpActions.clear();
-        activeKeys.clear();
-    }
-
-    public void clearActiveKeys() {
-        activeKeys.clear();
+        }
+        
+        previousPressedKeys = currentPressedKeys;
     }
 }

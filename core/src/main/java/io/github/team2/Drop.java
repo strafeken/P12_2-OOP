@@ -54,7 +54,7 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 	}
 
 	private void handleDropMiss() {
-		GameManager.getInstance().getPointsManager().incrementFails();
+//		GameManager.getInstance().getPointsManager().incrementFails();
 	}
 
 	

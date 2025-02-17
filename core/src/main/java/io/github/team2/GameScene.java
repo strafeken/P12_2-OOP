@@ -25,14 +25,8 @@ public class GameScene extends Scene {
     private static final int VELOCITY_ITERATIONS = 6;
     private static final int POSITION_ITERATIONS = 2;
     private static final int MAX_DROPLETS = 10;
-    private static final float POWERUP_SPAWN_CHANCE = 0.005f;
     private static final float MIN_SPAWN_INTERVAL = 1f;
     private static final float MAX_SPAWN_INTERVAL = 3f;
-
-
-    
-
-
 
     // Physics world
     private World world;
@@ -40,29 +34,26 @@ public class GameScene extends Scene {
     private float accumulator;
 
     // Managers
-    private GameManager gameManager;
     private CollisionDetector collisionDetector;
-    private CollisionResolver collisionResolver;
+    private PointsManager pointsManager;
     //private InputMultiplexer inputMultiplexer;
-    private PlayerInputManager playerInputManager;
+//    private PlayerInputManager playerInputManager;
+    private PInputManager playerInputManager;
 
     // Game entities
     private Entity[] droplets;
     private Entity circle;
     private Entity triangle;
     private Entity player;
-    private Button settingsButton;
+//    private Button settingsButton;
 
     // Spawn control
     private float dropletSpawnTimer;
     private Random random;
-
-    
-
-    
+ 
     public GameScene() {
         super();
-        this.gameManager = GameManager.getInstance(); // Use singleton instead of new instance
+//        this.gameManager = GameManager.getInstance(); // Use singleton instead of new instance
         random = new Random();
         accumulator = 0f;
         dropletSpawnTimer = 0f;
@@ -77,16 +68,16 @@ public class GameScene extends Scene {
         initializeEntities();
         initializeInput();
 
-        settingsButton = new Button(
-            200,
-            "Settings",
-            "settingsBtn.png",
-            new Vector2(DisplayManager.getScreenWidth() - 80, DisplayManager.getScreenHeight() - 80),
-            () -> SceneManager.getInstance(SceneManager.class).overlayScene(SceneID.SETTINGS_MENU),
-            70,
-            70
-        );
-        inputManager.registerButton(settingsButton);
+//        settingsButton = new Button(
+//            200,
+//            "Settings",
+//            "settingsBtn.png",
+//            new Vector2(DisplayManager.getScreenWidth() - 80, DisplayManager.getScreenHeight() - 80),
+//            () -> SceneManager.getInstance(SceneManager.class).overlayScene(SceneID.SETTINGS_MENU),
+//            70,
+//            70
+//        );
+//        inputManager.registerButton(settingsButton);
 
     }
 
@@ -99,21 +90,18 @@ public class GameScene extends Scene {
     
 
     private void initializeManagers() {
-        // Initialize entity manager
         entityManager = new EntityManager();
 
-        // Initialize collision system directly with detector and resolver
         collisionDetector = new CollisionDetector();
-        collisionResolver = new CollisionResolver(entityManager);
-
-        // Setup collision listeners
-        PointsSystem pointsSystem = new PointsSystem(gameManager.getPointsManager());
-        collisionDetector.addListener(collisionResolver);
-        collisionDetector.addListener(pointsSystem);
+        collisionDetector.addListener(new CollisionAudioHandler());
+        collisionDetector.addListener(new CollisionRemovalHandler(entityManager));
+        pointsManager = new PointsManager();
+        collisionDetector.addListener(new PointsSystem(pointsManager));
+        
         world.setContactListener(collisionDetector);
 
         // Initialize input system
-        inputManager = new InputManager();
+//        inputManager = new InputManager();
         //inputMultiplexer = new InputMultiplexer();
     }
 
@@ -147,7 +135,7 @@ public class GameScene extends Scene {
             
             player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
-            gameManager.getPlayerEntityManager().addEntity(player);
+//            gameManager.getPlayerEntityManager().addEntity(player);
 
             // Initialize droplets
             initializeDroplets();
@@ -190,22 +178,24 @@ public class GameScene extends Scene {
 
     private void initializeInput() {
         // Get the PlayerInputManager from GameManager
-        playerInputManager = GameManager.getInstance().getPlayerInputManager();
+//        playerInputManager = GameManager.getInstance().getPlayerInputManager();
 
         // Make sure player reference is up to date
-        if (playerInputManager != null) {
-            System.out.println("[DEBUG] Updating player reference in PlayerInputManager");
-            playerInputManager.setPlayer(player);
-            playerInputManager.registerUserInput();
-        }
+//        if (playerInputManager != null) {
+//            System.out.println("[DEBUG] Updating player reference in PlayerInputManager");
+//            playerInputManager.setPlayer(player);
+//            playerInputManager.registerUserInput();
+//        }
+        
+    	playerInputManager = new PInputManager(player);
+//    	playerInputManager.
+        
 
         // Register global inputs
-        inputManager.registerKeyDown(Input.Keys.ESCAPE,
-            new PauseGame(SceneManager.getInstance(SceneManager.class)));
-        inputManager.registerKeyDown(Input.Keys.X,
-            new ExitGame(SceneManager.getInstance(SceneManager.class)));
-        inputManager.update();
-        playerInputManager.update();
+        keyboardManager.registerKeyUp(Input.Keys.ESCAPE, new PauseGame(SceneManager.getInstance(SceneManager.class)));
+        keyboardManager.registerKeyUp(Input.Keys.X, new ExitGame(SceneManager.getInstance(SceneManager.class)));
+//        keyboardManager.update();
+//        playerInputManager.update();
 
     }
 
@@ -221,57 +211,33 @@ public class GameScene extends Scene {
 
         
     	try {
-        	inputManager.update();
-        playerInputManager.update();
-        updateInput();
+    		keyboardManager.update();
+//        playerInputManager.update();
+//        updateInput();
         updateEntities();
         updateSpawning();
         updatePhysics();
-        checkGameOver();
-        settingsButton.update();
+//        checkGameOver();
+//        settingsButton.update();
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println("error in game scene" + e);
 		}
     	
-
+    	
+        keyboardManager.update();
+        if (Gdx.input.isTouched())
+        	mouseManager.update();
+      
+      playerInputManager.update();
     }
-
-    private void updateInput() {
-        playerInputManager.update();
-        inputManager.update();
-    }
-
 
     private void updateEntities() {
         entityManager.update();
     }
 
     private void updateSpawning() {
-        spawnPowerUp();
         updateDropletSpawning();
-    }
-
-
-    private void spawnPowerUp() {
-        if (!isPowerUpPresent() && random.nextFloat() <= POWERUP_SPAWN_CHANCE) {
-            PowerUp powerUp = new PowerUp(
-                EntityType.POWERUP,
-                "pup1.png",
-                new Vector2(random.nextFloat() * DisplayManager.getScreenWidth(),
-                          DisplayManager.getScreenHeight()),
-                new Vector2(0, 0),
-                100, DropBehaviour.State.IDLE, DropBehaviour.Move.NONE);
-            
-            powerUp.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
-            //powerUp.setAction(new Dropping(powerUp));
-            entityManager.addEntities(powerUp);
-        }
-    }
-
-    private boolean isPowerUpPresent() {
-        return entityManager.getEntities().stream()
-            .anyMatch(e -> e.getEntityType() == EntityType.POWERUP);
     }
 
     private void updateDropletSpawning() {
@@ -331,19 +297,19 @@ public class GameScene extends Scene {
             accumulator -= TIME_STEP;
         }
     }
-
-    private void checkGameOver() {
-        if (gameManager.getPointsManager().getFails() >= 20) {
-            System.out.println("Game Over triggered! Fails: " + gameManager.getPointsManager().getFails());
-            // Switch scene first, then GameManager will handle state
-            SceneManager.getInstance(SceneManager.class).setNextScene(SceneID.GAME_OVER);
-        }
-    }
+//
+//    private void checkGameOver() {
+//        if (gameManager.getPointsManager().getFails() >= 20) {
+//            System.out.println("Game Over triggered! Fails: " + gameManager.getPointsManager().getFails());
+//            // Switch scene first, then GameManager will handle state
+//            SceneManager.getInstance(SceneManager.class).setNextScene(SceneID.GAME_OVER);
+//        }
+//    }
     @Override
     public void draw(SpriteBatch batch) {
         entityManager.draw(batch);
         drawUI(batch);
-        settingsButton.draw(batch);
+//        settingsButton.draw(batch);
     }
 
     private void drawUI(SpriteBatch batch) {
@@ -364,16 +330,9 @@ public class GameScene extends Scene {
 
         // Draw score below title
         textManager.draw(batch,
-            "Score: " + gameManager.getPointsManager().getPoints(),
+            "Score: " + pointsManager.getPoints(),
             baseX,
             baseY - lineSpacing,
-            Color.RED);
-
-        // Draw fails counter below score
-        textManager.draw(batch,
-            "Fails: " + gameManager.getPointsManager().getFails(),
-            baseX,
-            baseY - (lineSpacing * 2), // Two lines down from the top
             Color.RED);
     }
 
@@ -415,13 +374,4 @@ public class GameScene extends Scene {
             world = null;
         }
     }
-
-    /*public InputMultiplexer getInputMultiplexer() {
-        return inputMultiplexer;
-    }*/
-
-
-
-    
-
 }
