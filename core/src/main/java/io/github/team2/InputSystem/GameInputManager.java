@@ -42,7 +42,8 @@ public class GameInputManager {
     
     public void update() {
         keyboardManager.update();
-        if (Gdx.input.isTouched())
-        	mouseManager.update();
+        if (Gdx.input.isTouched()) {
+        	mouseManager.update();        	
+        }
     }
 }

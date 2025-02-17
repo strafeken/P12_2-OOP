@@ -41,11 +41,13 @@ public class MouseManager {
         Vector2 touchPos = new Vector2(Gdx.input.getX(), DisplayManager.getScreenHeight() - Gdx.input.getY());
         
         // check if a clickable component is clicked
-        for (Clickable clickable : clickables) {
-            if (clickable.isPressed(touchPos)) {
-                clickable.execute();
-                return;
-            }
+        if (clickables != null) {
+        	for (Clickable clickable : clickables) {
+        		if (clickable != null && clickable.isPressed(touchPos)) {
+        			clickable.execute();
+        			return;
+        		}
+        	}
         }
 
         // check for mouse click functions

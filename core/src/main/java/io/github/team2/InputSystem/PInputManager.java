@@ -1,5 +1,6 @@
 package io.github.team2.InputSystem;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
@@ -42,6 +43,8 @@ public class PInputManager {
     
     public void update() {
         keyboardManager.update();
-        mouseManager.update();
+        if (Gdx.input.isTouched()) {
+        	mouseManager.update();        	
+        }
     }
 }

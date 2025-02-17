@@ -31,7 +31,7 @@ public class MainMenu extends Scene {
         textManager = new TextManager();
 
         // Start playing main menu background music
-        AudioManager.getInstance().playSoundEffect("mainmenu");
+        AudioManager.getInstance(AudioManager.class).playSoundEffect("mainmenu");
 
         // Setup background image
         image = new StaticTextureObject(EntityType.UNDEFINED, "libgdx.png",
@@ -79,6 +79,6 @@ public class MainMenu extends Scene {
     public void dispose() {
         System.out.println("Main Menu => DISPOSE");
         entityManager.dispose();
-        AudioManager.getInstance().stopMusic(); // Stop music when leaving menu
+        AudioManager.getInstance(AudioManager.class).stopMusic(); // Stop music when leaving menu
     }
 }

@@ -9,23 +9,32 @@ import com.badlogic.gdx.math.Vector2;
 
 import io.github.team2.Actions.ResumeGame;
 import io.github.team2.AudioSystem.AudioManager;
+import io.github.team2.EntitySystem.EntityManager;
+import io.github.team2.InputSystem.Action;
 import io.github.team2.InputSystem.Button;
+import io.github.team2.InputSystem.GameInputManager;
+import io.github.team2.InputSystem.KeyboardManager;
+import io.github.team2.InputSystem.PInputManager;
 import io.github.team2.InputSystem.PlayerInputManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SettingsMenu extends Scene {
-    private ShapeRenderer shapeRenderer;
-    private Map<String, Button> keyBindButtons;
+	private PInputManager playerInputManager;
+    private List<Button> buttons;
+    private boolean waitingForNewKey;
+    private Button selectedButton;
+    private String currentBinding;
+    private Map<String, Integer> keyBindings;  // Store key bindings by action name
     private Button backButton;
-    private boolean waitingForKey = false;
-    private String currentBinding = "";
-    private Map<String, Integer> currentBindings;
-    private String errorMessage = "";
-    private float errorTimer = 0;
-
+    
+    private AudioManager audioManager;
+    
     // Constants for layout - adjusted to prevent overlapping
     private static final float TITLE_Y = 500;
     private static final float START_Y = 420;
@@ -51,94 +60,161 @@ public class SettingsMenu extends Scene {
     private final Color sliderFillColor = new Color(0.4f, 0.7f, 1f, 1);
     private final Color sliderHandleColor = new Color(0.9f, 0.9f, 1f, 1);
 
+    public SettingsMenu() {
+    	super();
+    }
+
     @Override
     public void load() {
-    	System.out.println("Settings Menu => LOAD");
-        keyBindButtons = new HashMap<>();
-//        PlayerInputManager playerInputManager = GameManager.getInstance().getPlayerInputManager();
-//        currentBindings = new HashMap<>(playerInputManager.getKeyBindings());
-
-        // Calculate the position of the volume slider based on number of key bindings
+    	// Initialize managers
+    	entityManager = new EntityManager();
+    	gameInputManager = new GameInputManager();
+    	textManager = new TextManager();
+    	
+        buttons = new ArrayList<>();
+        waitingForNewKey = false;
+        selectedButton = null;
+        currentBinding = null;
+        keyBindings = new HashMap<>();
+    	
+    	playerInputManager = GameManager.getInstance(GameManager.class).getPlayerInputManager();
         
-//        calculateVolumeSliderPosition();
+    	createButtonsForKeyBindings();
+        
         backButton = new Button("backBtn.png",
         	    new Vector2(PANEL_LEFT + 40, 50), // Position inside panel with margin
         	    new ResumeGame(SceneManager.getInstance(SceneManager.class)), 80, 32);
         
-        mouseManager.registerClickable(backButton);
-
-        createKeyBindButtons();
-        shapeRenderer = new ShapeRenderer();
+        gameInputManager.registerClickable(backButton);
+        
+        backButton.update();
+        
+        audioManager = AudioManager.getInstance(AudioManager.class);
     }
 
-    private void calculateVolumeSliderPosition() {
-        int bindingCount = currentBindings.size();
-        // Add extra spacing above volume controls
-        sliderY = START_Y - (bindingCount * SPACING) - VOLUME_TEXT_OFFSET;
-        sliderX = LEFT_MARGIN;
-    }
+    private void createButtonsForKeyBindings() {
+        Map<Integer, Action> keyDownActions = playerInputManager.getKeyboardManager().getKeyDownActions();
+        System.out.println("Settings Scene => SUCCESS");
+        float yPos = 500;
 
-    private void createKeyBindButtons() {
-        float y = START_Y;
-        int id = 2;
+        // Create a button for each key
+        for (Integer key : keyDownActions.keySet()) {
+            String keyName = Input.Keys.toString(key);
+            System.out.println(keyName);
+            Action action = keyDownActions.get(key);
 
-//        for (String action : currentBindings.keySet()) {
-//            // Position buttons near right edge of panel
-//            Button bindButton = new Button(
-//                id++,
-//                "Change",
-//                "keyboard.png",
-//                new Vector2(PANEL_RIGHT - 52, y - 15), 
-//                () -> startBinding(action),
-//                32,
-//                32
-//            );
-//            keyBindButtons.put(action, bindButton);
-//            inputManager.registerButton(bindButton);
-//            y -= SPACING;
-//        }
+            Button button = new Button("keyboard.png", new Vector2(100, yPos), () -> {
+//                selectedButton = button;
+                waitingForNewKey = true;
+                currentBinding = keyName;  // Set current binding when the button is clicked
+            }, 200, 50);
+
+            buttons.add(button);
+            yPos -= 60;
+
+            // Store the initial key bindings in the map
+            keyBindings.put(keyName, key);
+        }
     }
 
     @Override
     public void update() {
-        if (Gdx.input.isTouched())
-        	mouseManager.update();
-//        if (waitingForKey) {
-//            for (int i = 0; i < 256; i++) {
-//                if (Gdx.input.isKeyJustPressed(i)) {
-//                    String duplicate = null;
-//                    for (Map.Entry<String, Integer> entry : currentBindings.entrySet()) {
-//                        if (entry.getValue() == i && !entry.getKey().equals(currentBinding)) {
-//                            duplicate = entry.getKey();
-//                            break;
-//                        }
-//                    }
-//                    if (duplicate != null) {
-//                        errorMessage = Input.Keys.toString(i) + " is already used for " + duplicate;
-//                        errorTimer = 3.0f;
-//                        AudioManager.getInstance().playSoundEffect("ding");
-//                    } else {
-//                        currentBindings.put(currentBinding, i);
-////                        GameManager.getInstance().getPlayerInputManager().setKeyBindings(currentBindings);
-//                        AudioManager.getInstance().playSoundEffect("start");
-//                    }
-//                    waitingForKey = false;
-//                    currentBinding = "";
-//                    break;
-//                }
-//            }
-//        }
-//
-//        updateVolumeSlider();
-////        inputManager.update();
-//
-//        if (errorTimer > 0) {
-//            errorTimer -= Gdx.graphics.getDeltaTime();
-//            if (errorTimer <= 0) {
-//                errorMessage = "";
-//            }
-//        }
+        if (waitingForNewKey) {
+            // Look for any key that is pressed
+            for (int i = 0; i < 256; i++) {  // Loop over the range of possible key codes
+                if (Gdx.input.isKeyPressed(i)) {
+                    int newKeyCode = i;  // Capture the pressed key's code
+
+                    if (currentBinding != null) {
+                        // Update the key binding in the map without using button text
+                        keyBindings.put(currentBinding, newKeyCode);
+                    }
+
+                    waitingForNewKey = false;  // Reset the flag to stop waiting
+                    currentBinding = null;  // Reset current binding once the key is set
+                    break;  // Exit the loop after capturing the key press
+                }
+            }
+        }
+
+        for (Button button : buttons) {
+            button.update();
+        }
+
+        updateVolumeSlider();
+
+        gameInputManager.update();
+        playerInputManager.update();
     }
+
+    @Override
+    public void draw(SpriteBatch batch) {
+        float y = 500;  // Starting position for the text
+        for (int i = 0; i < buttons.size(); i++) {
+            Button button = buttons.get(i);
+
+            // Directly get the key name from the keyBindings map using the index
+            String keyName = (String) keyBindings.keySet().toArray()[i];  // Retrieve the key name from keyBindings
+
+            String displayText = keyName + ": " + Input.Keys.toString(keyBindings.get(keyName));  // Get the current key binding from the map
+
+            // If waiting for a new key press for the current binding, show the prompt
+            if (waitingForNewKey && currentBinding != null && currentBinding.equals(keyName)) {
+                displayText += ": (Press any key)";
+                textManager.draw(batch, displayText, 100, y, Color.YELLOW);  // Display prompt in yellow
+            } else {
+                textManager.draw(batch, displayText, 100, y, Color.WHITE);  // Display the current key binding
+            }
+
+            button.draw(batch);  // Draw the button
+            y -= 60;  // Move down for the next button
+        }
+        
+        textManager.draw(batch, "SETTINGS", LEFT_MARGIN, TITLE_Y, titleColor);
+        
+        float volume = audioManager.getVolume();
+        textManager.draw(batch, (int)(volume * 100) + "%", sliderX + sliderWidth + 20, sliderY + sliderHeight/2 + 6, textColor);
+        
+        // Draw volume controls header with increased spacing
+        textManager.draw(batch, "VOLUME", LEFT_MARGIN, sliderY + VOLUME_TEXT_OFFSET, titleColor);
+        
+        // Draw back button
+        backButton.draw(batch);
+    }
+
+
+    @Override
+    public void draw(ShapeRenderer shape) {
+    	float volume = audioManager.getVolume();
+
+//        shape.setColor(backgroundColor);
+//        shape.rect(80, 30, Gdx.graphics.getWidth() - 160, Gdx.graphics.getHeight() - 60);
+        
+        // Draw background track
+    	shape.setColor(sliderBackgroundColor);
+    	shape.rect(sliderX, sliderY, sliderWidth, sliderHeight);
+
+        // Draw filled portion
+    	shape.setColor(sliderFillColor);
+    	shape.rect(sliderX, sliderY, sliderWidth * volume, sliderHeight);
+
+        // Draw handle
+        float handleX = sliderX + (sliderWidth * volume);
+        float handleSize = sliderHeight * 1.8f;
+        shape.setColor(sliderHandleColor);
+        shape.circle(handleX, sliderY + (sliderHeight / 2), handleSize / 2);
+    }
+
+    @Override
+    public void unload() {
+        // Cleanup
+    }
+
+    @Override
+    public void dispose() {
+        // Dispose resources
+    }
+    
 
     private void updateVolumeSlider() {
         if (Gdx.input.isTouched()) {
@@ -153,105 +229,10 @@ public class SettingsMenu extends Scene {
             if (inSliderBounds || draggingSlider) {
                 draggingSlider = true;
                 float normalized = Math.min(1f, Math.max(0f, (touchX - sliderX) / sliderWidth));
-                AudioManager.getInstance().setVolume(normalized);
+                audioManager.setVolume(normalized);
             }
         } else {
             draggingSlider = false;
         }
-    }
-
-    @Override
-    public void draw(SpriteBatch batch) {
-        // Draw background panel
-        batch.end();
-        Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(backgroundColor);
-        shapeRenderer.rect(80, 30, Gdx.graphics.getWidth() - 160, Gdx.graphics.getHeight() - 60);
-        shapeRenderer.end();
-        Gdx.gl.glDisable(Gdx.gl.GL_BLEND);
-        batch.begin();
-        
-        // Draw title
-//        textManager.draw(batch, "SETTINGS", LEFT_MARGIN, TITLE_Y, titleColor);
-//        
-//        // Draw key bindings
-//        float y = START_Y;
-//        for (Map.Entry<String, Integer> binding : currentBindings.entrySet()) {
-//            String text = binding.getKey() + ": " + Input.Keys.toString(binding.getValue());
-//            if (waitingForKey && currentBinding.equals(binding.getKey())) {
-//                text += " (Press any key)";
-//                textManager.draw(batch, text, LEFT_MARGIN, y, Color.YELLOW);
-//            } else {
-//                textManager.draw(batch, text, LEFT_MARGIN, y, textColor);
-//            }
-//            // Draw the button (already positioned in createKeyBindButtons)
-//            keyBindButtons.get(binding.getKey()).draw(batch);
-//            y -= SPACING;
-//        }
-//
-//        // Draw volume controls header with increased spacing
-//        textManager.draw(batch, "VOLUME", LEFT_MARGIN, sliderY + VOLUME_TEXT_OFFSET, titleColor);
-//        drawVolumeSlider(batch);
-        
-        // Draw back button
-        backButton.draw(batch);
-
-        // Draw error message if any
-        if (!errorMessage.isEmpty()) {
-            textManager.draw(batch, errorMessage, LEFT_MARGIN, 60, Color.RED);
-        }
-    }
-
-    private void drawVolumeSlider(SpriteBatch batch) {
-        float volume = AudioManager.getInstance().getVolume();
-
-        batch.end();
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-        // Draw background track
-        shapeRenderer.setColor(sliderBackgroundColor);
-        shapeRenderer.rect(sliderX, sliderY, sliderWidth, sliderHeight);
-
-        // Draw filled portion
-        shapeRenderer.setColor(sliderFillColor);
-        shapeRenderer.rect(sliderX, sliderY, sliderWidth * volume, sliderHeight);
-
-        // Draw handle
-        float handleX = sliderX + (sliderWidth * volume);
-        float handleSize = sliderHeight * 1.8f;
-        shapeRenderer.setColor(sliderHandleColor);
-        shapeRenderer.circle(handleX, sliderY + (sliderHeight / 2), handleSize / 2);
-
-        shapeRenderer.end();
-
-        batch.begin();
-        textManager.draw(batch, (int)(volume * 100) + "%", sliderX + sliderWidth + 20, sliderY + sliderHeight/2 + 6, textColor);
-    }
-
-    @Override
-    public void draw(ShapeRenderer shape) {
-        // No additional shapes to draw
-    }
-
-    @Override
-    public void unload() {
-    	System.out.println("Settings Menu => UNLOAD");
-        dispose();
-    }
-
-    @Override
-    public void dispose() {
-        if (shapeRenderer != null) {
-            shapeRenderer.dispose();
-            shapeRenderer = null;
-        }
-    }
-
-    private void startBinding(String action) {
-        waitingForKey = true;
-        currentBinding = action;
-        AudioManager.getInstance().playSoundEffect("ding");
     }
 }

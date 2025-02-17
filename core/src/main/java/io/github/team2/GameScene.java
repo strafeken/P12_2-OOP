@@ -64,6 +64,7 @@ public class GameScene extends Scene {
     @Override
     public void load() {
         System.out.println("Game Scene => LOAD");
+        
         initializeWorld();
         initializeManagers();
         initializeEntities();
@@ -71,12 +72,8 @@ public class GameScene extends Scene {
         
         gameManager = GameManager.getInstance(GameManager.class);
         gameManager.setPlayerInputManager(playerInputManager);
-
-        settingsButton = new Button("settingsBtn.png",
-            new Vector2(DisplayManager.getScreenWidth() - 80, DisplayManager.getScreenHeight() - 80),
-            new GoToSettings(SceneManager.getInstance(SceneManager.class)), 70, 70);
         
-        AudioManager.getInstance().playSoundEffect("start");
+        AudioManager.getInstance(AudioManager.class).playSoundEffect("start");
     }
 
     private void initializeWorld() {
@@ -100,11 +97,7 @@ public class GameScene extends Scene {
     }
 
     private void initializeEntities() {
-    	
     	try {
-    		
-    		
-    		
             // Initialize static entities
             circle = new Circle(EntityType.CIRCLE,
                               new Vector2(500, 400),
@@ -138,10 +131,7 @@ public class GameScene extends Scene {
             entityManager.addEntities(circle);
             entityManager.addEntities(triangle);
             entityManager.addEntities(player);
-    		
-    		
-		} catch (Exception e) {
-			
+		} catch (Exception e) {			
 			System.out.println("error in game scene add area" + e);
 		}
     }
@@ -173,33 +163,25 @@ public class GameScene extends Scene {
 
     	gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new PauseGame(SceneManager.getInstance(SceneManager.class)));
     	gameInputManager.registerKeyUp(Input.Keys.X, new ExitGame(SceneManager.getInstance(SceneManager.class)));
+    	
+        settingsButton = new Button("settingsBtn.png",
+                new Vector2(DisplayManager.getScreenWidth() - 80, DisplayManager.getScreenHeight() - 80),
+                new GoToSettings(SceneManager.getInstance(SceneManager.class)), 70, 70);
         
         gameInputManager.registerClickable(settingsButton);
     }
 
-
-        //inputMultiplexer.addProcessor(inputManager);
-        //inputMultiplexer.addProcessor(playerInputManager);
-
-        // Register global inputs
-    //}
-
     @Override
     public void update() {
-
-        
     	try {
+    		entityManager.update();
     		gameInputManager.update();
     		playerInputManager.update();
-//        playerInputManager.update();
-//        updateInput();
-        entityManager.update();
-        updateSpawning();
-        updatePhysics();
+    		updateSpawning();
+    		updatePhysics();
 //        checkGameOver();
 //        settingsButton.update();
 		} catch (Exception e) {
-			// TODO: handle exception
 			System.out.println("error in game scene" + e);
 		}
     }

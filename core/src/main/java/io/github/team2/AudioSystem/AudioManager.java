@@ -3,31 +3,25 @@ package io.github.team2.AudioSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+
+import io.github.team2.Utils.Singleton;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class AudioManager {
-    private static AudioManager instance;
-	    private Map<String, Sound> soundEffects;
-	    private Map<String, Long> activeSound; // Track active sound IDs
-	    private String currentMusic;
-	    private float volume;
-	    private Music music;
+public class AudioManager extends Singleton<AudioManager> {
+	private Map<String, Sound> soundEffects;
+	private Map<String, Long> activeSound; // Track active sound IDs
+	private String currentMusic;
+	private float volume;
+	private Music music;
 
-
-    private AudioManager() {
+    public AudioManager() {
         soundEffects = new HashMap<>();
         activeSound = new HashMap<>(); // Add this to track active sounds
         currentMusic = "";
         volume = 1.0f;
         Gdx.app.log("AudioManager", "AudioManager created.");
-    }
-
-    public static AudioManager getInstance() {
-        if (instance == null) {
-            instance = new AudioManager();
-        }
-        return instance;
     }
 
     public void playMusic(String path) {
