@@ -18,6 +18,7 @@ import io.github.team2.Utils.DisplayManager;
 import java.util.Random;
 
 import io.github.team2.Actions.PlayerBehaviour;
+import io.github.team2.AudioSystem.AudioManager;
 
 public class GameScene extends Scene {
     // Physics constants
@@ -36,9 +37,11 @@ public class GameScene extends Scene {
     // Managers
     private CollisionDetector collisionDetector;
     private PointsManager pointsManager;
-    //private InputMultiplexer inputMultiplexer;
+
 //    private PlayerInputManager playerInputManager;
     private PInputManager playerInputManager;
+    
+    private GameManager gameManager;
 
     // Game entities
     private Entity[] droplets;
@@ -53,11 +56,9 @@ public class GameScene extends Scene {
  
     public GameScene() {
         super();
-//        this.gameManager = GameManager.getInstance(); // Use singleton instead of new instance
         random = new Random();
         accumulator = 0f;
         dropletSpawnTimer = 0f;
-
     }
 
     @Override
@@ -67,12 +68,15 @@ public class GameScene extends Scene {
         initializeManagers();
         initializeEntities();
         initializeInput();
+        
+        gameManager = GameManager.getInstance(GameManager.class);
+        gameManager.setPlayerInputManager(playerInputManager);
 
         settingsButton = new Button("settingsBtn.png",
             new Vector2(DisplayManager.getScreenWidth() - 80, DisplayManager.getScreenHeight() - 80),
             new GoToSettings(SceneManager.getInstance(SceneManager.class)), 70, 70);
-
-        mouseManager.registerClickable(settingsButton);
+        
+        AudioManager.getInstance().playSoundEffect("start");
     }
 
     private void initializeWorld() {
@@ -81,7 +85,10 @@ public class GameScene extends Scene {
     }
     
     private void initializeManagers() {
+        // Initialize managers
         entityManager = new EntityManager();
+        gameInputManager = new GameInputManager();
+        textManager = new TextManager();
 
         collisionDetector = new CollisionDetector();
         collisionDetector.addListener(new CollisionAudioHandler());
@@ -90,10 +97,6 @@ public class GameScene extends Scene {
         collisionDetector.addListener(new PointsSystem(pointsManager));
         
         world.setContactListener(collisionDetector);
-
-        // Initialize input system
-//        inputManager = new InputManager();
-        //inputMultiplexer = new InputMultiplexer();
     }
 
     private void initializeEntities() {
@@ -166,26 +169,12 @@ public class GameScene extends Scene {
     }
 
     private void initializeInput() {
-        // Get the PlayerInputManager from GameManager
-//        playerInputManager = GameManager.getInstance().getPlayerInputManager();
-
-        // Make sure player reference is up to date
-//        if (playerInputManager != null) {
-//            System.out.println("[DEBUG] Updating player reference in PlayerInputManager");
-//            playerInputManager.setPlayer(player);
-//            playerInputManager.registerUserInput();
-//        }
-        
     	playerInputManager = new PInputManager(player);
-//    	playerInputManager.
+
+    	gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new PauseGame(SceneManager.getInstance(SceneManager.class)));
+    	gameInputManager.registerKeyUp(Input.Keys.X, new ExitGame(SceneManager.getInstance(SceneManager.class)));
         
-
-        // Register global inputs
-        keyboardManager.registerKeyUp(Input.Keys.ESCAPE, new PauseGame(SceneManager.getInstance(SceneManager.class)));
-        keyboardManager.registerKeyUp(Input.Keys.X, new ExitGame(SceneManager.getInstance(SceneManager.class)));
-//        keyboardManager.update();
-//        playerInputManager.update();
-
+        gameInputManager.registerClickable(settingsButton);
     }
 
 
@@ -200,7 +189,8 @@ public class GameScene extends Scene {
 
         
     	try {
-    		keyboardManager.update();
+    		gameInputManager.update();
+    		playerInputManager.update();
 //        playerInputManager.update();
 //        updateInput();
         entityManager.update();
@@ -212,13 +202,6 @@ public class GameScene extends Scene {
 			// TODO: handle exception
 			System.out.println("error in game scene" + e);
 		}
-    	
-    	
-        keyboardManager.update();
-        if (Gdx.input.isTouched())
-        	mouseManager.update();
-      
-      playerInputManager.update();
     }
 
     private void updateSpawning() {
@@ -282,14 +265,7 @@ public class GameScene extends Scene {
             accumulator -= TIME_STEP;
         }
     }
-//
-//    private void checkGameOver() {
-//        if (gameManager.getPointsManager().getFails() >= 20) {
-//            System.out.println("Game Over triggered! Fails: " + gameManager.getPointsManager().getFails());
-//            // Switch scene first, then GameManager will handle state
-//            SceneManager.getInstance(SceneManager.class).setNextScene(SceneID.GAME_OVER);
-//        }
-//    }
+
     @Override
     public void draw(SpriteBatch batch) {
         entityManager.draw(batch);

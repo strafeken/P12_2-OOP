@@ -13,8 +13,8 @@ public class PInputManager {
 
     public PInputManager(Entity player) {
         this.player = player;
-        this.keyboardManager = new KeyboardManager();
-        this.mouseManager = new MouseManager();
+        keyboardManager = new KeyboardManager();
+        mouseManager = new MouseManager();
         registerUserInput();
     }
 
@@ -34,6 +34,10 @@ public class PInputManager {
     
     public void changeKeyBinding(int oldKeycode, int newKeycode, boolean isKeyDown) {
         keyboardManager.changeKeyBinding(oldKeycode, newKeycode, isKeyDown);
+    }
+    
+    public KeyboardManager getKeyboardManager() {
+        return keyboardManager;
     }
     
     public void update() {

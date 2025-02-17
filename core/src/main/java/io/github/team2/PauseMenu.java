@@ -7,8 +7,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import io.github.team2.Actions.ResumeGame;
 import io.github.team2.EntitySystem.Entity;
+import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.StaticTextureObject;
+import io.github.team2.InputSystem.GameInputManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.Utils.DisplayManager;
@@ -23,19 +25,24 @@ public class PauseMenu extends Scene {
     @Override
     public void load() {
         System.out.println("Pause Menu => LOAD");
+        
+        // Initialize managers
+        entityManager = new EntityManager();
+        gameInputManager = new GameInputManager();
+        textManager = new TextManager();
 
         image = new StaticTextureObject(EntityType.UNDEFINED, "libgdx.png",
             new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2),
             new Vector2(0, 0));
 
         entityManager.addEntities(image);
-        keyboardManager.registerKeyUp(Input.Keys.ESCAPE, new ResumeGame(SceneManager.getInstance(SceneManager.class)));
+        gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new ResumeGame(SceneManager.getInstance(SceneManager.class)));
     }
 
     @Override
     public void update() {
         entityManager.update();
-        keyboardManager.update();
+        gameInputManager.update();
     }
 
     @Override

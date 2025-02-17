@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import io.github.team2.Actions.StartGame;
+import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.InputSystem.Button;
+import io.github.team2.InputSystem.GameInputManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.Utils.DisplayManager;
@@ -22,29 +24,24 @@ public class GameOverScreen extends Scene {
     @Override
     public void load() {
         System.out.println("Game Over Screen => LOAD");
-//        finalScore = GameManager.getInstance().getPointsManager().getPoints();
 
-        // Create restart button
+        // Initialize managers
+        entityManager = new EntityManager();
+        gameInputManager = new GameInputManager();
+        textManager = new TextManager();
+
         StartGame startAction = new StartGame(SceneManager.getInstance(SceneManager.class));
-        Vector2 centerPos = new Vector2(
-            DisplayManager.getScreenWidth() / 2,
-            DisplayManager.getScreenHeight() / 2 - 200
-        );
-
-//        restartButton = new Button(1, "Restart", "restartBtn.png",
-//                                 centerPos, startAction, 100, 100);
-
-//        iManager.registerKeyDown(Input.Keys.SPACE, StartGame);
-//        inputManager.registerButton(restartButton);
-//        inputManager.registerKeyDown(Input.Keys.SPACE, startAction);
+        Vector2 centerPos = new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2 - 200);
+        restartButton = new Button("restartBtn.png", centerPos, startAction, 100, 100);
         
+        gameInputManager.registerKeyUp(Input.Keys.SPACE, startAction);
+        gameInputManager.registerClickable(restartButton);
     }
 
     @Override
     public void update() {
-//        inputManager.update();
-//        iManager.update();
-        entityManager.update();
+    	entityManager.update();
+    	gameInputManager.update();
     }
 
     @Override
@@ -74,6 +71,4 @@ public class GameOverScreen extends Scene {
         entityManager.dispose();
         textManager.dispose();
     }
-
-
 }

@@ -12,15 +12,12 @@ import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.StaticTextureObject;
 import io.github.team2.InputSystem.Button;
-import io.github.team2.InputSystem.InputManager;
+import io.github.team2.InputSystem.GameInputManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.Utils.DisplayManager;
 
 public class MainMenu extends Scene {
-    private EntityManager em;
-    private InputManager im;
-    private TextManager tm;
     private StaticTextureObject image;
     private Button startButton;
 
@@ -29,9 +26,9 @@ public class MainMenu extends Scene {
         System.out.println("Main Menu => LOAD");
 
         // Initialize managers
-        em = new EntityManager();
-        im = new InputManager();
-        tm = new TextManager();
+        entityManager = new EntityManager();
+        gameInputManager = new GameInputManager();
+        textManager = new TextManager();
 
         // Start playing main menu background music
         AudioManager.getInstance().playSoundEffect("mainmenu");
@@ -40,37 +37,31 @@ public class MainMenu extends Scene {
         image = new StaticTextureObject(EntityType.UNDEFINED, "libgdx.png",
                 new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2),
                 new Vector2(0, 0));
-        em.addEntities(image);
-
-        StartGame startAction = new StartGame(SceneManager.getInstance(SceneManager.class));
+        
+        entityManager.addEntities(image);
 
         Vector2 centerPos = new Vector2(DisplayManager.getScreenWidth() / 2 - 50, DisplayManager.getScreenHeight() / 2 - 180);
-
-//        startButton = new Button(1, "Start", "startBtn.png",
-//                               centerPos, startAction,
-//                               100, 100);
+        StartGame startAction = new StartGame(SceneManager.getInstance(SceneManager.class));
         startButton = new Button("startBtn.png", centerPos, startAction, 100, 100);
 
-        keyboardManager.registerKeyUp(Input.Keys.SPACE, startAction);
-        mouseManager.registerClickable(startButton);
+        gameInputManager.registerKeyUp(Input.Keys.SPACE, startAction);
+        gameInputManager.registerClickable(startButton);
         
         startButton.update();  // Make sure button gets updated
     }
 
     @Override
     public void update() {
-        em.update();
-        keyboardManager.update();
-        if (Gdx.input.isTouched())
-        	mouseManager.update();
+    	entityManager.update();
+    	gameInputManager.update();
     }
 
     @Override
     public void draw(SpriteBatch batch) {
-        em.draw(batch);
-        startButton.draw(batch);  // Draw button
-        tm.draw(batch, "Main Menu", 200, 200, Color.RED);
-        tm.draw(batch, "Press SPACE to Start", 200, 150, Color.WHITE);
+    	entityManager.draw(batch);
+        startButton.draw(batch);
+        textManager.draw(batch, "Main Menu", 200, 200, Color.RED);
+        textManager.draw(batch, "Press SPACE to Start", 200, 150, Color.WHITE);
     }
 
     @Override
@@ -87,7 +78,7 @@ public class MainMenu extends Scene {
     @Override
     public void dispose() {
         System.out.println("Main Menu => DISPOSE");
-        em.dispose();
+        entityManager.dispose();
         AudioManager.getInstance().stopMusic(); // Stop music when leaving menu
     }
 }
