@@ -4,17 +4,17 @@ import io.github.team2.InputSystem.Action;
 import io.github.team2.SceneSystem.SceneID;
 import io.github.team2.SceneSystem.SceneManager;
 
-public class ResumeGame implements Action {
+public class GoToSettings implements Action {
 	private final SceneManager sm;
 
-	public ResumeGame(SceneManager sceneManager) {
+	public GoToSettings(SceneManager sceneManager) {
 		this.sm = sceneManager;
 	}
 
 	@Override
 	public void execute() {
-		if (sm.getCurrentSceneID() == SceneID.PAUSE_MENU || sm.getCurrentSceneID() == SceneID.SETTINGS_MENU) {
-			sm.removeOverlay();
+		if (sm.getCurrentSceneID() == SceneID.GAME_SCENE) {
+			sm.overlayScene(SceneID.SETTINGS_MENU);
 		}
 	}
 }

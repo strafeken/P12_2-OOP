@@ -45,7 +45,7 @@ public class GameScene extends Scene {
     private Entity circle;
     private Entity triangle;
     private Entity player;
-//    private Button settingsButton;
+    private Button settingsButton;
 
     // Spawn control
     private float dropletSpawnTimer;
@@ -68,17 +68,11 @@ public class GameScene extends Scene {
         initializeEntities();
         initializeInput();
 
-//        settingsButton = new Button(
-//            200,
-//            "Settings",
-//            "settingsBtn.png",
-//            new Vector2(DisplayManager.getScreenWidth() - 80, DisplayManager.getScreenHeight() - 80),
-//            () -> SceneManager.getInstance(SceneManager.class).overlayScene(SceneID.SETTINGS_MENU),
-//            70,
-//            70
-//        );
-//        inputManager.registerButton(settingsButton);
+        settingsButton = new Button("settingsBtn.png",
+            new Vector2(DisplayManager.getScreenWidth() - 80, DisplayManager.getScreenHeight() - 80),
+            new GoToSettings(SceneManager.getInstance(SceneManager.class)), 70, 70);
 
+        mouseManager.registerClickable(settingsButton);
     }
 
     private void initializeWorld() {
@@ -86,9 +80,6 @@ public class GameScene extends Scene {
         debugRenderer = new Box2DDebugRenderer();
     }
     
-    
-    
-
     private void initializeManagers() {
         entityManager = new EntityManager();
 
@@ -150,8 +141,6 @@ public class GameScene extends Scene {
 			
 			System.out.println("error in game scene add area" + e);
 		}
-    	
-    
     }
 
     private void initializeDroplets() {
@@ -214,7 +203,7 @@ public class GameScene extends Scene {
     		keyboardManager.update();
 //        playerInputManager.update();
 //        updateInput();
-        updateEntities();
+        entityManager.update();
         updateSpawning();
         updatePhysics();
 //        checkGameOver();
@@ -230,10 +219,6 @@ public class GameScene extends Scene {
         	mouseManager.update();
       
       playerInputManager.update();
-    }
-
-    private void updateEntities() {
-        entityManager.update();
     }
 
     private void updateSpawning() {
@@ -309,7 +294,7 @@ public class GameScene extends Scene {
     public void draw(SpriteBatch batch) {
         entityManager.draw(batch);
         drawUI(batch);
-//        settingsButton.draw(batch);
+        settingsButton.draw(batch);
     }
 
     private void drawUI(SpriteBatch batch) {

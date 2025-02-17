@@ -32,6 +32,10 @@ public class PInputManager {
         keyboardManager.registerKeyUp(Input.Keys.D, new Move(player, new Vector2(0, 0)));
     }
     
+    public void changeKeyBinding(int oldKeycode, int newKeycode, boolean isKeyDown) {
+        keyboardManager.changeKeyBinding(oldKeycode, newKeycode, isKeyDown);
+    }
+    
     public void update() {
         keyboardManager.update();
         mouseManager.update();
