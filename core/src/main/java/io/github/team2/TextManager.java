@@ -13,7 +13,10 @@ public class TextManager {
         font.getData().setScale(baseScale);
     }
 
-    // Add getter for font
+    public TextManager(BitmapFont font) {
+    	this.font = font;
+    }
+
     public BitmapFont getFont() {
         return font;
     }
@@ -25,10 +28,6 @@ public class TextManager {
     public void resetScale() {
         font.getData().setScale(baseScale);
     }
-
-	public TextManager(BitmapFont font) {
-		this.font = font;
-	}
 
 	public void draw(SpriteBatch batch, String text, float x, float y, Color color) {
 		font.setColor(color);
