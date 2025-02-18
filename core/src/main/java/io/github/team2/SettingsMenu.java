@@ -20,6 +20,7 @@ import io.github.team2.SceneSystem.SceneManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -77,7 +78,7 @@ public class SettingsMenu extends Scene {
         waitingForNewKey = false;
         selectedButton = null;
         currentBinding = null;
-        keyBindings = new HashMap<>();
+        keyBindings = new LinkedHashMap<>();
     	
     	playerInputManager = GameManager.getInstance(GameManager.class).getPlayerInputManager();
         
@@ -103,7 +104,6 @@ public class SettingsMenu extends Scene {
         for (Integer key : keyDownActions.keySet()) {
             String keyName = Input.Keys.toString(key);
             System.out.println(keyName);
-            Action action = keyDownActions.get(key);
 
             Button button = new Button("keyboard.png", new Vector2(PANEL_RIGHT - 52, y - 15), () -> {
                 waitingForNewKey = true;
