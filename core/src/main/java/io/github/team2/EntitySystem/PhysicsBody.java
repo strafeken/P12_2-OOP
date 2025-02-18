@@ -71,42 +71,7 @@ public class PhysicsBody {
 	public void setLinearVelocity(float x, float y) {
 		body.setLinearVelocity(x, y);
 	}
-
-	public void updateEntityPosition(Entity entity) {
-		entity.setPosition(new Vector2(body.getPosition().x, body.getPosition().y));
-		updateEntityRotation(entity);
-	}
 	
-
-	public void updateEntityRotation(Entity entity) {
-		
-		 if ( entity instanceof Dynamics<?,?>) {
-			float angle = body.getAngle(); // Get rotation in radians
-			Vector2 newRotation = new Vector2((float) Math.cos(angle), (float) Math.sin(angle)); // Convert to Vector2
-			((Dynamics< ?,? >)entity).setRotation(newRotation); // Update entity's rotation as a Vector2
-		
-			
-		}
-
-	}
-
-	public void updatePhysics(float deltaTime) {
-		float accumulator = 0;
-		accumulator += deltaTime;
-
-		while (accumulator >= TIME_STEP) {
-			world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
-			accumulator -= TIME_STEP;
-		}
-	}
-
-	public void dispose() {
-        if (body != null && world != null) {
-            world.destroyBody(body);
-            body = null;
-        }
-    }
-
     public World getWorld() {
         return world;
     }
@@ -144,4 +109,42 @@ public class PhysicsBody {
 		// TODO Auto-generated method stub
 		return newAngle();
 	}
+	
+
+	public void updateEntityPosition(Entity entity) {
+		entity.setPosition(new Vector2(body.getPosition().x, body.getPosition().y));
+		updateEntityRotation(entity);
+	}
+	
+
+	public void updateEntityRotation(Entity entity) {
+		
+		 if ( entity instanceof Dynamics<?,?>) {
+			float angle = body.getAngle(); // Get rotation in radians
+			Vector2 newRotation = new Vector2((float) Math.cos(angle), (float) Math.sin(angle)); // Convert to Vector2
+			((Dynamics< ?,? >)entity).setRotation(newRotation); // Update entity's rotation as a Vector2
+		
+			
+		}
+
+	}
+
+	public void updatePhysics(float deltaTime) {
+		float accumulator = 0;
+		accumulator += deltaTime;
+
+		while (accumulator >= TIME_STEP) {
+			world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+			accumulator -= TIME_STEP;
+		}
+	}
+
+	public void dispose() {
+        if (body != null && world != null) {
+            world.destroyBody(body);
+            body = null;
+        }
+    }
+
+  
 }
