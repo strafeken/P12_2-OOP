@@ -74,7 +74,6 @@ public class SceneManager extends Singleton<SceneManager> {
 
 		sceneStack.push(id);
 		scenes.get(id).load();
-		updateInputProcessor();
 	}
 
 	private void unloadCurrentScene() {
@@ -82,20 +81,7 @@ public class SceneManager extends Singleton<SceneManager> {
 			return;
 
 		scenes.get(sceneStack.pop()).unload();
-		updateInputProcessor();
 	}
-
-	// sets input processor to the input manager of the next scene
-	private void updateInputProcessor() {
-        if (sceneStack.isEmpty())
-            return;
-
-        SceneID curr = sceneStack.peek();
-        Scene currentScene = getCurrentScene();
-
-        // Just clear active keys without setting input processor
-//        currentScene.getInputManager().clearActiveKeys();
-    }
 
 	public void resize(int width, int height) {
 	    if (!sceneStack.isEmpty())
