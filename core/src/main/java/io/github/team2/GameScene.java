@@ -252,13 +252,13 @@ public class GameScene extends Scene {
     }
 
     private void drawUI(SpriteBatch batch) {
-        float padding = 10 * hudScaleX; // Scale padding with screen size
+        float padding = 10f; // Scale padding with screen size
         float baseX = padding;
-        float baseY = viewportHeight - padding;
-        float lineSpacing = 30 * hudScaleY; // Vertical spacing between lines
+        float baseY = DisplayManager.getScreenHeight() - padding;
+        float lineSpacing = 30f; // Vertical spacing between lines
 
         // Scale font size with screen
-        textManager.getFont().getData().setScale(2.0f * hudScaleX, 2.0f * hudScaleY);
+        textManager.getFont().getData().setScale(2.0f, 2.0f);
 
         // Draw scene title
         textManager.draw(batch,

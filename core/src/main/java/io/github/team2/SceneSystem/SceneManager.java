@@ -82,9 +82,4 @@ public class SceneManager extends Singleton<SceneManager> {
 
 		scenes.get(sceneStack.pop()).unload();
 	}
-
-	public void resize(int width, int height) {
-	    if (!sceneStack.isEmpty())
-	        scenes.get(sceneStack.peek()).resize(width, height);
-	}
 }
