@@ -1,20 +1,20 @@
 package io.github.team2;
 
-import io.github.team2.InputSystem.PInputManager;
+import io.github.team2.InputSystem.PlayerInputManager;
 import io.github.team2.Utils.Singleton;
 
 public class GameManager extends Singleton<GameManager> {
-    private PInputManager playerInputManager;
+    private PlayerInputManager playerInputManager;
 
     public GameManager() {
     	
     }
-
-    public void setPlayerInputManager(PInputManager playerInputManager) {
-    	this.playerInputManager = playerInputManager;
-    }
     
-    public PInputManager getPlayerInputManager() {
+    public PlayerInputManager getPlayerInputManager() {
         return playerInputManager;
+    }
+
+    public void setPlayerInputManager(PlayerInputManager playerInputManager) {
+    	this.playerInputManager = playerInputManager;
     }
 }

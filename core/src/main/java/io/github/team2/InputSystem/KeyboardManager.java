@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class KeyboardManager {
-	private Map<Integer, Action> keyDownActions;
-    private Map<Integer, Action> keyUpActions;
+	private final Map<Integer, Action> keyDownActions;
+    private final Map<Integer, Action> keyUpActions;
     private Set<Integer> previousPressedKeys;
 
     public KeyboardManager() {

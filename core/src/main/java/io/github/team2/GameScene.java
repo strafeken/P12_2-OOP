@@ -39,7 +39,7 @@ public class GameScene extends Scene {
     private PointsManager pointsManager;
 
 //    private PlayerInputManager playerInputManager;
-    private PInputManager playerInputManager;
+    private PlayerInputManager playerInputManager;
     
     private GameManager gameManager;
 
@@ -159,7 +159,7 @@ public class GameScene extends Scene {
     }
 
     private void initializeInput() {
-    	playerInputManager = new PInputManager(player);
+    	playerInputManager = new PlayerInputManager(player);
 
     	gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new PauseGame(SceneManager.getInstance(SceneManager.class)));
     	gameInputManager.registerKeyUp(Input.Keys.X, new ExitGame(SceneManager.getInstance(SceneManager.class)));

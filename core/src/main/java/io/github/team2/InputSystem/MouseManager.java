@@ -12,10 +12,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class MouseManager {
-	private List<Clickable> clickables;
-    private Map<Integer, Action> mouseDownActions;
-    private Map<Integer, Action> mouseUpActions;
-    private Set<Integer> previousPressedButtons;
+	private final List<Clickable> clickables;
+    private final Map<Integer, Action> mouseDownActions;
+    private final Map<Integer, Action> mouseUpActions;
+    private final Set<Integer> previousPressedButtons;
     
     public MouseManager()
     {
@@ -38,6 +38,9 @@ public class MouseManager {
     }
 
     public void update() {
+    	if (!Gdx.input.isTouched())
+    		return;
+    	
         Vector2 touchPos = new Vector2(Gdx.input.getX(), DisplayManager.getScreenHeight() - Gdx.input.getY());
         
         // check if a clickable component is clicked

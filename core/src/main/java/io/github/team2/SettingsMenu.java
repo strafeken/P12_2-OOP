@@ -14,7 +14,6 @@ import io.github.team2.InputSystem.Action;
 import io.github.team2.InputSystem.Button;
 import io.github.team2.InputSystem.GameInputManager;
 import io.github.team2.InputSystem.KeyboardManager;
-import io.github.team2.InputSystem.PInputManager;
 import io.github.team2.InputSystem.PlayerInputManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
@@ -25,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SettingsMenu extends Scene {
-	private PInputManager playerInputManager;
+	private PlayerInputManager playerInputManager;
     private List<Button> buttons;
     private boolean waitingForNewKey;
     private Button selectedButton;
