@@ -1,7 +1,6 @@
-package io.github.team2;
+package io.github.team2.CollisionSystem;
 
-import io.github.team2.CollisionSystem.CollisionListener;
-import io.github.team2.CollisionSystem.CollisionType;
+import io.github.team2.PointsManager;
 import io.github.team2.EntitySystem.Entity;
 
 public class PointsSystem implements CollisionListener {
