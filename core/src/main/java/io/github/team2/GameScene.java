@@ -37,8 +37,6 @@ public class GameScene extends Scene {
     // Managers
     private CollisionDetector collisionDetector;
     private PointsManager pointsManager;
-
-//    private PlayerInputManager playerInputManager;
     private PlayerInputManager playerInputManager;
     
     private GameManager gameManager;
@@ -121,8 +119,6 @@ public class GameScene extends Scene {
                               );
             
             player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
-
-//            gameManager.getPlayerEntityManager().addEntity(player);
 
             // Initialize droplets
             initializeDroplets();

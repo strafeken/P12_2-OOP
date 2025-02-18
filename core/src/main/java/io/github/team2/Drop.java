@@ -52,11 +52,6 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 		Random random = new Random();
 		getBody().setLocation(random.nextFloat() * DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
 	}
-
-	private void handleDropMiss() {
-//		GameManager.getInstance().getPointsManager().incrementFails();
-	}
-
 	
 	@Override
 	public void initActionMap() {
@@ -89,8 +84,6 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 
 				// check if reach
 				if (checkPosition()) {
-
-					handleDropMiss();
 					resetPosition();
 
 				}
