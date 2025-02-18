@@ -28,7 +28,6 @@ public class SettingsMenu extends Scene {
 	private PlayerInputManager playerInputManager;
     private List<Button> buttons;
     private boolean waitingForNewKey;
-    private Button selectedButton;
     private String currentBinding;
     private Map<String, Integer> keyBindings;  // Store key bindings by action name
     private Button backButton;
@@ -76,7 +75,6 @@ public class SettingsMenu extends Scene {
     	
         buttons = new ArrayList<>();
         waitingForNewKey = false;
-        selectedButton = null;
         currentBinding = null;
         keyBindings = new LinkedHashMap<>();
     	

@@ -53,7 +53,6 @@ public class SceneManager extends Singleton<SceneManager> {
 	// run the update function of the current scene
 	public void update() {
 		if (!sceneStack.isEmpty()) {
-//			scenes.get(sceneStack.peek()).getInputManager().update();
 			scenes.get(sceneStack.peek()).update();
 		}
 	}
