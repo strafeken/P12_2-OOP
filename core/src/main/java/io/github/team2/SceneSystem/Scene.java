@@ -4,14 +4,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.InputSystem.GameInputManager;
-import io.github.team2.InputSystem.IManager;
-import io.github.team2.InputSystem.InputManager;
-import io.github.team2.InputSystem.KeyboardManager;
-import io.github.team2.InputSystem.MouseManager;
 import io.github.team2.Utils.DisplayManager;
-import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.TextManager;
-
 
 public abstract class Scene {
     protected EntityManager entityManager;
