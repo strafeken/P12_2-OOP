@@ -19,75 +19,80 @@ import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class SettingsMenu extends Scene {
-	private PlayerInputManager playerInputManager;
+    private PlayerInputManager playerInputManager;
     private List<Button> buttons;
     private boolean waitingForNewKey;
     private String currentBinding;
-    private Map<String, Integer> keyBindings;  // Store key bindings by action name
+    private Map<String, Integer> keyBindings;
     private Button backButton;
     
     private AudioManager audioManager;
     
-    // Constants for layout - adjusted to prevent overlapping
+    // Layout constants
     private static final float TITLE_Y = 500;
     private static final float START_Y = 420;
     private static final float SPACING = 55;
     private static final float LEFT_MARGIN = 180;
-    private static final float TEXT_WIDTH = 150; // Estimated width for text
-    private static final float PANEL_LEFT = 80;  // Panel left edge
-    private static final float PANEL_RIGHT = Gdx.graphics.getWidth() - 160;  // Panel right edge
-    private static final float VOLUME_TEXT_OFFSET = 60;  // Increased spacing above volume slider
+    private static final float TEXT_WIDTH = 150;
+    private static final float PANEL_LEFT = 80;
+    private static final float PANEL_RIGHT = Gdx.graphics.getWidth() - 160;
+    private static final float VOLUME_TEXT_OFFSET = 60;
     
-    // Volume control fields - moved below key bindings
+    // Volume control fields
     private float sliderX;
     private float sliderY;
     private float sliderWidth = 300;
     private float sliderHeight = 18;
     private boolean draggingSlider = false;
     
-    // Colors
-    private final Color backgroundColor = new Color(0.1f, 0.1f, 0.15f, 0.9f);
+    // Visual styling
+    private final Color overlayColor = new Color(0, 0, 0, 0.7f);
+    private final Color panelColor = new Color(0.15f, 0.15f, 0.2f, 0.95f);
+    private final Color borderColor = new Color(0.3f, 0.3f, 0.4f, 1f);
     private final Color titleColor = new Color(0.9f, 0.9f, 1f, 1);
     private final Color textColor = new Color(0.8f, 0.8f, 0.85f, 1);
     private final Color sliderBackgroundColor = new Color(0.2f, 0.2f, 0.25f, 1);
     private final Color sliderFillColor = new Color(0.4f, 0.7f, 1f, 1);
     private final Color sliderHandleColor = new Color(0.9f, 0.9f, 1f, 1);
     
+    // Panel styling
+    private static final float PANEL_PADDING = 20;
+    private static final float PANEL_BORDER_WIDTH = 2;
+    private static final float PANEL_CORNER_RADIUS = 10;
+    
     private String errorMessage = "";
     private float errorTimer = 0;
 
     public SettingsMenu() {
-    	super();
+        super();
     }
 
     @Override
     public void load() {
-    	// Initialize managers
-    	entityManager = new EntityManager();
-    	gameInputManager = new GameInputManager();
-    	textManager = new TextManager();
-    	
+        // Initialize managers
+        entityManager = new EntityManager();
+        gameInputManager = new GameInputManager();
+        textManager = new TextManager();
+        
         buttons = new ArrayList<>();
         waitingForNewKey = false;
         currentBinding = null;
         keyBindings = new LinkedHashMap<>();
-    	
-    	playerInputManager = GameManager.getInstance(GameManager.class).getPlayerInputManager();
         
-    	createButtonsForKeyBindings();
+        playerInputManager = GameManager.getInstance(GameManager.class).getPlayerInputManager();
+        
+        createButtonsForKeyBindings();
         
         backButton = new Button("backBtn.png",
-        	    new Vector2(PANEL_LEFT + 40, 50), // Position inside panel with margin
-        	    new ResumeGame(SceneManager.getInstance(SceneManager.class)), 80, 32);
+            new Vector2(PANEL_LEFT + 40, 50),
+            new ResumeGame(SceneManager.getInstance(SceneManager.class)), 80, 32);
         
         gameInputManager.registerClickable(backButton);
-        
         backButton.update();
         
         audioManager = AudioManager.getInstance(AudioManager.class);
@@ -95,24 +100,20 @@ public class SettingsMenu extends Scene {
 
     private void createButtonsForKeyBindings() {
         Map<Integer, Action> keyDownActions = playerInputManager.getKeyboardManager().getKeyDownActions();
-        
         float y = START_Y;
 
-        // Create a button for each key
         for (Integer key : keyDownActions.keySet()) {
             String keyName = Input.Keys.toString(key);
-            System.out.println(keyName);
-
+            
             Button button = new Button("keyboard.png", new Vector2(PANEL_RIGHT - 52, y - 15), () -> {
                 waitingForNewKey = true;
-                currentBinding = keyName;  // Set current binding when the button is clicked
+                currentBinding = keyName;
             }, 32, 32);
 
             buttons.add(button);
             gameInputManager.registerClickable(button);
             y -= SPACING;
 
-            // Store the initial key bindings in the map
             keyBindings.put(keyName, key);
         }
         
@@ -123,13 +124,11 @@ public class SettingsMenu extends Scene {
     @Override
     public void update() {
         if (waitingForNewKey) {
-            // Look for any key that is pressed
-            for (int i = 0; i < 256; i++) {  // Loop over the range of possible key codes
+            for (int i = 0; i < 256; i++) {
                 if (Gdx.input.isKeyPressed(i)) {
-                    int newKeyCode = i;  // Capture the pressed key's code
+                    int newKeyCode = i;
 
                     if (currentBinding != null) {
-                        // Check for duplicate key bindings
                         if (keyBindings.containsValue(newKeyCode) || !keyBindings.containsKey(currentBinding)) {
                             errorMessage = Input.Keys.toString(newKeyCode) + " is already assigned to another action.";
                             errorTimer = 3.0f;
@@ -140,9 +139,9 @@ public class SettingsMenu extends Scene {
                         }
                     }
 
-                    waitingForNewKey = false;  // Reset the flag to stop waiting
-                    currentBinding = null;  // Reset current binding once the key is set
-                    break;  // Exit the loop after capturing the key press
+                    waitingForNewKey = false;
+                    currentBinding = null;
+                    break;
                 }
             }
         }
@@ -152,44 +151,98 @@ public class SettingsMenu extends Scene {
         }
 
         updateVolumeSlider();
-
         gameInputManager.update();
     }
 
     @Override
     public void draw(SpriteBatch batch) {
-    	textManager.draw(batch, "SETTINGS", LEFT_MARGIN, TITLE_Y, titleColor);
-    	
-    	float y = START_Y;  // Starting position for the text
+        // End sprite batch to draw shapes
+        batch.end();
         
+        // Set ShapeRenderer to filled
+        ShapeRenderer shape = new ShapeRenderer();
+        Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
+        shape.begin(ShapeRenderer.ShapeType.Filled);
+        
+        // Draw full screen overlay
+        shape.setColor(overlayColor);
+        shape.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        
+        // Draw panel background with rounded corners
+        shape.setColor(panelColor);
+        float x = PANEL_LEFT;
+        float y = 30;
+        float width = PANEL_RIGHT - PANEL_LEFT;
+        float height = Gdx.graphics.getHeight() - 60;
+        
+        // Main panel rectangle
+        shape.rect(x + PANEL_CORNER_RADIUS, y, width - 2 * PANEL_CORNER_RADIUS, height);
+        shape.rect(x, y + PANEL_CORNER_RADIUS, width, height - 2 * PANEL_CORNER_RADIUS);
+        
+        // Corners
+        shape.circle(x + PANEL_CORNER_RADIUS, y + PANEL_CORNER_RADIUS, PANEL_CORNER_RADIUS);
+        shape.circle(x + width - PANEL_CORNER_RADIUS, y + PANEL_CORNER_RADIUS, PANEL_CORNER_RADIUS);
+        shape.circle(x + PANEL_CORNER_RADIUS, y + height - PANEL_CORNER_RADIUS, PANEL_CORNER_RADIUS);
+        shape.circle(x + width - PANEL_CORNER_RADIUS, y + height - PANEL_CORNER_RADIUS, PANEL_CORNER_RADIUS);
+        
+        // Draw border
+        shape.setColor(borderColor);
+        shape.rect(x - PANEL_BORDER_WIDTH, y - PANEL_BORDER_WIDTH, 
+                  width + 2 * PANEL_BORDER_WIDTH, PANEL_BORDER_WIDTH); // Bottom
+        shape.rect(x - PANEL_BORDER_WIDTH, y + height, 
+                  width + 2 * PANEL_BORDER_WIDTH, PANEL_BORDER_WIDTH); // Top
+        shape.rect(x - PANEL_BORDER_WIDTH, y, 
+                  PANEL_BORDER_WIDTH, height); // Left
+        shape.rect(x + width, y, 
+                  PANEL_BORDER_WIDTH, height); // Right
+        
+        // Draw volume slider background
+        shape.setColor(sliderBackgroundColor);
+        shape.rect(sliderX, sliderY, sliderWidth, sliderHeight);
+
+        // Draw volume slider fill
+        float volume = audioManager.getVolume();
+        shape.setColor(sliderFillColor);
+        shape.rect(sliderX, sliderY, sliderWidth * volume, sliderHeight);
+
+        // Draw volume slider handle
+        float handleX = sliderX + (sliderWidth * volume);
+        float handleSize = sliderHeight * 1.8f;
+        shape.setColor(sliderHandleColor);
+        shape.circle(handleX, sliderY + (sliderHeight / 2), handleSize / 2);
+        
+        shape.end();
+        Gdx.gl.glDisable(Gdx.gl.GL_BLEND);
+        shape.dispose();
+        
+        // Resume sprite batch for text and buttons
+        batch.begin();
+        
+        // Draw title and content
+        textManager.draw(batch, "SETTINGS", LEFT_MARGIN, TITLE_Y, titleColor);
+        
+        float contentY = START_Y;
         for (int i = 0; i < buttons.size(); i++) {
             Button button = buttons.get(i);
+            String keyName = (String) keyBindings.keySet().toArray()[i];
+            String displayText = keyName + ": " + Input.Keys.toString(keyBindings.get(keyName));
 
-            // Directly get the key name from the keyBindings map using the index
-            String keyName = (String) keyBindings.keySet().toArray()[i];  // Retrieve the key name from keyBindings
-
-            String displayText = keyName + ": " + Input.Keys.toString(keyBindings.get(keyName));  // Get the current key binding from the map
-
-            // If waiting for a new key press for the current binding, show the prompt
             if (waitingForNewKey && currentBinding != null && currentBinding.equals(keyName)) {
                 displayText += ": (Press any key)";
-                textManager.draw(batch, displayText, LEFT_MARGIN, y, Color.YELLOW);  // Display prompt in yellow
+                textManager.draw(batch, displayText, LEFT_MARGIN, contentY, Color.YELLOW);
             } else {
-                textManager.draw(batch, displayText, LEFT_MARGIN, y, Color.WHITE);  // Display the current key binding
+                textManager.draw(batch, displayText, LEFT_MARGIN, contentY, Color.WHITE);
             }
 
-            button.draw(batch);  // Draw the button
-            y -= SPACING;  // Move down for the next button
+            button.draw(batch);
+            contentY -= SPACING;
         }
- 
         
-        // Draw volume controls header with increased spacing
+        // Draw volume controls
         textManager.draw(batch, "VOLUME", LEFT_MARGIN, sliderY + VOLUME_TEXT_OFFSET, titleColor);
+        textManager.draw(batch, (int)(audioManager.getVolume() * 100) + "%", 
+                        sliderX + sliderWidth + 20, sliderY + sliderHeight/2 + 6, textColor);
         
-        float volume = audioManager.getVolume();
-        textManager.draw(batch, (int)(volume * 100) + "%", sliderX + sliderWidth + 20, sliderY + sliderHeight/2 + 6, textColor);
-        
-        // Draw back button
         backButton.draw(batch);
         
         if (errorTimer > 0) {
@@ -198,26 +251,27 @@ public class SettingsMenu extends Scene {
         }
     }
 
-
     @Override
     public void draw(ShapeRenderer shape) {
-//        shape.setColor(backgroundColor);
-//        shape.rect(80, 30, Gdx.graphics.getWidth() - 160, Gdx.graphics.getHeight() - 60);
-        
-        // Draw background track
-    	shape.setColor(sliderBackgroundColor);
-    	shape.rect(sliderX, sliderY, sliderWidth, sliderHeight);
+        // Empty because we handle all shape rendering in the main draw method
+    }
 
-        // Draw filled portion
-    	float volume = audioManager.getVolume();
-    	shape.setColor(sliderFillColor);
-    	shape.rect(sliderX, sliderY, sliderWidth * volume, sliderHeight);
+    private void updateVolumeSlider() {
+        if (Gdx.input.isTouched()) {
+            float touchX = Gdx.input.getX();
+            float touchY = Gdx.graphics.getHeight() - Gdx.input.getY();
 
-        // Draw handle
-        float handleX = sliderX + (sliderWidth * volume);
-        float handleSize = sliderHeight * 1.8f;
-        shape.setColor(sliderHandleColor);
-        shape.circle(handleX, sliderY + (sliderHeight / 2), handleSize / 2);
+            boolean inSliderBounds = touchX >= sliderX - 10 && touchX <= sliderX + sliderWidth + 10 &&
+                                   touchY >= sliderY - 15 && touchY <= sliderY + sliderHeight + 15;
+
+            if (inSliderBounds || draggingSlider) {
+                draggingSlider = true;
+                float normalized = Math.min(1f, Math.max(0f, (touchX - sliderX) / sliderWidth));
+                audioManager.setVolume(normalized);
+            }
+        } else {
+            draggingSlider = false;
+        }
     }
 
     @Override
@@ -228,25 +282,5 @@ public class SettingsMenu extends Scene {
     @Override
     public void dispose() {
         // Dispose resources
-    }
-
-    private void updateVolumeSlider() {
-        if (Gdx.input.isTouched()) {
-            float touchX = Gdx.input.getX();
-            float touchY = Gdx.graphics.getHeight() - Gdx.input.getY();
-
-            // Check if touch is within slider bounds (with extended touch area)
-            boolean inSliderBounds = touchX >= sliderX - 10 && touchX <= sliderX + sliderWidth + 10 &&
-                                   touchY >= sliderY - 15 && touchY <= sliderY + sliderHeight + 15;
-
-            // Start dragging if touching slider or continue if already dragging
-            if (inSliderBounds || draggingSlider) {
-                draggingSlider = true;
-                float normalized = Math.min(1f, Math.max(0f, (touchX - sliderX) / sliderWidth));
-                audioManager.setVolume(normalized);
-            }
-        } else {
-            draggingSlider = false;
-        }
     }
 }
