@@ -95,13 +95,13 @@ public class PhysicsBody {
             return;
         }
 
-        System.out.println("[DEBUG] Applying Transform: Position = " + position + ", Angle = " + newAngle);
+//        System.out.println("[DEBUG] Applying Transform: Position = " + position + ", Angle = " + newAngle);
 
         // ✅ Ensure setTransform does not repeatedly call itself
         if (body.getAngle() != newAngle) { 
             body.setTransform(position, newAngle);
         } else {
-            System.out.println("[DEBUG] setTransform skipped - Angle unchanged.");
+//            System.out.println("[DEBUG] setTransform skipped - Angle unchanged.");
         }
     }
 

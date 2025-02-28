@@ -62,11 +62,11 @@ public abstract class  DynamicGameShape <S extends Enum<S>, A extends Enum<A>> e
 		projectedPos.add(direction);
 
 		if (direction.x < 0 && (projectedPos.x - getWidth() / 2) < DisplayManager.getScreenOriginX()) {
-			System.out.println("Hit left ");
+//			System.out.println("Hit left ");
 			return true;
 		}
 		if (direction.x > 0 && (projectedPos.x + getWidth() / 2) > DisplayManager.getScreenWidth()) {
-			System.out.println("hit right");
+//			System.out.println("hit right");
 			return true;
 		}
 

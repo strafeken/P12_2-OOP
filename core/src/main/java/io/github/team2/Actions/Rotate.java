@@ -28,10 +28,10 @@ public class Rotate implements Action {
 
 			if (direction.x < 0) {
 				currentAngle += rotationSpeed;
-				System.out.println("[DEBUG] Rotating Anticlockwise: New Angle = " + currentAngle);
+//				System.out.println("[DEBUG] Rotating Anticlockwise: New Angle = " + currentAngle);
 			} else if (direction.x > 0) {
 				currentAngle -= rotationSpeed;
-				System.out.println("[DEBUG] Rotating Clockwise: New Angle = " + currentAngle);
+//				System.out.println("[DEBUG] Rotating Clockwise: New Angle = " + currentAngle);
 			} else {
 				System.out.println("[DEBUG] Stopping Rotation");
 			}
