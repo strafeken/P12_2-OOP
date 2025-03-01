@@ -19,6 +19,7 @@ import java.util.Random;
 
 import io.github.team2.Actions.PlayerBehaviour;
 import io.github.team2.AudioSystem.AudioManager;
+import io.github.team2.Cards.CardFactory;
 
 public class GameScene extends Scene {
     // Physics constants
@@ -47,10 +48,15 @@ public class GameScene extends Scene {
     private Entity triangle;
     private Entity player;
     private Button settingsButton;
+    private Entity lettuce;
+    private Entity chicken;
+    private Entity tomato;
 
     // Spawn control
     private float dropletSpawnTimer;
     private Random random;
+    
+    private final Vector2 CARD_SIZE = new Vector2(100, 150);
  
     public GameScene() {
         super();
@@ -114,6 +120,7 @@ public class GameScene extends Scene {
             // Initialize player
             player = new Player(EntityType.PLAYER,
                               "bucket.png",
+                              new Vector2(75, 75), 
                               new Vector2(300, 50),
                               new Vector2(0, 0), new Vector2(100,0) , 200, PlayerBehaviour.State.IDLE, PlayerBehaviour.Move.NONE
                               );
@@ -127,6 +134,15 @@ public class GameScene extends Scene {
             entityManager.addEntities(circle);
             entityManager.addEntities(triangle);
             entityManager.addEntities(player);
+            
+            
+            lettuce = CardFactory.createCard("Lettuce", CARD_SIZE, new Vector2(100, 300), world);
+            chicken = CardFactory.createCard("Chicken", CARD_SIZE, new Vector2(300, 300), world);
+            tomato = CardFactory.createCard("Tomato", CARD_SIZE, new Vector2(500, 300), world);
+
+            entityManager.addEntities(lettuce);
+            entityManager.addEntities(chicken);
+            entityManager.addEntities(tomato);            
 		} catch (Exception e) {			
 			System.out.println("error in game scene add area" + e);
 		}
@@ -144,6 +160,7 @@ public class GameScene extends Scene {
     private Drop createDrop() {
         Drop drop = new Drop(EntityType.DROP,
                          "droplet.png",
+                         new Vector2(50, 50),
                          new Vector2(random.nextFloat() * DisplayManager.getScreenWidth(),
                                    random.nextFloat() * DisplayManager.getScreenHeight()),
                          new Vector2(0, 0), new Vector2(0, 0),
@@ -156,6 +173,10 @@ public class GameScene extends Scene {
 
     private void initializeInput() {
     	playerInputManager = new PlayerInputManager(player);
+    	
+        playerInputManager.registerDraggable((Draggable)lettuce);
+        playerInputManager.registerDraggable((Draggable)chicken);
+        playerInputManager.registerDraggable((Draggable)tomato);
 
     	gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new PauseGame(SceneManager.getInstance(SceneManager.class)));
     	gameInputManager.registerKeyUp(Input.Keys.X, new ExitGame(SceneManager.getInstance(SceneManager.class)));
@@ -223,6 +244,7 @@ public class GameScene extends Scene {
         for (int i = 0; i < dropletsToSpawn; i++) {
             Drop drop = new Drop(EntityType.DROP,
                                "droplet.png",
+                               new Vector2(50, 50),
                                new Vector2(random.nextFloat() * DisplayManager.getScreenWidth(),
                                          DisplayManager.getScreenHeight()),
                                new Vector2(0, 0), new Vector2(0, 0),
