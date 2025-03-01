@@ -37,7 +37,7 @@ public class EntityManager {
 			entity.getBody().dispose();
 
 		if (entity instanceof DynamicTextureObject)
-			((DynamicTextureObject) entity).dispose();
+			((DynamicTextureObject<?, ?>) entity).dispose();
 		
 		if (entity instanceof StaticTextureObject)
 			((StaticTextureObject) entity).dispose();
@@ -87,7 +87,7 @@ public class EntityManager {
             }
             
             if (entity instanceof DynamicTextureObject) {
-                ((DynamicTextureObject) entity).dispose();
+                ((DynamicTextureObject<?, ?>) entity).dispose();
             }
         }
 
