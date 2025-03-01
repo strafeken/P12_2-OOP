@@ -1,5 +1,6 @@
 package io.github.team2.EntitySystem;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -7,28 +8,21 @@ import com.badlogic.gdx.math.Vector2;
 import io.github.team2.Utils.DisplayManager;
 
 public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>> extends Dynamics<S,A> {
-    //private TextureRegion textureRegion;
-    
     private Texture tex;
     
-
     public DynamicTextureObject(Texture texture) {
         super();
-        tex = texture; // Properly set the texture through parent class
-        
-        
+        tex = texture;
     }
 
-    // Add constructor that takes texture path
-
-    public DynamicTextureObject(EntityType type, String texturePath, Vector2 position, Vector2 direction,Vector2 rotation, float speed, S state, A actionState) {
-    	super(type, position, direction,rotation, speed, state, actionState);
-                
-    	tex = new Texture(texturePath);
+    public DynamicTextureObject(
+    		EntityType type, String texture, Vector2 size,
+    		Vector2 position, Vector2 direction, Vector2 rotation, float speed,
+    		S state, A actionState) {
+    	super(type, position, direction,rotation, speed, state, actionState); 
     	
-        
-        	
-        
+        Texture originalTexture = new Texture(texture);
+        tex = resizeTexture(originalTexture, Math.round(size.x), Math.round(size.y));
     }
     
 	public Texture getTexture() {
@@ -46,15 +40,9 @@ public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>
 	public float getHeight() {
 		return tex.getHeight();
 	}
-	
 
-	
-	
-	
 	@Override 	
-	public  boolean isOutOfBound(Vector2 direction) {
-		
-		
+	public  boolean isOutOfBound(Vector2 direction) {	
 		Vector2 projectedPos = this.getPosition();
 		projectedPos.add(direction);
 		
@@ -75,14 +63,32 @@ public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>
 		}
 		
 		return false;
-		
 	}
-	
-
 	
 	public void initActionMap() {
 		
-	};	
+	};
+	
+	private Texture resizeTexture(Texture original, int newWidth, int newHeight) {
+	    original.getTextureData().prepare();
+	    Pixmap pixmap = original.getTextureData().consumePixmap();
+
+	    Pixmap scaledPixmap = new Pixmap(newWidth, newHeight, Pixmap.Format.RGBA8888);
+
+	    scaledPixmap.drawPixmap(
+	        pixmap,
+	        0, 0, pixmap.getWidth(), pixmap.getHeight(), // original size
+	        0, 0, newWidth, newHeight // new size
+	    );
+
+	    Texture resizedTexture = new Texture(scaledPixmap);
+
+	    pixmap.dispose();
+	    scaledPixmap.dispose();
+	    original.dispose();
+
+	    return resizedTexture;
+	}
 
 	@Override
 	public void draw(SpriteBatch batch) {
@@ -106,11 +112,8 @@ public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>
 	        false, false // Flip options
 	    );
 	}
-
 	
 	public void dispose() {
 		tex.dispose();
-	}
-	
-    
+	}  
 }
