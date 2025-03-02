@@ -39,6 +39,15 @@ public class MouseManager {
     public void registerDraggable(Draggable draggable) {
         draggables.add(draggable);
     }
+    
+    public void deregisterDraggable(Draggable draggable) {
+        draggables.remove(draggable);
+        
+        if (selectedDraggable == draggable) {
+            selectedDraggable.stopDragging();
+            selectedDraggable = null;
+        }
+    }
 
     public void registerMouseDown(int button, Action action) {
         mouseDownActions.put(button, action);
@@ -61,7 +70,7 @@ public class MouseManager {
 
     	    if (Gdx.input.isTouched()) {
     	        // If currently dragging, continue updating the dragged object
-    	        if (selectedDraggable != null) {
+    	        if (selectedDraggable != null && draggables.contains(selectedDraggable)) {
     	            selectedDraggable.updateDragging();
     	        } else {
     	            // Try to select a new draggable object

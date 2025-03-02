@@ -27,7 +27,7 @@ public class DragHandler {
     public void startDragging() {
         if (draggable instanceof DynamicTextureObject) {
             isDragging = true;
-            body.setType(BodyDef.BodyType.KinematicBody);
+            body.setType(BodyDef.BodyType.DynamicBody);
             offset.set(Gdx.input.getX() - body.getPosition().x, DisplayManager.getScreenHeight() - Gdx.input.getY() - body.getPosition().y);
         }
     }
@@ -41,7 +41,6 @@ public class DragHandler {
 
     public void stopDragging() {
         isDragging = false;
-        body.setType(BodyDef.BodyType.KinematicBody);
     }
 
     public boolean isDragging() {

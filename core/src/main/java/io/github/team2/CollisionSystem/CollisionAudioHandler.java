@@ -25,6 +25,8 @@ public class CollisionAudioHandler implements CollisionListener {
             case CIRCLE_DROP:
                 // am.playSoundEffect("ding");
                 break;
+            case CARD_CARD:
+            	break;
             default:
                 System.out.println("Unhandled collision: " + a.getEntityType() + " : " + b.getEntityType());
         }

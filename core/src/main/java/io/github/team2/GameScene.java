@@ -26,7 +26,7 @@ public class GameScene extends Scene {
     private static final float TIME_STEP = 1/60f;
     private static final int VELOCITY_ITERATIONS = 6;
     private static final int POSITION_ITERATIONS = 2;
-    private static final int MAX_DROPLETS = 10;
+    private static final int MAX_DROPLETS = 0;
     private static final float MIN_SPAWN_INTERVAL = 1f;
     private static final float MAX_SPAWN_INTERVAL = 3f;
 
@@ -39,18 +39,19 @@ public class GameScene extends Scene {
     private CollisionDetector collisionDetector;
     private PointsManager pointsManager;
     private PlayerInputManager playerInputManager;
+    private MergeSystem mergeSystem;
     
     private GameManager gameManager;
 
     // Game entities
     private Entity[] droplets;
-    private Entity circle;
-    private Entity triangle;
+//    private Entity circle;
+//    private Entity triangle;
     private Entity player;
     private Button settingsButton;
-    private Entity lettuce;
-    private Entity chicken;
-    private Entity tomato;
+
+    String[] foodNames = { "Lettuce", "Chicken", "Tomato", "Fries" };
+    private Entity[] food;
 
     // Spawn control
     private float dropletSpawnTimer;
@@ -94,6 +95,8 @@ public class GameScene extends Scene {
         collisionDetector = new CollisionDetector();
         collisionDetector.addListener(new CollisionAudioHandler());
         collisionDetector.addListener(new CollisionRemovalHandler(entityManager));
+        mergeSystem = new MergeSystem(entityManager, world, gameInputManager.getMouseManager()); // to be changed to PlayerInputManager
+        collisionDetector.addListener(mergeSystem);
         pointsManager = new PointsManager();
         collisionDetector.addListener(new PointsSystem(pointsManager));
         
@@ -103,19 +106,19 @@ public class GameScene extends Scene {
     private void initializeEntities() {
     	try {
             // Initialize static entities
-            circle = new Circle(EntityType.CIRCLE,
-                              new Vector2(500, 400),
-                              new Vector2(0, 0),
-                               Color.RED, 50);
-            circle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
-
-            triangle = new Triangle(EntityType.TRIANGLE,
-                                 new Vector2(100, 250),
-                                 new Vector2(0, 0),
-                                 new Vector2(1,0), 200, Color.GREEN, 50, 50,
-                                 TriangleBehaviour.State.IDLE, TriangleBehaviour.Move.NONE);
-            
-            triangle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+//            circle = new Circle(EntityType.CIRCLE,
+//                              new Vector2(500, 400),
+//                              new Vector2(0, 0),
+//                               Color.RED, 50);
+//            circle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+//
+//            triangle = new Triangle(EntityType.TRIANGLE,
+//                                 new Vector2(100, 250),
+//                                 new Vector2(0, 0),
+//                                 new Vector2(1,0), 0, Color.GREEN, 50, 50,
+//                                 TriangleBehaviour.State.IDLE, TriangleBehaviour.Move.NONE);
+//            
+//            triangle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
             // Initialize player
             player = new Player(EntityType.PLAYER,
@@ -131,18 +134,18 @@ public class GameScene extends Scene {
             initializeDroplets();
 
             // Add entities to manager
-            entityManager.addEntities(circle);
-            entityManager.addEntities(triangle);
+//            entityManager.addEntities(circle);
+//            entityManager.addEntities(triangle);
             entityManager.addEntities(player);
             
+            food = new Entity[foodNames.length];
             
-            lettuce = CardFactory.createCard("Lettuce", CARD_SIZE, new Vector2(100, 300), world);
-            chicken = CardFactory.createCard("Chicken", CARD_SIZE, new Vector2(300, 300), world);
-            tomato = CardFactory.createCard("Tomato", CARD_SIZE, new Vector2(500, 300), world);
-
-            entityManager.addEntities(lettuce);
-            entityManager.addEntities(chicken);
-            entityManager.addEntities(tomato);            
+            for (int i = 0; i < foodNames.length; i++) {
+            	int xPosition = 100 + (i * 200);
+            	food[i] = CardFactory.createCard(foodNames[i], CARD_SIZE, new Vector2(xPosition, 200), world, gameInputManager.getMouseManager());
+            	entityManager.addEntities(food[i]);
+            }
+           
 		} catch (Exception e) {			
 			System.out.println("error in game scene add area" + e);
 		}
@@ -173,10 +176,6 @@ public class GameScene extends Scene {
 
     private void initializeInput() {
     	playerInputManager = new PlayerInputManager(player);
-    	
-        playerInputManager.registerDraggable((Draggable)lettuce);
-        playerInputManager.registerDraggable((Draggable)chicken);
-        playerInputManager.registerDraggable((Draggable)tomato);
 
     	gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new PauseGame(SceneManager.getInstance(SceneManager.class)));
     	gameInputManager.registerKeyUp(Input.Keys.X, new ExitGame(SceneManager.getInstance(SceneManager.class)));
@@ -196,6 +195,7 @@ public class GameScene extends Scene {
     		playerInputManager.update();
     		updateSpawning();
     		updatePhysics();
+    		mergeSystem.processMerges();
 //        checkGameOver();
 //        settingsButton.update();
 		} catch (Exception e) {

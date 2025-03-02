@@ -54,7 +54,7 @@ public class PhysicsBody {
 
 		default:
 			PolygonShape box = new PolygonShape();
-			DynamicTextureObject textureEntity = (DynamicTextureObject) entity;
+			DynamicTextureObject<?, ?> textureEntity = (DynamicTextureObject<?, ?>) entity;
 			box.setAsBox(textureEntity.getWidth() / 2, textureEntity.getHeight() / 2);
 			return box;
 		}

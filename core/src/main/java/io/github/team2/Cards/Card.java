@@ -9,28 +9,29 @@ import io.github.team2.EntitySystem.DynamicTextureObject;
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.InputSystem.DragHandler;
 import io.github.team2.InputSystem.Draggable;
+import io.github.team2.InputSystem.MouseManager;
+import io.github.team2.InputSystem.PlayerInputManager;
 
 public class Card extends DynamicTextureObject<CardBehaviour.State, CardBehaviour.Move > implements Draggable {
 	private String name;
     private DragHandler dragHandler;
 
-    public Card(String name, String texture, Vector2 size, Vector2 position, World world) {
-        super(EntityType.CARD, texture, size, position, new Vector2(0, 0), new Vector2(0, 0), 0, CardBehaviour.State.IDLE, CardBehaviour.Move.NONE);
+    public Card(String name, String texture, Vector2 size, Vector2 position, World world, MouseManager mouseManager) {
+        super(EntityType.CARD, texture, size,
+        		position, new Vector2(0, 0), new Vector2(0, 0), 0,
+        		CardBehaviour.State.IDLE, CardBehaviour.Move.NONE);
         this.name = name;
-        initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
+        initPhysicsBody(world, BodyDef.BodyType.KinematicBody); 
         this.dragHandler = new DragHandler(this, world);
+        mouseManager.registerDraggable(this);
     }
-
-    public boolean isColliding(Card other) {
-        return getBounds().overlaps(other.getBounds());
+    
+    public String getName() {
+    	return name;
     }
 
     public Rectangle getBounds() {
         return new Rectangle(getPosition().x - getWidth() / 2, getPosition().y - getHeight() / 2, getWidth(), getHeight());
-    }
-
-    public void onMerge(Card other) {
-        System.out.println(name + " merged with " + other.name);
     }
 
     @Override

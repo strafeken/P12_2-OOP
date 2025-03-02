@@ -4,11 +4,14 @@ import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityType;
 
 public enum CollisionType {
-	PLAYER_DROP, CIRCLE_DROP;
+	PLAYER_DROP,
+	CIRCLE_DROP,
+	CARD_CARD;
 
     public static CollisionType getCollisionType(Entity a, Entity b) {
         if (isPair(a, b, EntityType.PLAYER, EntityType.DROP)) return PLAYER_DROP;
         if (isPair(a, b, EntityType.CIRCLE, EntityType.DROP)) return CIRCLE_DROP;
+        if (isPair(a, b, EntityType.CARD, EntityType.CARD)) return CARD_CARD;
         return null;
     }
 

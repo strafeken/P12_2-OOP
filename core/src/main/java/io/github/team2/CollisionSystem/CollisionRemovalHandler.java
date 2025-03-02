@@ -21,6 +21,8 @@ public class CollisionRemovalHandler implements CollisionListener {
 				break;
 			case CIRCLE_DROP:
 				break;
+			case CARD_CARD:
+				break;
 			default:
 				System.out.println("Unhandled collision: " + a.getEntityType() + " : " + b.getEntityType());
 		}
