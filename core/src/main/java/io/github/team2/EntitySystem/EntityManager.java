@@ -26,9 +26,31 @@ public class EntityManager {
 	public void markForRemoval(Entity entity) {
 		entitiesToRemove.add(entity);
 	}
+
+	// Fix the getEntities method to return a defensive copy
 	public List<Entity> getEntities() {
-        return entityList;
-    }
+		return new ArrayList<>(entityList);
+	}
+
+	// Add more specific accessor methods
+	public int getEntityCount() {
+		return entityList.size();
+	}
+
+	public boolean hasEntity(Entity entity) {
+		return entityList.contains(entity);
+	}
+
+	// Consider adding filtered access methods
+	public List<Entity> getEntitiesByType(EntityType type) {
+		List<Entity> result = new ArrayList<>();
+		for (Entity entity : entityList) {
+			if (entity.getEntityType() == type) {
+				result.add(entity);
+			}
+		}
+		return result;
+	}
 
 	public void removeEntity(Entity entity) {
 		entityList.remove(entity);
@@ -38,7 +60,7 @@ public class EntityManager {
 
 		if (entity instanceof DynamicTextureObject)
 			((DynamicTextureObject<?, ?>) entity).dispose();
-		
+
 		if (entity instanceof StaticTextureObject)
 			((StaticTextureObject) entity).dispose();
 	}
@@ -85,7 +107,7 @@ public class EntityManager {
             if (entity instanceof StaticTextureObject) {
                 ((StaticTextureObject) entity).dispose();
             }
-            
+
             if (entity instanceof DynamicTextureObject) {
                 ((DynamicTextureObject<?, ?>) entity).dispose();
             }
