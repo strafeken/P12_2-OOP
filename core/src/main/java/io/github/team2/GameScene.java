@@ -20,6 +20,7 @@ import java.util.Random;
 import io.github.team2.Actions.PlayerBehaviour;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.Cards.CardFactory;
+import io.github.team2.AudioSystem.IAudioManager;
 
 public class GameScene extends Scene {
     // Physics constants
@@ -40,7 +41,7 @@ public class GameScene extends Scene {
     private PointsManager pointsManager;
     private PlayerInputManager playerInputManager;
     private MergeSystem mergeSystem;
-    
+
     private GameManager gameManager;
 
     // Game entities
@@ -56,9 +57,9 @@ public class GameScene extends Scene {
     // Spawn control
     private float dropletSpawnTimer;
     private Random random;
-    
+
     private final Vector2 CARD_SIZE = new Vector2(100, 150);
- 
+
     public GameScene() {
         super();
         random = new Random();
@@ -69,15 +70,15 @@ public class GameScene extends Scene {
     @Override
     public void load() {
         System.out.println("Game Scene => LOAD");
-        
+
         initializeWorld();
         initializeManagers();
         initializeEntities();
         initializeInput();
-        
+
         gameManager = GameManager.getInstance(GameManager.class);
         gameManager.setPlayerInputManager(playerInputManager);
-        
+
         AudioManager.getInstance(AudioManager.class).playSoundEffect("start");
     }
 
@@ -85,7 +86,7 @@ public class GameScene extends Scene {
         world = new World(new Vector2(0, 0), true);
         debugRenderer = new Box2DDebugRenderer();
     }
-    
+
     private void initializeManagers() {
         // Initialize managers
         entityManager = new EntityManager();
@@ -93,13 +94,15 @@ public class GameScene extends Scene {
         textManager = new TextManager();
 
         collisionDetector = new CollisionDetector();
-        collisionDetector.addListener(new CollisionAudioHandler());
+        // Get AudioManager instance but assign to IAudioManager interface
+        IAudioManager audioManager = AudioManager.getInstance(AudioManager.class);
+        collisionDetector.addListener(new CollisionAudioHandler(audioManager));
         collisionDetector.addListener(new CollisionRemovalHandler(entityManager));
         mergeSystem = new MergeSystem(entityManager, world, gameInputManager.getMouseManager()); // to be changed to PlayerInputManager
         collisionDetector.addListener(mergeSystem);
         pointsManager = new PointsManager();
         collisionDetector.addListener(new PointsSystem(pointsManager));
-        
+
         world.setContactListener(collisionDetector);
     }
 
@@ -117,17 +120,17 @@ public class GameScene extends Scene {
 //                                 new Vector2(0, 0),
 //                                 new Vector2(1,0), 0, Color.GREEN, 50, 50,
 //                                 TriangleBehaviour.State.IDLE, TriangleBehaviour.Move.NONE);
-//            
+//
 //            triangle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
             // Initialize player
             player = new Player(EntityType.PLAYER,
                               "bucket.png",
-                              new Vector2(75, 75), 
+                              new Vector2(75, 75),
                               new Vector2(300, 50),
                               new Vector2(0, 0), new Vector2(100,0) , 200, PlayerBehaviour.State.IDLE, PlayerBehaviour.Move.NONE
                               );
-            
+
             player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
 
             // Initialize droplets
@@ -137,16 +140,16 @@ public class GameScene extends Scene {
 //            entityManager.addEntities(circle);
 //            entityManager.addEntities(triangle);
             entityManager.addEntities(player);
-            
+
             food = new Entity[foodNames.length];
-            
+
             for (int i = 0; i < foodNames.length; i++) {
             	int xPosition = 100 + (i * 200);
             	food[i] = CardFactory.createCard(foodNames[i], CARD_SIZE, new Vector2(xPosition, 200), world, gameInputManager.getMouseManager());
             	entityManager.addEntities(food[i]);
             }
-           
-		} catch (Exception e) {			
+
+		} catch (Exception e) {
 			System.out.println("error in game scene add area" + e);
 		}
     }
@@ -179,11 +182,11 @@ public class GameScene extends Scene {
 
     	gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new PauseGame(SceneManager.getInstance(SceneManager.class)));
     	gameInputManager.registerKeyUp(Input.Keys.X, new ExitGame(SceneManager.getInstance(SceneManager.class)));
-    	
+
         settingsButton = new Button("settingsBtn.png",
                 new Vector2(DisplayManager.getScreenWidth() - 80, DisplayManager.getScreenHeight() - 80),
                 new GoToSettings(SceneManager.getInstance(SceneManager.class)), 70, 70);
-        
+
         gameInputManager.registerClickable(settingsButton);
     }
 
@@ -249,7 +252,7 @@ public class GameScene extends Scene {
                                          DisplayManager.getScreenHeight()),
                                new Vector2(0, 0), new Vector2(0, 0),
                                100, DropBehaviour.State.IDLE, DropBehaviour.Move.NONE);
-            
+
             drop.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
             //drop.setAction(new Dropping(drop));
             entityManager.addEntities(drop);
