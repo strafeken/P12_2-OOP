@@ -27,9 +27,6 @@ public class GameScene extends Scene {
     private static final float TIME_STEP = 1/60f;
     private static final int VELOCITY_ITERATIONS = 6;
     private static final int POSITION_ITERATIONS = 2;
-    private static final int MAX_DROPLETS = 0;
-    private static final float MIN_SPAWN_INTERVAL = 1f;
-    private static final float MAX_SPAWN_INTERVAL = 3f;
 
     // Physics world
     private World world;
@@ -46,9 +43,6 @@ public class GameScene extends Scene {
     private IAudioManager audioManager;
 
     // Game entities
-    private Entity[] droplets;
-//    private Entity circle;
-//    private Entity triangle;
     private Entity player;
     private Button settingsButton;
 
@@ -56,7 +50,6 @@ public class GameScene extends Scene {
     private Entity[] food;
 
     // Spawn control
-    private float dropletSpawnTimer;
     private Random random;
 
     private final Vector2 CARD_SIZE = new Vector2(100, 150);
@@ -65,7 +58,6 @@ public class GameScene extends Scene {
         super();
         random = new Random();
         accumulator = 0f;
-        dropletSpawnTimer = 0f;
     }
 
     @Override
@@ -111,21 +103,6 @@ public class GameScene extends Scene {
 
     private void initializeEntities() {
     	try {
-            // Initialize static entities
-//            circle = new Circle(EntityType.CIRCLE,
-//                              new Vector2(500, 400),
-//                              new Vector2(0, 0),
-//                               Color.RED, 50);
-//            circle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
-//
-//            triangle = new Triangle(EntityType.TRIANGLE,
-//                                 new Vector2(100, 250),
-//                                 new Vector2(0, 0),
-//                                 new Vector2(1,0), 0, Color.GREEN, 50, 50,
-//                                 TriangleBehaviour.State.IDLE, TriangleBehaviour.Move.NONE);
-//
-//            triangle.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
-
             // Initialize player
             player = new Player(EntityType.PLAYER,
                               "bucket.png",
@@ -133,15 +110,8 @@ public class GameScene extends Scene {
                               new Vector2(300, 50),
                               new Vector2(0, 0), new Vector2(100,0) , 200, PlayerBehaviour.State.IDLE, PlayerBehaviour.Move.NONE
                               );
-
             player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
-
-            // Initialize droplets
-            initializeDroplets();
-
-            // Add entities to manager
-//            entityManager.addEntities(circle);
-//            entityManager.addEntities(triangle);
+            
             entityManager.addEntities(player);
 
             food = new Entity[foodNames.length];
@@ -155,29 +125,6 @@ public class GameScene extends Scene {
 		} catch (Exception e) {
 			System.out.println("error in game scene add area" + e);
 		}
-    }
-
-    private void initializeDroplets() {
-        droplets = new Entity[MAX_DROPLETS];
-        for (int i = 0; i < droplets.length; i++) {
-            Drop drop = createDrop();
-            droplets[i] = drop;
-            entityManager.addEntities(drop);
-        }
-    }
-
-    private Drop createDrop() {
-        Drop drop = new Drop(EntityType.DROP,
-                         "droplet.png",
-                         new Vector2(50, 50),
-                         new Vector2(random.nextFloat() * DisplayManager.getScreenWidth(),
-                                   random.nextFloat() * DisplayManager.getScreenHeight()),
-                         new Vector2(0, 0), new Vector2(0, 0),
-                         100, DropBehaviour.State.IDLE, DropBehaviour.Move.NONE );
-
-        //drop.setAction(new Dropping(drop));
-        drop.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
-        return drop;
     }
 
     private void initializeInput() {
@@ -201,7 +148,6 @@ public class GameScene extends Scene {
     		entityManager.update();
     		gameInputManager.update();
     		playerInputManager.update();
-    		updateSpawning();
     		updatePhysics();
     		mergeSystem.processMerges();
 //        checkGameOver();
@@ -209,59 +155,6 @@ public class GameScene extends Scene {
 		} catch (Exception e) {
 			System.out.println("error in game scene" + e);
 		}
-    }
-
-    private void updateSpawning() {
-        updateDropletSpawning();
-    }
-
-    private void updateDropletSpawning() {
-        dropletSpawnTimer += Gdx.graphics.getDeltaTime();
-        if (shouldSpawnDroplet()) {
-            spawnDroplet();
-            dropletSpawnTimer = 0;
-        }
-    }
-
-    private boolean shouldSpawnDroplet() {
-        float spawnInterval = MIN_SPAWN_INTERVAL +
-            random.nextFloat() * (MAX_SPAWN_INTERVAL - MIN_SPAWN_INTERVAL);
-        return dropletSpawnTimer >= spawnInterval &&
-               countCurrentDroplets() < MAX_DROPLETS;
-    }
-
-    private int countCurrentDroplets() {
-        return (int) entityManager.getEntities().stream()
-            .filter(e -> e.getEntityType() == EntityType.DROP)
-            .count();
-    }
-
-    private void spawnDroplet() {
-        // Determine how many droplets to spawn (1-3)
-        int currentDroplets = countCurrentDroplets();
-        int maxNewDroplets = Math.min(3, MAX_DROPLETS - currentDroplets);
-
-        if (maxNewDroplets <= 0) {
-            return;  // Don't spawn if at or over max limit
-        }
-
-        // Randomly choose to spawn 1-3 droplets
-        int dropletsToSpawn = random.nextInt(maxNewDroplets) + 1;
-
-        // Spawn the determined number of droplets
-        for (int i = 0; i < dropletsToSpawn; i++) {
-            Drop drop = new Drop(EntityType.DROP,
-                               "droplet.png",
-                               new Vector2(50, 50),
-                               new Vector2(random.nextFloat() * DisplayManager.getScreenWidth(),
-                                         DisplayManager.getScreenHeight()),
-                               new Vector2(0, 0), new Vector2(0, 0),
-                               100, DropBehaviour.State.IDLE, DropBehaviour.Move.NONE);
-
-            drop.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
-            //drop.setAction(new Dropping(drop));
-            entityManager.addEntities(drop);
-        }
     }
 
     private void updatePhysics() {
