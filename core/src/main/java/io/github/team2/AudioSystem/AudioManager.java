@@ -9,12 +9,12 @@ import io.github.team2.Utils.Singleton;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AudioManager extends Singleton<AudioManager> implements IAudioManager {
-    private Map<String, Sound> soundEffects;
-    private Map<String, Long> activeSound; // Track active sound IDs
-    private String currentMusic;
-    private float volume;
-    private Music music;
+public class AudioManager extends Singleton<AudioManager> {
+	private Map<String, Sound> soundEffects;
+	private Map<String, Long> activeSound; // Track active sound IDs
+	private String currentMusic;
+	private float volume;
+	private Music music;
 
     public AudioManager() {
         soundEffects = new HashMap<>();
