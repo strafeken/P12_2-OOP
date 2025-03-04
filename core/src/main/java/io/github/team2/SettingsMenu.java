@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import io.github.team2.Actions.ResumeGame;
 import io.github.team2.AudioSystem.AudioManager;
+import io.github.team2.AudioSystem.IAudioManager;
 import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.InputSystem.Action;
 import io.github.team2.InputSystem.Button;
@@ -17,6 +18,7 @@ import io.github.team2.InputSystem.KeyboardManager;
 import io.github.team2.InputSystem.PlayerInputManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.SceneSystem.ISceneManager;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -30,9 +32,10 @@ public class SettingsMenu extends Scene {
     private String currentBinding;
     private Map<String, Integer> keyBindings;
     private Button backButton;
-    
-    private AudioManager audioManager;
-    
+
+    // Change to interface
+    private IAudioManager audioManager;
+
     // Layout constants
     private static final float TITLE_Y = 500;
     private static final float START_Y = 420;
@@ -42,14 +45,14 @@ public class SettingsMenu extends Scene {
     private static final float PANEL_LEFT = 80;
     private static final float PANEL_RIGHT = Gdx.graphics.getWidth() - 160;
     private static final float VOLUME_TEXT_OFFSET = 60;
-    
+
     // Volume control fields
     private float sliderX;
     private float sliderY;
     private float sliderWidth = 300;
     private float sliderHeight = 18;
     private boolean draggingSlider = false;
-    
+
     // Visual styling
     private final Color overlayColor = new Color(0, 0, 0, 0.7f);
     private final Color panelColor = new Color(0.15f, 0.15f, 0.2f, 0.95f);
@@ -59,12 +62,12 @@ public class SettingsMenu extends Scene {
     private final Color sliderBackgroundColor = new Color(0.2f, 0.2f, 0.25f, 1);
     private final Color sliderFillColor = new Color(0.4f, 0.7f, 1f, 1);
     private final Color sliderHandleColor = new Color(0.9f, 0.9f, 1f, 1);
-    
+
     // Panel styling
     private static final float PANEL_PADDING = 20;
     private static final float PANEL_BORDER_WIDTH = 2;
     private static final float PANEL_CORNER_RADIUS = 10;
-    
+
     private String errorMessage = "";
     private float errorTimer = 0;
 
@@ -78,23 +81,26 @@ public class SettingsMenu extends Scene {
         entityManager = new EntityManager();
         gameInputManager = new GameInputManager();
         textManager = new TextManager();
-        
+
         buttons = new ArrayList<>();
         waitingForNewKey = false;
         currentBinding = null;
         keyBindings = new LinkedHashMap<>();
-        
+
         playerInputManager = GameManager.getInstance(GameManager.class).getPlayerInputManager();
-        
+
         createButtonsForKeyBindings();
-        
+
+        // Get SceneManager through interface
+        ISceneManager sceneManager = SceneManager.getInstance(SceneManager.class);
         backButton = new Button("backBtn.png",
             new Vector2(PANEL_LEFT + 40, 50),
-            new ResumeGame(SceneManager.getInstance(SceneManager.class)), 80, 32);
-        
+            new ResumeGame(sceneManager), 80, 32);
+
         gameInputManager.registerClickable(backButton);
         backButton.update();
-        
+
+        // Store as interface
         audioManager = AudioManager.getInstance(AudioManager.class);
     }
 
@@ -104,7 +110,7 @@ public class SettingsMenu extends Scene {
 
         for (Integer key : keyDownActions.keySet()) {
             String keyName = Input.Keys.toString(key);
-            
+
             Button button = new Button("keyboard.png", new Vector2(PANEL_RIGHT - 52, y - 15), () -> {
                 waitingForNewKey = true;
                 currentBinding = keyName;
@@ -116,7 +122,7 @@ public class SettingsMenu extends Scene {
 
             keyBindings.put(keyName, key);
         }
-        
+
         sliderY = START_Y - (keyBindings.size() * SPACING) - VOLUME_TEXT_OFFSET;
         sliderX = LEFT_MARGIN;
     }
@@ -158,44 +164,44 @@ public class SettingsMenu extends Scene {
     public void draw(SpriteBatch batch) {
         // End sprite batch to draw shapes
         batch.end();
-        
+
         // Set ShapeRenderer to filled
         ShapeRenderer shape = new ShapeRenderer();
         Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
         shape.begin(ShapeRenderer.ShapeType.Filled);
-        
+
         // Draw full screen overlay
         shape.setColor(overlayColor);
         shape.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        
+
         // Draw panel background with rounded corners
         shape.setColor(panelColor);
         float x = PANEL_LEFT;
         float y = 30;
         float width = PANEL_RIGHT - PANEL_LEFT;
         float height = Gdx.graphics.getHeight() - 60;
-        
+
         // Main panel rectangle
         shape.rect(x + PANEL_CORNER_RADIUS, y, width - 2 * PANEL_CORNER_RADIUS, height);
         shape.rect(x, y + PANEL_CORNER_RADIUS, width, height - 2 * PANEL_CORNER_RADIUS);
-        
+
         // Corners
         shape.circle(x + PANEL_CORNER_RADIUS, y + PANEL_CORNER_RADIUS, PANEL_CORNER_RADIUS);
         shape.circle(x + width - PANEL_CORNER_RADIUS, y + PANEL_CORNER_RADIUS, PANEL_CORNER_RADIUS);
         shape.circle(x + PANEL_CORNER_RADIUS, y + height - PANEL_CORNER_RADIUS, PANEL_CORNER_RADIUS);
         shape.circle(x + width - PANEL_CORNER_RADIUS, y + height - PANEL_CORNER_RADIUS, PANEL_CORNER_RADIUS);
-        
+
         // Draw border
         shape.setColor(borderColor);
-        shape.rect(x - PANEL_BORDER_WIDTH, y - PANEL_BORDER_WIDTH, 
+        shape.rect(x - PANEL_BORDER_WIDTH, y - PANEL_BORDER_WIDTH,
                   width + 2 * PANEL_BORDER_WIDTH, PANEL_BORDER_WIDTH); // Bottom
-        shape.rect(x - PANEL_BORDER_WIDTH, y + height, 
+        shape.rect(x - PANEL_BORDER_WIDTH, y + height,
                   width + 2 * PANEL_BORDER_WIDTH, PANEL_BORDER_WIDTH); // Top
-        shape.rect(x - PANEL_BORDER_WIDTH, y, 
+        shape.rect(x - PANEL_BORDER_WIDTH, y,
                   PANEL_BORDER_WIDTH, height); // Left
-        shape.rect(x + width, y, 
+        shape.rect(x + width, y,
                   PANEL_BORDER_WIDTH, height); // Right
-        
+
         // Draw volume slider background
         shape.setColor(sliderBackgroundColor);
         shape.rect(sliderX, sliderY, sliderWidth, sliderHeight);
@@ -210,17 +216,17 @@ public class SettingsMenu extends Scene {
         float handleSize = sliderHeight * 1.8f;
         shape.setColor(sliderHandleColor);
         shape.circle(handleX, sliderY + (sliderHeight / 2), handleSize / 2);
-        
+
         shape.end();
         Gdx.gl.glDisable(Gdx.gl.GL_BLEND);
         shape.dispose();
-        
+
         // Resume sprite batch for text and buttons
         batch.begin();
-        
+
         // Draw title and content
         textManager.draw(batch, "SETTINGS", LEFT_MARGIN, TITLE_Y, titleColor);
-        
+
         float contentY = START_Y;
         for (int i = 0; i < buttons.size(); i++) {
             Button button = buttons.get(i);
@@ -237,14 +243,14 @@ public class SettingsMenu extends Scene {
             button.draw(batch);
             contentY -= SPACING;
         }
-        
+
         // Draw volume controls
         textManager.draw(batch, "VOLUME", LEFT_MARGIN, sliderY + VOLUME_TEXT_OFFSET, titleColor);
-        textManager.draw(batch, (int)(audioManager.getVolume() * 100) + "%", 
+        textManager.draw(batch, (int)(audioManager.getVolume() * 100) + "%",
                         sliderX + sliderWidth + 20, sliderY + sliderHeight/2 + 6, textColor);
-        
+
         backButton.draw(batch);
-        
+
         if (errorTimer > 0) {
             errorTimer -= Gdx.graphics.getDeltaTime();
             textManager.draw(batch, errorMessage, LEFT_MARGIN, 60, Color.RED);

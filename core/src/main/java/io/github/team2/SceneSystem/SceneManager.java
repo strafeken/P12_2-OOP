@@ -9,76 +9,84 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import io.github.team2.Utils.Singleton;
 
-public class SceneManager extends Singleton<SceneManager> {
-	private final Map<SceneID, Scene> scenes;
-	// handles scene states
-	private final Stack<SceneID> sceneStack;
+public class SceneManager extends Singleton<SceneManager> implements ISceneManager {
+    private final Map<SceneID, Scene> scenes;
+    // handles scene states
+    private final Stack<SceneID> sceneStack;
 
-	public SceneManager() {
-		scenes = new HashMap<>();
-		sceneStack = new Stack<>();
-	}
+    public SceneManager() {
+        scenes = new HashMap<>();
+        sceneStack = new Stack<>();
+    }
 
-	public void addScene(SceneID id, Scene scene) {
-		scenes.put(id, scene);
-	}
+    @Override
+    public void addScene(SceneID id, Scene scene) {
+        scenes.put(id, scene);
+    }
 
-	public void setNextScene(SceneID id) {
-		if (!sceneStack.isEmpty())
-			unloadCurrentScene();
+    @Override
+    public void setNextScene(SceneID id) {
+        if (!sceneStack.isEmpty())
+            unloadCurrentScene();
 
-		loadScene(id);
-	}
-	
-	// used for pause menu
-	public void overlayScene(SceneID id) {
-		loadScene(id);
-	}
+        loadScene(id);
+    }
 
-	// used to return to game scene
-	public void removeOverlay() {
-		// ensure there is always a scene
-		if (sceneStack.size() > 1)
-			unloadCurrentScene();
-	}
+    @Override
+    // used for pause menu
+    public void overlayScene(SceneID id) {
+        loadScene(id);
+    }
 
-	public Scene getCurrentScene() {
-		return scenes.get(sceneStack.peek());
-	}
+    @Override
+    // used to return to game scene
+    public void removeOverlay() {
+        // ensure there is always a scene
+        if (sceneStack.size() > 1)
+            unloadCurrentScene();
+    }
 
-	public SceneID getCurrentSceneID() {
-		return sceneStack.peek();
-	}
+    @Override
+    public Scene getCurrentScene() {
+        return scenes.get(sceneStack.peek());
+    }
 
-	// run the update function of the current scene
-	public void update() {
-		if (!sceneStack.isEmpty()) {
-			scenes.get(sceneStack.peek()).update();
-		}
-	}
+    @Override
+    public SceneID getCurrentSceneID() {
+        return sceneStack.peek();
+    }
 
-	public void draw(SpriteBatch batch) {
-		for (SceneID id : sceneStack)
-			scenes.get(id).draw(batch);
-	}
+    @Override
+    public void update() {
+        if (!sceneStack.isEmpty()) {
+            scenes.get(sceneStack.peek()).update();
+        }
+    }
 
-	public void draw(ShapeRenderer shape) {
-		for (SceneID id : sceneStack)
-			scenes.get(id).draw(shape);
-	}
+    @Override
+    public void draw(SpriteBatch batch) {
+        for (SceneID id : sceneStack)
+            scenes.get(id).draw(batch);
+    }
 
-	private void loadScene(SceneID id) {
-		if (!scenes.containsKey(id))
-			return;
+    @Override
+    public void draw(ShapeRenderer shape) {
+        for (SceneID id : sceneStack)
+            scenes.get(id).draw(shape);
+    }
 
-		sceneStack.push(id);
-		scenes.get(id).load();
-	}
+    private void loadScene(SceneID id) {
+        if (!scenes.containsKey(id))
+            return;
 
-	private void unloadCurrentScene() {
-		if (sceneStack.isEmpty())
-			return;
+        sceneStack.push(id);
+        scenes.get(id).load();
+    }
 
-		scenes.get(sceneStack.pop()).unload();
-	}
+    private void unloadCurrentScene() {
+        if (sceneStack.isEmpty())
+            return;
+
+        scenes.get(sceneStack.pop()).unload();
+    }
 }

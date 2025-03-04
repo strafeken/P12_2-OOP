@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 
-public class EntityManager {
+public class EntityManager implements IEntityManager {
 
 	private List<Entity> entityList;
 	private List<Entity> entitiesToRemove;
@@ -18,30 +18,34 @@ public class EntityManager {
 		entitiesToRemove = new ArrayList<>();
 	}
 
+	@Override
 	public void addEntities(Entity entity) {
 		entityList.add(entity);
 	}
 
+	@Override
 	// remove entities after update to prevent concurrent access
 	public void markForRemoval(Entity entity) {
 		entitiesToRemove.add(entity);
 	}
 
+	@Override
 	// Fix the getEntities method to return a defensive copy
 	public List<Entity> getEntities() {
 		return new ArrayList<>(entityList);
 	}
 
-	// Add more specific accessor methods
+	@Override
 	public int getEntityCount() {
 		return entityList.size();
 	}
 
+	@Override
 	public boolean hasEntity(Entity entity) {
 		return entityList.contains(entity);
 	}
 
-	// Consider adding filtered access methods
+	@Override
 	public List<Entity> getEntitiesByType(EntityType type) {
 		List<Entity> result = new ArrayList<>();
 		for (Entity entity : entityList) {
@@ -52,6 +56,7 @@ public class EntityManager {
 		return result;
 	}
 
+	@Override
 	public void removeEntity(Entity entity) {
 		entityList.remove(entity);
 
@@ -65,20 +70,24 @@ public class EntityManager {
 			((StaticTextureObject) entity).dispose();
 	}
 
+	@Override
 	public Entity get(int index) {
 		return entityList.get(index);
 	}
 
+	@Override
 	public void draw(SpriteBatch batch) {
 		for (Entity entity : entityList)
 			entity.draw(batch);
 	}
 
+	@Override
 	public void draw(ShapeRenderer shape) {
 		for (Entity entity : entityList)
 			entity.draw(shape);
 	}
 
+	@Override
 	public void update() {
 		for (Entity e : entityList) {
 			//e.moveUserControlled();
@@ -92,6 +101,7 @@ public class EntityManager {
 		entitiesToRemove.clear();
 	}
 
+	@Override
 	public void dispose() {
         List<Entity> entitiesToDispose = new ArrayList<>(entityList);
 

@@ -13,6 +13,7 @@ import io.github.team2.EntitySystem.StaticTextureObject;
 import io.github.team2.InputSystem.GameInputManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.Utils.DisplayManager;
 
 public class PauseMenu extends Scene {
@@ -25,7 +26,7 @@ public class PauseMenu extends Scene {
     @Override
     public void load() {
         System.out.println("Pause Menu => LOAD");
-        
+
         // Initialize managers
         entityManager = new EntityManager();
         gameInputManager = new GameInputManager();
@@ -36,7 +37,10 @@ public class PauseMenu extends Scene {
             new Vector2(0, 0));
 
         entityManager.addEntities(image);
-        gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new ResumeGame(SceneManager.getInstance(SceneManager.class)));
+
+        // Use interface instead of concrete class
+        ISceneManager sceneManager = SceneManager.getInstance(SceneManager.class);
+        gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new ResumeGame(sceneManager));
     }
 
     @Override

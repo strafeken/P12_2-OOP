@@ -43,6 +43,7 @@ public class GameScene extends Scene {
     private MergeSystem mergeSystem;
 
     private GameManager gameManager;
+    private IAudioManager audioManager;
 
     // Game entities
     private Entity[] droplets;
@@ -79,6 +80,8 @@ public class GameScene extends Scene {
         gameManager = GameManager.getInstance(GameManager.class);
         gameManager.setPlayerInputManager(playerInputManager);
 
+        audioManager = AudioManager.getInstance(AudioManager.class);
+        AudioManager.getInstance(AudioManager.class).stopSoundEffect("mainmenu");
         AudioManager.getInstance(AudioManager.class).playSoundEffect("start");
     }
 
@@ -178,14 +181,16 @@ public class GameScene extends Scene {
     }
 
     private void initializeInput() {
-    	playerInputManager = new PlayerInputManager(player);
+        playerInputManager = new PlayerInputManager(player);
 
-    	gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new PauseGame(SceneManager.getInstance(SceneManager.class)));
-    	gameInputManager.registerKeyUp(Input.Keys.X, new ExitGame(SceneManager.getInstance(SceneManager.class)));
+        // Use interface instead of concrete class
+        ISceneManager sceneManager = SceneManager.getInstance(SceneManager.class);
+        gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new PauseGame(sceneManager));
+        gameInputManager.registerKeyUp(Input.Keys.X, new ExitGame(sceneManager));
 
         settingsButton = new Button("settingsBtn.png",
                 new Vector2(DisplayManager.getScreenWidth() - 80, DisplayManager.getScreenHeight() - 80),
-                new GoToSettings(SceneManager.getInstance(SceneManager.class)), 70, 70);
+                new GoToSettings(sceneManager), 70, 70);
 
         gameInputManager.registerClickable(settingsButton);
     }

@@ -10,22 +10,26 @@ import com.badlogic.gdx.physics.box2d.World;
 import io.github.team2.Cards.Card;
 import io.github.team2.Cards.CardFactory;
 import io.github.team2.EntitySystem.Entity;
-import io.github.team2.EntitySystem.EntityManager;
+import io.github.team2.EntitySystem.IEntityManager;
 import io.github.team2.InputSystem.MouseManager;
 import io.github.team2.RecipeSystem.RecipeBook;
 import io.github.team2.RecipeSystem.RecipeType;
+import io.github.team2.AudioSystem.IAudioManager;
+import io.github.team2.AudioSystem.AudioManager;
 
 public class MergeSystem implements CollisionListener {
-    private EntityManager em;
+    private IEntityManager em;
     private World world;
     private Queue<Runnable> mergeQueue;
     private MouseManager mouseManager;
+    private IAudioManager audioManager;
 
-    public MergeSystem(EntityManager entityManager, World world, MouseManager mouseManager) {
+    public MergeSystem(IEntityManager entityManager, World world, MouseManager mouseManager) {
         em = entityManager;
         this.world = world;
         mergeQueue = new LinkedList<>();
         this.mouseManager = mouseManager;
+        this.audioManager = AudioManager.getInstance(AudioManager.class);
     }
 
     @Override
@@ -73,11 +77,7 @@ public class MergeSystem implements CollisionListener {
 
         // Remove entities from entity manager
         Vector2 newPosition = cardB.getPosition();
-//        Vector2 newPosition = new Vector2(
-//        		(cardA.getPosition().x + cardB.getPosition().x) / 2,
-//        		(cardA.getPosition().y + cardB.getPosition().y) / 2
-//        		);
-        
+
         cardA.stopDragging(); // stop the card from moving
 
         mouseManager.deregisterDraggable(cardA);
@@ -90,7 +90,10 @@ public class MergeSystem implements CollisionListener {
         try {
             Card mergedCard = CardFactory.createCard(mergedName, new Vector2(100, 150), newPosition, world, mouseManager);
             em.addEntities(mergedCard);
-            
+
+            // Play the "ding" sound when cards successfully merge
+            audioManager.playSoundEffect("ding");
+
             System.out.println("New merged card " + mergedName + " created at " + newPosition);
 
             // Print message based on recipe type

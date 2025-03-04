@@ -8,47 +8,53 @@ import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.AudioSystem.AudioManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import io.github.team2.AudioSystem.IAudioManager;
+import io.github.team2.EntitySystem.EntityManager;
+import io.github.team2.EntitySystem.IEntityManager;
+import io.github.team2.SceneSystem.ISceneManager;
 
 public class GameMaster extends ApplicationAdapter {
     private SpriteBatch batch;
     private ShapeRenderer shape;
-    private AudioManager am;
-    private SceneManager sm;
+    private IAudioManager audioManager;
+    private ISceneManager sceneManager;
+    private IEntityManager entityManager;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
         shape = new ShapeRenderer();
 
-        am = AudioManager.getInstance(AudioManager.class);
-        sm = SceneManager.getInstance(SceneManager.class);
+        audioManager = AudioManager.getInstance(AudioManager.class);
+        sceneManager = SceneManager.getInstance(SceneManager.class);
+        entityManager = new EntityManager();
 
         // initialize audio with correct paths and volume
-        am.loadSoundEffect("start", "sounds/start.mp3");
-        am.loadSoundEffect("ding", "sounds/ding.mp3");
-        am.loadSoundEffect("mainmenu", "sounds/mainmenu.mp3");
-        am.setVolume(1.0f);
+        audioManager.loadSoundEffect("start", "sounds/start.mp3");
+        audioManager.loadSoundEffect("ding", "sounds/ding.mp3");
+        audioManager.loadSoundEffect("mainmenu", "sounds/mainmenu.mp3");
+        audioManager.setVolume(1.0f);
 
-        sm.addScene(SceneID.MAIN_MENU, new MainMenu());
-        sm.addScene(SceneID.GAME_SCENE, new GameScene());
-        sm.addScene(SceneID.PAUSE_MENU, new PauseMenu());
-        sm.addScene(SceneID.GAME_OVER, new GameOverScreen());
-        sm.addScene(SceneID.SETTINGS_MENU, new SettingsMenu());
-        sm.setNextScene(SceneID.MAIN_MENU);
+        sceneManager.addScene(SceneID.MAIN_MENU, new MainMenu());
+        sceneManager.addScene(SceneID.GAME_SCENE, new GameScene());
+        sceneManager.addScene(SceneID.PAUSE_MENU, new PauseMenu());
+        sceneManager.addScene(SceneID.GAME_OVER, new GameOverScreen());
+        sceneManager.addScene(SceneID.SETTINGS_MENU, new SettingsMenu());
+        sceneManager.setNextScene(SceneID.MAIN_MENU);
     }
 
     @Override
     public void render() {
         ScreenUtils.clear(0, 0, 0.2f, 1);
 
-        sm.update();
+        sceneManager.update();
 
         batch.begin();
-        sm.draw(batch);
+        sceneManager.draw(batch);
         batch.end();
 
         shape.begin(ShapeRenderer.ShapeType.Filled);
-        sm.draw(shape);
+        sceneManager.draw(shape);
         shape.end();
     }
 
@@ -56,6 +62,18 @@ public class GameMaster extends ApplicationAdapter {
     public void dispose() {
         batch.dispose();
         shape.dispose();
-        am.dispose();
+        audioManager.dispose();
+    }
+
+    public IEntityManager getEntityManager() {
+        return entityManager;
+    }
+
+    public ISceneManager getSceneManager() {
+        return sceneManager;
+    }
+
+    public IAudioManager getAudioManager() {
+        return audioManager;
     }
 }

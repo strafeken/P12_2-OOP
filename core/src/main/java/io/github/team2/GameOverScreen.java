@@ -12,10 +12,14 @@ import io.github.team2.InputSystem.GameInputManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.Utils.DisplayManager;
+import io.github.team2.AudioSystem.AudioManager;  // Need this import for the getInstance method
+import io.github.team2.AudioSystem.IAudioManager;  // Use this interface for the variable type
+import io.github.team2.SceneSystem.ISceneManager;
 
 public class GameOverScreen extends Scene {
     private int finalScore;
     private Button restartButton;
+    private IAudioManager audioManager;  // Using the interface type
 
     public GameOverScreen() {
         super(); // Initialize base components
@@ -33,9 +37,13 @@ public class GameOverScreen extends Scene {
         StartGame startAction = new StartGame(SceneManager.getInstance(SceneManager.class));
         Vector2 centerPos = new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2 - 200);
         restartButton = new Button("restartBtn.png", centerPos, startAction, 100, 100);
-        
+
         gameInputManager.registerKeyUp(Input.Keys.SPACE, startAction);
         gameInputManager.registerClickable(restartButton);
+
+        ISceneManager sceneManager = SceneManager.getInstance(SceneManager.class);
+        // Get instance through concrete class but store as interface type
+        audioManager = AudioManager.getInstance(AudioManager.class);
     }
 
     @Override

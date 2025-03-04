@@ -2,19 +2,17 @@ package io.github.team2.Actions;
 
 import io.github.team2.InputSystem.Action;
 import io.github.team2.SceneSystem.SceneID;
-import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.SceneSystem.ISceneManager;
 
 public class GoToSettings implements Action {
-	private final SceneManager sm;
+    private final ISceneManager sm;
 
-	public GoToSettings(SceneManager sceneManager) {
-		this.sm = sceneManager;
-	}
+    public GoToSettings(ISceneManager sceneManager) {
+        this.sm = sceneManager;
+    }
 
-	@Override
-	public void execute() {
-		if (sm.getCurrentSceneID() == SceneID.GAME_SCENE) {
-			sm.overlayScene(SceneID.SETTINGS_MENU);
-		}
-	}
+    @Override
+    public void execute() {
+        sm.setNextScene(SceneID.SETTINGS_MENU);
+    }
 }
