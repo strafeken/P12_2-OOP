@@ -29,4 +29,8 @@ public class CardFactory {
         }
         return new Card(type, "card.png", size, position, world, mouseManager, nutrition);
     }
+    
+    public static String[] getFoodTypes() {
+        return nutritionMap.keySet().toArray(new String[0]);
+    }
 }

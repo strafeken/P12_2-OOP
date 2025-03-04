@@ -44,18 +44,15 @@ public class GameScene extends Scene {
 
     private GameManager gameManager;
     private IAudioManager audioManager;
+    
+    private CardManager cardManager;
 
     // Game entities
     private Entity player;
     private Button settingsButton;
 
-    String[] foodNames = { "Chicken Salad", "Tomato Chicken", "Soggy Salad" };
-    private Entity[] food;
-
     // Spawn control
     private Random random;
-
-    private final Vector2 CARD_SIZE = new Vector2(75, 100);
 
     public GameScene() {
         super();
@@ -95,13 +92,15 @@ public class GameScene extends Scene {
         // Get AudioManager instance but assign to IAudioManager interface
         IAudioManager audioManager = AudioManager.getInstance(AudioManager.class);
         
+        cardManager = new CardManager(entityManager, gameInputManager, world);
+
         collisionDetector.addListener(new CollisionAudioHandler(audioManager));
         collisionDetector.addListener(new CollisionRemovalHandler(entityManager));
         pointsManager = new PointsManager();
         collisionDetector.addListener(new PointsSystem(pointsManager));
-        collisionDetector.addListener(new ConsumeNutritionHandler());
+        collisionDetector.addListener(new ConsumeNutritionHandler(cardManager));
 
-        world.setContactListener(collisionDetector);
+        world.setContactListener(collisionDetector); 
     }
 
     private void initializeEntities() {
@@ -115,14 +114,8 @@ public class GameScene extends Scene {
                               );
             player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);        
             entityManager.addEntities(player);
-
-            food = new Entity[foodNames.length];
-
-            for (int i = 0; i < foodNames.length; i++) {
-            	int xPosition = 100 + (i * 200);
-            	food[i] = CardFactory.createCard(foodNames[i], CARD_SIZE, new Vector2(xPosition, 100), world, gameInputManager.getMouseManager());
-            	entityManager.addEntities(food[i]);
-            }
+            
+            cardManager.initializeFood();
 
 		} catch (Exception e) {
 			System.out.println("error in game scene add area" + e);
@@ -151,6 +144,7 @@ public class GameScene extends Scene {
     		gameInputManager.update();
     		playerInputManager.update();
     		updatePhysics();
+    		cardManager.processReset();
 		} catch (Exception e) {
 			System.out.println("error in game scene" + e);
 		}

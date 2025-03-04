@@ -37,9 +37,9 @@ public class Player extends DynamicTextureObject<PlayerBehaviour.State, PlayerBe
         nutrition.modifyCalories(cardNutrition.getCalories());
 
         System.out.println(card.getName() + " consumed!");
-        System.out.println("Updated carbohydrates: " + nutrition.getCarbohydrates());
-        System.out.println("Updated proteins: " + nutrition.getProteins());
-        System.out.println("Updated fats: " + nutrition.getFats());
-        System.out.println("Updated calories: " + nutrition.getCalories());
+        System.out.println("Updated carbohydrates: " + nutrition.getCarbohydrates() +
+        		" proteins: " + nutrition.getProteins() +
+        		" fats: " + nutrition.getFats() +
+        		" calories: " + nutrition.getCalories());
     }
 }

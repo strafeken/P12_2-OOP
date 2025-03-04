@@ -23,7 +23,6 @@ public class CollisionRemovalHandler implements CollisionListener {
                 System.out.println("Unhandled collision: " + a.getEntityType() + " : " + b.getEntityType());
         }
     }
-    
 
     private Entity getCardEntity(Entity a, Entity b) {
         if (a.getEntityType() == EntityType.CARD)
