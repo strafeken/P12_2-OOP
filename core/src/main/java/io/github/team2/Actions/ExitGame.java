@@ -17,8 +17,6 @@ public class ExitGame implements Action {
     public void execute() {
         if (sm.getCurrentSceneID() == SceneID.PAUSE_MENU) {
             sm.setNextScene(SceneID.MAIN_MENU);
-        } else {
-            Gdx.app.exit();
         }
     }
 }

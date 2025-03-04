@@ -1,6 +1,7 @@
 package io.github.team2.Actions;
 
 import io.github.team2.InputSystem.Action;
+import io.github.team2.SceneSystem.SceneID;
 import io.github.team2.SceneSystem.ISceneManager;
 
 public class ResumeGame implements Action {
@@ -12,6 +13,6 @@ public class ResumeGame implements Action {
 
     @Override
     public void execute() {
-        sm.removeOverlay();
+        sm.setNextScene(SceneID.GAME_SCENE);
     }
 }
