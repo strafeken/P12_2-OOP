@@ -15,7 +15,7 @@ public class ExitGame implements Action {
 
     @Override
     public void execute() {
-        if (sm.getCurrentSceneID() == SceneID.MAIN_MENU) {
+        if (sm.getCurrentSceneID() == SceneID.GAME_SCENE) {
             sm.setNextScene(SceneID.MAIN_MENU);
         }
     }
