@@ -13,6 +13,6 @@ public class ResumeGame implements Action {
 
     @Override
     public void execute() {
-        sm.setNextScene(SceneID.GAME_SCENE);
+        sm.removeOverlay();
     }
 }

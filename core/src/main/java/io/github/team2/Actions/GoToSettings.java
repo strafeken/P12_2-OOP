@@ -13,6 +13,6 @@ public class GoToSettings implements Action {
 
     @Override
     public void execute() {
-        sm.setNextScene(SceneID.SETTINGS_MENU);
+        sm.overlayScene(SceneID.SETTINGS_MENU);
     }
 }
