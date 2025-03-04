@@ -1,18 +1,17 @@
-package io.github.team2.CollisionSystem;
+package io.github.team2.CollisionExtensions;
 
 import io.github.team2.AudioSystem.IAudioManager;
+import io.github.team2.CollisionSystem.CollisionListener;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.EntitySystem.Entity;
 
 public class CollisionAudioHandler implements CollisionListener {
     private final IAudioManager audioManager;
 
-    // Constructor with dependency injection - accepts interface
     public CollisionAudioHandler(IAudioManager audioManager) {
         this.audioManager = audioManager;
     }
 
-    // Default constructor that uses the Singleton as fallback
     public CollisionAudioHandler() {
         this(AudioManager.getInstance(AudioManager.class));
     }
@@ -20,14 +19,9 @@ public class CollisionAudioHandler implements CollisionListener {
     @Override
     public void onCollision(Entity a, Entity b, CollisionType type) {
         switch (type) {
-            case PLAYER_DROP:
-                audioManager.playSoundEffect("ding");
-                break;
-            case CIRCLE_DROP:
-                // audioManager.playSoundEffect("ding");
-                break;
-            case CARD_CARD:
-                break;
+            case CARD_PLAYER:
+            	audioManager.playSoundEffect("ding");
+            	break;
             default:
                 System.out.println("Unhandled collision: " + a.getEntityType() + " : " + b.getEntityType());
         }

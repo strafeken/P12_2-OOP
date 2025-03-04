@@ -3,10 +3,13 @@ package io.github.team2;
 
 import com.badlogic.gdx.math.Vector2;
 import io.github.team2.Actions.PlayerBehaviour;
+import io.github.team2.Cards.Card;
 import io.github.team2.EntitySystem.DynamicTextureObject;
 import io.github.team2.EntitySystem.EntityType;
 
 public class Player extends DynamicTextureObject<PlayerBehaviour.State, PlayerBehaviour.Move > {
+	private Nutrition nutrition;
+	
 	public Player(
 			EntityType type, 
 			String texture, 
@@ -18,10 +21,25 @@ public class Player extends DynamicTextureObject<PlayerBehaviour.State, PlayerBe
 			PlayerBehaviour.State state, 
 			PlayerBehaviour.Move actionState) {
 		super(type, texture, size, position, direction,rotation, speed, state, actionState);
+		nutrition = new Nutrition(50, 50, 50, 50);
 	}
+	
+    public Nutrition getNutrition() {
+        return nutrition;
+    }
+	
+    public void consume(Card card) {
+        Nutrition cardNutrition = card.getNutrition();
+        
+        nutrition.modifyCarbohydrates(cardNutrition.getCarbohydrates());
+        nutrition.modifyProteins(cardNutrition.getProteins());
+        nutrition.modifyFats(cardNutrition.getFats());
+        nutrition.modifyCalories(cardNutrition.getCalories());
 
-	@Override
-	public void update() {
-		updateBody();		
-	}
+        System.out.println(card.getName() + " consumed!");
+        System.out.println("Updated carbohydrates: " + nutrition.getCarbohydrates());
+        System.out.println("Updated proteins: " + nutrition.getProteins());
+        System.out.println("Updated fats: " + nutrition.getFats());
+        System.out.println("Updated calories: " + nutrition.getCalories());
+    }
 }

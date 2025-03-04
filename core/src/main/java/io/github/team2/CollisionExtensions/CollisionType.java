@@ -1,17 +1,15 @@
-package io.github.team2.CollisionSystem;
+package io.github.team2.CollisionExtensions;
 
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityType;
 
 public enum CollisionType {
-	PLAYER_DROP,
-	CIRCLE_DROP,
-	CARD_CARD;
+	CARD_PLAYER;
 
     public static CollisionType getCollisionType(Entity a, Entity b) {
-        if (isPair(a, b, EntityType.PLAYER, EntityType.DROP)) return PLAYER_DROP;
-        if (isPair(a, b, EntityType.CIRCLE, EntityType.DROP)) return CIRCLE_DROP;
-        if (isPair(a, b, EntityType.CARD, EntityType.CARD)) return CARD_CARD;
+        if (isPair(a, b, EntityType.CARD, EntityType.PLAYER))
+        	return CARD_PLAYER;  
+        
         return null;
     }
 

@@ -1,5 +1,6 @@
 package io.github.team2.CollisionSystem;
 
+import io.github.team2.CollisionExtensions.CollisionType;
 import io.github.team2.EntitySystem.Entity;
 
 public interface CollisionListener {

@@ -1,6 +1,7 @@
-package io.github.team2.CollisionSystem;
+package io.github.team2.CollisionExtensions;
 
 import io.github.team2.PointsManager;
+import io.github.team2.CollisionSystem.CollisionListener;
 import io.github.team2.EntitySystem.Entity;
 
 public class PointsSystem implements CollisionListener {
@@ -12,7 +13,7 @@ public class PointsSystem implements CollisionListener {
 
     @Override
     public void onCollision(Entity a, Entity b, CollisionType type) {
-        if (type == CollisionType.PLAYER_DROP) {
+        if (type == CollisionType.CARD_PLAYER) {
             pointsManager.addPoints(10);
         }
     }

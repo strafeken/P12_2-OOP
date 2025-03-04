@@ -20,6 +20,10 @@ import java.util.Random;
 import io.github.team2.Actions.PlayerBehaviour;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.Cards.CardFactory;
+import io.github.team2.CollisionExtensions.CollisionAudioHandler;
+import io.github.team2.CollisionExtensions.CollisionRemovalHandler;
+import io.github.team2.CollisionExtensions.ConsumeNutritionHandler;
+import io.github.team2.CollisionExtensions.PointsSystem;
 import io.github.team2.AudioSystem.IAudioManager;
 
 public class GameScene extends Scene {
@@ -37,7 +41,6 @@ public class GameScene extends Scene {
     private CollisionDetector collisionDetector;
     private PointsManager pointsManager;
     private PlayerInputManager playerInputManager;
-    private MergeSystem mergeSystem;
 
     private GameManager gameManager;
     private IAudioManager audioManager;
@@ -46,13 +49,13 @@ public class GameScene extends Scene {
     private Entity player;
     private Button settingsButton;
 
-    String[] foodNames = { "Lettuce", "Chicken", "Tomato", "Fries" };
+    String[] foodNames = { "Chicken Salad", "Tomato Chicken", "Soggy Salad" };
     private Entity[] food;
 
     // Spawn control
     private Random random;
 
-    private final Vector2 CARD_SIZE = new Vector2(100, 150);
+    private final Vector2 CARD_SIZE = new Vector2(75, 100);
 
     public GameScene() {
         super();
@@ -91,12 +94,12 @@ public class GameScene extends Scene {
         collisionDetector = new CollisionDetector();
         // Get AudioManager instance but assign to IAudioManager interface
         IAudioManager audioManager = AudioManager.getInstance(AudioManager.class);
+        
         collisionDetector.addListener(new CollisionAudioHandler(audioManager));
         collisionDetector.addListener(new CollisionRemovalHandler(entityManager));
-        mergeSystem = new MergeSystem(entityManager, world, gameInputManager.getMouseManager()); // to be changed to PlayerInputManager
-        collisionDetector.addListener(mergeSystem);
         pointsManager = new PointsManager();
         collisionDetector.addListener(new PointsSystem(pointsManager));
+        collisionDetector.addListener(new ConsumeNutritionHandler());
 
         world.setContactListener(collisionDetector);
     }
@@ -105,20 +108,19 @@ public class GameScene extends Scene {
     	try {
             // Initialize player
             player = new Player(EntityType.PLAYER,
-                              "bucket.png",
-                              new Vector2(75, 75),
-                              new Vector2(300, 50),
+                              "card.png",
+                              new Vector2(150, 150),
+                              new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2 + 100),
                               new Vector2(0, 0), new Vector2(100,0) , 200, PlayerBehaviour.State.IDLE, PlayerBehaviour.Move.NONE
                               );
-            player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);
-            
+            player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);        
             entityManager.addEntities(player);
 
             food = new Entity[foodNames.length];
 
             for (int i = 0; i < foodNames.length; i++) {
             	int xPosition = 100 + (i * 200);
-            	food[i] = CardFactory.createCard(foodNames[i], CARD_SIZE, new Vector2(xPosition, 200), world, gameInputManager.getMouseManager());
+            	food[i] = CardFactory.createCard(foodNames[i], CARD_SIZE, new Vector2(xPosition, 100), world, gameInputManager.getMouseManager());
             	entityManager.addEntities(food[i]);
             }
 
@@ -149,9 +151,6 @@ public class GameScene extends Scene {
     		gameInputManager.update();
     		playerInputManager.update();
     		updatePhysics();
-    		mergeSystem.processMerges();
-//        checkGameOver();
-//        settingsButton.update();
 		} catch (Exception e) {
 			System.out.println("error in game scene" + e);
 		}
