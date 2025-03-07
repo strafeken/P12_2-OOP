@@ -20,10 +20,6 @@ public abstract class InputManager {
     public void registerClickable(Clickable clickable) {
     	mouseManager.registerClickable(clickable);
     }
-    
-    public void registerDraggable(Draggable draggable) {
-        mouseManager.registerDraggable(draggable);
-    }
 
     public void registerMouseDown(int button, Action action) {
         mouseManager.registerMouseDown(button, action);

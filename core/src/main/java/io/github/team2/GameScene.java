@@ -19,10 +19,8 @@ import java.util.Random;
 
 import io.github.team2.Actions.PlayerBehaviour;
 import io.github.team2.AudioSystem.AudioManager;
-import io.github.team2.Cards.CardFactory;
 import io.github.team2.CollisionExtensions.CollisionAudioHandler;
 import io.github.team2.CollisionExtensions.CollisionRemovalHandler;
-import io.github.team2.CollisionExtensions.ConsumeNutritionHandler;
 import io.github.team2.CollisionExtensions.PointsSystem;
 import io.github.team2.AudioSystem.IAudioManager;
 
@@ -44,8 +42,6 @@ public class GameScene extends Scene {
 
     private GameManager gameManager;
     private IAudioManager audioManager;
-    
-    private CardManager cardManager;
 
     // Game entities
     private Entity player;
@@ -91,15 +87,12 @@ public class GameScene extends Scene {
         collisionDetector = new CollisionDetector();
         // Get AudioManager instance but assign to IAudioManager interface
         IAudioManager audioManager = AudioManager.getInstance(AudioManager.class);
-        
-        cardManager = new CardManager(entityManager, gameInputManager, world);
 
         collisionDetector.addListener(new CollisionAudioHandler(audioManager));
         collisionDetector.addListener(new CollisionRemovalHandler(entityManager));
         pointsManager = new PointsManager();
         collisionDetector.addListener(new PointsSystem(pointsManager));
-        collisionDetector.addListener(new ConsumeNutritionHandler(cardManager));
-
+        
         world.setContactListener(collisionDetector); 
     }
 
@@ -107,15 +100,13 @@ public class GameScene extends Scene {
     	try {
             // Initialize player
             player = new Player(EntityType.PLAYER,
-                              "card.png",
-                              new Vector2(150, 150),
-                              new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2 + 100),
+                              "rocket.png",
+                              new Vector2(50, 80),
+                              new Vector2(DisplayManager.getScreenWidth() / 2, 100),
                               new Vector2(0, 0), new Vector2(100,0) , 200, PlayerBehaviour.State.IDLE, PlayerBehaviour.Move.NONE
                               );
             player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);        
             entityManager.addEntities(player);
-            
-            cardManager.initializeFood();
 
 		} catch (Exception e) {
 			System.out.println("error in game scene add area" + e);
@@ -144,7 +135,6 @@ public class GameScene extends Scene {
     		gameInputManager.update();
     		playerInputManager.update();
     		updatePhysics();
-    		cardManager.processReset();
 		} catch (Exception e) {
 			System.out.println("error in game scene" + e);
 		}
