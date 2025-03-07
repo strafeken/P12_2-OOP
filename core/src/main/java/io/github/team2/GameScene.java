@@ -113,6 +113,15 @@ public class GameScene extends Scene {
             player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);        
             entityManager.addEntities(player);
             
+            Entity alien = new Alien(EntityType.ALIEN,
+                    "alien.png",
+                    new Vector2(90, 90),
+                    new Vector2(DisplayManager.getScreenWidth() / 2 - 200, DisplayManager.getScreenHeight() / 2 + 200),
+                    new Vector2(0, 0), new Vector2(100,0) , 200, AlienBehaviour.State.IDLE, AlienBehaviour.Move.NONE
+                    );
+            alien.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);        
+            entityManager.addEntities(alien);
+            
 //            RecyclingBin bin = new RecyclingBin(EntityType.RECYCLING_BIN, "recycling-bin.png",
 //            									new Vector2(100, 150),
 //            									new Vector2(DisplayManager.getScreenWidth() / 2, 100), new Vector2(0, 0));

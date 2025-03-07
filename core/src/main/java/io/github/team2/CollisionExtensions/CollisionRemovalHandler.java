@@ -23,6 +23,8 @@ public class CollisionRemovalHandler implements CollisionListener {
             case RECYCLING_BIN_PLAYER:
                 System.out.println("ERROR");
                 break;
+            case ALIEN_PLAYER:
+            	break;
             default:
                 System.out.println("Unhandled collision: " + a.getEntityType() + " : " + b.getEntityType());
         }
