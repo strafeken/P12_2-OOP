@@ -7,29 +7,24 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.team2.EntitySystem.DynamicTextureObject;
+import io.github.team2.EntitySystem.PhysicsBody;
 import io.github.team2.Utils.DisplayManager;
 
 public class DragHandler {
-    private final Draggable draggable;
     private boolean isDragging;
     private Vector2 offset;
     private Body body;
 
-    public DragHandler(Draggable draggable, World world) {
-        this.draggable = draggable;
+    public DragHandler(PhysicsBody body, World world) {
         isDragging = false;
         offset = new Vector2(0, 0);
-        if (draggable instanceof DynamicTextureObject) {
-            this.body = ((DynamicTextureObject<?, ?>) draggable).getBody().getBody();
-        }
+        this.body = body.getBody();
     }
 
     public void startDragging() {
-        if (draggable instanceof DynamicTextureObject) {
-            isDragging = true;
-            body.setType(BodyDef.BodyType.DynamicBody);
-            offset.set(Gdx.input.getX() - body.getPosition().x, DisplayManager.getScreenHeight() - Gdx.input.getY() - body.getPosition().y);
-        }
+    	isDragging = true;
+    	body.setType(BodyDef.BodyType.DynamicBody);
+    	offset.set(Gdx.input.getX() - body.getPosition().x, DisplayManager.getScreenHeight() - Gdx.input.getY() - body.getPosition().y);
     }
 
     public void updateDragging() {

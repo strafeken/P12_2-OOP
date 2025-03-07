@@ -25,7 +25,7 @@ public class Card extends DynamicTextureObject<CardBehaviour.State, CardBehaviou
         
         initPhysicsBody(world, BodyDef.BodyType.KinematicBody); 
         
-        this.dragHandler = new DragHandler(this, world);
+        this.dragHandler = new DragHandler(getBody(), world);
         mouseManager.registerDraggable(this);
         
         this.nutrition = nutrition;
