@@ -32,7 +32,7 @@ public class PauseMenu extends Scene {
         gameInputManager = new GameInputManager();
         textManager = new TextManager();
 
-        image = new StaticTextureObject(EntityType.UNDEFINED, "libgdx.png",
+        image = new StaticTextureObject(EntityType.UNDEFINED, "libgdx.png", new Vector2(600, 150),
             new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2),
             new Vector2(0, 0));
 

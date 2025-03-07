@@ -113,9 +113,11 @@ public class GameScene extends Scene {
             player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);        
             entityManager.addEntities(player);
             
-//            RecyclingBin bin = new RecyclingBin(EntityType.RECYCLING_BIN, "recycling-bin.png",
-//            									new Vector2(DisplayManager.getScreenWidth() / 2, 200), new Vector2(0, 0));
-//            entityManager.addEntities(bin);
+            RecyclingBin bin = new RecyclingBin(EntityType.RECYCLING_BIN, "recycling-bin.png",
+            									new Vector2(100, 150),
+            									new Vector2(DisplayManager.getScreenWidth() / 2, 100), new Vector2(0, 0));
+            bin.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
+            entityManager.addEntities(bin);
             
             spawnTrash(10);
 

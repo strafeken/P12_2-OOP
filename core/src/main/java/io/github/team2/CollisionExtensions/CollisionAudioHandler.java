@@ -25,6 +25,9 @@ public class CollisionAudioHandler implements CollisionListener {
             case NON_RECYCLABLE_PLAYER:
             	audioManager.playSoundEffect("ding");
             	break;
+            case RECYCLING_BIN_PLAYER:
+            	audioManager.playSoundEffect("ding");
+            	break;
             default:
                 System.out.println("Unhandled collision: " + a.getEntityType() + " : " + b.getEntityType());
         }

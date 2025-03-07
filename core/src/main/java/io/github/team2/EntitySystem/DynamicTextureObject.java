@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import io.github.team2.Utils.DisplayManager;
 
-public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>> extends Dynamics<S,A> {
+public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>> extends Dynamics<S,A> implements TexturedObject {
     private Texture tex;
     
     public DynamicTextureObject(Texture texture) {
@@ -33,10 +33,12 @@ public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>
 		tex = texture;
 	}
 
+	@Override
 	public float getWidth() {
 		return tex.getWidth();
 	}
 
+	@Override
 	public float getHeight() {
 		return tex.getHeight();
 	}

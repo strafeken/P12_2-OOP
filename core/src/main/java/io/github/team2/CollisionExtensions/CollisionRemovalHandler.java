@@ -20,6 +20,9 @@ public class CollisionRemovalHandler implements CollisionListener {
             	Entity toBeRemoved = getEntityToRemove(a, b);
             	em.markForRemoval(toBeRemoved);
             	break;
+            case RECYCLING_BIN_PLAYER:
+                System.out.println("ERROR");
+                break;
             default:
                 System.out.println("Unhandled collision: " + a.getEntityType() + " : " + b.getEntityType());
         }

@@ -54,7 +54,8 @@ public class PhysicsBody {
 
 		default:
 			PolygonShape box = new PolygonShape();
-			DynamicTextureObject<?, ?> textureEntity = (DynamicTextureObject<?, ?>) entity;
+			
+			TexturedObject textureEntity =  (TexturedObject) entity;
 			box.setAsBox(textureEntity.getWidth() / 2, textureEntity.getHeight() / 2);
 			return box;
 		}
@@ -87,8 +88,6 @@ public class PhysicsBody {
         return 0; // ✅ Default to 0 if body is null (prevents errors)
     }
 
-
-
     public void setTransform(Vector2 position, float newAngle) {
         if (body == null) {
             System.out.println("[ERROR] setTransform() called on null body!");
@@ -118,15 +117,11 @@ public class PhysicsBody {
 	
 
 	public void updateEntityRotation(Entity entity) {
-		
 		 if ( entity instanceof Dynamics<?,?>) {
 			float angle = body.getAngle(); // Get rotation in radians
 			Vector2 newRotation = new Vector2((float) Math.cos(angle), (float) Math.sin(angle)); // Convert to Vector2
-			((Dynamics< ?,? >)entity).setRotation(newRotation); // Update entity's rotation as a Vector2
-		
-			
+			((Dynamics< ?,? >)entity).setRotation(newRotation); // Update entity's rotation as a Vector2	
 		}
-
 	}
 
 	public void updatePhysics(float deltaTime) {
@@ -145,6 +140,4 @@ public class PhysicsBody {
             body = null;
         }
     }
-
-  
 }

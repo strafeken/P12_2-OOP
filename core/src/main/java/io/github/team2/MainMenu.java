@@ -37,7 +37,7 @@ public class MainMenu extends Scene {
         audioManager.playSoundEffect("mainmenu");
 
         // Setup background image
-        image = new StaticTextureObject(EntityType.UNDEFINED, "libgdx.png",
+        image = new StaticTextureObject(EntityType.UNDEFINED, "libgdx.png", new Vector2(600, 150),
                 new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2),
                 new Vector2(0, 0));
 
