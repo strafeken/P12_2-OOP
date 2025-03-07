@@ -4,11 +4,13 @@ import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityType;
 
 public enum CollisionType {
-	CARD_PLAYER;
+	RECYCLABLE_PLAYER, NON_RECYCLABLE_PLAYER;
 
     public static CollisionType getCollisionType(Entity a, Entity b) {
-        if (isPair(a, b, EntityType.CARD, EntityType.PLAYER))
-        	return CARD_PLAYER;  
+        if (isPair(a, b, EntityType.RECYCLABLE, EntityType.PLAYER))
+        	return RECYCLABLE_PLAYER;  
+        if (isPair(a, b, EntityType.NON_RECYCLABLE, EntityType.PLAYER))
+        	return NON_RECYCLABLE_PLAYER;  
         
         return null;
     }

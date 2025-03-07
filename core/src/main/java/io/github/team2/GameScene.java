@@ -13,6 +13,11 @@ import io.github.team2.CollisionSystem.*;
 import io.github.team2.EntitySystem.*;
 import io.github.team2.InputSystem.*;
 import io.github.team2.SceneSystem.*;
+import io.github.team2.Trash.NonRecyclableTrashFactory;
+import io.github.team2.Trash.RecyclableTrashFactory;
+import io.github.team2.Trash.RecyclingBin;
+import io.github.team2.Trash.Trash;
+import io.github.team2.Trash.TrashBehaviour;
 import io.github.team2.Utils.DisplayManager;
 
 import java.util.Random;
@@ -101,12 +106,18 @@ public class GameScene extends Scene {
             // Initialize player
             player = new Player(EntityType.PLAYER,
                               "rocket.png",
-                              new Vector2(50, 80),
-                              new Vector2(DisplayManager.getScreenWidth() / 2, 100),
+                              new Vector2(70, 100),
+                              new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2),
                               new Vector2(0, 0), new Vector2(100,0) , 200, PlayerBehaviour.State.IDLE, PlayerBehaviour.Move.NONE
                               );
             player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);        
             entityManager.addEntities(player);
+            
+//            RecyclingBin bin = new RecyclingBin(EntityType.RECYCLING_BIN, "recycling-bin.png",
+//            									new Vector2(DisplayManager.getScreenWidth() / 2, 200), new Vector2(0, 0));
+//            entityManager.addEntities(bin);
+            
+            spawnTrash(10);
 
 		} catch (Exception e) {
 			System.out.println("error in game scene add area" + e);
@@ -126,6 +137,35 @@ public class GameScene extends Scene {
                 new GoToSettings(sceneManager), 70, 70);
 
         gameInputManager.registerClickable(settingsButton);
+    }
+    
+    private void spawnTrash(int count) {
+    	RecyclableTrashFactory recyclableFactory = new RecyclableTrashFactory();
+    	NonRecyclableTrashFactory nonRecyclableFactory = new NonRecyclableTrashFactory();
+
+        for (int i = 0; i < count; i++) {
+            Vector2 size = new Vector2(60, 60); // Adjust trash size as needed
+
+            float x = random.nextFloat() * (DisplayManager.getScreenWidth() - size.x);
+            float y = random.nextFloat() * (DisplayManager.getScreenHeight() - size.y);
+            Vector2 position = new Vector2(x, y);
+
+            Trash trash;
+            if (random.nextBoolean()) { // 50% chance to spawn either type
+                trash = recyclableFactory.createTrash(
+                    EntityType.RECYCLABLE, "cardboard-box.png", size, position,
+                    new Vector2(0, 0), new Vector2(0, 0), 0, TrashBehaviour.State.IDLE, TrashBehaviour.Move.NONE
+                );
+            } else {
+                trash = nonRecyclableFactory.createTrash(
+                    EntityType.NON_RECYCLABLE, "half-eaten-food.png", size, position,
+                    new Vector2(0, 0), new Vector2(0, 0), 0, TrashBehaviour.State.IDLE, TrashBehaviour.Move.NONE
+                );
+            }
+
+            trash.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
+            entityManager.addEntities(trash);
+        }
     }
 
     @Override

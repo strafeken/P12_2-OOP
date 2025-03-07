@@ -13,8 +13,8 @@ public class PointsSystem implements CollisionListener {
 
     @Override
     public void onCollision(Entity a, Entity b, CollisionType type) {
-        if (type == CollisionType.CARD_PLAYER) {
-            pointsManager.addPoints(10);
-        }
+//        if (type == CollisionType.CARD_PLAYER) {
+//            pointsManager.addPoints(10);
+//        }
     }
 }

@@ -19,7 +19,10 @@ public class CollisionAudioHandler implements CollisionListener {
     @Override
     public void onCollision(Entity a, Entity b, CollisionType type) {
         switch (type) {
-            case CARD_PLAYER:
+            case RECYCLABLE_PLAYER:
+            	audioManager.playSoundEffect("ding");
+            	break;
+            case NON_RECYCLABLE_PLAYER:
             	audioManager.playSoundEffect("ding");
             	break;
             default:
