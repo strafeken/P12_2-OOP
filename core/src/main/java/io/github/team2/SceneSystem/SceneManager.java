@@ -7,16 +7,22 @@ import java.util.Stack;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-import io.github.team2.Utils.Singleton;
-
-public class SceneManager extends Singleton<SceneManager> implements ISceneManager {
-    private final Map<SceneID, Scene> scenes;
+public class SceneManager implements ISceneManager {
+    private static SceneManager instance = null;
+	private final Map<SceneID, Scene> scenes;
     // handles scene states
     private final Stack<SceneID> sceneStack;
 
-    public SceneManager() {
+    private SceneManager() {
         scenes = new HashMap<>();
         sceneStack = new Stack<>();
+    }
+    
+    public static synchronized SceneManager getInstance() {
+    	if (instance == null)
+    		instance = new SceneManager();
+    	
+    	return instance;
     }
 
     @Override

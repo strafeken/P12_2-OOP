@@ -33,7 +33,7 @@ public class MainMenu extends Scene {
         textManager = new TextManager();
 
         // Start playing main menu background music - use interface
-        IAudioManager audioManager = AudioManager.getInstance(AudioManager.class);
+        IAudioManager audioManager = AudioManager.getInstance();
         audioManager.playSoundEffect("mainmenu");
 
         // Setup background image
@@ -45,7 +45,7 @@ public class MainMenu extends Scene {
 
         Vector2 centerPos = new Vector2(DisplayManager.getScreenWidth() / 2 - 50, DisplayManager.getScreenHeight() / 2 - 180);
         // Use interface for SceneManager
-        ISceneManager sceneManager = SceneManager.getInstance(SceneManager.class);
+        ISceneManager sceneManager = SceneManager.getInstance();
         StartGame startAction = new StartGame(sceneManager);
         startButton = new Button("startBtn.png", centerPos, startAction, 100, 100);
 
@@ -85,7 +85,7 @@ public class MainMenu extends Scene {
         System.out.println("Main Menu => DISPOSE");
         entityManager.dispose();
         // Use interface
-        IAudioManager audioManager = AudioManager.getInstance(AudioManager.class);
+        IAudioManager audioManager = AudioManager.getInstance();
         audioManager.stopMusic(); // Stop music when leaving menu
     }
 }

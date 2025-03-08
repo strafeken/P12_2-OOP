@@ -25,8 +25,8 @@ public class GameMaster extends ApplicationAdapter {
         batch = new SpriteBatch();
         shape = new ShapeRenderer();
 
-        audioManager = AudioManager.getInstance(AudioManager.class);
-        sceneManager = SceneManager.getInstance(SceneManager.class);
+        audioManager = AudioManager.getInstance();
+        sceneManager = SceneManager.getInstance();
         entityManager = new EntityManager();
 
         // initialize audio with correct paths and volume

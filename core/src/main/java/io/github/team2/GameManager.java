@@ -1,13 +1,20 @@
 package io.github.team2;
 
 import io.github.team2.InputSystem.PlayerInputManager;
-import io.github.team2.Utils.Singleton;
 
-public class GameManager extends Singleton<GameManager> {
+public class GameManager {
+	private static GameManager instance = null;
     private PlayerInputManager playerInputManager;
 
-    public GameManager() {
+    private GameManager() {
     	
+    }
+    
+    public static synchronized GameManager getInstance() {
+    	if (instance == null)
+    		instance = new GameManager();
+    	
+    	return instance;
     }
     
     public PlayerInputManager getPlayerInputManager() {

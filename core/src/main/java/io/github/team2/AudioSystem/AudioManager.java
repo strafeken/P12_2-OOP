@@ -4,24 +4,30 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
-import io.github.team2.Utils.Singleton;
-
 import java.util.HashMap;
 import java.util.Map;
 
-public class AudioManager extends Singleton<AudioManager> implements IAudioManager {
+public class AudioManager implements IAudioManager {
+	private static AudioManager instance = null;
     private Map<String, Sound> soundEffects;
     private Map<String, Long> activeSound; // Track active sound IDs
     private String currentMusic;
     private float volume;
     private Music music;
 
-    public AudioManager() {
+    private AudioManager() {
         soundEffects = new HashMap<>();
         activeSound = new HashMap<>(); // Add this to track active sounds
         currentMusic = "";
         volume = 1.0f;
         Gdx.app.log("AudioManager", "AudioManager created.");
+    }
+    
+    public static synchronized AudioManager getInstance() {
+    	if (instance == null)
+    		instance = new AudioManager();
+
+    	return instance;
     }
 
     public void playMusic(String path) {

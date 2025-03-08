@@ -39,7 +39,7 @@ public class PauseMenu extends Scene {
         entityManager.addEntities(image);
 
         // Use interface instead of concrete class
-        ISceneManager sceneManager = SceneManager.getInstance(SceneManager.class);
+        ISceneManager sceneManager = SceneManager.getInstance();
         gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new ResumeGame(sceneManager));
     }
 

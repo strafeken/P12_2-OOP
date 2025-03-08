@@ -70,12 +70,12 @@ public class GameScene extends Scene {
         initializeEntities();
         initializeInput();
 
-        gameManager = GameManager.getInstance(GameManager.class);
+        gameManager = GameManager.getInstance();
         gameManager.setPlayerInputManager(playerInputManager);
 
-        audioManager = AudioManager.getInstance(AudioManager.class);
-        AudioManager.getInstance(AudioManager.class).stopSoundEffect("mainmenu");
-        AudioManager.getInstance(AudioManager.class).playSoundEffect("start");
+        audioManager = AudioManager.getInstance();
+        AudioManager.getInstance().stopSoundEffect("mainmenu");
+        AudioManager.getInstance().playSoundEffect("start");
     }
 
     private void initializeWorld() {
@@ -91,7 +91,7 @@ public class GameScene extends Scene {
 
         collisionDetector = new CollisionDetector();
         // Get AudioManager instance but assign to IAudioManager interface
-        IAudioManager audioManager = AudioManager.getInstance(AudioManager.class);
+        IAudioManager audioManager = AudioManager.getInstance();
 
         collisionDetector.addListener(new CollisionAudioHandler(audioManager));
         collisionDetector.addListener(new CollisionRemovalHandler(entityManager));
@@ -103,7 +103,6 @@ public class GameScene extends Scene {
 
     private void initializeEntities() {
     	try {
-            // Initialize player
             player = new Player(EntityType.PLAYER,
                               "rocket.png",
                               new Vector2(70, 100),
@@ -141,7 +140,7 @@ public class GameScene extends Scene {
         playerInputManager = new PlayerInputManager(player);
 
         // Use interface instead of concrete class
-        ISceneManager sceneManager = SceneManager.getInstance(SceneManager.class);
+        ISceneManager sceneManager = SceneManager.getInstance();
         gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new PauseGame(sceneManager));
         gameInputManager.registerKeyUp(Input.Keys.X, new ExitGame(sceneManager));
 

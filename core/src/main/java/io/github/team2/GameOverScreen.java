@@ -34,16 +34,16 @@ public class GameOverScreen extends Scene {
         gameInputManager = new GameInputManager();
         textManager = new TextManager();
 
-        StartGame startAction = new StartGame(SceneManager.getInstance(SceneManager.class));
+        StartGame startAction = new StartGame(SceneManager.getInstance());
         Vector2 centerPos = new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2 - 200);
         restartButton = new Button("restartBtn.png", centerPos, startAction, 100, 100);
 
         gameInputManager.registerKeyUp(Input.Keys.SPACE, startAction);
         gameInputManager.registerClickable(restartButton);
 
-        ISceneManager sceneManager = SceneManager.getInstance(SceneManager.class);
+        ISceneManager sceneManager = SceneManager.getInstance();
         // Get instance through concrete class but store as interface type
-        audioManager = AudioManager.getInstance(AudioManager.class);
+        audioManager = AudioManager.getInstance();
     }
 
     @Override

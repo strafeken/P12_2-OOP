@@ -13,7 +13,7 @@ public class CollisionAudioHandler implements CollisionListener {
     }
 
     public CollisionAudioHandler() {
-        this(AudioManager.getInstance(AudioManager.class));
+        this(AudioManager.getInstance());
     }
 
     @Override

@@ -14,7 +14,6 @@ import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.InputSystem.Action;
 import io.github.team2.InputSystem.Button;
 import io.github.team2.InputSystem.GameInputManager;
-import io.github.team2.InputSystem.KeyboardManager;
 import io.github.team2.InputSystem.PlayerInputManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
@@ -87,12 +86,12 @@ public class SettingsMenu extends Scene {
         currentBinding = null;
         keyBindings = new LinkedHashMap<>();
 
-        playerInputManager = GameManager.getInstance(GameManager.class).getPlayerInputManager();
+        playerInputManager = GameManager.getInstance().getPlayerInputManager();
 
         createButtonsForKeyBindings();
 
         // Get SceneManager through interface
-        ISceneManager sceneManager = SceneManager.getInstance(SceneManager.class);
+        ISceneManager sceneManager = SceneManager.getInstance();
         backButton = new Button("backBtn.png",
             new Vector2(PANEL_LEFT + 40, 50),
             new ResumeGame(sceneManager), 80, 32);
@@ -101,7 +100,7 @@ public class SettingsMenu extends Scene {
         backButton.update();
 
         // Store as interface
-        audioManager = AudioManager.getInstance(AudioManager.class);
+        audioManager = AudioManager.getInstance();
     }
 
     private void createButtonsForKeyBindings() {
