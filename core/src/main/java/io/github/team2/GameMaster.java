@@ -18,7 +18,6 @@ public class GameMaster extends ApplicationAdapter {
     private ShapeRenderer shape;
     private IAudioManager audioManager;
     private ISceneManager sceneManager;
-    private IEntityManager entityManager;
 
     @Override
     public void create() {
@@ -27,7 +26,6 @@ public class GameMaster extends ApplicationAdapter {
 
         audioManager = AudioManager.getInstance();
         sceneManager = SceneManager.getInstance();
-        entityManager = new EntityManager();
 
         // initialize audio with correct paths and volume
         audioManager.loadSoundEffect("start", "sounds/start.mp3");
@@ -63,10 +61,6 @@ public class GameMaster extends ApplicationAdapter {
         batch.dispose();
         shape.dispose();
         audioManager.dispose();
-    }
-
-    public IEntityManager getEntityManager() {
-        return entityManager;
     }
 
     public ISceneManager getSceneManager() {
