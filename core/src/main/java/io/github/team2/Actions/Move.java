@@ -20,25 +20,22 @@ public class Move implements Action {
 	public void execute() {
 		// check if is dynamic entity
 		if (entity instanceof Dynamics<?, ?>) {
-			if (entity.getBody() != null) {
+			if (entity.getPhysicsBody() != null) {
 				if (entity.getEntityType() == EntityType.DROP) {
 
-					entity.getBody().setLinearVelocity(direction.x * ((Dynamics<?, ?>) entity).getSpeed(),
+					entity.getPhysicsBody().setLinearVelocity(direction.x * ((Dynamics<?, ?>) entity).getSpeed(),
 							direction.y * ((Dynamics<?, ?>) entity).getSpeed());
 				} else {
 
 					if (((Dynamics<?, ?>)entity).isOutOfBound(direction) == false) {
 
-						entity.getBody().setLinearVelocity(direction.x * ((Dynamics<?, ?>) entity).getSpeed(),
+						entity.getPhysicsBody().setLinearVelocity(direction.x * ((Dynamics<?, ?>) entity).getSpeed(),
 								direction.y * ((Dynamics<?, ?>) entity).getSpeed());
 					} else {
-						entity.getBody().setLinearVelocity(0, 0);
+						entity.getPhysicsBody().setLinearVelocity(0, 0);
 					}
-
 				}
-
 			}
-
 		}
 	}
 }

@@ -96,8 +96,8 @@ public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>
 	public void draw(SpriteBatch batch) {
 	    if (getTexture() == null) return; // ✅ Ensure texture exists before drawing
 
-	    float angleDegrees = (float) Math.toDegrees(getBody().getAngle()); // ✅ Convert radians to degrees
-	    Vector2 position = getBody().getPosition(); // ✅ Get entity position
+	    float angleDegrees = (float) Math.toDegrees(getPhysicsBody().getAngle()); // ✅ Convert radians to degrees
+	    Vector2 position = getPhysicsBody().getPosition(); // ✅ Get entity position
 
 	    batch.draw(
 	        getTexture(),

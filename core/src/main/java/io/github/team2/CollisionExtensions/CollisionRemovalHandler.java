@@ -21,7 +21,6 @@ public class CollisionRemovalHandler implements CollisionListener {
             	em.markForRemoval(toBeRemoved);
             	break;
             case RECYCLING_BIN_PLAYER:
-                System.out.println("ERROR");
                 break;
             case ALIEN_PLAYER:
             	break;

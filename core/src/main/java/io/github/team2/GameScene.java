@@ -110,7 +110,8 @@ public class GameScene extends Scene {
                               new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2),
                               new Vector2(0, 0), new Vector2(100,0) , 200, PlayerBehaviour.State.IDLE, PlayerBehaviour.Move.NONE
                               );
-            player.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);        
+            player.initPhysicsBody(world, BodyDef.BodyType.DynamicBody); 
+            player.getPhysicsBody().getBody().setFixedRotation(true);
             entityManager.addEntities(player);
             
             Entity alien = new Alien(EntityType.ALIEN,
@@ -119,14 +120,15 @@ public class GameScene extends Scene {
                     new Vector2(DisplayManager.getScreenWidth() / 2 - 200, DisplayManager.getScreenHeight() / 2 + 200),
                     new Vector2(0, 0), new Vector2(100,0) , 200, AlienBehaviour.State.IDLE, AlienBehaviour.Move.NONE
                     );
-            alien.initPhysicsBody(world, BodyDef.BodyType.KinematicBody);        
+            alien.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);        
             entityManager.addEntities(alien);
             
-//            RecyclingBin bin = new RecyclingBin(EntityType.RECYCLING_BIN, "recycling-bin.png",
-//            									new Vector2(100, 150),
-//            									new Vector2(DisplayManager.getScreenWidth() / 2, 100), new Vector2(0, 0));
-//            bin.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
-//            entityManager.addEntities(bin);
+            RecyclingBin bin = new RecyclingBin(EntityType.RECYCLING_BIN, "recycling-bin.png",
+            									new Vector2(100, 150),
+            									new Vector2(DisplayManager.getScreenWidth() / 2, 100), new Vector2(0, 0));
+            bin.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
+            bin.getPhysicsBody().setAsSensor();
+            entityManager.addEntities(bin);
             
             spawnTrash(10);
 

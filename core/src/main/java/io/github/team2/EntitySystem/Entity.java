@@ -20,7 +20,6 @@ public abstract class Entity {
 		direction = new Vector2(0, 0);
 		type = EntityType.UNDEFINED;
 		body = null;
-
 	}
 
 	public Entity(EntityType type, Vector2 position, Vector2 direction) {
@@ -28,7 +27,6 @@ public abstract class Entity {
 		this.position = position;
 		this.direction = direction;
 		body = null;
-
 	}
 
 	public Vector2 getPosition() {
@@ -55,12 +53,11 @@ public abstract class Entity {
 		this.type = type;
 	}
 
-	public PhysicsBody getBody() {
+	public PhysicsBody getPhysicsBody() {
 		return body;
 	}
 
 	public void initPhysicsBody(World world, BodyDef.BodyType bodyType) {
-
 		body = new PhysicsBody(world, this, bodyType);
 	}
 
@@ -82,5 +79,4 @@ public abstract class Entity {
 	}
 
 	public abstract void update();
-
 }

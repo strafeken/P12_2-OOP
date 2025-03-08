@@ -50,7 +50,7 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 
 	private void resetPosition() {
 		Random random = new Random();
-		getBody().setLocation(random.nextFloat() * DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
+		getPhysicsBody().setLocation(random.nextFloat() * DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
 	}
 	
 	@Override
@@ -110,7 +110,7 @@ public class Drop extends DynamicTextureObject<DropBehaviour.State, DropBehaviou
 
 	@Override
 	public void update() {
-		if (getBody() != null) { // Add null check
+		if (getPhysicsBody() != null) { // Add null check
 
 			updateMovement();
 			/*

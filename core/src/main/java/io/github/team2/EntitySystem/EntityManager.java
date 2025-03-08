@@ -60,8 +60,8 @@ public class EntityManager implements IEntityManager {
 	public void removeEntity(Entity entity) {
 		entityList.remove(entity);
 
-		if (entity.getBody() != null)
-			entity.getBody().dispose();
+		if (entity.getPhysicsBody() != null)
+			entity.getPhysicsBody().dispose();
 
 		if (entity instanceof DynamicTextureObject)
 			((DynamicTextureObject<?, ?>) entity).dispose();
@@ -107,8 +107,8 @@ public class EntityManager implements IEntityManager {
 
         // First null out physics bodies
         for (Entity entity : entitiesToDispose) {
-            if (entity.getBody() != null) {
-                entity.getBody().dispose();
+            if (entity.getPhysicsBody() != null) {
+                entity.getPhysicsBody().dispose();
             }
         }
 

@@ -109,13 +109,16 @@ public class PhysicsBody {
 		return newAngle();
 	}
 	
-
+	public void setAsSensor() {
+        for (Fixture fixture : body.getFixtureList())
+            fixture.setSensor(true);
+	}
+	
 	public void updateEntityPosition(Entity entity) {
 		entity.setPosition(new Vector2(body.getPosition().x, body.getPosition().y));
 		updateEntityRotation(entity);
 	}
 	
-
 	public void updateEntityRotation(Entity entity) {
 		 if ( entity instanceof Dynamics<?,?>) {
 			float angle = body.getAngle(); // Get rotation in radians

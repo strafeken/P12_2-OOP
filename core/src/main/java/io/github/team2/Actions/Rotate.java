@@ -19,12 +19,13 @@ public class Rotate implements Action {
 
 	@Override
 	public void execute() {
-		if (entity.getBody() == null)
+		if (entity.getPhysicsBody() == null)
 			return;
+
 		if (entity instanceof Dynamics<?, ?>) {
 
 			float rotationSpeed = ROTATION_SPEED * Gdx.graphics.getDeltaTime();
-			float currentAngle = entity.getBody().getAngle();
+			float currentAngle = entity.getPhysicsBody().getAngle();
 
 			if (direction.x < 0) {
 				currentAngle += rotationSpeed;
@@ -40,11 +41,9 @@ public class Rotate implements Action {
 
 			((Dynamics<?, ?>) entity).setRotation(newRotation);
 
-			if (entity.getBody() != null) {
-				entity.getBody().setTransform(entity.getBody().getPosition(), currentAngle);
-
+			if (entity.getPhysicsBody() != null) {
+				entity.getPhysicsBody().setTransform(entity.getPhysicsBody().getPosition(), currentAngle);
 			}
-
 		}
 	}
 }
