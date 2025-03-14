@@ -15,15 +15,17 @@ public class CollisionRemovalHandler implements CollisionListener {
     @Override
     public void onCollision(Entity a, Entity b, CollisionType type) {
         switch (type) {
-            case RECYCLABLE_PLAYER:
             case NON_RECYCLABLE_PLAYER:
-            	Entity toBeRemoved = getEntityToRemove(a, b);
-            	em.markForRemoval(toBeRemoved);
-            	break;
+                Entity toBeRemoved = getEntityToRemove(a, b);
+                em.markForRemoval(toBeRemoved);
+                break;
+            case RECYCLABLE_PLAYER:
+                // Don't remove recyclables - let RecyclableCarrierHandler handle it
+                break;
             case RECYCLING_BIN_PLAYER:
                 break;
             case ALIEN_PLAYER:
-            	break;
+                break;
             default:
                 System.out.println("Unhandled collision: " + a.getEntityType() + " : " + b.getEntityType());
         }

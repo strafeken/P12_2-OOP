@@ -10,14 +10,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import io.github.team2.Actions.*;
 import io.github.team2.CollisionSystem.*;
+import io.github.team2.CollisionExtensions.*;
 import io.github.team2.EntitySystem.*;
 import io.github.team2.InputSystem.*;
 import io.github.team2.SceneSystem.*;
-import io.github.team2.Trash.NonRecyclableTrashFactory;
-import io.github.team2.Trash.RecyclableTrashFactory;
-import io.github.team2.Trash.RecyclingBin;
-import io.github.team2.Trash.Trash;
-import io.github.team2.Trash.TrashBehaviour;
+import io.github.team2.Trash.*;
 import io.github.team2.Utils.DisplayManager;
 
 import java.util.Random;
@@ -54,6 +51,11 @@ public class GameScene extends Scene {
 
     // Spawn control
     private Random random;
+    private TrashSpawner trashSpawner;
+
+    private float trashSpawnTimer = 0f;
+    private float trashSpawnInterval = 5f; // Spawn trash every 5 seconds
+    private TrashFactory trashFactory;
 
     public GameScene() {
         super();
@@ -69,9 +71,15 @@ public class GameScene extends Scene {
         initializeManagers();
         initializeEntities();
         initializeInput();
+        initializeCollisionHandlers(); // New method
 
         gameManager = GameManager.getInstance();
         gameManager.setPlayerInputManager(playerInputManager);
+
+        // Initialize player status
+        PlayerStatus playerStatus = PlayerStatus.getInstance();
+        playerStatus.setPlayer(player);
+        playerStatus.reset();
 
         audioManager = AudioManager.getInstance();
         AudioManager.getInstance().stopSoundEffect("mainmenu");
@@ -89,16 +97,31 @@ public class GameScene extends Scene {
         gameInputManager = new GameInputManager();
         textManager = new TextManager();
 
-        collisionDetector = new CollisionDetector();
-        // Get AudioManager instance but assign to IAudioManager interface
-        IAudioManager audioManager = AudioManager.getInstance();
+        // Initialize audio manager first
+        audioManager = AudioManager.getInstance();
 
-        collisionDetector.addListener(new CollisionAudioHandler(audioManager));
-        collisionDetector.addListener(new CollisionRemovalHandler(entityManager));
+        collisionDetector = new CollisionDetector();
         pointsManager = new PointsManager();
+
+        // Add all collision handlers/listeners after initializing audioManager
+        world.setContactListener(collisionDetector);
+
+        // Initialize the trash spawner
+        trashSpawner = new TrashSpawner(world, entityManager);
+        trashFactory = new ConcreteTrashFactory();
+    }
+
+    private void initializeCollisionHandlers() {
+        // Add collision listeners (using CollisionType enum)
+        collisionDetector.addListener(new PlayerLifeHandler(SceneManager.getInstance()));
+        collisionDetector.addListener(new StartMiniGameHandler());
+        collisionDetector.addListener(new CollisionAudioHandler(audioManager)); // Pass the initialized audioManager
+        collisionDetector.addListener(new CollisionRemovalHandler(entityManager));
         collisionDetector.addListener(new PointsSystem(pointsManager));
-        
-        world.setContactListener(collisionDetector); 
+
+        // Add collision handlers (using direct contacts)
+        collisionDetector.addHandler(new RecyclableCarrierHandler(entityManager));
+        collisionDetector.addHandler(new RecyclingBinHandler(pointsManager));
     }
 
     private void initializeEntities() {
@@ -109,26 +132,28 @@ public class GameScene extends Scene {
                               new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2),
                               new Vector2(0, 0), new Vector2(100,0) , 200, PlayerBehaviour.State.IDLE, PlayerBehaviour.Move.NONE
                               );
-            player.initPhysicsBody(world, BodyDef.BodyType.DynamicBody); 
+            player.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
             player.getPhysicsBody().getBody().setFixedRotation(true);
             entityManager.addEntities(player);
-            
-            Entity alien = new Alien(EntityType.ALIEN,
+
+            Alien alien = new Alien(EntityType.ALIEN,
                     "alien.png",
                     new Vector2(90, 90),
                     new Vector2(DisplayManager.getScreenWidth() / 2 - 200, DisplayManager.getScreenHeight() / 2 + 200),
                     new Vector2(0, 0), new Vector2(100,0) , 200, AlienBehaviour.State.IDLE, AlienBehaviour.Move.NONE
                     );
-            alien.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);        
+            alien.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
+            // Set the target player for the alien to chase
+            alien.setTargetPlayer(player);
             entityManager.addEntities(alien);
-            
+
             RecyclingBin bin = new RecyclingBin(EntityType.RECYCLING_BIN, "recycling-bin.png",
             									new Vector2(100, 150),
             									new Vector2(DisplayManager.getScreenWidth() / 2, 100), new Vector2(0, 0));
             bin.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
             bin.getPhysicsBody().setAsSensor();
             entityManager.addEntities(bin);
-            
+
             spawnTrash(10);
 
 		} catch (Exception e) {
@@ -150,46 +175,40 @@ public class GameScene extends Scene {
 
         gameInputManager.registerClickable(settingsButton);
     }
-    
+
     private void spawnTrash(int count) {
-    	RecyclableTrashFactory recyclableFactory = new RecyclableTrashFactory();
-    	NonRecyclableTrashFactory nonRecyclableFactory = new NonRecyclableTrashFactory();
+        // Spawn 70% recyclable items, 30% non-recyclable
+        trashSpawner.spawnRandomTrash(count, 0.7f);
 
-        for (int i = 0; i < count; i++) {
-            Vector2 size = new Vector2(60, 60); // Adjust trash size as needed
-
-            float x = random.nextFloat() * (DisplayManager.getScreenWidth() - size.x);
-            float y = random.nextFloat() * (DisplayManager.getScreenHeight() - size.y);
-            Vector2 position = new Vector2(x, y);
-
-            Trash trash;
-            if (random.nextBoolean()) { // 50% chance to spawn either type
-                trash = recyclableFactory.createTrash(
-                    EntityType.RECYCLABLE, "cardboard-box.png", size, position,
-                    new Vector2(0, 0), new Vector2(0, 0), 0, TrashBehaviour.State.IDLE, TrashBehaviour.Move.NONE
-                );
-            } else {
-                trash = nonRecyclableFactory.createTrash(
-                    EntityType.NON_RECYCLABLE, "half-eaten-food.png", size, position,
-                    new Vector2(0, 0), new Vector2(0, 0), 0, TrashBehaviour.State.IDLE, TrashBehaviour.Move.NONE
-                );
-            }
-
-            trash.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
-            entityManager.addEntities(trash);
-        }
+        System.out.println("Spawned " + count + " trash items");
     }
 
     @Override
     public void update() {
-    	try {
-    		entityManager.update();
-    		gameInputManager.update();
-    		playerInputManager.update();
-    		updatePhysics();
-		} catch (Exception e) {
-			System.out.println("error in game scene" + e);
-		}
+        try {
+            // Update trash spawn timer
+            trashSpawnTimer += Gdx.graphics.getDeltaTime();
+
+            // Spawn new trash periodically
+            if (trashSpawnTimer >= trashSpawnInterval) {
+                // Spawn 1-3 new trash items
+                int itemsToSpawn = random.nextInt(3) + 1;
+                spawnTrash(itemsToSpawn);
+                trashSpawnTimer = 0f;
+
+                // Gradually decrease spawn interval for increasing difficulty
+                // But don't go below 2 seconds
+                trashSpawnInterval = Math.max(2.0f, trashSpawnInterval * 0.99f);
+            }
+
+            entityManager.update();
+            gameInputManager.update();
+            playerInputManager.update();
+            updatePhysics();
+        } catch (Exception e) {
+            System.out.println("Error in game scene: " + e);
+            e.printStackTrace();
+        }
     }
 
     private void updatePhysics() {
@@ -207,6 +226,9 @@ public class GameScene extends Scene {
         entityManager.draw(batch);
         drawUI(batch);
         settingsButton.draw(batch);
+
+        // Draw player status (carrying item icon, lives)
+        drawPlayerStatus(batch);
     }
 
     private void drawUI(SpriteBatch batch) {
@@ -231,6 +253,34 @@ public class GameScene extends Scene {
             baseX,
             baseY - lineSpacing,
             Color.RED);
+    }
+
+    private void drawPlayerStatus(SpriteBatch batch) {
+        PlayerStatus status = PlayerStatus.getInstance();
+
+        // Draw lives
+        float x = 20;
+        float y = DisplayManager.getScreenHeight() - 30;
+        textManager.draw(batch, "Lives: " + status.getLives(), x, y, Color.WHITE);
+
+        // Draw score
+        textManager.draw(batch, "Score: " + pointsManager.getPoints(), x, y - 30, Color.WHITE);
+
+        // Draw carrying status
+        if (status.isCarryingRecyclable()) {
+            Entity carried = status.getCarriedItem();
+            if (carried instanceof RecyclableTrash) {
+                RecyclableTrash trash = (RecyclableTrash) carried;
+                String type = trash.getRecyclableType().toString();
+                textManager.draw(batch, "Carrying: " + type, x, y - 60, Color.GREEN);
+            }
+        }
+
+        // Draw mini-game status if in one
+        if (status.isInMiniGame()) {
+            textManager.draw(batch, "IN MINI-GAME", DisplayManager.getScreenWidth() / 2 - 100,
+                            DisplayManager.getScreenHeight() - 30, Color.YELLOW);
+        }
     }
 
     @Override
