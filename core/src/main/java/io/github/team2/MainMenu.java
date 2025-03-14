@@ -65,7 +65,7 @@ public class MainMenu extends Scene {
     public void draw(SpriteBatch batch) {
         entityManager.draw(batch);
         startButton.draw(batch);
-        textManager.draw(batch, "Space Game", DisplayManager.getScreenWidth()/2- 85,  DisplayManager.getScreenHeight()/2, Color.RED);
+        textManager.draw(batch, "Astro Debris", DisplayManager.getScreenWidth()/2- 85,  DisplayManager.getScreenHeight()/2, Color.RED);
         textManager.draw(batch, "Press SPACE to Start", DisplayManager.getScreenWidth()/2 - 140, 170, Color.WHITE);
     }
 
