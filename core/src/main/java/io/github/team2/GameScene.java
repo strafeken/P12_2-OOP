@@ -1,30 +1,46 @@
 package io.github.team2;
 
+import java.util.Random;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-//import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
-import io.github.team2.Actions.*;
-import io.github.team2.CollisionSystem.*;
-import io.github.team2.CollisionExtensions.*;
-import io.github.team2.EntitySystem.*;
-import io.github.team2.InputSystem.*;
-import io.github.team2.SceneSystem.*;
-import io.github.team2.Trash.*;
-import io.github.team2.Utils.DisplayManager;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 
-import java.util.Random;
-
+import io.github.team2.Actions.ExitGame;
+import io.github.team2.Actions.GoToSettings;
+import io.github.team2.Actions.PauseGame;
 import io.github.team2.Actions.PlayerBehaviour;
 import io.github.team2.AudioSystem.AudioManager;
+import io.github.team2.AudioSystem.IAudioManager;
 import io.github.team2.CollisionExtensions.CollisionAudioHandler;
 import io.github.team2.CollisionExtensions.CollisionRemovalHandler;
+import io.github.team2.CollisionExtensions.PlayerLifeHandler;
 import io.github.team2.CollisionExtensions.PointsSystem;
-import io.github.team2.AudioSystem.IAudioManager;
+import io.github.team2.CollisionExtensions.RecyclableCarrierHandler;
+import io.github.team2.CollisionExtensions.RecyclingBinHandler;
+import io.github.team2.CollisionExtensions.StartMiniGameHandler;
+import io.github.team2.CollisionSystem.CollisionDetector;
+import io.github.team2.EntitySystem.Entity;
+import io.github.team2.EntitySystem.EntityManager;
+import io.github.team2.EntitySystem.EntityType;
+import io.github.team2.InputSystem.Button;
+import io.github.team2.InputSystem.GameInputManager;
+import io.github.team2.InputSystem.PlayerInputManager;
+import io.github.team2.SceneSystem.ISceneManager;
+import io.github.team2.SceneSystem.Scene;
+import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.Trash.ConcreteTrashFactory;
+import io.github.team2.Trash.RecyclableTrash;
+import io.github.team2.Trash.RecyclingBin;
+import io.github.team2.Trash.TrashFactory;
+import io.github.team2.Trash.TrashSpawner;
+import io.github.team2.Utils.DisplayManager;
 
 public class GameScene extends Scene {
     // Physics constants
@@ -58,6 +74,7 @@ public class GameScene extends Scene {
     private TrashFactory trashFactory;
 
     private StartMiniGameHandler miniGameHandler;
+    private PlayerLifeHandler playerLifeHandler;
 
     public GameScene() {
         super();
@@ -115,7 +132,8 @@ public class GameScene extends Scene {
 
     private void initializeCollisionHandlers() {
         // Add collision listeners (using CollisionType enum)
-        collisionDetector.addListener(new PlayerLifeHandler(SceneManager.getInstance()));
+        PlayerLifeHandler playerLifeHandler = new PlayerLifeHandler(SceneManager.getInstance(), pointsManager);
+        collisionDetector.addListener(playerLifeHandler);
         StartMiniGameHandler miniGameHandler = new StartMiniGameHandler(pointsManager, entityManager);
         collisionDetector.addListener(miniGameHandler);
         collisionDetector.addListener(new CollisionAudioHandler(audioManager));
@@ -126,8 +144,9 @@ public class GameScene extends Scene {
         collisionDetector.addHandler(new RecyclableCarrierHandler(entityManager));
         collisionDetector.addHandler(new RecyclingBinHandler(pointsManager));
 
-        // Store the handler for updates
+        // Store the handlers for updates
         this.miniGameHandler = miniGameHandler;
+        this.playerLifeHandler = playerLifeHandler;
     }
 
     private void initializeEntities() {
@@ -216,6 +235,11 @@ public class GameScene extends Scene {
             gameInputManager.update();
             playerInputManager.update();
             updatePhysics();
+            
+            // Check for game over AFTER physics update is complete
+            if (playerLifeHandler != null) {
+                playerLifeHandler.checkGameOver();
+            }
         } catch (Exception e) {
             System.out.println("Error in game scene: " + e);
             e.printStackTrace();

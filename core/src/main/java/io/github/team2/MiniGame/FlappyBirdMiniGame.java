@@ -11,20 +11,19 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
-import io.github.team2.GameManager;
-import io.github.team2.PlayerStatus;
-import io.github.team2.PointsManager;
-import io.github.team2.TextManager;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.AudioSystem.IAudioManager;
+import io.github.team2.CollisionExtensions.StartMiniGameHandler;
 import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.InputSystem.GameInputManager;
-import io.github.team2.SceneSystem.Scene;
-import io.github.team2.SceneSystem.SceneID;
-import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.PlayerStatus;
+import io.github.team2.PointsManager;
 import io.github.team2.SceneSystem.ISceneManager;
+import io.github.team2.SceneSystem.Scene;
+import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.TextManager;
 import io.github.team2.Utils.DisplayManager;
-import io.github.team2.CollisionExtensions.StartMiniGameHandler;;
+;
 public class FlappyBirdMiniGame extends Scene {
     // Game state
     private enum GameState { READY, PLAYING, GAME_OVER }
@@ -307,28 +306,18 @@ public class FlappyBirdMiniGame extends Scene {
     private void completeGame(boolean success) {
         gameCompleted = true;
 
-        // Award rewards based on score
-        if (success) {
-            // Reward based on pipes passed
-            if (score >= 10) {
-                // Excellent performance - extra life and big score bonus
-                PlayerStatus.getInstance().setLives(PlayerStatus.getInstance().getLives() + 1);
-                pointsManager.addPoints(score * 50);
-                System.out.println("Excellent performance! +1 life and " + (score * 50) + " points!");
-            } else if (score >= 5) {
-                // Good performance - score bonus
-                pointsManager.addPoints(score * 30);
-                System.out.println("Good performance! " + (score * 30) + " points!");
-            } else {
-                // Basic completion - small score bonus
-                pointsManager.addPoints(score * 10);
-                System.out.println("Mini-game completed! " + (score * 10) + " points!");
-            }
-        } else {
-            // Failed performance penalty
+        // Add the minigame score to the main game score
+        pointsManager.addPoints(score * 10);
+        System.out.println("Mini-game completed! Added " + (score * 10) + " points from mini-game score.");
+        
+        // Penalize player if they died early (before 15 seconds) by reducing health instead of points
+        if (!success && gameTime < 15.0f) {
+            // Only reduce health if player has more than 1 life remaining
             if (PlayerStatus.getInstance().getLives() > 1) {
                 PlayerStatus.getInstance().decrementLife();
-                System.out.println("Mini-game failed! Lost a life!");
+                System.out.println("Died early in mini-game (before 15 seconds). Lost 1 life!");
+            } else {
+                System.out.println("Died early in mini-game, but only 1 life remaining. No life penalty applied.");
             }
         }
 

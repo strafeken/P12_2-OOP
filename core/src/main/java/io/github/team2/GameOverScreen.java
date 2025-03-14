@@ -5,16 +5,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+
 import io.github.team2.Actions.StartGame;
+import io.github.team2.AudioSystem.AudioManager;
+import io.github.team2.AudioSystem.IAudioManager;
 import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.InputSystem.Button;
 import io.github.team2.InputSystem.GameInputManager;
-import io.github.team2.SceneSystem.Scene;
-import io.github.team2.SceneSystem.SceneManager;
-import io.github.team2.Utils.DisplayManager;
-import io.github.team2.AudioSystem.AudioManager;  // Need this import for the getInstance method
-import io.github.team2.AudioSystem.IAudioManager;  // Use this interface for the variable type
 import io.github.team2.SceneSystem.ISceneManager;
+import io.github.team2.SceneSystem.Scene;  // Need this import for the getInstance method
+import io.github.team2.SceneSystem.SceneManager;  // Use this interface for the variable type
+import io.github.team2.Utils.DisplayManager;
 
 public class GameOverScreen extends Scene {
     private int finalScore;
@@ -23,6 +24,10 @@ public class GameOverScreen extends Scene {
 
     public GameOverScreen() {
         super(); // Initialize base components
+    }
+
+    public void setFinalScore(int score) {
+        this.finalScore = score;
     }
 
     @Override

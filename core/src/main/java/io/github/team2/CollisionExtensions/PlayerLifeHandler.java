@@ -1,16 +1,21 @@
 package io.github.team2.CollisionExtensions;
 
-import io.github.team2.PlayerStatus;
 import io.github.team2.CollisionSystem.CollisionListener;
 import io.github.team2.EntitySystem.Entity;
+import io.github.team2.GameOverScreen;
+import io.github.team2.PlayerStatus;
+import io.github.team2.PointsManager;
 import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.SceneSystem.SceneID;
 
 public class PlayerLifeHandler implements CollisionListener {
     private ISceneManager sceneManager;
+    private PointsManager pointsManager;
+    private boolean isGameOver = false;
 
-    public PlayerLifeHandler(ISceneManager sceneManager) {
+    public PlayerLifeHandler(ISceneManager sceneManager, PointsManager pointsManager) {
         this.sceneManager = sceneManager;
+        this.pointsManager = pointsManager;
     }
 
     @Override
@@ -22,11 +27,26 @@ public class PlayerLifeHandler implements CollisionListener {
             playerStatus.decrementLife();
             System.out.println("Player collided with non-recyclable! Lives remaining: " + playerStatus.getLives());
 
-            // Check if game over
+            // Check if game over, but don't transition immediately during collision
             if (playerStatus.isGameOver()) {
                 System.out.println("Game Over! No lives remaining.");
-                sceneManager.setNextScene(SceneID.GAME_OVER);
+                isGameOver = true;
             }
         }
+    }
+    
+    // This method should be called from the game scene update loop, not during collision
+    public boolean checkGameOver() {
+        if (isGameOver) {
+            // Reset the flag
+            isGameOver = false;
+            
+            // Create and set up game over screen with final score
+            GameOverScreen gameOverScreen = new GameOverScreen();
+            gameOverScreen.setFinalScore(pointsManager.getPoints());
+            sceneManager.setNextScene(SceneID.GAME_OVER);
+            return true;
+        }
+        return false;
     }
 }
