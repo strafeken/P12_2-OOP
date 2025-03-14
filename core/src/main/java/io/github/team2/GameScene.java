@@ -114,8 +114,8 @@ public class GameScene extends Scene {
     private void initializeCollisionHandlers() {
         // Add collision listeners (using CollisionType enum)
         collisionDetector.addListener(new PlayerLifeHandler(SceneManager.getInstance()));
-        collisionDetector.addListener(new StartMiniGameHandler());
-        collisionDetector.addListener(new CollisionAudioHandler(audioManager)); // Pass the initialized audioManager
+        collisionDetector.addListener(new StartMiniGameHandler(pointsManager));  // Pass pointsManager
+        collisionDetector.addListener(new CollisionAudioHandler(audioManager));
         collisionDetector.addListener(new CollisionRemovalHandler(entityManager));
         collisionDetector.addListener(new PointsSystem(pointsManager));
 

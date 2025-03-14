@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class SceneManager implements ISceneManager {
     private static SceneManager instance = null;
-	private final Map<SceneID, Scene> scenes;
+    private final Map<SceneID, Scene> scenes;
     // handles scene states
     private final Stack<SceneID> sceneStack;
 
@@ -17,17 +17,31 @@ public class SceneManager implements ISceneManager {
         scenes = new HashMap<>();
         sceneStack = new Stack<>();
     }
-    
+
     public static synchronized SceneManager getInstance() {
-    	if (instance == null)
-    		instance = new SceneManager();
-    	
-    	return instance;
+        if (instance == null)
+            instance = new SceneManager();
+
+        return instance;
     }
 
     @Override
     public void addScene(SceneID id, Scene scene) {
         scenes.put(id, scene);
+    }
+
+    @Override
+    public void removeScene(SceneID id) {
+        if (scenes.containsKey(id)) {
+            Scene scene = scenes.get(id);
+            scene.unload();
+            scenes.remove(id);
+        }
+    }
+
+    @Override
+    public void setCurrentScene(SceneID id) {
+        setNextScene(id);
     }
 
     @Override
@@ -54,11 +68,20 @@ public class SceneManager implements ISceneManager {
 
     @Override
     public Scene getCurrentScene() {
+        if (sceneStack.isEmpty())
+            return null;
         return scenes.get(sceneStack.peek());
     }
 
     @Override
+    public Scene getScene(SceneID id) {
+        return scenes.get(id);
+    }
+
+    @Override
     public SceneID getCurrentSceneID() {
+        if (sceneStack.isEmpty())
+            return null;
         return sceneStack.peek();
     }
 
@@ -79,6 +102,11 @@ public class SceneManager implements ISceneManager {
     public void draw(ShapeRenderer shape) {
         for (SceneID id : sceneStack)
             scenes.get(id).draw(shape);
+    }
+
+    @Override
+    public boolean hasScene(SceneID id) {
+        return scenes.containsKey(id);
     }
 
     private void loadScene(SceneID id) {

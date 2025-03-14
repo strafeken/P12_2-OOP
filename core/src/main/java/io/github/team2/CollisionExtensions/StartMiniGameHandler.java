@@ -1,11 +1,22 @@
 package io.github.team2.CollisionExtensions;
 
 import io.github.team2.PlayerStatus;
+import io.github.team2.PointsManager;
 import io.github.team2.CollisionSystem.CollisionListener;
 import io.github.team2.EntitySystem.Entity;
+import io.github.team2.MiniGame.FlappyBirdMiniGame;
+import io.github.team2.SceneSystem.SceneID;
+import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.SceneSystem.ISceneManager;
 
 public class StartMiniGameHandler implements CollisionListener {
-    // You'll need to implement mini-game launching logic here
+    private PointsManager pointsManager;
+    private ISceneManager sceneManager;
+
+    public StartMiniGameHandler(PointsManager pointsManager) {
+        this.pointsManager = pointsManager;
+        this.sceneManager = SceneManager.getInstance();
+    }
 
     @Override
     public void onCollision(Entity a, Entity b, CollisionType type) {
@@ -17,31 +28,26 @@ public class StartMiniGameHandler implements CollisionListener {
                 playerStatus.setInMiniGame(true);
                 System.out.println("Starting mini-game with alien!");
 
-                // Here you would launch your mini-game
-                // This might involve setting a new scene or changing game state
+                try {
+                    // Always create a new instance to ensure fresh state
+                    FlappyBirdMiniGame miniGame = new FlappyBirdMiniGame(pointsManager);
 
-                // For now, just simulate mini-game
-                simulateMiniGame();
+                    // Check if scene exists already and remove it if it does
+                    if (sceneManager.hasScene(SceneID.MINI_GAME)) {
+                        sceneManager.removeScene(SceneID.MINI_GAME);
+                    }
+
+                    // Add the new mini-game scene
+                    sceneManager.addScene(SceneID.MINI_GAME, miniGame);
+
+                    // Overlay the mini-game on top of the current scene
+                    sceneManager.overlayScene(SceneID.MINI_GAME);
+                } catch (Exception e) {
+                    System.err.println("Error starting mini-game: " + e.getMessage());
+                    e.printStackTrace();
+                    playerStatus.setInMiniGame(false);
+                }
             }
         }
-    }
-
-    private void simulateMiniGame() {
-        // This is where you'd implement your mini-game logic
-        // For now, we'll just reset the mini-game flag after a delay
-
-        // In a real implementation, you'd have a complete mini-game
-        // and only reset this flag when the mini-game concludes
-
-        // For demonstration purposes:
-        new Thread(() -> {
-            try {
-                Thread.sleep(5000); // Simulate 5-second mini-game
-                PlayerStatus.getInstance().setInMiniGame(false);
-                System.out.println("Mini-game completed!");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
     }
 }

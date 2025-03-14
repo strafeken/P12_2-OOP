@@ -21,7 +21,8 @@ public class CollisionDetector implements ContactListener {
         Object userDataA = contact.getFixtureA().getBody().getUserData();
         Object userDataB = contact.getFixtureB().getBody().getUserData();
 
-        if (userDataA != null && userDataB != null) {
+        if (userDataA != null && userDataB != null &&
+            userDataA instanceof Entity && userDataB instanceof Entity) {
             Entity a = (Entity) userDataA;
             Entity b = (Entity) userDataB;
 

@@ -31,6 +31,12 @@ public class GameMaster extends ApplicationAdapter {
         audioManager.loadSoundEffect("start", "sounds/start.mp3");
         audioManager.loadSoundEffect("ding", "sounds/ding.mp3");
         audioManager.loadSoundEffect("mainmenu", "sounds/mainmenu.mp3");
+
+        // Add mini-game sound effects
+        audioManager.loadSoundEffect("minigame", "sounds/mainmenu.mp3");
+        audioManager.loadSoundEffect("jump", "sounds/ding.mp3");
+        audioManager.loadSoundEffect("hit", "sounds/ding.mp3");
+
         audioManager.setVolume(1.0f);
 
         sceneManager.addScene(SceneID.MAIN_MENU, new MainMenu());
