@@ -10,13 +10,18 @@ import io.github.team2.EntitySystem.EntityType;
 
 public class Alien extends DynamicTextureObject<AlienBehaviour.State, AlienBehaviour.Move> {
     private Entity targetPlayer;
-    private float chaseSpeed = 60f; // Speed at which alien chases player
+    private float chaseSpeed = 30f; // Reduced from 60f to make alien slower
     private float maxDistance = 500f; // Maximum distance to chase player
-    private float minDistance = 50f;  // Minimum distance to maintain from player
+    private float minDistance = 100f; // Increased from 50f to keep alien further from player
+
+    // Add respawn position to remember where to place the alien when respawning
+    private Vector2 respawnPosition;
 
     public Alien(EntityType type, String texture, Vector2 size, Vector2 position, Vector2 direction, Vector2 rotation,
             float speed, State state, Move actionState) {
         super(type, texture, size, position, direction, rotation, speed, state, actionState);
+        // Store initial position for respawning
+        this.respawnPosition = new Vector2(position);
     }
 
     @Override
@@ -49,6 +54,14 @@ public class Alien extends DynamicTextureObject<AlienBehaviour.State, AlienBehav
 
         // Update the physics body
         updateBody();
+    }
+
+    // Method to respawn the alien at its initial position
+    public void respawn() {
+        if (getPhysicsBody() != null) {
+            getPhysicsBody().setLocation(respawnPosition.x, respawnPosition.y);
+            getPhysicsBody().getBody().setLinearVelocity(0, 0);
+        }
     }
 
     public void setTargetPlayer(Entity player) {

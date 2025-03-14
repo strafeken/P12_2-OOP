@@ -57,6 +57,8 @@ public class GameScene extends Scene {
     private float trashSpawnInterval = 5f; // Spawn trash every 5 seconds
     private TrashFactory trashFactory;
 
+    private StartMiniGameHandler miniGameHandler;
+
     public GameScene() {
         super();
         random = new Random();
@@ -114,7 +116,8 @@ public class GameScene extends Scene {
     private void initializeCollisionHandlers() {
         // Add collision listeners (using CollisionType enum)
         collisionDetector.addListener(new PlayerLifeHandler(SceneManager.getInstance()));
-        collisionDetector.addListener(new StartMiniGameHandler(pointsManager));  // Pass pointsManager
+        StartMiniGameHandler miniGameHandler = new StartMiniGameHandler(pointsManager, entityManager);
+        collisionDetector.addListener(miniGameHandler);
         collisionDetector.addListener(new CollisionAudioHandler(audioManager));
         collisionDetector.addListener(new CollisionRemovalHandler(entityManager));
         collisionDetector.addListener(new PointsSystem(pointsManager));
@@ -122,6 +125,9 @@ public class GameScene extends Scene {
         // Add collision handlers (using direct contacts)
         collisionDetector.addHandler(new RecyclableCarrierHandler(entityManager));
         collisionDetector.addHandler(new RecyclingBinHandler(pointsManager));
+
+        // Store the handler for updates
+        this.miniGameHandler = miniGameHandler;
     }
 
     private void initializeEntities() {
@@ -188,6 +194,11 @@ public class GameScene extends Scene {
         try {
             // Update trash spawn timer
             trashSpawnTimer += Gdx.graphics.getDeltaTime();
+
+            // Update mini-game handler cooldown
+            if (miniGameHandler != null) {
+                miniGameHandler.update(Gdx.graphics.getDeltaTime());
+            }
 
             // Spawn new trash periodically
             if (trashSpawnTimer >= trashSpawnInterval) {

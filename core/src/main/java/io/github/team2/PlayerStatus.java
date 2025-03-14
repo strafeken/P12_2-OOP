@@ -76,5 +76,18 @@ public class PlayerStatus {
         carriedItem = null;
         lives = 5;
         inMiniGame = false;
+        lastAlienEncounter = null;
     }
+
+    // Add this method to PlayerStatus class
+    private Entity lastAlienEncounter;
+
+    public Entity getLastAlienEncounter() {
+        return lastAlienEncounter;
+    }
+
+    public void setLastAlienEncounter(Entity alien) {
+        this.lastAlienEncounter = alien;
+    }
+
 }

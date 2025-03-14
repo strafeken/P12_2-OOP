@@ -24,7 +24,7 @@ import io.github.team2.SceneSystem.SceneID;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.Utils.DisplayManager;
-
+import io.github.team2.CollisionExtensions.StartMiniGameHandler;;
 public class FlappyBirdMiniGame extends Scene {
     // Game state
     private enum GameState { READY, PLAYING, GAME_OVER }
@@ -73,9 +73,14 @@ public class FlappyBirdMiniGame extends Scene {
     // Debug flag
     private boolean debugCollision = false; // Set to true to see collision boxes
 
-    public FlappyBirdMiniGame(PointsManager pointsManager) {
+    // Add this field
+    private StartMiniGameHandler miniGameHandler;
+
+    // Update the constructor
+    public FlappyBirdMiniGame(PointsManager pointsManager, StartMiniGameHandler miniGameHandler) {
         super();
         this.pointsManager = pointsManager;
+        this.miniGameHandler = miniGameHandler;
         this.state = GameState.READY;
         this.score = 0;
 
@@ -298,6 +303,7 @@ public class FlappyBirdMiniGame extends Scene {
         }
     }
 
+    // Modify completeGame method to notify the handler
     private void completeGame(boolean success) {
         gameCompleted = true;
 
@@ -332,6 +338,11 @@ public class FlappyBirdMiniGame extends Scene {
         // Return to main game
         PlayerStatus.getInstance().setInMiniGame(false);
         sceneManager.removeOverlay();
+
+        // Notify handler that mini-game is completed
+        if (miniGameHandler != null) {
+            miniGameHandler.onMiniGameCompleted();
+        }
     }
 
     @Override
