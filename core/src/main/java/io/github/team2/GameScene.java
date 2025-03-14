@@ -152,7 +152,7 @@ public class GameScene extends Scene {
     private void initializeEntities() {
     	try {
             player = new Player(EntityType.PLAYER,
-                              "rocket.png",
+                              "rocket-2.png",
                               new Vector2(70, 100),
                               new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2),
                               new Vector2(0, 0), new Vector2(100,0) , 200, PlayerBehaviour.State.IDLE, PlayerBehaviour.Move.NONE

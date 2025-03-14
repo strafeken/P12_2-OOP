@@ -23,12 +23,12 @@ public class TrashSpawner {
     static {
         // Initialize texture mappings
         recyclableTextures.put(RecyclableTrash.Type.PAPER, "cardboard-box.png");
-        recyclableTextures.put(RecyclableTrash.Type.PLASTIC, "plastic-bottle.png");
-        recyclableTextures.put(RecyclableTrash.Type.GLASS, "glass-bottle.png");
-        recyclableTextures.put(RecyclableTrash.Type.METAL, "soda-can.png");
+        recyclableTextures.put(RecyclableTrash.Type.PLASTIC, "plastic-bottle-2.png");
+        recyclableTextures.put(RecyclableTrash.Type.GLASS, "glass-bottle-2.png");
+        recyclableTextures.put(RecyclableTrash.Type.METAL, "soda-can-2.png");
 
-        nonRecyclableTextures.put(NonRecyclableTrash.Type.HAZARDOUS, "toxic-waste.png");
-        nonRecyclableTextures.put(NonRecyclableTrash.Type.ELECTRONIC_WASTE, "broken-device.png");
+        nonRecyclableTextures.put(NonRecyclableTrash.Type.HAZARDOUS, "toxic-waste-2.png");
+        nonRecyclableTextures.put(NonRecyclableTrash.Type.ELECTRONIC_WASTE, "broken-device2.png");
         nonRecyclableTextures.put(NonRecyclableTrash.Type.MIXED_WASTE, "half-eaten-food.png");
     }
 
