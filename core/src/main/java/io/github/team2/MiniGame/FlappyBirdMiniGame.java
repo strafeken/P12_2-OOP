@@ -9,13 +9,17 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.AudioSystem.IAudioManager;
 import io.github.team2.CollisionExtensions.StartMiniGameHandler;
 import io.github.team2.EntitySystem.EntityManager;
+import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.InputSystem.GameInputManager;
+import io.github.team2.Pipe;
+import io.github.team2.PipeBehaviour;
 import io.github.team2.PlayerStatus;
 import io.github.team2.PointsManager;
 import io.github.team2.SceneSystem.ISceneManager;
@@ -36,6 +40,10 @@ public class FlappyBirdMiniGame extends Scene {
     private Rectangle bird;
     private Array<Rectangle> topPipes;
     private Array<Rectangle> bottomPipes;
+
+    // Pipe objects that will provide the textures
+    private Pipe topPipeObject;
+    private Pipe bottomPipeObject;
 
     // Physics
     private float gravity = 600f;
@@ -103,9 +111,40 @@ public class FlappyBirdMiniGame extends Scene {
         try {
             birdTexture = new Texture(Gdx.files.internal("rocket-2.png"));
 
-            // Generate pipe textures on-the-fly - separate top and bottom for correct orientation
-            pipeTopTexture = TextureGenerator.generatePipeTexture(true);
-            pipeBottomTexture = TextureGenerator.generatePipeTexture(false);
+            // Create pipe objects to get their textures
+            // Top pipe
+            topPipeObject = new Pipe(
+                EntityType.PIPE,
+                "plastic-bottle-2.png", // Assuming this texture exists or will be handled internally
+                new Vector2(pipeWidth, 400), // Size matching the dimensions used in game
+                new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight() / 2), // Position doesn't matter much here
+                new Vector2(-1, 0), // Direction left
+                new Vector2(0, 0), // No rotation
+                pipeSpeed, // Speed matching game setting
+                PipeBehaviour.State.IDLE,
+                PipeBehaviour.Move.NONE
+            );
+            
+            // Bottom pipe - similar to top but different texture
+            bottomPipeObject = new Pipe(
+                EntityType.PIPE,
+                "plastic-bottle-2.png", // Assuming this texture exists or will be handled internally
+                new Vector2(pipeWidth, 400), // Size matching the dimensions used in game
+                new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight() / 2 - 600), // Lower position
+                new Vector2(-1, 0), // Direction left
+                new Vector2(0, 0), // No rotation
+                pipeSpeed, // Speed matching game setting
+                PipeBehaviour.State.IDLE,
+                PipeBehaviour.Move.NONE
+            );
+            
+            // Get textures from pipe objects
+            // Note: We're assuming DynamicTextureObject (parent of Pipe) loads the texture properly
+            // and provides a way to access it. If not, we'll need alternative approach.
+            
+            // For now, let's create the textures directly since we're in a mini-game
+            pipeTopTexture = new Texture(Gdx.files.internal("pipe-top.png"));
+            pipeBottomTexture = new Texture(Gdx.files.internal("pipe-bottom.png"));
 
         } catch (Exception e) {
             System.err.println("Error loading textures: " + e.getMessage());
