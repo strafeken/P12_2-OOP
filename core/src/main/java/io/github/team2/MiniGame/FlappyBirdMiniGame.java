@@ -143,8 +143,8 @@ public class FlappyBirdMiniGame extends Scene {
             // and provides a way to access it. If not, we'll need alternative approach.
             
             // For now, let's create the textures directly since we're in a mini-game
-            pipeTopTexture = new Texture(Gdx.files.internal("pipe-top.png"));
-            pipeBottomTexture = new Texture(Gdx.files.internal("pipe-bottom.png"));
+            pipeTopTexture = new Texture(Gdx.files.internal("plastic-bottle-2.png"));
+            pipeBottomTexture = new Texture(Gdx.files.internal("plastic-bottle-2.png"));
 
         } catch (Exception e) {
             System.err.println("Error loading textures: " + e.getMessage());
