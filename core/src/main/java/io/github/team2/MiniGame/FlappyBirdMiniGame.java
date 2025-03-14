@@ -102,7 +102,7 @@ public class FlappyBirdMiniGame extends Scene {
     public void load() {
         // Load textures
         try {
-            birdTexture = new Texture(Gdx.files.internal("rocket.png"));
+            birdTexture = new Texture(Gdx.files.internal("rocket-2.png"));
 
             // Generate pipe textures on-the-fly - separate top and bottom for correct orientation
             pipeTopTexture = TextureGenerator.generatePipeTexture(true);
