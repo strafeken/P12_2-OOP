@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import io.github.team2.Actions.StartGame;
+import io.github.team2.Actions.StartLevelSelect;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.AudioSystem.IAudioManager;
 import io.github.team2.EntitySystem.EntityManager;
@@ -46,8 +47,14 @@ public class MainMenu extends Scene {
         Vector2 centerPos = new Vector2(DisplayManager.getScreenWidth() / 2 , DisplayManager.getScreenHeight() / 2 - 180);
         // Use interface for SceneManager
         ISceneManager sceneManager = SceneManager.getInstance();
+        
+        
         StartGame startAction = new StartGame(sceneManager);
-        startButton = new Button("startBtn.png", centerPos, startAction, 100, 100);
+        StartLevelSelect levelSelectAction = new StartLevelSelect(sceneManager);
+        
+        
+        //startButton = new Button("startBtn.png", centerPos, startAction, 100, 100);
+        startButton = new Button("startBtn.png", centerPos, levelSelectAction, 100, 100);
 
         gameInputManager.registerKeyUp(Input.Keys.SPACE, startAction);
         gameInputManager.registerClickable(startButton);

@@ -1,0 +1,175 @@
+package io.github.team2;
+
+import java.awt.Image;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
+
+import io.github.team2.Actions.ExitGame;
+import io.github.team2.Actions.GoToSettings;
+import io.github.team2.Actions.PauseGame;
+import io.github.team2.Actions.PlayerBehaviour;
+import io.github.team2.AudioSystem.AudioManager;
+import io.github.team2.AudioSystem.IAudioManager;
+import io.github.team2.EntitySystem.Entity;
+import io.github.team2.EntitySystem.EntityManager;
+import io.github.team2.EntitySystem.EntityType;
+import io.github.team2.EntitySystem.StaticTextureObject;
+import io.github.team2.InputSystem.Button;
+import io.github.team2.InputSystem.GameInputManager;
+import io.github.team2.InputSystem.PlayerInputManager;
+import io.github.team2.SceneSystem.ISceneManager;
+import io.github.team2.SceneSystem.Scene;
+import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.Utils.DisplayManager;
+
+public class LevelSelectScene extends Scene {
+	
+	private int width = (int) DisplayManager.getScreenWidth();
+	private int height =(int) DisplayManager.getScreenHeight();
+	
+	
+    // Physics world
+    private World world;
+    private Box2DDebugRenderer debugRenderer;
+    private float accumulator;
+	
+    private PlayerInputManager playerInputManager;
+	
+	private Camera camera1;
+	
+	private StaticTextureObject image;
+	private Entity player;
+	private Entity circle;
+	
+	
+	public LevelSelectScene() {
+		
+		
+	}
+	
+	public void load() {
+		System.out.println("Level Select Scene => LOAD");
+		
+		entityManager = new EntityManager();
+		gameInputManager = new GameInputManager();
+		
+		initializeWorld();
+		initializeInput();
+		
+
+		
+        //gameManager = GameManager.getInstance();
+        //gameManager.setPlayerInputManager(playerInputManager);
+		
+		camera1 = new Camera(width, height);
+		
+		
+        // Setup background image
+        image = new StaticTextureObject(EntityType.UNDEFINED, "space_background.jpg", new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight()),
+                new Vector2(DisplayManager.getScreenWidth()/2,  DisplayManager.getScreenHeight()/2),
+                new Vector2(0, 0));
+        entityManager.addEntities(image);
+		
+		player = new Player(EntityType.PLAYER,
+                "rocket-2.png",
+                new Vector2(70, 100),
+                new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2),
+                new Vector2(0, 0), new Vector2(100,0) , 200, PlayerBehaviour.State.IDLE, PlayerBehaviour.Move.NONE
+                );
+		player.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
+		player.getPhysicsBody().getBody().setFixedRotation(true);
+		
+		
+		
+		circle = new Circle(EntityType.CIRCLE, new Vector2(70, 100),new Vector2(0,0) , Color.YELLOW, 40);
+		circle.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
+		circle.getPhysicsBody().getBody().setFixedRotation(true);
+		
+		entityManager.addEntities(player);
+		entityManager.addEntities(circle);
+		
+		
+		
+	}
+	
+	
+	
+    private void initializeWorld() {
+        world = new World(new Vector2(0, 0), true);
+        debugRenderer = new Box2DDebugRenderer();
+    }
+    
+    private void initializeInput() {
+        playerInputManager = new PlayerInputManager(player);
+
+        // Use interface instead of concrete class
+        ISceneManager sceneManager = SceneManager.getInstance();
+        gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new PauseGame(sceneManager));
+        gameInputManager.registerKeyUp(Input.Keys.X, new ExitGame(sceneManager));
+        /*
+        settingsButton = new Button("settingsBtn.png",
+                new Vector2(DisplayManager.getScreenWidth() - 80, DisplayManager.getScreenHeight() - 80),
+                new GoToSettings(sceneManager), 70, 70);
+		
+        gameInputManager.registerClickable(settingsButton);
+    	*/
+    }
+	
+
+	@Override
+	public void update() {
+		
+		
+		float delta = Gdx.graphics.getDeltaTime();
+		entityManager.update();
+        gameInputManager.update();
+        playerInputManager.update();
+        
+		
+		
+		camera1.cameraUpdate(delta, player.getPosition());
+		
+	}
+
+	@Override
+	public void draw(SpriteBatch batch) {
+		entityManager.draw(batch);
+		
+		
+	}
+
+	@Override
+	public void draw(ShapeRenderer shape) {
+		// TODO Auto-generated method stub
+		entityManager.draw(shape);
+		
+	}
+
+	@Override
+	public void unload() {
+		// TODO Auto-generated method stub
+		
+        System.out.println("Level Select => UNLOADED");
+        dispose();
+		
+	}
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		
+        entityManager.dispose();
+        // Use interface
+        IAudioManager audioManager = AudioManager.getInstance();
+        audioManager.stopMusic(); // Stop music when leaving menu
+		
+	}
+}

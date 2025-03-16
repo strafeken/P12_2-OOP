@@ -210,6 +210,8 @@ public class GameScene extends Scene {
 
     @Override
     public void update() {
+    	float deltaTime = Gdx.graphics.getDeltaTime();
+    	
         try {
             // Update trash spawn timer
             trashSpawnTimer += Gdx.graphics.getDeltaTime();
@@ -234,7 +236,7 @@ public class GameScene extends Scene {
             entityManager.update();
             gameInputManager.update();
             playerInputManager.update();
-            updatePhysics();
+            updatePhysics(deltaTime);
             
             // Check for game over AFTER physics update is complete
             if (playerLifeHandler != null) {
@@ -246,8 +248,8 @@ public class GameScene extends Scene {
         }
     }
 
-    private void updatePhysics() {
-        float deltaTime = Gdx.graphics.getDeltaTime();
+    private void updatePhysics(float deltaTime) {
+        
         accumulator += deltaTime;
 
         while (accumulator >= TIME_STEP) {
