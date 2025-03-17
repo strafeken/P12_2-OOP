@@ -323,6 +323,8 @@ public class GameScene extends Scene {
     @Override
     public void draw(ShapeRenderer shape) {
         entityManager.draw(shape);
+        
+        // off this to off hit box
         debugRenderer.render(world, shape.getProjectionMatrix());
     }
 

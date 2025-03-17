@@ -5,8 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 
 
 public class Camera {
-	
-	private OrthographicCamera camera = null;
+	public OrthographicCamera camera = null;
 	private final float SCALE= 1.0f;
 	
 	public Camera(float width , float height) {
@@ -19,7 +18,7 @@ public class Camera {
 	public void cameraUpdate(float delta, Vector2 position) {
 		
 		camera.position.set(position.x, position.y , 0);
-			
+		camera.update();
 	}
 	
 	

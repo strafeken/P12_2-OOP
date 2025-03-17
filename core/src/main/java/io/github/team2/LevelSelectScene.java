@@ -1,6 +1,7 @@
 package io.github.team2;
 
 import java.awt.Image;
+import java.sql.BatchUpdateException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -35,6 +36,11 @@ public class LevelSelectScene extends Scene {
 	private int width = (int) DisplayManager.getScreenWidth();
 	private int height =(int) DisplayManager.getScreenHeight();
 	
+	
+    // Physics constants
+    private static final float TIME_STEP = 1/60f;
+    private static final int VELOCITY_ITERATIONS = 6;
+    private static final int POSITION_ITERATIONS = 2;
 	
     // Physics world
     private World world;
@@ -130,6 +136,17 @@ public class LevelSelectScene extends Scene {
     	*/
     }
 	
+    
+    private void updatePhysics(float deltaTime) {
+        
+        accumulator += deltaTime;
+
+        while (accumulator >= TIME_STEP) {
+            world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+            accumulator -= TIME_STEP;
+        }
+    }
+    
 
 	@Override
 	public void update() {
@@ -139,16 +156,20 @@ public class LevelSelectScene extends Scene {
 		entityManager.update();
         gameInputManager.update();
         playerInputManager.update();
+        updatePhysics(delta);
         
-		
-		
-		//camera1.cameraUpdate(delta, player.getPosition());
+        camera1.cameraUpdate(delta, player.getPosition());
 		
 	}
 
 	@Override
 	public void draw(SpriteBatch batch) {
+		
+		
+		
+		batch.setProjectionMatrix(camera1.camera.combined);
 		entityManager.draw(batch);
+		
 		
 		
 	}
@@ -156,7 +177,10 @@ public class LevelSelectScene extends Scene {
 	@Override
 	public void draw(ShapeRenderer shape) {
 		// TODO Auto-generated method stub
+		
+		shape.setProjectionMatrix(camera1.camera.combined);
 		entityManager.draw(shape);
+		debugRenderer.render(world, shape.getProjectionMatrix());
 		
 	}
 
@@ -165,13 +189,40 @@ public class LevelSelectScene extends Scene {
 		// TODO Auto-generated method stub
 		
         System.out.println("Level Select => UNLOADED");
-        dispose();
+        
+        try {
+            // Stop physics simulation updates
+            accumulator = 0;
+
+            // Let all entities clean up their physics bodies and other resources
+            if (entityManager != null) {
+                entityManager.dispose();
+            }
+
+            // Now dispose remaining resources (including disposing the physics world)
+            dispose();
+        } catch (Exception e) {
+            System.err.println("Error during unload: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        
+
 		
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
+		
+		
+		if (debugRenderer != null) {
+            debugRenderer.dispose();
+            debugRenderer = null;
+        }
+        if (world != null) {
+            world.dispose();
+            world = null;
+        }
 		
         entityManager.dispose();
         // Use interface
