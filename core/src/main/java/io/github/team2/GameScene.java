@@ -1,5 +1,6 @@
 package io.github.team2;
 
+import java.awt.Image;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -31,6 +32,7 @@ import io.github.team2.CollisionSystem.CollisionDetector;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.EntitySystem.EntityType;
+import io.github.team2.EntitySystem.StaticTextureObject;
 import io.github.team2.InputSystem.Button;
 import io.github.team2.InputSystem.GameInputManager;
 import io.github.team2.InputSystem.PlayerInputManager;
@@ -161,6 +163,15 @@ public class GameScene extends Scene {
 
     private void initializeEntities() {
     	try {
+    		
+    		
+	        StaticTextureObject bg_image  = new StaticTextureObject(EntityType.UNDEFINED, "planet/planet2_yellow.jpg", new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight()),
+	                new Vector2(DisplayManager.getScreenWidth()/2,  DisplayManager.getScreenHeight()/2),
+	                new Vector2(0, 0));
+
+	        entityManager.addEntities(bg_image);
+    		
+    		
             player = new Player(EntityType.PLAYER,
                               "rocket-2.png",
                               new Vector2(70, 100),
