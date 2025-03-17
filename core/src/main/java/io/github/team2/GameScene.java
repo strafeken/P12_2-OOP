@@ -1,12 +1,15 @@
 package io.github.team2;
 
+import java.awt.Image;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -29,6 +32,7 @@ import io.github.team2.CollisionSystem.CollisionDetector;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.EntitySystem.EntityType;
+import io.github.team2.EntitySystem.StaticTextureObject;
 import io.github.team2.InputSystem.Button;
 import io.github.team2.InputSystem.GameInputManager;
 import io.github.team2.InputSystem.PlayerInputManager;
@@ -75,6 +79,9 @@ public class GameScene extends Scene {
 
     private StartMiniGameHandler miniGameHandler;
     private PlayerLifeHandler playerLifeHandler;
+    
+    
+    private Camera camera;
 
     public GameScene() {
         super();
@@ -85,7 +92,12 @@ public class GameScene extends Scene {
     @Override
     public void load() {
         System.out.println("Game Scene => LOAD");
-
+        
+        // 1. Set up your camera to default size
+        camera = new Camera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        
+        
+        
         initializeWorld();
         initializeManagers();
         initializeEntities();
@@ -151,6 +163,15 @@ public class GameScene extends Scene {
 
     private void initializeEntities() {
     	try {
+    		
+    		
+	        StaticTextureObject bg_image  = new StaticTextureObject(EntityType.UNDEFINED, "planet/planet2_yellow.jpg", new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight()),
+	                new Vector2(DisplayManager.getScreenWidth()/2,  DisplayManager.getScreenHeight()/2),
+	                new Vector2(0, 0));
+
+	        entityManager.addEntities(bg_image);
+    		
+    		
             player = new Player(EntityType.PLAYER,
                               "rocket-2.png",
                               new Vector2(70, 100),
@@ -210,6 +231,8 @@ public class GameScene extends Scene {
 
     @Override
     public void update() {
+    	float deltaTime = Gdx.graphics.getDeltaTime();
+    	
         try {
             // Update trash spawn timer
             trashSpawnTimer += Gdx.graphics.getDeltaTime();
@@ -234,7 +257,7 @@ public class GameScene extends Scene {
             entityManager.update();
             gameInputManager.update();
             playerInputManager.update();
-            updatePhysics();
+            updatePhysics(deltaTime);
             
             // Check for game over AFTER physics update is complete
             if (playerLifeHandler != null) {
@@ -246,8 +269,8 @@ public class GameScene extends Scene {
         }
     }
 
-    private void updatePhysics() {
-        float deltaTime = Gdx.graphics.getDeltaTime();
+    private void updatePhysics(float deltaTime) {
+        
         accumulator += deltaTime;
 
         while (accumulator >= TIME_STEP) {
@@ -258,6 +281,9 @@ public class GameScene extends Scene {
 
     @Override
     public void draw(SpriteBatch batch) {
+    	
+    	batch.setProjectionMatrix(camera.camera.combined);
+    	
         entityManager.draw(batch);
         drawUI(batch);
         settingsButton.draw(batch);
@@ -320,7 +346,10 @@ public class GameScene extends Scene {
 
     @Override
     public void draw(ShapeRenderer shape) {
+    	shape.setProjectionMatrix(camera.camera.combined);
         entityManager.draw(shape);
+        
+        // off this to off hit box
         debugRenderer.render(world, shape.getProjectionMatrix());
     }
 

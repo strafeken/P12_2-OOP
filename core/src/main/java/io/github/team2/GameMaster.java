@@ -18,7 +18,13 @@ public class GameMaster extends ApplicationAdapter {
     private ShapeRenderer shape;
     private IAudioManager audioManager;
     private ISceneManager sceneManager;
+    
+    
 
+    
+
+    
+    
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -44,6 +50,7 @@ public class GameMaster extends ApplicationAdapter {
         sceneManager.addScene(SceneID.PAUSE_MENU, new PauseMenu());
         sceneManager.addScene(SceneID.GAME_OVER, new GameOverScreen());
         sceneManager.addScene(SceneID.SETTINGS_MENU, new SettingsMenu());
+        sceneManager.addScene(SceneID.LEVEL_SELECT, new LevelSelectScene());
         sceneManager.setNextScene(SceneID.MAIN_MENU);
     }
 
