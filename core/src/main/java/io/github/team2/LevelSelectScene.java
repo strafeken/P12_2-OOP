@@ -148,13 +148,9 @@ public class LevelSelectScene extends Scene {
 			accumulator -= TIME_STEP;
 		}
 		
-		processPending();
-	}
 	
-	private void processPending() {
-		
-		
 	}
+
 	
 	@Override
 	public void update() {
@@ -165,16 +161,17 @@ public class LevelSelectScene extends Scene {
 		gameInputManager.update();
 		playerInputManager.update();
 		
-
+		
 		camera1.cameraUpdate(delta, player.getPosition());
 		
-		startLevelHandler.processAction();
+		startLevelHandler.processAction(camera1);
+		
 		
 	}
 
 	@Override
 	public void draw(SpriteBatch batch) {
-
+		
 		batch.setProjectionMatrix(camera1.camera.combined);
 		entityManager.draw(batch);
 
@@ -216,7 +213,7 @@ public class LevelSelectScene extends Scene {
 
 	@Override
 	public void dispose() {
-
+		
 		if (debugRenderer != null) {
 			debugRenderer.dispose();
 			debugRenderer = null;

@@ -20,6 +20,7 @@ public class StartLevel1 implements Action{
 
         if (sm.getCurrentSceneID() == SceneID.LEVEL_SELECT) {
             sm.setNextScene(SceneID.GAME_SCENE);
+            
         }
     }
 	

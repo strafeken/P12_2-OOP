@@ -1,7 +1,9 @@
 package io.github.team2;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 
 public class Camera {
@@ -21,5 +23,11 @@ public class Camera {
 		camera.update();
 	}
 	
+	
+	public void cameraReset() {
+		camera.setToOrtho(false, Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+
+		camera.update();
+	}
 	
 }

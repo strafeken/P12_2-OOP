@@ -5,8 +5,10 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -75,6 +77,9 @@ public class GameScene extends Scene {
 
     private StartMiniGameHandler miniGameHandler;
     private PlayerLifeHandler playerLifeHandler;
+    
+    
+    private Camera camera;
 
     public GameScene() {
         super();
@@ -85,7 +90,12 @@ public class GameScene extends Scene {
     @Override
     public void load() {
         System.out.println("Game Scene => LOAD");
-
+        
+        // 1. Set up your camera to default size
+        camera = new Camera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        
+        
+        
         initializeWorld();
         initializeManagers();
         initializeEntities();
@@ -260,6 +270,9 @@ public class GameScene extends Scene {
 
     @Override
     public void draw(SpriteBatch batch) {
+    	
+    	batch.setProjectionMatrix(camera.camera.combined);
+    	
         entityManager.draw(batch);
         drawUI(batch);
         settingsButton.draw(batch);
@@ -322,6 +335,7 @@ public class GameScene extends Scene {
 
     @Override
     public void draw(ShapeRenderer shape) {
+    	shape.setProjectionMatrix(camera.camera.combined);
         entityManager.draw(shape);
         
         // off this to off hit box
