@@ -102,7 +102,7 @@ public class LevelSelectScene extends Scene {
 				new Vector2(0, 0));
 		entityManager.addEntities(image);
 
-		level1 = new Planet(EntityType.LEVEL1, "planet/level_planet2_yellow.jpg", new Vector2(70, 100), new Vector2(70, 50),
+		level1 = new Planet(EntityType.LEVEL1, "planet/level_planet2_yellow.png", new Vector2(70, 100), new Vector2(70, 50),
 				new Vector2(0, 0));
 		level1.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
 		level1.getPhysicsBody().getBody().setFixedRotation(true);
