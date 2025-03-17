@@ -20,15 +20,9 @@ public class GameMaster extends ApplicationAdapter {
     private ISceneManager sceneManager;
     
     
-    private int width, height;
+
     
-    public GameMaster(int width, int height) {
-		
-    	this.width = width;
-    	this.height = height;
-	
-    
-    }
+
     
     
     @Override

@@ -31,7 +31,7 @@ public class Lwjgl3Launcher {
     }
 
     private static Lwjgl3Application createApplication() {
-        return new Lwjgl3Application(new GameMaster(width, height), getDefaultConfiguration());
+        return new Lwjgl3Application(new GameMaster(), getDefaultConfiguration());
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
