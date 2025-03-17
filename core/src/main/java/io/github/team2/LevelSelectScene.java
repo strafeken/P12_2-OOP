@@ -42,6 +42,7 @@ public class LevelSelectScene extends Scene {
     private float accumulator;
 	
     private PlayerInputManager playerInputManager;
+    private GameManager gameManager;
 	
 	private Camera camera1;
 	
@@ -61,22 +62,8 @@ public class LevelSelectScene extends Scene {
 		entityManager = new EntityManager();
 		gameInputManager = new GameInputManager();
 		
+		
 		initializeWorld();
-		initializeInput();
-		
-
-		
-        //gameManager = GameManager.getInstance();
-        //gameManager.setPlayerInputManager(playerInputManager);
-		
-		camera1 = new Camera(width, height);
-		
-		
-        // Setup background image
-        image = new StaticTextureObject(EntityType.UNDEFINED, "space_background.jpg", new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight()),
-                new Vector2(DisplayManager.getScreenWidth()/2,  DisplayManager.getScreenHeight()/2),
-                new Vector2(0, 0));
-        entityManager.addEntities(image);
 		
 		player = new Player(EntityType.PLAYER,
                 "rocket-2.png",
@@ -88,6 +75,26 @@ public class LevelSelectScene extends Scene {
 		player.getPhysicsBody().getBody().setFixedRotation(true);
 		
 		
+		
+		
+		
+		initializeInput();
+		
+
+		
+        gameManager = GameManager.getInstance();
+        gameManager.setPlayerInputManager(playerInputManager);
+		
+		camera1 = new Camera(width, height);
+		
+		
+        // Setup background image
+        image = new StaticTextureObject(EntityType.UNDEFINED, "space_background.jpg", new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight()),
+                new Vector2(DisplayManager.getScreenWidth()/2,  DisplayManager.getScreenHeight()/2),
+                new Vector2(0, 0));
+        entityManager.addEntities(image);
+		
+
 		
 		circle = new Circle(EntityType.CIRCLE, new Vector2(70, 100),new Vector2(0,0) , Color.YELLOW, 40);
 		circle.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
@@ -135,7 +142,7 @@ public class LevelSelectScene extends Scene {
         
 		
 		
-		camera1.cameraUpdate(delta, player.getPosition());
+		//camera1.cameraUpdate(delta, player.getPosition());
 		
 	}
 
