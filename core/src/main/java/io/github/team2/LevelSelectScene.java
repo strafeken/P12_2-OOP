@@ -64,6 +64,8 @@ public class LevelSelectScene extends Scene {
 	private StaticTextureObject image;
 	private Entity player;
 	private Entity level1;
+	
+	private StartLevelHandler startLevelHandler;
 
 	public LevelSelectScene() {
 
@@ -125,20 +127,15 @@ public class LevelSelectScene extends Scene {
 		ISceneManager sceneManager = SceneManager.getInstance();
 		gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new PauseGame(sceneManager));
 		gameInputManager.registerKeyUp(Input.Keys.X, new ExitGame(sceneManager));
-		/*
-		 * settingsButton = new Button("settingsBtn.png", new
-		 * Vector2(DisplayManager.getScreenWidth() - 80,
-		 * DisplayManager.getScreenHeight() - 80), new GoToSettings(sceneManager), 70,
-		 * 70);
-		 * 
-		 * gameInputManager.registerClickable(settingsButton);
-		 */
+
 	}
 
 	private void initializeCollisionHandlers() {
 		// Add collision listeners (using CollisionType enum)
-
-		collisionDetector.addListener(new StartLevelHandler());
+		StartLevelHandler startLevelHandler = new StartLevelHandler();
+		collisionDetector.addListener(startLevelHandler);
+		
+		this.startLevelHandler = startLevelHandler;
 
 	}
 
@@ -150,8 +147,15 @@ public class LevelSelectScene extends Scene {
 			world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 			accumulator -= TIME_STEP;
 		}
+		
+		processPending();
 	}
-
+	
+	private void processPending() {
+		
+		
+	}
+	
 	@Override
 	public void update() {
 
@@ -163,7 +167,9 @@ public class LevelSelectScene extends Scene {
 		
 
 		camera1.cameraUpdate(delta, player.getPosition());
-
+		
+		startLevelHandler.processAction();
+		
 	}
 
 	@Override
