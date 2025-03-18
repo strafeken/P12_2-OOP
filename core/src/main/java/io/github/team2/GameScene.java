@@ -64,6 +64,7 @@ public class GameScene extends Scene {
 
     private GameManager gameManager;
     private IAudioManager audioManager;
+    private LevelManager levelManager;
 
     // Game entities
     private Entity player;
@@ -93,16 +94,18 @@ public class GameScene extends Scene {
     public void load() {
         System.out.println("Game Scene => LOAD");
 
+        // Initialize LevelManager at the beginning to ensure it's available for everything else
+        levelManager = LevelManager.getInstance();
+        System.out.println("Loading game scene with level: " + levelManager.getCurrentLevel());
+
         // 1. Set up your camera to default size
         camera = new Camera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-
 
         initializeWorld();
         initializeManagers();
         initializeEntities();
         initializeInput();
-        initializeCollisionHandlers(); // New method
+        initializeCollisionHandlers();
 
         gameManager = GameManager.getInstance();
         gameManager.setPlayerInputManager(playerInputManager);
@@ -115,6 +118,10 @@ public class GameScene extends Scene {
         audioManager = AudioManager.getInstance();
         AudioManager.getInstance().stopSoundEffect("levelsect");
         AudioManager.getInstance().playSoundEffect("start");
+
+        // Debug output to verify level
+        System.out.println("Game Scene loaded with level: " + levelManager.getCurrentLevel() +
+                          ", Alien speed: " + levelManager.getCurrentAlienSpeed());
     }
 
     private void initializeWorld() {
@@ -182,15 +189,22 @@ public class GameScene extends Scene {
             player.getPhysicsBody().getBody().setFixedRotation(true);
             entityManager.addEntities(player);
 
-            Alien alien = new Alien(EntityType.ALIEN,
-                    "alien.png",
-                    new Vector2(90, 90),
-                    new Vector2(DisplayManager.getScreenWidth() / 2 - 200, DisplayManager.getScreenHeight() / 2 + 200),
-                    new Vector2(0, 0), new Vector2(100,0) , 200, AlienBehaviour.State.IDLE, AlienBehaviour.Move.NONE
-                    );
+            // When creating aliens, ensure they get the level-specific speed:
+            float alienSpeed = levelManager.getCurrentAlienSpeed();
+            Entity alien = new Alien(
+                EntityType.ALIEN,
+                "alien.png",
+                new Vector2(80, 80),
+                new Vector2(200, 200),
+                new Vector2(0, 0),
+                new Vector2(0, 0),
+                alienSpeed, // Use the level-specific speed
+                AlienBehaviour.State.IDLE,
+                AlienBehaviour.Move.NONE
+            );
             alien.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
             // Set the target player for the alien to chase
-            alien.setTargetPlayer(player);
+            ((Alien)alien).setTargetPlayer(player);
             entityManager.addEntities(alien);
 
             RecyclingBin bin = new RecyclingBin(EntityType.RECYCLING_BIN, "recycling-bin.png",
@@ -223,50 +237,45 @@ public class GameScene extends Scene {
     }
 
     private void spawnTrash(int count) {
-        // Spawn 70% recyclable items, 30% non-recyclable
-        trashSpawner.spawnRandomTrash(count, 0.7f);
-
-        System.out.println("Spawned " + count + " trash items");
+        try {
+            // Use the ratio 0.7 for 70% recyclable trash
+            trashSpawner.spawnRandomTrash(count, 0.7f);
+        } catch (Exception e) {
+            System.out.println("Error spawning trash: " + e);
+        }
     }
 
     @Override
     public void update() {
-    	float deltaTime = Gdx.graphics.getDeltaTime();
+        float delta = Gdx.graphics.getDeltaTime();
 
-        try {
+        // Get player status
+        PlayerStatus playerStatus = PlayerStatus.getInstance();
+
+        // Only update physics and check collisions if not in mini-game
+        if (!playerStatus.isInMiniGame()) {
+            updatePhysics(delta);
+
+            if (playerLifeHandler.checkGameOver()) {
+                return;
+            }
+
+            // Update mini-game handler cooldown timer
+            miniGameHandler.update(delta);
+
             // Update trash spawn timer
-            trashSpawnTimer += Gdx.graphics.getDeltaTime();
-
-            // Update mini-game handler cooldown
-            if (miniGameHandler != null) {
-                miniGameHandler.update(Gdx.graphics.getDeltaTime());
-            }
-
-            // Spawn new trash periodically
+            trashSpawnTimer += delta;
             if (trashSpawnTimer >= trashSpawnInterval) {
-                // Spawn 1-3 new trash items
-                int itemsToSpawn = random.nextInt(3) + 1;
-                spawnTrash(itemsToSpawn);
-                trashSpawnTimer = 0f;
-
-                // Gradually decrease spawn interval for increasing difficulty
-                // But don't go below 2 seconds
-                trashSpawnInterval = Math.max(2.0f, trashSpawnInterval * 0.99f);
+                trashSpawnTimer = 0;
+                spawnTrash(5);  // Try to spawn up to 5 pieces of trash each interval
             }
-
-            entityManager.update();
-            gameInputManager.update();
-            playerInputManager.update();
-            updatePhysics(deltaTime);
-
-            // Check for game over AFTER physics update is complete
-            if (playerLifeHandler != null) {
-                playerLifeHandler.checkGameOver();
-            }
-        } catch (Exception e) {
-            System.out.println("Error in game scene: " + e);
-            e.printStackTrace();
         }
+
+        // These updates should happen regardless of mini-game status
+        entityManager.update();
+        gameInputManager.update();
+        playerInputManager.update();
+        settingsButton.update();
     }
 
     private void updatePhysics(float deltaTime) {
@@ -293,15 +302,26 @@ public class GameScene extends Scene {
     }
 
     private void drawUI(SpriteBatch batch) {
-        float padding = 10f; // Scale padding with screen size
-        float baseX = padding;
-        float baseY = DisplayManager.getScreenHeight() - padding;
-        float lineSpacing = 30f; // Vertical spacing between lines
+        // Draw points
+        textManager.draw(batch, "Points: " + pointsManager.getPoints(),
+                         DisplayManager.getScreenWidth() - 200, DisplayManager.getScreenHeight() - 20, Color.WHITE);
 
-        // Scale font size with screen
-        textManager.getFont().getData().setScale(2.0f, 2.0f);
+        // Make sure to use the current level from levelManager
+        int level = levelManager.getCurrentLevel();
+        textManager.draw(batch, "Level: " + level,
+                         DisplayManager.getScreenWidth() - 200, DisplayManager.getScreenHeight() - 50, Color.YELLOW);
 
+        // Draw player lives
+        drawPlayerStatus(batch);
 
+        // Display level-up notification if a new level was unlocked
+        if (pointsManager.isLevelUnlocked()) {
+            textManager.draw(batch, "New Level Unlocked!",
+                            DisplayManager.getScreenWidth() / 2 - 100, DisplayManager.getScreenHeight() / 2, Color.GREEN);
+        }
+
+        // Debug output - remove in production
+        System.out.println("Current level displayed: " + level + ", Alien speed: " + levelManager.getCurrentAlienSpeed());
     }
 
     private void drawPlayerStatus(SpriteBatch batch) {

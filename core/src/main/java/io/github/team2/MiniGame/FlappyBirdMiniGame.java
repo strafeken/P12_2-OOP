@@ -50,8 +50,9 @@ public class FlappyBirdMiniGame extends Scene {
     private float jumpVelocity = -400f;
     private float velocity = 0;
     private float pipeSpeed = 200f;
-    private float pipeWidth = 60f;
-    private float pipeGap = 220f; // Increased gap size for easier gameplay
+    private float pipeWidth = 40f;
+    private float pipeHeight = 300f;
+    private float pipeGap = 120f;
     private float timeSinceLastPipe = 0;
     private float pipeInterval = 1.7f;
 
@@ -78,7 +79,7 @@ public class FlappyBirdMiniGame extends Scene {
     private Color skyColor = new Color(0.4f, 0.7f, 1f, 1);
 
     // Debug flag
-    private boolean debugCollision = false; // Set to true to see collision boxes
+    private boolean debugCollision = true; // Set this to true temporarily to see the collision boxes
 
     // Add this field
     private StartMiniGameHandler miniGameHandler;
@@ -124,7 +125,7 @@ public class FlappyBirdMiniGame extends Scene {
                 PipeBehaviour.State.IDLE,
                 PipeBehaviour.Move.NONE
             );
-            
+
             // Bottom pipe - similar to top but different texture
             bottomPipeObject = new Pipe(
                 EntityType.PIPE,
@@ -137,11 +138,11 @@ public class FlappyBirdMiniGame extends Scene {
                 PipeBehaviour.State.IDLE,
                 PipeBehaviour.Move.NONE
             );
-            
+
             // Get textures from pipe objects
             // Note: We're assuming DynamicTextureObject (parent of Pipe) loads the texture properly
             // and provides a way to access it. If not, we'll need alternative approach.
-            
+
             // For now, let's create the textures directly since we're in a mini-game
             pipeTopTexture = new Texture(Gdx.files.internal("plastic-bottle-2.png"));
             pipeBottomTexture = new Texture(Gdx.files.internal("plastic-bottle-2.png"));
@@ -151,10 +152,10 @@ public class FlappyBirdMiniGame extends Scene {
             e.printStackTrace();
         }
 
-        // Initialize bird
+        // Initialize bird with more accurate collision size
         bird = new Rectangle();
-        bird.width = 40;
-        bird.height = 32;
+        bird.width = 32;  // Adjust to match the actual visible size of the rocket texture
+        bird.height = 26; // Adjust to match the actual visible size of the rocket texture
         bird.x = DisplayManager.getScreenWidth() / 4;
         bird.y = DisplayManager.getScreenHeight() / 2;
 
@@ -175,24 +176,24 @@ public class FlappyBirdMiniGame extends Scene {
     }
 
     private void spawnPipe() {
+        // Generate random gap size for this pipe
+        float randomGap = MathUtils.random(100f, 200f);
+
         float centerPipe = MathUtils.random(
             DisplayManager.getScreenHeight() * 0.3f,
             DisplayManager.getScreenHeight() * 0.7f
         );
 
-        float pipeHeight = 400;
-
-        // Top pipe
+        // Collision rectangle is half the width of visual pipe
         Rectangle topPipe = new Rectangle();
         topPipe.x = DisplayManager.getScreenWidth();
-        topPipe.y = centerPipe + pipeGap/2;
+        topPipe.y = centerPipe + randomGap/2;  // Use randomGap instead of fixed pipeGap
         topPipe.width = pipeWidth;
         topPipe.height = pipeHeight;
 
-        // Bottom pipe
         Rectangle bottomPipe = new Rectangle();
         bottomPipe.x = DisplayManager.getScreenWidth();
-        bottomPipe.y = centerPipe - pipeGap/2 - pipeHeight;
+        bottomPipe.y = centerPipe - randomGap/2 - pipeHeight;  // Use randomGap here too
         bottomPipe.width = pipeWidth;
         bottomPipe.height = pipeHeight;
 
@@ -348,7 +349,7 @@ public class FlappyBirdMiniGame extends Scene {
         // Add the minigame score to the main game score
         pointsManager.addPoints(score * 10);
         System.out.println("Mini-game completed! Added " + (score * 10) + " points from mini-game score.");
-        
+
         // Penalize player if they died early (before 15 seconds) by reducing health instead of points
         if (!success && gameTime < 15.0f) {
             // Only reduce health if player has more than 1 life remaining
@@ -388,17 +389,21 @@ public class FlappyBirdMiniGame extends Scene {
         // Restart the batch for sprites
         batch.begin();
 
-        // Draw pipes
+        // Draw pipes with double width but using collision bounds for positioning
         for (int i = 0; i < topPipes.size; i++) {
             Rectangle topPipe = topPipes.get(i);
             batch.draw(pipeTopTexture,
-                      topPipe.x, topPipe.y);
-        }
+                      topPipe.x - pipeWidth/2, // Center the visual pipe on collision box
+                      topPipe.y,
+                      pipeWidth * 2,     // Double visual width
+                      pipeHeight);       // Keep height
 
-        for (int i = 0; i < bottomPipes.size; i++) {
             Rectangle bottomPipe = bottomPipes.get(i);
             batch.draw(pipeBottomTexture,
-                      bottomPipe.x, bottomPipe.y);
+                      bottomPipe.x - pipeWidth/2, // Center the visual pipe on collision box
+                      bottomPipe.y,
+                      pipeWidth * 2,     // Double visual width
+                      pipeHeight);       // Keep height
         }
 
         // Draw bird
@@ -406,6 +411,7 @@ public class FlappyBirdMiniGame extends Scene {
             batch.draw(birdTexture, bird.x, bird.y, bird.width, bird.height);
         }
 
+        // Rest of draw code remains the same...
         // Draw UI
         textManager.draw(batch, "Score: " + score, 20, DisplayManager.getScreenHeight() - 20, Color.WHITE);
         textManager.draw(batch, "Time: " + (int)(maxGameTime - gameTime), DisplayManager.getScreenWidth() - 150, DisplayManager.getScreenHeight() - 20, Color.WHITE);

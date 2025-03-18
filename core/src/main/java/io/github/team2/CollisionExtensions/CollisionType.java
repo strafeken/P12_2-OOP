@@ -4,7 +4,16 @@ import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityType;
 
 public enum CollisionType {
-    RECYCLABLE_PLAYER, NON_RECYCLABLE_PLAYER, RECYCLING_BIN_PLAYER, ALIEN_PLAYER, PIPE_PLAYER, LEVEL1_PLAYER;
+    ALIEN_PLAYER,
+    RECYCLABLE_PLAYER,
+    RECYCLABLE_RECYCLINGBIN,
+    NON_RECYCLABLE_PLAYER,  // Added missing enum value
+    RECYCLING_BIN_PLAYER,   // Added missing enum value
+    PIPE_PLAYER,            // Added missing enum value
+    LEVEL1_PLAYER,
+    LEVEL2_PLAYER,
+    LEVEL3_PLAYER,
+    LEVEL4_PLAYER;
 
     public static CollisionType getCollisionType(Entity a, Entity b) {
         if (isPair(a, b, EntityType.RECYCLABLE, EntityType.PLAYER)) {
@@ -19,6 +28,12 @@ public enum CollisionType {
             return PIPE_PLAYER;
         }   else if (isPair(a, b, EntityType.LEVEL1, EntityType.PLAYER)) {
            return LEVEL1_PLAYER;
+        } else if (isPair(a, b, EntityType.LEVEL2, EntityType.PLAYER)) {
+           return LEVEL2_PLAYER;
+        } else if (isPair(a, b, EntityType.LEVEL3, EntityType.PLAYER)) {
+           return LEVEL3_PLAYER;
+        } else if (isPair(a, b, EntityType.LEVEL4, EntityType.PLAYER)) {
+           return LEVEL4_PLAYER;
         }
         return null;
     }

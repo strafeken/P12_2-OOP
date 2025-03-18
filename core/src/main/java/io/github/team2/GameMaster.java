@@ -53,6 +53,9 @@ public class GameMaster extends ApplicationAdapter {
         sceneManager.addScene(SceneID.SETTINGS_MENU, new SettingsMenu());
         sceneManager.addScene(SceneID.LEVEL_SELECT, new LevelSelectScene());
         sceneManager.setNextScene(SceneID.MAIN_MENU);
+
+        // Initialize level manager
+        LevelManager.getInstance();
     }
 
     @Override

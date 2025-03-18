@@ -31,42 +31,44 @@ public class StartMiniGameHandler implements CollisionListener {
 
     @Override
     public void onCollision(Entity a, Entity b, CollisionType type) {
-        if (type == CollisionType.ALIEN_PLAYER) {
-            PlayerStatus playerStatus = PlayerStatus.getInstance();
+        // If player is already in a mini-game, ignore all collisions
+        PlayerStatus playerStatus = PlayerStatus.getInstance();
+        if (playerStatus.isInMiniGame()) {
+            return; // Skip all collision processing when in mini-game
+        }
 
+        if (type == CollisionType.ALIEN_PLAYER) {
             // Check if cooldown is active
             if (miniGameCooldown > 0) {
                 return;
             }
 
             // Only start mini-game if not already in one
-            if (!playerStatus.isInMiniGame()) {
-                playerStatus.setInMiniGame(true);
-                System.out.println("Starting mini-game with alien!");
+            playerStatus.setInMiniGame(true);
+            System.out.println("Starting mini-game with alien!");
 
-                // Store reference to alien for respawning later
-                Entity alien = (a.getEntityType() == EntityType.ALIEN) ? a : b;
-                playerStatus.setLastAlienEncounter(alien);
+            // Store reference to alien for respawning later
+            Entity alien = (a.getEntityType() == EntityType.ALIEN) ? a : b;
+            playerStatus.setLastAlienEncounter(alien);
 
-                try {
-                    // Always create a new instance to ensure fresh state
-                    FlappyBirdMiniGame miniGame = new FlappyBirdMiniGame(pointsManager, this);
+            try {
+                // Always create a new instance to ensure fresh state
+                FlappyBirdMiniGame miniGame = new FlappyBirdMiniGame(pointsManager, this);
 
-                    // Check if scene exists already and remove it if it does
-                    if (sceneManager.hasScene(SceneID.MINI_GAME)) {
-                        sceneManager.removeScene(SceneID.MINI_GAME);
-                    }
-
-                    // Add the new mini-game scene
-                    sceneManager.addScene(SceneID.MINI_GAME, miniGame);
-
-                    // Overlay the mini-game on top of the current scene
-                    sceneManager.overlayScene(SceneID.MINI_GAME);
-                } catch (Exception e) {
-                    System.err.println("Error starting mini-game: " + e.getMessage());
-                    e.printStackTrace();
-                    playerStatus.setInMiniGame(false);
+                // Check if scene exists already and remove it if it does
+                if (sceneManager.hasScene(SceneID.MINI_GAME)) {
+                    sceneManager.removeScene(SceneID.MINI_GAME);
                 }
+
+                // Add the new mini-game scene
+                sceneManager.addScene(SceneID.MINI_GAME, miniGame);
+
+                // Overlay the mini-game on top of the current scene
+                sceneManager.overlayScene(SceneID.MINI_GAME);
+            } catch (Exception e) {
+                System.err.println("Error starting mini-game: " + e.getMessage());
+                e.printStackTrace();
+                playerStatus.setInMiniGame(false);
             }
         }
     }
