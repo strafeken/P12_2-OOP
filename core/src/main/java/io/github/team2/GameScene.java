@@ -79,8 +79,8 @@ public class GameScene extends Scene {
 
     private StartMiniGameHandler miniGameHandler;
     private PlayerLifeHandler playerLifeHandler;
-    
-    
+
+
     private Camera camera;
 
     public GameScene() {
@@ -92,12 +92,12 @@ public class GameScene extends Scene {
     @Override
     public void load() {
         System.out.println("Game Scene => LOAD");
-        
+
         // 1. Set up your camera to default size
         camera = new Camera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        
-        
-        
+
+
+
         initializeWorld();
         initializeManagers();
         initializeEntities();
@@ -113,7 +113,7 @@ public class GameScene extends Scene {
         playerStatus.reset();
 
         audioManager = AudioManager.getInstance();
-        AudioManager.getInstance().stopSoundEffect("mainmenu");
+        AudioManager.getInstance().stopSoundEffect("levelsect");
         AudioManager.getInstance().playSoundEffect("start");
     }
 
@@ -163,15 +163,15 @@ public class GameScene extends Scene {
 
     private void initializeEntities() {
     	try {
-    		
-    		
+
+
 	        StaticTextureObject bg_image  = new StaticTextureObject(EntityType.UNDEFINED, "planet/planet2_yellow.jpg", new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight()),
 	                new Vector2(DisplayManager.getScreenWidth()/2,  DisplayManager.getScreenHeight()/2),
 	                new Vector2(0, 0));
 
 	        entityManager.addEntities(bg_image);
-    		
-    		
+
+
             player = new Player(EntityType.PLAYER,
                               "rocket-2.png",
                               new Vector2(70, 100),
@@ -232,7 +232,7 @@ public class GameScene extends Scene {
     @Override
     public void update() {
     	float deltaTime = Gdx.graphics.getDeltaTime();
-    	
+
         try {
             // Update trash spawn timer
             trashSpawnTimer += Gdx.graphics.getDeltaTime();
@@ -258,7 +258,7 @@ public class GameScene extends Scene {
             gameInputManager.update();
             playerInputManager.update();
             updatePhysics(deltaTime);
-            
+
             // Check for game over AFTER physics update is complete
             if (playerLifeHandler != null) {
                 playerLifeHandler.checkGameOver();
@@ -270,7 +270,7 @@ public class GameScene extends Scene {
     }
 
     private void updatePhysics(float deltaTime) {
-        
+
         accumulator += deltaTime;
 
         while (accumulator >= TIME_STEP) {
@@ -281,9 +281,9 @@ public class GameScene extends Scene {
 
     @Override
     public void draw(SpriteBatch batch) {
-    	
+
     	batch.setProjectionMatrix(camera.camera.combined);
-    	
+
         entityManager.draw(batch);
         drawUI(batch);
         settingsButton.draw(batch);
@@ -301,19 +301,7 @@ public class GameScene extends Scene {
         // Scale font size with screen
         textManager.getFont().getData().setScale(2.0f, 2.0f);
 
-        // Draw scene title
-        textManager.draw(batch,
-            "Game Scene",
-            baseX,
-            baseY,
-            Color.RED);
 
-        // Draw score below title
-        textManager.draw(batch,
-            "Score: " + pointsManager.getPoints(),
-            baseX,
-            baseY - lineSpacing,
-            Color.RED);
     }
 
     private void drawPlayerStatus(SpriteBatch batch) {
@@ -348,7 +336,7 @@ public class GameScene extends Scene {
     public void draw(ShapeRenderer shape) {
     	shape.setProjectionMatrix(camera.camera.combined);
         entityManager.draw(shape);
-        
+
         // off this to off hit box
         debugRenderer.render(world, shape.getProjectionMatrix());
     }

@@ -64,7 +64,7 @@ public class LevelSelectScene extends Scene {
 	private StaticTextureObject image;
 	private Entity player;
 	private Entity level1;
-	
+
 	private StartLevelHandler startLevelHandler;
 
 	public LevelSelectScene() {
@@ -80,6 +80,11 @@ public class LevelSelectScene extends Scene {
 		collisionDetector = new CollisionDetector();
 
 		initializeWorld();
+
+		// Stop mainmenu sound and play night sound
+		IAudioManager audioManager = AudioManager.getInstance();
+		audioManager.stopSoundEffect("mainmenu");
+		audioManager.playSoundEffect("levelsect");
 
 		player = new Player(EntityType.PLAYER, "rocket-2.png", new Vector2(70, 100),
 				new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2),
@@ -134,7 +139,7 @@ public class LevelSelectScene extends Scene {
 		// Add collision listeners (using CollisionType enum)
 		StartLevelHandler startLevelHandler = new StartLevelHandler();
 		collisionDetector.addListener(startLevelHandler);
-		
+
 		this.startLevelHandler = startLevelHandler;
 
 	}
@@ -147,11 +152,11 @@ public class LevelSelectScene extends Scene {
 			world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 			accumulator -= TIME_STEP;
 		}
-		
-	
+
+
 	}
 
-	
+
 	@Override
 	public void update() {
 
@@ -160,18 +165,18 @@ public class LevelSelectScene extends Scene {
 		entityManager.update();
 		gameInputManager.update();
 		playerInputManager.update();
-		
-		
+
+
 		camera1.cameraUpdate(delta, player.getPosition());
-		
+
 		startLevelHandler.processAction(camera1);
-		
-		
+
+
 	}
 
 	@Override
 	public void draw(SpriteBatch batch) {
-		
+
 		batch.setProjectionMatrix(camera1.camera.combined);
 		entityManager.draw(batch);
 
@@ -213,7 +218,7 @@ public class LevelSelectScene extends Scene {
 
 	@Override
 	public void dispose() {
-		
+
 		if (debugRenderer != null) {
 			debugRenderer.dispose();
 			debugRenderer = null;
@@ -226,7 +231,6 @@ public class LevelSelectScene extends Scene {
 		entityManager.dispose();
 		// Use interface
 		IAudioManager audioManager = AudioManager.getInstance();
-		audioManager.stopMusic(); // Stop music when leaving menu
-
+		audioManager.stopSoundEffect("levelsect"); // Stop night sound specifically
 	}
 }
