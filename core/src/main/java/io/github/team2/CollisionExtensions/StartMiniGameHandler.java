@@ -11,6 +11,9 @@ import io.github.team2.MiniGame.FlappyBirdMiniGame;
 import io.github.team2.SceneSystem.SceneID;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.SceneSystem.ISceneManager;
+import io.github.team2.Utils.DisplayManager;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.MathUtils;
 
 import java.util.List;
 
@@ -73,20 +76,50 @@ public class StartMiniGameHandler implements CollisionListener {
         }
     }
 
-    // Method to handle mini-game completion
+
     public void onMiniGameCompleted() {
-        // Set cooldown
-        miniGameCooldown = COOLDOWN_DURATION;
+        System.out.println("Mini-game completed callback received");
 
-        // Get the alien that triggered the mini-game
-        Entity alienEntity = PlayerStatus.getInstance().getLastAlienEncounter();
+        // Get the player and last alien that triggered the mini-game
+        PlayerStatus playerStatus = PlayerStatus.getInstance();
+        Entity lastAlienEncounter = playerStatus.getLastAlienEncounter();
+        Entity player = playerStatus.getPlayer();
 
-        // Respawn all aliens to their initial positions
-        List<Entity> aliens = entityManager.getEntitiesByType(EntityType.ALIEN);
-        for (Entity entity : aliens) {
-            if (entity instanceof Alien) {
-                ((Alien) entity).respawn();
-            }
+        // If there was an alien in the encounter, respawn it safely
+        if (lastAlienEncounter != null && lastAlienEncounter instanceof Alien && player != null) {
+            Alien alien = (Alien) lastAlienEncounter;
+            respawnAlienAtSafeDistance(alien, player);
+        }
+    }
+
+    // New method to respawn alien at a safe distance from player
+    private void respawnAlienAtSafeDistance(Alien alien, Entity player) {
+        // Calculate a position at least 300 units away from player
+        float safeDistance = 300f;
+        Vector2 playerPos = player.getPosition();
+        Vector2 newPosition = new Vector2();
+
+        // Generate a random angle
+        float angle = MathUtils.random(0f, MathUtils.PI2);
+
+        // Calculate new position using polar coordinates
+        newPosition.x = playerPos.x + safeDistance * MathUtils.cos(angle);
+        newPosition.y = playerPos.y + safeDistance * MathUtils.sin(angle);
+
+        // Make sure position is within the screen bounds
+        float margin = 50f;
+        newPosition.x = MathUtils.clamp(newPosition.x,
+                                       margin,
+                                       DisplayManager.getScreenWidth() - margin);
+        newPosition.y = MathUtils.clamp(newPosition.y,
+                                       margin,
+                                       DisplayManager.getScreenHeight() - margin);
+
+        // Set the alien to the new position
+        if (alien.getPhysicsBody() != null) {
+            alien.getPhysicsBody().setLocation(newPosition.x, newPosition.y);
+            alien.getPhysicsBody().getBody().setLinearVelocity(0, 0);
+            System.out.println("Respawned alien at safe distance: " + newPosition);
         }
     }
 

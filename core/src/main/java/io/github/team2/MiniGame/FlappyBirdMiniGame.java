@@ -25,12 +25,12 @@ import io.github.team2.PointsManager;
 import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
+import io.github.team2.GameOverScreen;
 import io.github.team2.TextManager;
 import io.github.team2.Utils.DisplayManager;
-;
 public class FlappyBirdMiniGame extends Scene {
     // Game state
-    private enum GameState { READY, PLAYING, GAME_OVER }
+    private enum GameState { READY, PLAYING, GAME_OVER, CONFIRM_EXIT }
     private GameState state;
 
     // Game objects
@@ -52,7 +52,6 @@ public class FlappyBirdMiniGame extends Scene {
     private float pipeSpeed = 200f;
     private float pipeWidth = 40f;
     private float pipeHeight = 300f;
-    private float pipeGap = 120f;
     private float timeSinceLastPipe = 0;
     private float pipeInterval = 1.7f;
 
@@ -83,6 +82,11 @@ public class FlappyBirdMiniGame extends Scene {
 
     // Add this field
     private StartMiniGameHandler miniGameHandler;
+
+    // Add these fields to the class
+    private boolean confirmYes = true; // Default selection in the confirmation dialog
+    private Color selectedColor = Color.YELLOW;
+    private Color unselectedColor = Color.WHITE;
 
     // Update the constructor
     public FlappyBirdMiniGame(PointsManager pointsManager, StartMiniGameHandler miniGameHandler) {
@@ -222,6 +226,12 @@ public class FlappyBirdMiniGame extends Scene {
                 break;
 
             case PLAYING:
+                // Quick exit with Q key
+                if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+                    state = GameState.CONFIRM_EXIT;
+                    break;
+                }
+
                 // Jump mechanic
                 if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                     velocity = jumpVelocity;
@@ -253,21 +263,54 @@ public class FlappyBirdMiniGame extends Scene {
 
                 // Move pipes and check collision
                 updatePipesAndCollisions(deltaTime);
-
                 break;
 
             case GAME_OVER:
                 // Wait for delay, then return to game
                 currentDelay += deltaTime;
+
                 if (currentDelay >= gameOverDelay) {
-                    // Use Q key instead of R to return immediately to avoid conflict
-                    if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+                    // Use R key instead of Q to return immediately to avoid conflict
+                    if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
                         completeGame(false);
                     }
                     // Auto-return to game after delay
                     else if (currentDelay >= gameOverDelay * 2) {
                         completeGame(false);
                     }
+                }
+                break;
+
+            case CONFIRM_EXIT:
+                // Handle confirmation dialog navigation (up/down or W/S keys)
+                if (Gdx.input.isKeyJustPressed(Input.Keys.UP) || Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+                    confirmYes = true;
+                }
+                else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN) || Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+                    confirmYes = false;
+                }
+
+                // Handle confirmation selection (Enter or Space)
+                if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                    if (confirmYes) {
+                        // Player confirmed exit - take penalty and exit
+                        completeGameWithPenalty();
+
+                        // Consume this key press by "using it up"
+                        // This is just to illustrate we're handling it, actual event consumption
+                        // depends on how the input system is implemented
+                        return;
+                    } else {
+                        // Player cancelled - return to game
+                        state = GameState.PLAYING;
+                        return;
+                    }
+                }
+
+                // Allow escape to cancel
+                if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                    state = GameState.PLAYING;
+                    return;
                 }
                 break;
         }
@@ -374,6 +417,46 @@ public class FlappyBirdMiniGame extends Scene {
         }
     }
 
+    // Method to handle exiting the mini-game with a life penalty
+    private void completeGameWithPenalty() {
+        gameCompleted = true;
+
+        // Apply penalty (same as if player died early)
+        PlayerStatus playerStatus = PlayerStatus.getInstance();
+        if (playerStatus.getLives() > 1) {
+            // Normal case - player has more than 1 life, just decrement
+            playerStatus.decrementLife();
+            System.out.println("Player skipped mini-game. Lost 1 life as penalty!");
+
+            // Stop mini-game music
+            audioManager.stopSoundEffect("minigame");
+
+            // Return to main game
+            playerStatus.setInMiniGame(false);
+            sceneManager.removeOverlay();
+        } else {
+            // Player has only 1 life left - reduce to 0 and trigger game over
+            playerStatus.decrementLife(); // This will set lives to 0
+            System.out.println("Player skipped mini-game with only 1 life remaining. Game over!");
+
+            // Stop mini-game music
+            audioManager.stopSoundEffect("minigame");
+
+            // Player is no longer in mini-game
+            playerStatus.setInMiniGame(false);
+
+            // Create and set up game over screen with final score
+            GameOverScreen gameOverScreen = new GameOverScreen();
+            gameOverScreen.setFinalScore(pointsManager.getPoints());
+            sceneManager.setNextScene(io.github.team2.SceneSystem.SceneID.GAME_OVER);
+        }
+
+        // Notify handler that mini-game is completed
+        if (miniGameHandler != null) {
+            miniGameHandler.onMiniGameCompleted();
+        }
+    }
+
     @Override
     public void draw(SpriteBatch batch) {
         // We need to end the batch before drawing shapes,
@@ -411,7 +494,6 @@ public class FlappyBirdMiniGame extends Scene {
             batch.draw(birdTexture, bird.x, bird.y, bird.width, bird.height);
         }
 
-        // Rest of draw code remains the same...
         // Draw UI
         textManager.draw(batch, "Score: " + score, 20, DisplayManager.getScreenHeight() - 20, Color.WHITE);
         textManager.draw(batch, "Time: " + (int)(maxGameTime - gameTime), DisplayManager.getScreenWidth() - 150, DisplayManager.getScreenHeight() - 20, Color.WHITE);
@@ -422,8 +504,10 @@ public class FlappyBirdMiniGame extends Scene {
                                 DisplayManager.getScreenHeight()/2 + 50, Color.YELLOW);
                 textManager.draw(batch, "Press SPACE to start", DisplayManager.getScreenWidth()/2 - 150,
                                 DisplayManager.getScreenHeight()/2, Color.WHITE);
-                textManager.draw(batch, "Avoid the pipes!", DisplayManager.getScreenWidth()/2 - 100,
+                textManager.draw(batch, "Press Q to exit anytime (with penalty)", DisplayManager.getScreenWidth()/2 - 180,
                                 DisplayManager.getScreenHeight()/2 - 50, Color.WHITE);
+                textManager.draw(batch, "Avoid the pipes!", DisplayManager.getScreenWidth()/2 - 100,
+                                DisplayManager.getScreenHeight()/2 - 100, Color.WHITE);
                 break;
 
             case GAME_OVER:
@@ -442,13 +526,67 @@ public class FlappyBirdMiniGame extends Scene {
 
                 // Optional quick return
                 if (currentDelay >= gameOverDelay) {
-                    textManager.draw(batch, "Press Q to return now", DisplayManager.getScreenWidth()/2 - 140,
+                    textManager.draw(batch, "Press R to return now", DisplayManager.getScreenWidth()/2 - 140,
                                     DisplayManager.getScreenHeight()/2 - 150, Color.WHITE);
                 }
                 break;
 
+            case CONFIRM_EXIT:
+                // End the SpriteBatch before drawing shapes
+                batch.end();
+
+                // Set up blending for transparency
+                Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
+                Gdx.gl.glBlendFunc(Gdx.gl.GL_SRC_ALPHA, Gdx.gl.GL_ONE_MINUS_SRC_ALPHA);
+
+                // Draw semi-transparent overlay for dialog background
+                localShapeRenderer.begin(ShapeType.Filled);
+                localShapeRenderer.setColor(0, 0, 0, 0.7f); // Semi-transparent black background
+                localShapeRenderer.rect(0, 0, DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
+                localShapeRenderer.end();
+
+                // Draw dialog box background
+                localShapeRenderer.begin(ShapeType.Filled);
+                float dialogWidth = 400;
+                float dialogHeight = 220;
+                float dialogX = DisplayManager.getScreenWidth()/2 - dialogWidth/2;
+                float dialogY = DisplayManager.getScreenHeight()/2 - dialogHeight/2;
+                localShapeRenderer.setColor(0.1f, 0.1f, 0.2f, 0.95f);
+                localShapeRenderer.rect(dialogX, dialogY, dialogWidth, dialogHeight);
+                localShapeRenderer.end();
+
+                // Draw dialog border
+                localShapeRenderer.begin(ShapeType.Line);
+                localShapeRenderer.setColor(0.5f, 0.5f, 0.8f, 1);
+                localShapeRenderer.rect(dialogX, dialogY, dialogWidth, dialogHeight);
+                localShapeRenderer.end();
+
+                Gdx.gl.glDisable(Gdx.gl.GL_BLEND);
+
+                // Resume batch to draw text
+                batch.begin();
+
+                // Dialog text
+                float textX = dialogX + 20;
+                float textY = dialogY + dialogHeight - 30;
+
+                textManager.draw(batch, "QUIT MINI-GAME?", textX, textY, Color.YELLOW);
+                textManager.draw(batch, "You will lose one life as penalty", textX, textY - 40, Color.WHITE);
+                textManager.draw(batch, "for skipping this challenge.", textX, textY - 70, Color.WHITE);
+
+                // Options with highlighted selection
+                textManager.draw(batch, "Yes, quit anyway", textX + 20, textY - 110,
+                               confirmYes ? selectedColor : unselectedColor);
+                textManager.draw(batch, "No, continue playing", textX + 20, textY - 140,
+                               confirmYes ? unselectedColor : selectedColor);
+
+                // Controls hint
+                textManager.draw(batch, "Use UP/DOWN to select, SPACE to confirm", textX - 50, textY - 180, Color.WHITE);
+                break;
+
             case PLAYING:
-                // Game UI already drawn above
+                // During gameplay, show the Q key hint
+                textManager.draw(batch, "Press Q to exit", 20, DisplayManager.getScreenHeight() - 60, Color.WHITE);
                 break;
         }
     }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.Gdx;
 
 import java.util.Random;
 
@@ -13,11 +14,13 @@ import io.github.team2.Actions.StartLevelSelect;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.AudioSystem.IAudioManager;
 import io.github.team2.EntitySystem.EntityManager;
+import io.github.team2.EntitySystem.EntityType;
+import io.github.team2.EntitySystem.StaticTextureObject;
 import io.github.team2.InputSystem.Button;
 import io.github.team2.InputSystem.GameInputManager;
 import io.github.team2.SceneSystem.ISceneManager;
-import io.github.team2.SceneSystem.Scene;  // Need this import for the getInstance method
-import io.github.team2.SceneSystem.SceneManager;  // Use this interface for the variable type
+import io.github.team2.SceneSystem.Scene; // Need this import for the getInstance method
+import io.github.team2.SceneSystem.SceneManager; // Use this interface for the variable type
 import io.github.team2.Utils.DisplayManager;
 
 public class GameOverScreen extends Scene {
@@ -26,23 +29,27 @@ public class GameOverScreen extends Scene {
     private IAudioManager audioManager;
     private String currentTrivia; // Store current random trivia
     private Random random;
+    private StaticTextureObject backgroundImage;
+
+    // Add input delay to prevent immediate key detection
+    private float inputDelay = 1.0f; // 1 second delay
 
     private static final String[] TRIVIA = {
-        "Space debris as small as 1cm can cause catastrophic damage to satellites due to high orbital velocities.",
-        "There are over 500,000 pieces of space junk being tracked as they orbit Earth.",
-        "The Great Pacific Garbage Patch is three times the size of France.",
-        "It takes a plastic bottle up to 450 years to decompose in the ocean.",
-        "The first piece of space debris was the 1957 Sputnik 1 mission's rocket booster.",
-        "Only 9% of all plastic ever produced has been recycled.",
-        "A single recycled plastic bottle saves enough energy to power a computer for 25 minutes.",
-        "The International Space Station has to perform debris avoidance maneuvers about once a year.",
-        "By 2050, there could be more plastic than fish in the oceans by weight.",
-        "The aluminum in a single soda can, if recycled, can power a TV for three hours.",
-        "Space debris travels at speeds up to 17,500 mph in orbit.",
-        "Every year, 8 million metric tons of plastic enter our oceans.",
-        "The average American generates about 4.4 pounds of trash per day.",
-        "NASA maintains a catalog of over 47,000 pieces of orbital debris.",
-        "Recycling one ton of paper saves 17 trees and 7,000 gallons of water."
+            "Space debris as small as 1cm can cause catastrophic damage to satellites due to high orbital velocities.",
+            "There are over 500,000 pieces of space junk being tracked as they orbit Earth.",
+            "The Great Pacific Garbage Patch is three times the size of France.",
+            "It takes a plastic bottle up to 450 years to decompose in the ocean.",
+            "The first piece of space debris was the 1957 Sputnik 1 mission's rocket booster.",
+            "Only 9% of all plastic ever produced has been recycled.",
+            "A single recycled plastic bottle saves enough energy to power a computer for 25 minutes.",
+            "The International Space Station has to perform debris avoidance maneuvers about once a year.",
+            "By 2050, there could be more plastic than fish in the oceans by weight.",
+            "The aluminum in a single soda can, if recycled, can power a TV for three hours.",
+            "Space debris travels at speeds up to 17,500 mph in orbit.",
+            "Every year, 8 million metric tons of plastic enter our oceans.",
+            "The average American generates about 4.4 pounds of trash per day.",
+            "NASA maintains a catalog of over 47,000 pieces of orbital debris.",
+            "Recycling one ton of paper saves 17 trees and 7,000 gallons of water."
     };
 
     public GameOverScreen() {
@@ -63,30 +70,96 @@ public class GameOverScreen extends Scene {
         gameInputManager = new GameInputManager();
         textManager = new TextManager();
 
+        // Reset input delay when screen loads
+        inputDelay = 1.0f;
+
+        // Load background image
+        backgroundImage = new StaticTextureObject(
+            EntityType.UNDEFINED,
+            "space_background.jpg",  // Using the same background as level select
+            new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight()),
+            new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2),
+            new Vector2(0, 0)
+        );
+        entityManager.addEntities(backgroundImage);
+
         // Get random trivia
         currentTrivia = TRIVIA[random.nextInt(TRIVIA.length)];
 
-        // Use StartLevelSelect instead of StartGame
+        // Get scene manager instance
         ISceneManager sceneManager = SceneManager.getInstance();
-        StartLevelSelect levelSelectAction = new StartLevelSelect(sceneManager);
-        Vector2 centerPos = new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2 - 200);
-        restartButton = new Button("restartBtn.png", centerPos, levelSelectAction, 100, 100);
 
-        gameInputManager.registerKeyUp(Input.Keys.SPACE, levelSelectAction);
+        // Create two different actions - one for restart and one for level select
+        StartGame restartAction = new StartGame(sceneManager);
+        StartLevelSelect levelSelectAction = new StartLevelSelect(sceneManager);
+
+        // Position for restart button
+        //Vector2 centerPos = new Vector2(DisplayManager.getScreenWidth() / 2,
+        //       DisplayManager.getScreenHeight() / 2 - 200);
+        //restartButton = new Button("restartBtn.png", centerPos, restartAction, 100, 100);
+
+        // Don't register key handlers yet - will do this after delay
+        // We'll add them in the update method after the delay
+
+        // However, mouse clicks on the button are still allowed
         gameInputManager.registerClickable(restartButton);
 
         // Get instance through concrete class but store as interface type
         audioManager = AudioManager.getInstance();
+
+        // Play a game over sound
+        audioManager.playSoundEffect("gameover");
     }
 
     @Override
     public void update() {
-    	entityManager.update();
-    	gameInputManager.update();
+        entityManager.update();
+
+        // Handle input delay
+        if (inputDelay > 0) {
+            inputDelay -= Gdx.graphics.getDeltaTime();
+
+            // Once delay is complete, register the key handlers
+            if (inputDelay <= 0) {
+                // Get scene manager and create actions
+                ISceneManager sceneManager = SceneManager.getInstance();
+                StartGame restartAction = new StartGame(sceneManager);
+                StartLevelSelect levelSelectAction = new StartLevelSelect(sceneManager);
+
+                // Now register the key handlers
+                gameInputManager.registerKeyUp(Input.Keys.SPACE, restartAction);
+                gameInputManager.registerKeyUp(Input.Keys.L, levelSelectAction);
+
+                System.out.println("Game Over Screen key controls now active");
+            }
+        }
+
+        gameInputManager.update();
     }
 
     @Override
     public void draw(SpriteBatch batch) {
+        // Draw the background image first
+        entityManager.draw(batch);
+
+        // Add semi-transparent overlay for better text contrast
+        batch.end();
+
+        ShapeRenderer localShapeRenderer = new ShapeRenderer();
+        Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
+        Gdx.gl.glBlendFunc(Gdx.gl.GL_SRC_ALPHA, Gdx.gl.GL_ONE_MINUS_SRC_ALPHA);
+
+        localShapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        localShapeRenderer.setColor(0, 0, 0, 0.6f); // Semi-transparent black overlay
+        localShapeRenderer.rect(0, 0, DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
+        localShapeRenderer.end();
+
+        Gdx.gl.glDisable(Gdx.gl.GL_BLEND);
+        localShapeRenderer.dispose();
+
+        // Resume batch for text
+        batch.begin();
+
         float centerX = DisplayManager.getScreenWidth() / 2 - 100;
         float centerY = DisplayManager.getScreenHeight() / 2;
 
@@ -100,15 +173,17 @@ public class GameOverScreen extends Scene {
         // Draw trivia text with word wrapping
         drawWrappedText(batch, currentTrivia, centerX - 100, centerY - 50, 400, Color.WHITE);
 
-        // Draw return instruction
-        textManager.draw(batch, "Press SPACE to Return to Level Select",
+        // Draw return instruction - updated to show both options
+        textManager.draw(batch, "Press SPACE to Restart Current Level",
                         centerX - 100, centerY - 150, Color.WHITE);
+        textManager.draw(batch, "Press L to Return to Level Select",
+                        centerX - 100, centerY - 180, Color.WHITE);
         restartButton.draw(batch);
     }
 
     // Helper method to draw wrapped text
     private void drawWrappedText(SpriteBatch batch, String text, float x, float y,
-                               float maxWidth, Color color) {
+            float maxWidth, Color color) {
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
         float lineY = y;
