@@ -2,10 +2,10 @@ package io.github.team2;
 
 public class AlienBehaviour {
 	public enum State {
-		IDLE
+		IDLE, MOVING
 	}
 	
 	public enum Move {
-		NONE
+		NONE, CHASE
 	}
 }
