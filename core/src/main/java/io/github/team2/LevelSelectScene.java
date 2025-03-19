@@ -1,8 +1,5 @@
 package io.github.team2;
 
-import java.awt.Image;
-import java.sql.BatchUpdateException;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -14,25 +11,16 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.team2.Actions.ExitGame;
-import io.github.team2.Actions.GoToSettings;
 import io.github.team2.Actions.PauseGame;
 import io.github.team2.Actions.PlayerBehaviour;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.AudioSystem.IAudioManager;
-import io.github.team2.CollisionExtensions.CollisionAudioHandler;
-import io.github.team2.CollisionExtensions.CollisionRemovalHandler;
-import io.github.team2.CollisionExtensions.PlayerLifeHandler;
-import io.github.team2.CollisionExtensions.PointsSystem;
-import io.github.team2.CollisionExtensions.RecyclableCarrierHandler;
-import io.github.team2.CollisionExtensions.RecyclingBinHandler;
 import io.github.team2.CollisionExtensions.StartLevelHandler;
-import io.github.team2.CollisionExtensions.StartMiniGameHandler;
 import io.github.team2.CollisionSystem.CollisionDetector;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.StaticTextureObject;
-import io.github.team2.InputSystem.Button;
 import io.github.team2.InputSystem.GameInputManager;
 import io.github.team2.InputSystem.PlayerInputManager;
 import io.github.team2.SceneSystem.ISceneManager;
@@ -241,7 +229,11 @@ public class LevelSelectScene extends Scene {
     public void draw(ShapeRenderer shape) {
         shape.setProjectionMatrix(camera1.camera.combined);
         entityManager.draw(shape);
-        debugRenderer.render(world, shape.getProjectionMatrix());
+        
+        // Use the collisionDetector's render method instead of direct debugRenderer
+        if (collisionDetector != null && world != null) {
+            collisionDetector.renderDebug(world, shape.getProjectionMatrix());
+        }
     }
 
     @Override
@@ -267,16 +259,20 @@ public class LevelSelectScene extends Scene {
 
     @Override
     public void dispose() {
-        if (debugRenderer != null) {
-            debugRenderer.dispose();
-            debugRenderer = null;
-        }
         if (world != null) {
             world.dispose();
             world = null;
         }
-
-        entityManager.dispose();
+        
+        // Let collisionDetector handle its own debugRenderer cleanup
+        if (collisionDetector != null) {
+            collisionDetector.dispose();
+        }
+        
+        if (entityManager != null) {
+            entityManager.dispose();
+        }
+        
         // Use interface
         IAudioManager audioManager = AudioManager.getInstance();
         audioManager.stopSoundEffect("levelsect"); // Stop night sound specifically

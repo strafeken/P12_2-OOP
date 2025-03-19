@@ -1,13 +1,13 @@
 package io.github.team2;
 
+import java.util.Random;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.Gdx;
-
-import java.util.Random;
 
 import io.github.team2.Actions.StartGame;
 import io.github.team2.Actions.StartLevelSelect;
@@ -16,16 +16,14 @@ import io.github.team2.AudioSystem.IAudioManager;
 import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.StaticTextureObject;
-import io.github.team2.InputSystem.Button;
 import io.github.team2.InputSystem.GameInputManager;
 import io.github.team2.SceneSystem.ISceneManager;
-import io.github.team2.SceneSystem.Scene; // Need this import for the getInstance method
+import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager; // Use this interface for the variable type
 import io.github.team2.Utils.DisplayManager;
 
 public class GameOverScreen extends Scene {
     private int finalScore;
-    private Button restartButton;
     private IAudioManager audioManager;
     private String currentTrivia; // Store current random trivia
     private Random random;
@@ -89,20 +87,9 @@ public class GameOverScreen extends Scene {
         // Get scene manager instance
         ISceneManager sceneManager = SceneManager.getInstance();
 
-        // Create two different actions - one for restart and one for level select
+        // Create actions - only need level select now
         StartGame restartAction = new StartGame(sceneManager);
         StartLevelSelect levelSelectAction = new StartLevelSelect(sceneManager);
-
-        // Position for restart button
-        //Vector2 centerPos = new Vector2(DisplayManager.getScreenWidth() / 2,
-        //       DisplayManager.getScreenHeight() / 2 - 200);
-        //restartButton = new Button("restartBtn.png", centerPos, restartAction, 100, 100);
-
-        // Don't register key handlers yet - will do this after delay
-        // We'll add them in the update method after the delay
-
-        // However, mouse clicks on the button are still allowed
-        gameInputManager.registerClickable(restartButton);
 
         // Get instance through concrete class but store as interface type
         audioManager = AudioManager.getInstance();
@@ -178,7 +165,6 @@ public class GameOverScreen extends Scene {
                         centerX - 100, centerY - 150, Color.WHITE);
         textManager.draw(batch, "Press L to Return to Level Select",
                         centerX - 100, centerY - 180, Color.WHITE);
-        restartButton.draw(batch);
     }
 
     // Helper method to draw wrapped text

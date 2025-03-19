@@ -3,10 +3,13 @@ package io.github.team2.CollisionSystem;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.team2.CollisionExtensions.CollisionType;
 import io.github.team2.EntitySystem.Entity;
@@ -15,6 +18,21 @@ public class CollisionDetector implements ContactListener {
 
     private List<CollisionListener> listeners = new ArrayList<>();
     private List<ICollisionHandler> handlers = new ArrayList<>();
+    
+    // Add Box2DDebugRenderer field
+    private Box2DDebugRenderer debugRenderer;
+    
+    public CollisionDetector() {
+        // Initialize the debug renderer
+        this.debugRenderer = new Box2DDebugRenderer();
+    }
+    
+    // Add a method to render the debug visualization of physics bodies
+    public void renderDebug(World world, Matrix4 projectionMatrix) {
+        if (debugRenderer != null) {
+            debugRenderer.render(world, projectionMatrix);
+        }
+    }
 
     @Override
     public void beginContact(Contact contact) {
@@ -69,6 +87,14 @@ public class CollisionDetector implements ContactListener {
     private void notifyHandlers(Entity a, Entity b, Contact contact) {
         for (ICollisionHandler handler : handlers) {
             handler.handleCollision(a, b, contact);
+        }
+    }
+    
+    // Add a dispose method to clean up resources
+    public void dispose() {
+        if (debugRenderer != null) {
+            debugRenderer.dispose();
+            debugRenderer = null;
         }
     }
 }

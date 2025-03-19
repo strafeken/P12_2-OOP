@@ -1,15 +1,12 @@
 package io.github.team2;
 
-import java.awt.Image;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -354,11 +351,13 @@ public class GameScene extends Scene {
 
     @Override
     public void draw(ShapeRenderer shape) {
-    	shape.setProjectionMatrix(camera.camera.combined);
+        shape.setProjectionMatrix(camera.camera.combined);
         entityManager.draw(shape);
-
-        // off this to off hit box
-        debugRenderer.render(world, shape.getProjectionMatrix());
+        
+        // Use the collisionDetector's render method instead of direct debugRenderer
+        if (collisionDetector != null && world != null) {
+            collisionDetector.renderDebug(world, shape.getProjectionMatrix());
+        }
     }
 
     @Override
@@ -383,14 +382,18 @@ public class GameScene extends Scene {
 
     @Override
     public void dispose() {
-        System.out.println("Game Scene => DISPOSE");
-        if (debugRenderer != null) {
-            debugRenderer.dispose();
-            debugRenderer = null;
-        }
         if (world != null) {
             world.dispose();
             world = null;
+        }
+        
+        // Let collisionDetector handle its own debugRenderer cleanup
+        if (collisionDetector != null) {
+            collisionDetector.dispose();
+        }
+        
+        if (entityManager != null) {
+            entityManager.dispose();
         }
     }
 }
