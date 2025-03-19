@@ -92,9 +92,11 @@ public class LevelSelectScene extends Scene {
 
         camera1 = new Camera(width, height);
 
-        // Setup background image
+        // Setup background image - make it 3x screen size to ensure coverage when camera moves
+        float bgWidth = DisplayManager.getScreenWidth() * 3;
+        float bgHeight = DisplayManager.getScreenHeight() * 3;
         image = new StaticTextureObject(EntityType.UNDEFINED, "space_background.jpg",
-                new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight()),
+                new Vector2(bgWidth, bgHeight),
                 new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2),
                 new Vector2(0, 0));
         entityManager.addEntities(image);
@@ -188,6 +190,12 @@ public class LevelSelectScene extends Scene {
         playerInputManager.update();
 
         camera1.cameraUpdate(delta, player.getPosition());
+        
+        // Update background position to match camera position
+        if (image != null) {
+            image.setPosition(new Vector2(camera1.camera.position.x, camera1.camera.position.y));
+        }
+        
         startLevelHandler.processAction(camera1);
     }
 
