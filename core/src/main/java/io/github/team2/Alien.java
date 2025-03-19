@@ -12,10 +12,10 @@ import io.github.team2.EntitySystem.EntityType;
 public class Alien extends DynamicTextureObject<AlienBehaviour.State, AlienBehaviour.Move> {
     private Entity targetPlayer;
 
-    private float baseChaseSpeed = 30f; // Base speed (Level 1)
-    private float chaseSpeed; // Actual speed used
-    private float maxDistance = 500f; // Maximum distance to chase player
-    private float minDistance = 100f; // Increased from 50f to keep alien further from player
+//    private float baseChaseSpeed = 30f; // Base speed (Level 1)
+//    private float chaseSpeed; // Actual speed used
+//    private float maxDistance = 500f; // Maximum distance to chase player
+//    private float minDistance = 100f; // Increased from 50f to keep alien further from player
     private LevelManager levelManager;
 
 
@@ -28,7 +28,7 @@ public class Alien extends DynamicTextureObject<AlienBehaviour.State, AlienBehav
         // Store initial position for respawning
         this.respawnPosition = new Vector2(position);
         this.levelManager = LevelManager.getInstance();
-        this.chaseSpeed = levelManager.getCurrentAlienSpeed();
+//        this.chaseSpeed = levelManager.getCurrentAlienSpeed();
     }
 
     
@@ -36,7 +36,7 @@ public class Alien extends DynamicTextureObject<AlienBehaviour.State, AlienBehav
     @Override
  	public void initActionMap() {
     	
-    	getActionMap().put(AlienBehaviour.Move.CHASE, new Chase(this, targetPlayer));
+    	getActionMap().put(AlienBehaviour.Move.CHASE, new Chase(this, targetPlayer, levelManager.getCurrentLevel()));
  	}
     
     
@@ -57,23 +57,6 @@ public class Alien extends DynamicTextureObject<AlienBehaviour.State, AlienBehav
 				System.out.println("Alien state stuck in NONE");
 				return;
 
-    // Update the update method to make sure it's getting the correct level speed
-    @Override
-    public void update() {
-        // Update the chase speed based on current level
-        int currentLevel = levelManager.getCurrentLevel();
-        chaseSpeed = levelManager.getCurrentAlienSpeed();
-
-        // Debug output to verify speed being applied
-        // Comment out in production
-        System.out.println("Alien update: Level=" + currentLevel + ", Speed=" + chaseSpeed);
-
-        if (targetPlayer != null && getPhysicsBody() != null) {
-            // Get player and alien positions
-            Vector2 playerPos = targetPlayer.getPosition();
-            Vector2 alienPos = getPosition();
-
-
 			case CHASE:
 
 				
@@ -87,14 +70,13 @@ public class Alien extends DynamicTextureObject<AlienBehaviour.State, AlienBehav
     		
 			
 			getAction(getCurrentActionState()).execute();
-
+		}
     }
     
 
 
-    
-    }
-    
+
+
     
     @Override
     public void update() {

@@ -13,14 +13,27 @@ public class Chase implements Action{
 	private Entity entity;
 	private Entity target;
 	
-    private float chaseSpeed = 30f; // Reduced from 60f to make alien slower
+    private float chaseSpeed;
+
     private float maxDistance = 500f; // Maximum distance to chase player
     private float minDistance = 100f; // Increased from 50f to keep alien further from player
 
 
-	public Chase(Entity entity, Entity target) {
+	public Chase(Entity entity, Entity target,int level) {
 		this.entity = entity;
 		this.target = target;
+		
+
+
+        switch (level) {
+            case 2:  	chaseSpeed = 50f;
+            case 3: 	chaseSpeed = 80f;
+            case 4: 	chaseSpeed = 120f;
+            default: 	chaseSpeed = 30f;
+        }
+        
+
+		
 	}
 
 	@Override
