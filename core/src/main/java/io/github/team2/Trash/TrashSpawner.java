@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.team2.EntitySystem.Entity;
+import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.IEntityManager;
 import io.github.team2.Utils.DisplayManager;
 
@@ -13,6 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TrashSpawner {
+    // Add constants for max objects
+    private static final int MAX_TOTAL_OBJECTS = 20;
+    private static final int MAX_NON_RECYCLABLE = 5;
+
     private final World world;
     private final IEntityManager entityManager;
 
@@ -43,11 +48,23 @@ public class TrashSpawner {
      * @param recyclableRatio Ratio of recyclable to total trash (0.0-1.0)
      */
     public void spawnRandomTrash(int count, float recyclableRatio) {
-        for (int i = 0; i < count; i++) {
-            if (MathUtils.random() < recyclableRatio) {
-                spawnRandomRecyclable();
-            } else {
+        // Get current counts
+        int currentTotal = entityManager.getEntitiesByType(EntityType.RECYCLABLE).size() +
+                         entityManager.getEntitiesByType(EntityType.NON_RECYCLABLE).size();
+        int currentNonRecyclable = entityManager.getEntitiesByType(EntityType.NON_RECYCLABLE).size();
+
+        // Calculate how many we can spawn
+        int remainingSlots = MAX_TOTAL_OBJECTS - currentTotal;
+        int toSpawn = Math.min(count, remainingSlots);
+
+        if (toSpawn <= 0) return;
+
+        for (int i = 0; i < toSpawn; i++) {
+            if (currentNonRecyclable < MAX_NON_RECYCLABLE && MathUtils.random() > recyclableRatio) {
                 spawnRandomNonRecyclable();
+                currentNonRecyclable++;
+            } else {
+                spawnRandomRecyclable();
             }
         }
     }
@@ -73,6 +90,11 @@ public class TrashSpawner {
      * Spawns a single random non-recyclable trash item
      */
     public Entity spawnRandomNonRecyclable() {
+        // Check if we've hit the non-recyclable limit
+        if (entityManager.getEntitiesByType(EntityType.NON_RECYCLABLE).size() >= MAX_NON_RECYCLABLE) {
+            return null;
+        }
+
         NonRecyclableTrash.Type type = NonRecyclableTrash.Type.values()[
             MathUtils.random(NonRecyclableTrash.Type.values().length - 1)];
 

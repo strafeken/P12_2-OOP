@@ -38,28 +38,25 @@ public class MainMenu extends Scene {
         audioManager.playSoundEffect("mainmenu");
 
         // Setup background image
-        image = new StaticTextureObject(EntityType.UNDEFINED, "Main_menu_space.jpg", new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight()),
-                new Vector2(DisplayManager.getScreenWidth()/2,  DisplayManager.getScreenHeight()/2),
+        image = new StaticTextureObject(EntityType.UNDEFINED, "Main_menu_space.jpg",
+                new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight()),
+                new Vector2(DisplayManager.getScreenWidth()/2, DisplayManager.getScreenHeight()/2),
                 new Vector2(0, 0));
 
         entityManager.addEntities(image);
 
-        Vector2 centerPos = new Vector2(DisplayManager.getScreenWidth() / 2 , DisplayManager.getScreenHeight() / 2 - 180);
-        // Use interface for SceneManager
-        ISceneManager sceneManager = SceneManager.getInstance();
-        
-        
-        StartGame startAction = new StartGame(sceneManager);
-        StartLevelSelect levelSelectAction = new StartLevelSelect(sceneManager);
-        
-        
-        //startButton = new Button("startBtn.png", centerPos, startAction, 100, 100);
-        startButton = new Button("startBtn.png", centerPos, levelSelectAction, 100, 100);
+        Vector2 centerPos = new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2 - 180);
 
-        gameInputManager.registerKeyUp(Input.Keys.SPACE, startAction);
+        // Create the level select action
+        ISceneManager sceneManager = SceneManager.getInstance();
+        StartLevelSelect levelSelectAction = new StartLevelSelect(sceneManager);
+
+        // Use levelSelectAction for both button and space key
+        startButton = new Button("startBtn.png", centerPos, levelSelectAction, 100, 100);
+        gameInputManager.registerKeyUp(Input.Keys.SPACE, levelSelectAction);
         gameInputManager.registerClickable(startButton);
 
-        startButton.update();  // Make sure button gets updated
+        startButton.update();
     }
 
     @Override
@@ -72,8 +69,9 @@ public class MainMenu extends Scene {
     public void draw(SpriteBatch batch) {
         entityManager.draw(batch);
         startButton.draw(batch);
-        textManager.draw(batch, "Astro Debris", DisplayManager.getScreenWidth()/2- 85,  DisplayManager.getScreenHeight()/2, Color.RED);
-        textManager.draw(batch, "Press SPACE to Start", DisplayManager.getScreenWidth()/2 - 140, 170, Color.WHITE);
+        textManager.draw(batch, "Astro Debris", DisplayManager.getScreenWidth()/2 - 85, DisplayManager.getScreenHeight()/2, Color.RED);
+        // Update the text to match the new action
+        textManager.draw(batch, "Press SPACE to Select Level", DisplayManager.getScreenWidth()/2 - 140, 170, Color.WHITE);
     }
 
     @Override

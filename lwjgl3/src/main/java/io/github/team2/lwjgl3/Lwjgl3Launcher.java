@@ -1,7 +1,5 @@
 package io.github.team2.lwjgl3;
 
-import java.lang.classfile.FieldModel;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
@@ -11,15 +9,15 @@ import io.github.team2.GameMaster;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {
-	
 
 
-	
+
+
 	private static int width = 800;
 	private static int height = 480;
-	
-	
-	
+
+
+
     public static void main(String[] args) {
         try {
             if (StartupHelper.startNewJvmIfRequired()) return;

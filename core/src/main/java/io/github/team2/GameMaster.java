@@ -18,13 +18,13 @@ public class GameMaster extends ApplicationAdapter {
     private ShapeRenderer shape;
     private IAudioManager audioManager;
     private ISceneManager sceneManager;
-    
-    
 
-    
 
-    
-    
+
+
+
+
+
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -37,6 +37,7 @@ public class GameMaster extends ApplicationAdapter {
         audioManager.loadSoundEffect("start", "sounds/start.mp3");
         audioManager.loadSoundEffect("ding", "sounds/ding.mp3");
         audioManager.loadSoundEffect("mainmenu", "sounds/mainmenu.mp3");
+        audioManager.loadSoundEffect("levelsect", "sounds/night.mp3");
 
         // Add mini-game sound effects
         audioManager.loadSoundEffect("minigame", "sounds/mainmenu.mp3");
@@ -52,6 +53,9 @@ public class GameMaster extends ApplicationAdapter {
         sceneManager.addScene(SceneID.SETTINGS_MENU, new SettingsMenu());
         sceneManager.addScene(SceneID.LEVEL_SELECT, new LevelSelectScene());
         sceneManager.setNextScene(SceneID.MAIN_MENU);
+
+        // Initialize level manager
+        LevelManager.getInstance();
     }
 
     @Override

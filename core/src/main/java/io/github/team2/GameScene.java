@@ -1,15 +1,12 @@
 package io.github.team2;
 
-import java.awt.Image;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -64,6 +61,7 @@ public class GameScene extends Scene {
 
     private GameManager gameManager;
     private IAudioManager audioManager;
+    private LevelManager levelManager;
 
     // Game entities
     private Entity player;
@@ -79,8 +77,8 @@ public class GameScene extends Scene {
 
     private StartMiniGameHandler miniGameHandler;
     private PlayerLifeHandler playerLifeHandler;
-    
-    
+
+
     private Camera camera;
 
     public GameScene() {
@@ -92,17 +90,19 @@ public class GameScene extends Scene {
     @Override
     public void load() {
         System.out.println("Game Scene => LOAD");
-        
+
+        // Initialize LevelManager at the beginning to ensure it's available for everything else
+        levelManager = LevelManager.getInstance();
+        System.out.println("Loading game scene with level: " + levelManager.getCurrentLevel());
+
         // 1. Set up your camera to default size
         camera = new Camera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        
-        
-        
+
         initializeWorld();
         initializeManagers();
         initializeEntities();
         initializeInput();
-        initializeCollisionHandlers(); // New method
+        initializeCollisionHandlers();
 
         gameManager = GameManager.getInstance();
         gameManager.setPlayerInputManager(playerInputManager);
@@ -113,8 +113,12 @@ public class GameScene extends Scene {
         playerStatus.reset();
 
         audioManager = AudioManager.getInstance();
-        AudioManager.getInstance().stopSoundEffect("mainmenu");
+        AudioManager.getInstance().stopSoundEffect("levelsect");
         AudioManager.getInstance().playSoundEffect("start");
+
+        // Debug output to verify level
+        System.out.println("Game Scene loaded with level: " + levelManager.getCurrentLevel() +
+                          ", Alien speed: " + levelManager.getCurrentAlienSpeed());
     }
 
     private void initializeWorld() {
@@ -163,15 +167,15 @@ public class GameScene extends Scene {
 
     private void initializeEntities() {
     	try {
-    		
-    		
+
+
 	        StaticTextureObject bg_image  = new StaticTextureObject(EntityType.UNDEFINED, "planet/planet2_yellow.jpg", new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight()),
 	                new Vector2(DisplayManager.getScreenWidth()/2,  DisplayManager.getScreenHeight()/2),
 	                new Vector2(0, 0));
 
 	        entityManager.addEntities(bg_image);
-    		
-    		
+
+
             player = new Player(EntityType.PLAYER,
                               "rocket-2.png",
                               new Vector2(70, 100),
@@ -182,15 +186,22 @@ public class GameScene extends Scene {
             player.getPhysicsBody().getBody().setFixedRotation(true);
             entityManager.addEntities(player);
 
-            Alien alien = new Alien(EntityType.ALIEN,
-                    "alien.png",
-                    new Vector2(90, 90),
-                    new Vector2(DisplayManager.getScreenWidth() / 2 - 200, DisplayManager.getScreenHeight() / 2 + 200),
-                    new Vector2(0, 0), new Vector2(100,0) , 200, AlienBehaviour.State.IDLE, AlienBehaviour.Move.NONE
-                    );
+            // When creating aliens, ensure they get the level-specific speed:
+            float alienSpeed = levelManager.getCurrentAlienSpeed();
+            Entity alien = new Alien(
+                EntityType.ALIEN,
+                "alien.png",
+                new Vector2(80, 80),
+                new Vector2(200, 200),
+                new Vector2(0, 0),
+                new Vector2(0, 0),
+                alienSpeed, // Use the level-specific speed
+                AlienBehaviour.State.IDLE,
+                AlienBehaviour.Move.NONE
+            );
             alien.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
             // Set the target player for the alien to chase
-            alien.setTargetPlayer(player);
+            ((Alien)alien).setTargetPlayer(player);
             entityManager.addEntities(alien);
 
             RecyclingBin bin = new RecyclingBin(EntityType.RECYCLING_BIN, "recycling-bin.png",
@@ -223,54 +234,49 @@ public class GameScene extends Scene {
     }
 
     private void spawnTrash(int count) {
-        // Spawn 70% recyclable items, 30% non-recyclable
-        trashSpawner.spawnRandomTrash(count, 0.7f);
-
-        System.out.println("Spawned " + count + " trash items");
+        try {
+            // Use the ratio 0.7 for 70% recyclable trash
+            trashSpawner.spawnRandomTrash(count, 0.7f);
+        } catch (Exception e) {
+            System.out.println("Error spawning trash: " + e);
+        }
     }
 
     @Override
     public void update() {
-    	float deltaTime = Gdx.graphics.getDeltaTime();
-    	
-        try {
+        float delta = Gdx.graphics.getDeltaTime();
+
+        // Get player status
+        PlayerStatus playerStatus = PlayerStatus.getInstance();
+
+        // Only update physics and check collisions if not in mini-game
+        if (!playerStatus.isInMiniGame()) {
+            updatePhysics(delta);
+
+            if (playerLifeHandler.checkGameOver()) {
+                return;
+            }
+
+            // Update mini-game handler cooldown timer
+            miniGameHandler.update(delta);
+
             // Update trash spawn timer
-            trashSpawnTimer += Gdx.graphics.getDeltaTime();
-
-            // Update mini-game handler cooldown
-            if (miniGameHandler != null) {
-                miniGameHandler.update(Gdx.graphics.getDeltaTime());
-            }
-
-            // Spawn new trash periodically
+            trashSpawnTimer += delta;
             if (trashSpawnTimer >= trashSpawnInterval) {
-                // Spawn 1-3 new trash items
-                int itemsToSpawn = random.nextInt(3) + 1;
-                spawnTrash(itemsToSpawn);
-                trashSpawnTimer = 0f;
-
-                // Gradually decrease spawn interval for increasing difficulty
-                // But don't go below 2 seconds
-                trashSpawnInterval = Math.max(2.0f, trashSpawnInterval * 0.99f);
+                trashSpawnTimer = 0;
+                spawnTrash(5);  // Try to spawn up to 5 pieces of trash each interval
             }
-
-            entityManager.update();
-            gameInputManager.update();
-            playerInputManager.update();
-            updatePhysics(deltaTime);
-            
-            // Check for game over AFTER physics update is complete
-            if (playerLifeHandler != null) {
-                playerLifeHandler.checkGameOver();
-            }
-        } catch (Exception e) {
-            System.out.println("Error in game scene: " + e);
-            e.printStackTrace();
         }
+
+        // These updates should happen regardless of mini-game status
+        entityManager.update();
+        gameInputManager.update();
+        playerInputManager.update();
+        settingsButton.update();
     }
 
     private void updatePhysics(float deltaTime) {
-        
+
         accumulator += deltaTime;
 
         while (accumulator >= TIME_STEP) {
@@ -281,9 +287,9 @@ public class GameScene extends Scene {
 
     @Override
     public void draw(SpriteBatch batch) {
-    	
+
     	batch.setProjectionMatrix(camera.camera.combined);
-    	
+
         entityManager.draw(batch);
         drawUI(batch);
         settingsButton.draw(batch);
@@ -293,27 +299,26 @@ public class GameScene extends Scene {
     }
 
     private void drawUI(SpriteBatch batch) {
-        float padding = 10f; // Scale padding with screen size
-        float baseX = padding;
-        float baseY = DisplayManager.getScreenHeight() - padding;
-        float lineSpacing = 30f; // Vertical spacing between lines
+        // Draw points
+        textManager.draw(batch, "Points: " + pointsManager.getPoints(),
+                         DisplayManager.getScreenWidth() - 200, DisplayManager.getScreenHeight() - 20, Color.WHITE);
 
-        // Scale font size with screen
-        textManager.getFont().getData().setScale(2.0f, 2.0f);
+        // Make sure to use the current level from levelManager
+        int level = levelManager.getCurrentLevel();
+        textManager.draw(batch, "Level: " + level,
+                         DisplayManager.getScreenWidth() - 200, DisplayManager.getScreenHeight() - 50, Color.YELLOW);
 
-        // Draw scene title
-        textManager.draw(batch,
-            "Game Scene",
-            baseX,
-            baseY,
-            Color.RED);
+        // Draw player lives
+        drawPlayerStatus(batch);
 
-        // Draw score below title
-        textManager.draw(batch,
-            "Score: " + pointsManager.getPoints(),
-            baseX,
-            baseY - lineSpacing,
-            Color.RED);
+        // Display level-up notification if a new level was unlocked
+        if (pointsManager.isLevelUnlocked()) {
+            textManager.draw(batch, "New Level Unlocked!",
+                            DisplayManager.getScreenWidth() / 2 - 100, DisplayManager.getScreenHeight() / 2, Color.GREEN);
+        }
+
+        // Debug output - remove in production
+        System.out.println("Current level displayed: " + level + ", Alien speed: " + levelManager.getCurrentAlienSpeed());
     }
 
     private void drawPlayerStatus(SpriteBatch batch) {
@@ -346,11 +351,13 @@ public class GameScene extends Scene {
 
     @Override
     public void draw(ShapeRenderer shape) {
-    	shape.setProjectionMatrix(camera.camera.combined);
+        shape.setProjectionMatrix(camera.camera.combined);
         entityManager.draw(shape);
         
-        // off this to off hit box
-        debugRenderer.render(world, shape.getProjectionMatrix());
+        // Use the collisionDetector's render method instead of direct debugRenderer
+        if (collisionDetector != null && world != null) {
+            collisionDetector.renderDebug(world, shape.getProjectionMatrix());
+        }
     }
 
     @Override
@@ -375,14 +382,18 @@ public class GameScene extends Scene {
 
     @Override
     public void dispose() {
-        System.out.println("Game Scene => DISPOSE");
-        if (debugRenderer != null) {
-            debugRenderer.dispose();
-            debugRenderer = null;
-        }
         if (world != null) {
             world.dispose();
             world = null;
+        }
+        
+        // Let collisionDetector handle its own debugRenderer cleanup
+        if (collisionDetector != null) {
+            collisionDetector.dispose();
+        }
+        
+        if (entityManager != null) {
+            entityManager.dispose();
         }
     }
 }

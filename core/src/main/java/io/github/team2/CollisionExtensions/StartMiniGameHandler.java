@@ -1,23 +1,28 @@
 package io.github.team2.CollisionExtensions;
 
+import java.util.List;
+import java.util.Random;
+
 import io.github.team2.Alien;
-import io.github.team2.PlayerStatus;
-import io.github.team2.PointsManager;
 import io.github.team2.CollisionSystem.CollisionListener;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.IEntityManager;
+import io.github.team2.MiniGame.AsteroidDodgeMiniGame;
 import io.github.team2.MiniGame.FlappyBirdMiniGame;
+import io.github.team2.MiniGame.SpaceQuizMiniGame;
+import io.github.team2.PlayerStatus;
+import io.github.team2.PointsManager;
+import io.github.team2.SceneSystem.ISceneManager;
+import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneID;
 import io.github.team2.SceneSystem.SceneManager;
-import io.github.team2.SceneSystem.ISceneManager;
-
-import java.util.List;
 
 public class StartMiniGameHandler implements CollisionListener {
     private PointsManager pointsManager;
     private ISceneManager sceneManager;
     private IEntityManager entityManager;
+    private Random random;
 
     // Add cooldown timer
     private float miniGameCooldown = 0f;
@@ -27,6 +32,7 @@ public class StartMiniGameHandler implements CollisionListener {
         this.pointsManager = pointsManager;
         this.entityManager = entityManager;
         this.sceneManager = SceneManager.getInstance();
+        this.random = new Random();
     }
 
     @Override
@@ -42,15 +48,15 @@ public class StartMiniGameHandler implements CollisionListener {
             // Only start mini-game if not already in one
             if (!playerStatus.isInMiniGame()) {
                 playerStatus.setInMiniGame(true);
-                System.out.println("Starting mini-game with alien!");
+                System.out.println("Starting random mini-game with alien!");
 
                 // Store reference to alien for respawning later
                 Entity alien = (a.getEntityType() == EntityType.ALIEN) ? a : b;
                 playerStatus.setLastAlienEncounter(alien);
 
                 try {
-                    // Always create a new instance to ensure fresh state
-                    FlappyBirdMiniGame miniGame = new FlappyBirdMiniGame(pointsManager, this);
+                    // Choose a random mini-game
+                    Scene miniGame = createRandomMiniGame();
 
                     // Check if scene exists already and remove it if it does
                     if (sceneManager.hasScene(SceneID.MINI_GAME)) {
@@ -68,6 +74,27 @@ public class StartMiniGameHandler implements CollisionListener {
                     playerStatus.setInMiniGame(false);
                 }
             }
+        }
+    }
+    
+    // Create a random mini-game
+    private Scene createRandomMiniGame() {
+        // Choose a random number between 0 and 2
+        int gameChoice = random.nextInt(3);
+        
+        switch (gameChoice) {
+            case 0:
+                System.out.println("Starting Flappy Bird mini-game!");
+                return new FlappyBirdMiniGame(pointsManager, this);
+            case 1:
+                System.out.println("Starting Asteroid Dodge mini-game!");
+                return new AsteroidDodgeMiniGame(pointsManager, this);
+            case 2:
+                System.out.println("Starting Space Quiz mini-game!");
+                return new SpaceQuizMiniGame(pointsManager, this);
+            default:
+                // Default to Flappy Bird if something goes wrong
+                return new FlappyBirdMiniGame(pointsManager, this);
         }
     }
 
