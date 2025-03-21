@@ -203,13 +203,33 @@ public class GameScene extends Scene {
             // Set the target player for the alien to chase
             ((Alien)alien).setTargetPlayer(player);
             entityManager.addEntities(alien);
+            
+			 RecyclingBin bin_yellow = new RecyclingBin(EntityType.RECYCLING_BIN, "bin/recycling-bin-yellow.png",
+						new Vector2(100, 150),
+						new Vector2(DisplayManager.getScreenWidth() / 2 - 120 , 100), new Vector2(0, 0));
+			 bin_yellow.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
+			 bin_yellow.getPhysicsBody().setAsSensor();
+			entityManager.addEntities(bin_yellow);
+            
 
-            RecyclingBin bin = new RecyclingBin(EntityType.RECYCLING_BIN, "recycling-bin.png",
+            RecyclingBin bin_green = new RecyclingBin(EntityType.RECYCLING_BIN, "bin/recycling-bin-green.png",
             									new Vector2(100, 150),
             									new Vector2(DisplayManager.getScreenWidth() / 2, 100), new Vector2(0, 0));
-            bin.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
-            bin.getPhysicsBody().setAsSensor();
-            entityManager.addEntities(bin);
+            bin_green.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
+            bin_green.getPhysicsBody().setAsSensor();
+            entityManager.addEntities(bin_green);
+            
+            
+            RecyclingBin bin_blue = new RecyclingBin(EntityType.RECYCLING_BIN, "bin/recycling-bin-blue.png",
+					new Vector2(100, 150),
+					new Vector2(DisplayManager.getScreenWidth() / 2 + 120, 100), new Vector2(0, 0));
+            bin_blue.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
+            bin_blue.getPhysicsBody().setAsSensor();
+			entityManager.addEntities(bin_blue);
+			
+			
+
+            
 
             spawnTrash(10);
 

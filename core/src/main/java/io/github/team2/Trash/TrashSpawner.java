@@ -32,9 +32,9 @@ public class TrashSpawner {
         recyclableTextures.put(RecyclableTrash.Type.GLASS, "glass-bottle-2.png");
         recyclableTextures.put(RecyclableTrash.Type.METAL, "soda-can-2.png");
 
-        nonRecyclableTextures.put(NonRecyclableTrash.Type.HAZARDOUS, "toxic-waste-2.png");
-        nonRecyclableTextures.put(NonRecyclableTrash.Type.ELECTRONIC_WASTE, "broken-device2.png");
-        nonRecyclableTextures.put(NonRecyclableTrash.Type.MIXED_WASTE, "half-eaten-food.png");
+        nonRecyclableTextures.put(NonRecyclableTrash.Type.HAZARDOUS, "item/toxic-waste-glow.png");
+        nonRecyclableTextures.put(NonRecyclableTrash.Type.ELECTRONIC_WASTE, "item/broken-device-glow.png");
+        nonRecyclableTextures.put(NonRecyclableTrash.Type.MIXED_WASTE, "item/half-eaten-food-glow.png");
     }
 
     public TrashSpawner(World world, IEntityManager entityManager) {
@@ -78,7 +78,7 @@ public class TrashSpawner {
 
         String texture = recyclableTextures.getOrDefault(type, "cardboard-box.png");
         Vector2 position = getRandomPosition();
-        Vector2 size = new Vector2(40, 40); // Adjust size as needed
+        Vector2 size = new Vector2(50, 50); // Adjust size as needed
 
         RecyclableTrash trash = new RecyclableTrash(texture, size, position, type);
         setupTrashPhysics(trash);
