@@ -1,17 +1,15 @@
 package io.github.team2;
 
 import com.badlogic.gdx.ApplicationAdapter;
-//import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.ScreenUtils;
-import io.github.team2.SceneSystem.SceneID;
-import io.github.team2.SceneSystem.SceneManager;
-import io.github.team2.AudioSystem.AudioManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.ScreenUtils;
+
+import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.AudioSystem.IAudioManager;
-import io.github.team2.EntitySystem.EntityManager;
-import io.github.team2.EntitySystem.IEntityManager;
 import io.github.team2.SceneSystem.ISceneManager;
+import io.github.team2.SceneSystem.SceneID;
+import io.github.team2.SceneSystem.SceneManager;
 
 public class GameMaster extends ApplicationAdapter {
     private SpriteBatch batch;

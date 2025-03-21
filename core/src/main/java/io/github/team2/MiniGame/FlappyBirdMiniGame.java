@@ -9,25 +9,22 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.AudioSystem.IAudioManager;
 import io.github.team2.CollisionExtensions.StartMiniGameHandler;
 import io.github.team2.EntitySystem.EntityManager;
-import io.github.team2.EntitySystem.EntityType;
+import io.github.team2.GameOverScreen;
 import io.github.team2.InputSystem.GameInputManager;
-import io.github.team2.Pipe;
-import io.github.team2.PipeBehaviour;
 import io.github.team2.PlayerStatus;
 import io.github.team2.PointsManager;
 import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
-import io.github.team2.GameOverScreen;
 import io.github.team2.TextManager;
 import io.github.team2.Utils.DisplayManager;
+
 public class FlappyBirdMiniGame extends Scene {
     // Game state
     private enum GameState { READY, PLAYING, GAME_OVER, CONFIRM_EXIT }
@@ -41,10 +38,6 @@ public class FlappyBirdMiniGame extends Scene {
     private Array<Rectangle> topPipes;
     private Array<Rectangle> bottomPipes;
 
-    // Pipe objects that will provide the textures
-    private Pipe topPipeObject;
-    private Pipe bottomPipeObject;
-
     // Physics
     private float gravity = 600f;
     private float jumpVelocity = -400f;
@@ -54,6 +47,9 @@ public class FlappyBirdMiniGame extends Scene {
     private float pipeHeight = 300f;
     private float timeSinceLastPipe = 0;
     private float pipeInterval = 1.7f;
+    
+    // Collision settings - adjusted for better gameplay
+    private float collisionTolerance = 0.8f; // Reduce hitbox size by 20% for more forgiving collisions
 
     // Scoring
     private int score;
@@ -77,8 +73,8 @@ public class FlappyBirdMiniGame extends Scene {
     // Background
     private Color skyColor = new Color(0.4f, 0.7f, 1f, 1);
 
-    // Debug flag
-    private boolean debugCollision = true; // Set this to true temporarily to see the collision boxes
+    // Debug flag - set to true temporarily if needed to visualize collision boxes
+    private boolean debugCollision = false;
 
     // Add this field
     private StartMiniGameHandler miniGameHandler;
@@ -88,7 +84,6 @@ public class FlappyBirdMiniGame extends Scene {
     private Color selectedColor = Color.YELLOW;
     private Color unselectedColor = Color.WHITE;
 
-    // Update the constructor
     public FlappyBirdMiniGame(PointsManager pointsManager, StartMiniGameHandler miniGameHandler) {
         super();
         this.pointsManager = pointsManager;
@@ -102,7 +97,10 @@ public class FlappyBirdMiniGame extends Scene {
         this.textManager = new TextManager();
         this.audioManager = AudioManager.getInstance();
         this.sceneManager = SceneManager.getInstance();
-        this.localShapeRenderer = new ShapeRenderer();
+        
+        // Only create ShapeRenderer when needed (in drawing methods)
+        // This helps avoid GL context issues if created too early
+        this.localShapeRenderer = null;
 
         // Initialize collections
         this.topPipes = new Array<>();
@@ -112,48 +110,34 @@ public class FlappyBirdMiniGame extends Scene {
 
     @Override
     public void load() {
-        // Load textures
+        // Initialize ShapeRenderer here when GL context is ready
+        if (localShapeRenderer == null) {
+            localShapeRenderer = new ShapeRenderer();
+        }
+        
+        // Load textures safely with error handling
         try {
             birdTexture = new Texture(Gdx.files.internal("rocket-2.png"));
-
-            // Create pipe objects to get their textures
-            // Top pipe
-            topPipeObject = new Pipe(
-                EntityType.PIPE,
-                "plastic-bottle-2.png", // Assuming this texture exists or will be handled internally
-                new Vector2(pipeWidth, 400), // Size matching the dimensions used in game
-                new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight() / 2), // Position doesn't matter much here
-                new Vector2(-1, 0), // Direction left
-                new Vector2(0, 0), // No rotation
-                pipeSpeed, // Speed matching game setting
-                PipeBehaviour.State.IDLE,
-                PipeBehaviour.Move.NONE
-            );
-
-            // Bottom pipe - similar to top but different texture
-            bottomPipeObject = new Pipe(
-                EntityType.PIPE,
-                "plastic-bottle-2.png", // Assuming this texture exists or will be handled internally
-                new Vector2(pipeWidth, 400), // Size matching the dimensions used in game
-                new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight() / 2 - 600), // Lower position
-                new Vector2(-1, 0), // Direction left
-                new Vector2(0, 0), // No rotation
-                pipeSpeed, // Speed matching game setting
-                PipeBehaviour.State.IDLE,
-                PipeBehaviour.Move.NONE
-            );
-
-            // Get textures from pipe objects
-            // Note: We're assuming DynamicTextureObject (parent of Pipe) loads the texture properly
-            // and provides a way to access it. If not, we'll need alternative approach.
-
-            // For now, let's create the textures directly since we're in a mini-game
+            
+            // Create pipe textures
             pipeTopTexture = new Texture(Gdx.files.internal("item/plastic-bottle.png"));
             pipeBottomTexture = new Texture(Gdx.files.internal("item/plastic-bottle.png"));
-
+            
+            System.out.println("Loaded textures successfully");
         } catch (Exception e) {
             System.err.println("Error loading textures: " + e.getMessage());
             e.printStackTrace();
+            
+            // Set up fallback textures or create 1x1 pixel textures as placeholders
+            if (birdTexture == null) {
+                createPlaceholderTexture("birdTexture");
+            }
+            if (pipeTopTexture == null) {
+                createPlaceholderTexture("pipeTopTexture");
+            }
+            if (pipeBottomTexture == null) {
+                createPlaceholderTexture("pipeBottomTexture");
+            }
         }
 
         // Initialize bird with more accurate collision size
@@ -174,9 +158,38 @@ public class FlappyBirdMiniGame extends Scene {
         passedPipes.clear();
 
         // Play mini-game music
-        audioManager.playSoundEffect("minigame");
+        try {
+            audioManager.playSoundEffect("minigame");
+        } catch (Exception e) {
+            System.err.println("Error playing sound: " + e.getMessage());
+        }
 
         state = GameState.READY;
+    }
+    
+    private void createPlaceholderTexture(String name) {
+        System.out.println("Creating placeholder texture for: " + name);
+        try {
+            // Create a 1x1 white pixel texture as fallback
+            com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(1, 1, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
+            pixmap.setColor(Color.WHITE);
+            pixmap.fill();
+            
+            if (name.equals("birdTexture")) {
+                birdTexture = new Texture(pixmap);
+                System.out.println("Created placeholder for birdTexture");
+            } else if (name.equals("pipeTopTexture")) {
+                pipeTopTexture = new Texture(pixmap);
+                System.out.println("Created placeholder for pipeTopTexture");
+            } else if (name.equals("pipeBottomTexture")) {
+                pipeBottomTexture = new Texture(pixmap);
+                System.out.println("Created placeholder for pipeBottomTexture");
+            }
+            
+            pixmap.dispose();
+        } catch (Exception e) {
+            System.err.println("Failed to create placeholder texture: " + e.getMessage());
+        }
     }
 
     private void spawnPipe() {
@@ -188,16 +201,16 @@ public class FlappyBirdMiniGame extends Scene {
             DisplayManager.getScreenHeight() * 0.7f
         );
 
-        // Collision rectangle is half the width of visual pipe
+        // Create pipe rectangles
         Rectangle topPipe = new Rectangle();
         topPipe.x = DisplayManager.getScreenWidth();
-        topPipe.y = centerPipe + randomGap/2;  // Use randomGap instead of fixed pipeGap
+        topPipe.y = centerPipe + randomGap/2;
         topPipe.width = pipeWidth;
         topPipe.height = pipeHeight;
 
         Rectangle bottomPipe = new Rectangle();
         bottomPipe.x = DisplayManager.getScreenWidth();
-        bottomPipe.y = centerPipe - randomGap/2 - pipeHeight;  // Use randomGap here too
+        bottomPipe.y = centerPipe - randomGap/2 - pipeHeight;
         bottomPipe.width = pipeWidth;
         bottomPipe.height = pipeHeight;
 
@@ -208,6 +221,10 @@ public class FlappyBirdMiniGame extends Scene {
     @Override
     public void update() {
         float deltaTime = Gdx.graphics.getDeltaTime();
+        
+        // Cap deltaTime to prevent physics glitches if framerate drops significantly
+        deltaTime = Math.min(deltaTime, 0.05f);
+        
         gameTime += deltaTime;
 
         // Check for game completion based on time
@@ -224,7 +241,7 @@ public class FlappyBirdMiniGame extends Scene {
                     state = GameState.PLAYING;
                 }
                 break;
-
+                
             case PLAYING:
                 // Quick exit with Q key
                 if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
@@ -235,7 +252,11 @@ public class FlappyBirdMiniGame extends Scene {
                 // Jump mechanic
                 if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                     velocity = jumpVelocity;
-                    audioManager.playSoundEffect("jump");
+                    try {
+                        audioManager.playSoundEffect("jump");
+                    } catch (Exception e) {
+                        // Silently handle sound errors
+                    }
                 }
 
                 // Apply gravity
@@ -295,10 +316,6 @@ public class FlappyBirdMiniGame extends Scene {
                     if (confirmYes) {
                         // Player confirmed exit - take penalty and exit
                         completeGameWithPenalty();
-
-                        // Consume this key press by "using it up"
-                        // This is just to illustrate we're handling it, actual event consumption
-                        // depends on how the input system is implemented
                         return;
                     } else {
                         // Player cancelled - return to game
@@ -318,43 +335,76 @@ public class FlappyBirdMiniGame extends Scene {
 
     private void updatePipesAndCollisions(float deltaTime) {
         for (int i = 0; i < topPipes.size; i++) {
-            Rectangle topPipe = topPipes.get(i);
-            Rectangle bottomPipe = bottomPipes.get(i);
+            try {
+                Rectangle topPipe = topPipes.get(i);
+                Rectangle bottomPipe = bottomPipes.get(i);
 
-            // Move pipes
-            topPipe.x -= pipeSpeed * deltaTime;
-            bottomPipe.x -= pipeSpeed * deltaTime;
+                // Move pipes
+                topPipe.x -= pipeSpeed * deltaTime;
+                bottomPipe.x -= pipeSpeed * deltaTime;
 
-            // Check for scoring - bird has passed pipe
-            if (bird.x > topPipe.x + topPipe.width && !passedPipes.contains(i, false)) {
-                passedPipes.add(i);
-                score++;
-                audioManager.playSoundEffect("ding");
-            }
-
-            // Improved collision detection with precise hitboxes
-            boolean topCollision = bird.y < topPipe.y + topPipe.height &&
-                                 bird.y + bird.height > topPipe.y &&
-                                 bird.x + bird.width > topPipe.x &&
-                                 bird.x < topPipe.x + topPipe.width;
-
-            boolean bottomCollision = bird.y < bottomPipe.y + bottomPipe.height &&
-                                    bird.y + bird.height > bottomPipe.y &&
-                                    bird.x + bird.width > bottomPipe.x &&
-                                    bird.x < bottomPipe.x + bottomPipe.width;
-
-            // If collision detected
-            if (topCollision || bottomCollision) {
-                if (debugCollision) {
-                    System.out.println("Collision detected with pipe " + i);
-                    if (topCollision) System.out.println("Top pipe collision");
-                    if (bottomCollision) System.out.println("Bottom pipe collision");
+                // Check for scoring - bird has passed pipe
+                if (bird.x > topPipe.x + topPipe.width && !passedPipes.contains(i, false)) {
+                    passedPipes.add(i);
+                    score++;
+                    try {
+                        audioManager.playSoundEffect("ding");
+                    } catch (Exception e) {
+                        // Silent handling for sound errors
+                    }
                 }
 
-                state = GameState.GAME_OVER;
-                audioManager.playSoundEffect("hit");
-                currentDelay = 0;
-                break;
+                // IMPROVED COLLISION DETECTION
+                // Create reduced hitboxes for more forgiving gameplay
+                float reducedBirdWidth = bird.width * collisionTolerance;
+                float reducedBirdHeight = bird.height * collisionTolerance;
+                float birdCenterX = bird.x + bird.width/2;
+                float birdCenterY = bird.y + bird.height/2;
+                
+                // Create bird collision box centered on the bird
+                Rectangle birdCollision = new Rectangle(
+                    birdCenterX - reducedBirdWidth/2,
+                    birdCenterY - reducedBirdHeight/2,
+                    reducedBirdWidth,
+                    reducedBirdHeight
+                );
+                
+                // Adjust pipe collision boxes
+                Rectangle topPipeCollision = new Rectangle(
+                    topPipe.x,
+                    topPipe.y,
+                    topPipe.width,
+                    topPipe.height
+                );
+                
+                Rectangle bottomPipeCollision = new Rectangle(
+                    bottomPipe.x,
+                    bottomPipe.y,
+                    bottomPipe.width,
+                    bottomPipe.height
+                );
+                
+                // Check collisions
+                boolean topCollision = birdCollision.overlaps(topPipeCollision);
+                boolean bottomCollision = birdCollision.overlaps(bottomPipeCollision);
+
+                // If collision detected
+                if (topCollision || bottomCollision) {
+                    if (debugCollision) {
+                        System.out.println("Collision detected with pipe " + i);
+                    }
+
+                    state = GameState.GAME_OVER;
+                    try {
+                        audioManager.playSoundEffect("hit");
+                    } catch (Exception e) {
+                        // Silent handling for sound errors
+                    }
+                    currentDelay = 0;
+                    break;
+                }
+            } catch (Exception e) {
+                System.err.println("Error in collision detection: " + e.getMessage());
             }
         }
 
@@ -396,8 +446,9 @@ public class FlappyBirdMiniGame extends Scene {
         // Penalize player if they died early (before 15 seconds) by reducing health instead of points
         if (!success && gameTime < 15.0f) {
             // Only reduce health if player has more than 1 life remaining
-            if (PlayerStatus.getInstance().getLives() > 1) {
-                PlayerStatus.getInstance().decrementLife();
+            PlayerStatus playerStatus = PlayerStatus.getInstance();
+            if (playerStatus != null && playerStatus.getLives() > 1) {
+                playerStatus.decrementLife();
                 System.out.println("Died early in mini-game (before 15 seconds). Lost 1 life!");
             } else {
                 System.out.println("Died early in mini-game, but only 1 life remaining. No life penalty applied.");
@@ -405,15 +456,34 @@ public class FlappyBirdMiniGame extends Scene {
         }
 
         // Stop mini-game music
-        audioManager.stopSoundEffect("minigame");
+        try {
+            audioManager.stopSoundEffect("minigame");
+        } catch (Exception e) {
+            // Silently handle sound errors
+        }
 
         // Return to main game
         PlayerStatus.getInstance().setInMiniGame(false);
-        sceneManager.removeOverlay();
+        
+        try {
+            sceneManager.removeOverlay();
+        } catch (Exception e) {
+            System.err.println("Error removing scene overlay: " + e.getMessage());
+            // Fallback - try to set next scene to the current scene
+            try {
+                sceneManager.setNextScene(sceneManager.getCurrentSceneID());
+            } catch (Exception ex) {
+                System.err.println("Critical error returning to main game: " + ex.getMessage());
+            }
+        }
 
         // Notify handler that mini-game is completed
         if (miniGameHandler != null) {
-            miniGameHandler.onMiniGameCompleted();
+            try {
+                miniGameHandler.onMiniGameCompleted();
+            } catch (Exception e) {
+                System.err.println("Error notifying mini-game handler: " + e.getMessage());
+            }
         }
     }
 
@@ -423,189 +493,280 @@ public class FlappyBirdMiniGame extends Scene {
 
         // Apply penalty (same as if player died early)
         PlayerStatus playerStatus = PlayerStatus.getInstance();
-        if (playerStatus.getLives() > 1) {
+        if (playerStatus != null && playerStatus.getLives() > 1) {
             // Normal case - player has more than 1 life, just decrement
             playerStatus.decrementLife();
             System.out.println("Player skipped mini-game. Lost 1 life as penalty!");
 
             // Stop mini-game music
-            audioManager.stopSoundEffect("minigame");
+            try {
+                audioManager.stopSoundEffect("minigame");
+            } catch (Exception e) {
+                // Silently handle sound errors
+            }
 
             // Return to main game
             playerStatus.setInMiniGame(false);
-            sceneManager.removeOverlay();
+            try {
+                sceneManager.removeOverlay();
+            } catch (Exception e) {
+                System.err.println("Error removing overlay: " + e.getMessage());
+            }
         } else {
             // Player has only 1 life left - reduce to 0 and trigger game over
-            playerStatus.decrementLife(); // This will set lives to 0
+            if (playerStatus != null) {
+                playerStatus.decrementLife(); // This will set lives to 0
+            }
             System.out.println("Player skipped mini-game with only 1 life remaining. Game over!");
 
             // Stop mini-game music
-            audioManager.stopSoundEffect("minigame");
+            try {
+                audioManager.stopSoundEffect("minigame");
+            } catch (Exception e) {
+                // Silently handle sound errors
+            }
 
             // Player is no longer in mini-game
-            playerStatus.setInMiniGame(false);
+            if (playerStatus != null) {
+                playerStatus.setInMiniGame(false);
+            }
 
             // Create and set up game over screen with final score
             GameOverScreen gameOverScreen = new GameOverScreen();
             gameOverScreen.setFinalScore(pointsManager.getPoints());
-            sceneManager.setNextScene(io.github.team2.SceneSystem.SceneID.GAME_OVER);
+            try {
+                sceneManager.setNextScene(io.github.team2.SceneSystem.SceneID.GAME_OVER);
+            } catch (Exception e) {
+                System.err.println("Error transitioning to game over screen: " + e.getMessage());
+            }
         }
 
         // Notify handler that mini-game is completed
         if (miniGameHandler != null) {
-            miniGameHandler.onMiniGameCompleted();
+            try {
+                miniGameHandler.onMiniGameCompleted();
+            } catch (Exception e) {
+                System.err.println("Error notifying mini-game handler: " + e.getMessage());
+            }
         }
     }
 
     @Override
     public void draw(SpriteBatch batch) {
-        // We need to end the batch before drawing shapes,
-        // and begin it again afterward
-        batch.end();
-
-        // Draw sky background using our local shape renderer
-        localShapeRenderer.begin(ShapeType.Filled);
-        localShapeRenderer.setColor(skyColor);
-        localShapeRenderer.rect(0, 0, DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
-        localShapeRenderer.end();
-
-        // Restart the batch for sprites
-        batch.begin();
-
-        // Draw pipes with double width but using collision bounds for positioning
-        for (int i = 0; i < topPipes.size; i++) {
-            Rectangle topPipe = topPipes.get(i);
-            batch.draw(pipeTopTexture,
-                      topPipe.x - pipeWidth/2, // Center the visual pipe on collision box
-                      topPipe.y,
-                      pipeWidth * 2,     // Double visual width
-                      pipeHeight);       // Keep height
-
-            Rectangle bottomPipe = bottomPipes.get(i);
-            batch.draw(pipeBottomTexture,
-                      bottomPipe.x - pipeWidth/2, // Center the visual pipe on collision box
-                      bottomPipe.y,
-                      pipeWidth * 2,     // Double visual width
-                      pipeHeight);       // Keep height
+        if (batch == null) {
+            System.err.println("SpriteBatch is null in draw method");
+            return;
         }
+        
+        try {
+            // End the batch before drawing shapes
+            batch.end();
 
-        // Draw bird
-        if (birdTexture != null) {
-            batch.draw(birdTexture, bird.x, bird.y, bird.width, bird.height);
-        }
+            // Initialize ShapeRenderer if needed
+            if (localShapeRenderer == null) {
+                localShapeRenderer = new ShapeRenderer();
+            }
 
-        // Draw UI
-        textManager.draw(batch, "Score: " + score, 20, DisplayManager.getScreenHeight() - 20, Color.WHITE);
-        textManager.draw(batch, "Time: " + (int)(maxGameTime - gameTime), DisplayManager.getScreenWidth() - 150, DisplayManager.getScreenHeight() - 20, Color.WHITE);
+            // Draw sky background
+            localShapeRenderer.begin(ShapeType.Filled);
+            localShapeRenderer.setColor(skyColor);
+            localShapeRenderer.rect(0, 0, DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
+            localShapeRenderer.end();
 
-        switch (state) {
-            case READY:
-                textManager.draw(batch, "FLAPPY SPACE CLEANER", DisplayManager.getScreenWidth()/2 - 180,
-                                DisplayManager.getScreenHeight()/2 + 50, Color.YELLOW);
-                textManager.draw(batch, "Press SPACE to start", DisplayManager.getScreenWidth()/2 - 150,
-                                DisplayManager.getScreenHeight()/2, Color.WHITE);
-                textManager.draw(batch, "Press Q to exit anytime (with penalty)", DisplayManager.getScreenWidth()/2 - 180,
-                                DisplayManager.getScreenHeight()/2 - 50, Color.WHITE);
-                textManager.draw(batch, "Avoid the pipes!", DisplayManager.getScreenWidth()/2 - 100,
-                                DisplayManager.getScreenHeight()/2 - 100, Color.WHITE);
-                break;
+            // Restart the batch for sprites
+            batch.begin();
 
-            case GAME_OVER:
-                textManager.draw(batch, "GAME OVER!", DisplayManager.getScreenWidth()/2 - 100,
-                                DisplayManager.getScreenHeight()/2 + 50, Color.RED);
-                textManager.draw(batch, "Score: " + score, DisplayManager.getScreenWidth()/2 - 80,
-                                DisplayManager.getScreenHeight()/2, Color.WHITE);
-                textManager.draw(batch, "Returning to game...", DisplayManager.getScreenWidth()/2 - 140,
-                                DisplayManager.getScreenHeight()/2 - 50, Color.WHITE);
+            // Draw pipes
+            if (pipeTopTexture != null && pipeBottomTexture != null) {
+                for (int i = 0; i < topPipes.size; i++) {
+                    Rectangle topPipe = topPipes.get(i);
+                    batch.draw(pipeTopTexture,
+                              topPipe.x - pipeWidth/2, // Center the visual pipe on collision box
+                              topPipe.y,
+                              pipeWidth * 2,     // Double visual width
+                              pipeHeight);       // Keep height
 
-                // Show countdown
-                int remainingTime = (int)(gameOverDelay * 2 - currentDelay);
-                textManager.draw(batch, "(" + remainingTime + ")",
-                                DisplayManager.getScreenWidth()/2 - 20,
-                                DisplayManager.getScreenHeight()/2 - 100, Color.WHITE);
-
-                // Optional quick return
-                if (currentDelay >= gameOverDelay) {
-                    textManager.draw(batch, "Press R to return now", DisplayManager.getScreenWidth()/2 - 140,
-                                    DisplayManager.getScreenHeight()/2 - 150, Color.WHITE);
+                    Rectangle bottomPipe = bottomPipes.get(i);
+                    batch.draw(pipeBottomTexture,
+                              bottomPipe.x - pipeWidth/2, // Center the visual pipe on collision box
+                              bottomPipe.y,
+                              pipeWidth * 2,     // Double visual width
+                              pipeHeight);       // Keep height
                 }
-                break;
+            }
 
-            case CONFIRM_EXIT:
-                // End the SpriteBatch before drawing shapes
-                batch.end();
+            // Draw bird
+            if (birdTexture != null && bird != null) {
+                batch.draw(birdTexture, bird.x, bird.y, bird.width, bird.height);
+            }
 
-                // Set up blending for transparency
-                Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
-                Gdx.gl.glBlendFunc(Gdx.gl.GL_SRC_ALPHA, Gdx.gl.GL_ONE_MINUS_SRC_ALPHA);
+            // Draw UI
+            if (textManager != null) {
+                textManager.draw(batch, "Score: " + score, 20, DisplayManager.getScreenHeight() - 20, Color.WHITE);
+                textManager.draw(batch, "Time: " + (int)(maxGameTime - gameTime), DisplayManager.getScreenWidth() - 150, DisplayManager.getScreenHeight() - 20, Color.WHITE);
 
-                // Draw semi-transparent overlay for dialog background
-                localShapeRenderer.begin(ShapeType.Filled);
-                localShapeRenderer.setColor(0, 0, 0, 0.7f); // Semi-transparent black background
-                localShapeRenderer.rect(0, 0, DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
-                localShapeRenderer.end();
+                switch (state) {
+                    case READY:
+                        textManager.draw(batch, "FLAPPY SPACE CLEANER", DisplayManager.getScreenWidth()/2 - 180,
+                                        DisplayManager.getScreenHeight()/2 + 50, Color.YELLOW);
+                        textManager.draw(batch, "Press SPACE to start", DisplayManager.getScreenWidth()/2 - 150,
+                                        DisplayManager.getScreenHeight()/2, Color.WHITE);
+                        textManager.draw(batch, "Press Q to exit anytime (with penalty)", DisplayManager.getScreenWidth()/2 - 180,
+                                        DisplayManager.getScreenHeight()/2 - 50, Color.WHITE);
+                        textManager.draw(batch, "Avoid the pipes!", DisplayManager.getScreenWidth()/2 - 100,
+                                        DisplayManager.getScreenHeight()/2 - 100, Color.WHITE);
+                        break;
 
-                // Draw dialog box background
-                localShapeRenderer.begin(ShapeType.Filled);
-                float dialogWidth = 400;
-                float dialogHeight = 220;
-                float dialogX = DisplayManager.getScreenWidth()/2 - dialogWidth/2;
-                float dialogY = DisplayManager.getScreenHeight()/2 - dialogHeight/2;
-                localShapeRenderer.setColor(0.1f, 0.1f, 0.2f, 0.95f);
-                localShapeRenderer.rect(dialogX, dialogY, dialogWidth, dialogHeight);
-                localShapeRenderer.end();
+                    case GAME_OVER:
+                        textManager.draw(batch, "GAME OVER!", DisplayManager.getScreenWidth()/2 - 100,
+                                        DisplayManager.getScreenHeight()/2 + 50, Color.RED);
+                        textManager.draw(batch, "Score: " + score, DisplayManager.getScreenWidth()/2 - 80,
+                                        DisplayManager.getScreenHeight()/2, Color.WHITE);
+                        textManager.draw(batch, "Returning to game...", DisplayManager.getScreenWidth()/2 - 140,
+                                        DisplayManager.getScreenHeight()/2 - 50, Color.WHITE);
 
-                // Draw dialog border
-                localShapeRenderer.begin(ShapeType.Line);
-                localShapeRenderer.setColor(0.5f, 0.5f, 0.8f, 1);
-                localShapeRenderer.rect(dialogX, dialogY, dialogWidth, dialogHeight);
-                localShapeRenderer.end();
+                        // Show countdown
+                        int remainingTime = (int)(gameOverDelay * 2 - currentDelay);
+                        textManager.draw(batch, "(" + remainingTime + ")",
+                                        DisplayManager.getScreenWidth()/2 - 20,
+                                        DisplayManager.getScreenHeight()/2 - 100, Color.WHITE);
 
-                Gdx.gl.glDisable(Gdx.gl.GL_BLEND);
+                        // Optional quick return
+                        if (currentDelay >= gameOverDelay) {
+                            textManager.draw(batch, "Press R to return now", DisplayManager.getScreenWidth()/2 - 140,
+                                            DisplayManager.getScreenHeight()/2 - 150, Color.WHITE);
+                        }
+                        break;
 
-                // Resume batch to draw text
-                batch.begin();
+                    case CONFIRM_EXIT:
+                        // End the SpriteBatch before drawing shapes
+                        batch.end();
 
-                // Dialog text
-                float textX = dialogX + 20;
-                float textY = dialogY + dialogHeight - 30;
+                        try {
+                            // Set up blending for transparency
+                            Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
+                            Gdx.gl.glBlendFunc(Gdx.gl.GL_SRC_ALPHA, Gdx.gl.GL_ONE_MINUS_SRC_ALPHA);
 
-                textManager.draw(batch, "QUIT MINI-GAME?", textX, textY, Color.YELLOW);
-                textManager.draw(batch, "You will lose one life as penalty", textX, textY - 40, Color.WHITE);
-                textManager.draw(batch, "for skipping this challenge.", textX, textY - 70, Color.WHITE);
+                            // Draw semi-transparent overlay for dialog background
+                            if (localShapeRenderer != null) {
+                                localShapeRenderer.begin(ShapeType.Filled);
+                                localShapeRenderer.setColor(0, 0, 0, 0.7f); // Semi-transparent black background
+                                localShapeRenderer.rect(0, 0, DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
+                                localShapeRenderer.end();
 
-                // Options with highlighted selection
-                textManager.draw(batch, "Yes, quit anyway", textX + 20, textY - 110,
-                               confirmYes ? selectedColor : unselectedColor);
-                textManager.draw(batch, "No, continue playing", textX + 20, textY - 140,
-                               confirmYes ? unselectedColor : selectedColor);
+                                // Draw dialog box background
+                                localShapeRenderer.begin(ShapeType.Filled);
+                                float dialogWidth = 400;
+                                float dialogHeight = 220;
+                                float dialogX = DisplayManager.getScreenWidth()/2 - dialogWidth/2;
+                                float dialogY = DisplayManager.getScreenHeight()/2 - dialogHeight/2;
+                                localShapeRenderer.setColor(0.1f, 0.1f, 0.2f, 0.95f);
+                                localShapeRenderer.rect(dialogX, dialogY, dialogWidth, dialogHeight);
+                                localShapeRenderer.end();
 
-                // Controls hint
-                textManager.draw(batch, "Use UP/DOWN to select, SPACE to confirm", textX - 50, textY - 180, Color.WHITE);
-                break;
+                                // Draw dialog border
+                                localShapeRenderer.begin(ShapeType.Line);
+                                localShapeRenderer.setColor(0.5f, 0.5f, 0.8f, 1);
+                                localShapeRenderer.rect(dialogX, dialogY, dialogWidth, dialogHeight);
+                                localShapeRenderer.end();
+                            }
+                        } catch (Exception e) {
+                            System.err.println("Error drawing dialog: " + e.getMessage());
+                        } finally {
+                            try {
+                                Gdx.gl.glDisable(Gdx.gl.GL_BLEND);
+                            } catch (Exception e) {
+                                // Ignore GL errors
+                            }
+                        }
 
-            case PLAYING:
-                // During gameplay, show the Q key hint
-                textManager.draw(batch, "Press Q to exit", 20, DisplayManager.getScreenHeight() - 60, Color.WHITE);
-                break;
+                        // Resume batch to draw text
+                        batch.begin();
+
+                        // Dialog text
+                        float textX = DisplayManager.getScreenWidth()/2 - 180;
+                        float textY = DisplayManager.getScreenHeight()/2 + 60;
+
+                        textManager.draw(batch, "QUIT MINI-GAME?", textX, textY, Color.YELLOW);
+                        textManager.draw(batch, "You will lose one life as penalty", textX, textY - 40, Color.WHITE);
+                        textManager.draw(batch, "for skipping this challenge.", textX, textY - 70, Color.WHITE);
+
+                        // Options with highlighted selection
+                        textManager.draw(batch, "Yes, quit anyway", textX + 20, textY - 110,
+                                       confirmYes ? selectedColor : unselectedColor);
+                        textManager.draw(batch, "No, continue playing", textX + 20, textY - 140,
+                                       confirmYes ? unselectedColor : selectedColor);
+
+                        // Controls hint
+                        textManager.draw(batch, "Use UP/DOWN to select, SPACE to confirm", textX - 50, textY - 180, Color.WHITE);
+                        break;
+
+                    case PLAYING:
+                        // During gameplay, show the Q key hint
+                        textManager.draw(batch, "Press Q to exit", 20, DisplayManager.getScreenHeight() - 60, Color.WHITE);
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error in draw method: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Try to recover by restarting the batch
+            try {
+                if (!batch.isDrawing()) {
+                    batch.begin();
+                }
+            } catch (Exception ex) {
+                // Ignore any further exceptions
+            }
         }
     }
 
     @Override
     public void draw(ShapeRenderer shape) {
-        // Skip the external shape rendering to avoid conflicts with main game
-        // We handle all our shape drawing internally using localShapeRenderer
-
         // Only draw debug collision info if enabled
-        if (debugCollision && state == GameState.PLAYING) {
+        if (!debugCollision || state != GameState.PLAYING || shape == null || bird == null) {
+            return;
+        }
+        
+        // Safety check to avoid modifying external ShapeRenderer state
+        boolean wasDrawing = false;
+        try {
+            if (shape.isDrawing()) {
+                shape.end();
+                wasDrawing = true;
+            }
+
+            // Initialize local ShapeRenderer if needed
+            if (localShapeRenderer == null) {
+                localShapeRenderer = new ShapeRenderer();
+            }
+            
             localShapeRenderer.setProjectionMatrix(shape.getProjectionMatrix());
             localShapeRenderer.begin(ShapeType.Line);
             localShapeRenderer.setColor(Color.RED);
 
-            // Draw bird hitbox
+            // Show the actual collision boundary (reduced hitbox)
+            float reducedBirdWidth = bird.width * collisionTolerance;
+            float reducedBirdHeight = bird.height * collisionTolerance;
+            float birdCenterX = bird.x + bird.width/2;
+            float birdCenterY = bird.y + bird.height/2;
+            
+            // Draw bird collision hitbox
+            localShapeRenderer.setColor(Color.GREEN);
+            localShapeRenderer.rect(
+                birdCenterX - reducedBirdWidth/2,
+                birdCenterY - reducedBirdHeight/2,
+                reducedBirdWidth,
+                reducedBirdHeight
+            );
+            
+            // Draw visual bounds of the bird
+            localShapeRenderer.setColor(Color.YELLOW);
             localShapeRenderer.rect(bird.x, bird.y, bird.width, bird.height);
 
             // Draw pipe hitboxes
+            localShapeRenderer.setColor(Color.RED);
             for (Rectangle topPipe : topPipes) {
                 localShapeRenderer.rect(topPipe.x, topPipe.y, topPipe.width, topPipe.height);
             }
@@ -615,6 +776,17 @@ public class FlappyBirdMiniGame extends Scene {
             }
 
             localShapeRenderer.end();
+        } catch (Exception e) {
+            System.err.println("Error during debug shape rendering: " + e.getMessage());
+        } finally {
+            // Restore original ShapeRenderer state if it was drawing
+            if (wasDrawing) {
+                try {
+                    shape.begin(ShapeType.Filled);
+                } catch (Exception e) {
+                    // Ignore errors trying to restore state
+                }
+            }
         }
     }
 
@@ -623,7 +795,14 @@ public class FlappyBirdMiniGame extends Scene {
         // If somehow the game gets unloaded without completing properly,
         // make sure we clean up the player status flag
         if (!gameCompleted) {
-            PlayerStatus.getInstance().setInMiniGame(false);
+            try {
+                PlayerStatus playerStatus = PlayerStatus.getInstance();
+                if (playerStatus != null) {
+                    playerStatus.setInMiniGame(false);
+                }
+            } catch (Exception e) {
+                System.err.println("Error resetting player status: " + e.getMessage());
+            }
         }
 
         dispose();
@@ -631,21 +810,32 @@ public class FlappyBirdMiniGame extends Scene {
 
     @Override
     public void dispose() {
-        if (birdTexture != null) {
-            birdTexture.dispose();
-            birdTexture = null;
-        }
-        if (pipeTopTexture != null) {
-            pipeTopTexture.dispose();
-            pipeTopTexture = null;
-        }
-        if (pipeBottomTexture != null) {
-            pipeBottomTexture.dispose();
-            pipeBottomTexture = null;
-        }
-        if (localShapeRenderer != null) {
-            localShapeRenderer.dispose();
-            localShapeRenderer = null;
+        try {
+            if (birdTexture != null) {
+                birdTexture.dispose();
+                birdTexture = null;
+            }
+            if (pipeTopTexture != null) {
+                pipeTopTexture.dispose();
+                pipeTopTexture = null;
+            }
+            if (pipeBottomTexture != null) {
+                pipeBottomTexture.dispose();
+                pipeBottomTexture = null;
+            }
+            if (localShapeRenderer != null) {
+                localShapeRenderer.dispose();
+                localShapeRenderer = null;
+            }
+            
+            // Clear collections
+            if (topPipes != null) topPipes.clear();
+            if (bottomPipes != null) bottomPipes.clear();
+            if (passedPipes != null) passedPipes.clear();
+            
+            System.out.println("FlappyBirdMiniGame resources disposed successfully");
+        } catch (Exception e) {
+            System.err.println("Error disposing FlappyBirdMiniGame resources: " + e.getMessage());
         }
     }
 }

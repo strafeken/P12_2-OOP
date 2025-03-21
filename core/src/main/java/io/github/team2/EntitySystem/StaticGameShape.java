@@ -4,25 +4,19 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
-
-import io.github.team2.SceneSystem.SceneManager;
-
-
-
-public abstract class StaticGameShape extends Static {
+public abstract class StaticGameShape extends Static implements ShapeRenderable {
     private Color color;
     private float width;
     private float height;
 
     public StaticGameShape() {
         super();
-        
+        color = Color.WHITE;
     }
     
-    public StaticGameShape(EntityType type, Vector2 position, Vector2 direction,  Color color) {
-        super(type ,position,  direction);
+    public StaticGameShape(EntityType type, Vector2 position, Vector2 direction, Color color) {
+        super(type, position, direction);
         this.color = color;
-        
     }
 
     public Color getColor() {
@@ -49,12 +43,13 @@ public abstract class StaticGameShape extends Static {
         this.height = height;
     }
     
-  
-  
+    @Override
+    public void draw(ShapeRenderer shape) {
+        if (shape != null) {
+            drawShape(shape);
+        }
+    }
     
     @Override
-    public abstract void draw(ShapeRenderer shape);
-  
-
-
+    public abstract void drawShape(ShapeRenderer shapeRenderer);
 }
