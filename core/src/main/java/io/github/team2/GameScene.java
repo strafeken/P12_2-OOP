@@ -1,5 +1,6 @@
 package io.github.team2;
 
+import java.lang.reflect.Constructor;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -80,12 +81,34 @@ public class GameScene extends Scene {
 
 
     private Camera camera;
+    
+    
+    // constructor settings
+    
+    private String planetPath = "planet/planet1_purple.jpg"; // level 1 default value
+    private int trashCount = 5;
+    private int alienCount;
+    
+    
 
     public GameScene() {
         super();
         random = new Random();
         accumulator = 0f;
     }
+    
+    
+    public GameScene(String planetPath, int trashCount, int alienCount) {
+        super();
+        random = new Random();
+        accumulator = 0f;
+        
+        this.planetPath = planetPath;
+        this.trashCount = trashCount; 
+        this.alienCount = alienCount;
+    }
+    
+    
 
     @Override
     public void load() {
@@ -169,7 +192,7 @@ public class GameScene extends Scene {
     	try {
 
 
-	        StaticTextureObject bg_image  = new StaticTextureObject(EntityType.UNDEFINED, "planet/planet2_yellow.jpg", new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight()),
+	        StaticTextureObject bg_image  = new StaticTextureObject(EntityType.UNDEFINED, this.planetPath , new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight()),
 	                new Vector2(DisplayManager.getScreenWidth()/2,  DisplayManager.getScreenHeight()/2),
 	                new Vector2(0, 0));
 
@@ -284,7 +307,7 @@ public class GameScene extends Scene {
             trashSpawnTimer += delta;
             if (trashSpawnTimer >= trashSpawnInterval) {
                 trashSpawnTimer = 0;
-                spawnTrash(5);  // Try to spawn up to 5 pieces of trash each interval
+                spawnTrash(this.trashCount);  // Try to spawn up to 5 pieces of trash each interval
             }
         }
 
@@ -376,7 +399,7 @@ public class GameScene extends Scene {
         
         // Use the collisionDetector's render method instead of direct debugRenderer
         if (collisionDetector != null && world != null) {
-            collisionDetector.renderDebug(world, shape.getProjectionMatrix());
+            //collisionDetector.renderDebug(world, shape.getProjectionMatrix());
         }
     }
 
