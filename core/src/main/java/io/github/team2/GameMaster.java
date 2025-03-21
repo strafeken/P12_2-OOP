@@ -47,7 +47,13 @@ public class GameMaster extends ApplicationAdapter {
         audioManager.setVolume(1.0f);
 
         sceneManager.addScene(SceneID.MAIN_MENU, new MainMenu());
-        sceneManager.addScene(SceneID.GAME_SCENE, new GameScene());
+        
+        sceneManager.addScene(SceneID.LEVEL1, new GameScene("planet/planet1_purple.jpg",5,0));
+        sceneManager.addScene(SceneID.LEVEL2, new GameScene("planet/planet2_yellow.jpg",5,0));
+        sceneManager.addScene(SceneID.LEVEL3, new GameScene("planet/planet3_red.jpg",5,0));
+        sceneManager.addScene(SceneID.LEVEL4, new GameScene("planet/planet4_grey.jpg",5,0));
+        
+        
         sceneManager.addScene(SceneID.PAUSE_MENU, new PauseMenu());
         sceneManager.addScene(SceneID.GAME_OVER, new GameOverScreen());
         sceneManager.addScene(SceneID.SETTINGS_MENU, new SettingsMenu());

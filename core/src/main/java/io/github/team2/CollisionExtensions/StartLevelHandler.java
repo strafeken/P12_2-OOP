@@ -2,7 +2,7 @@ package io.github.team2.CollisionExtensions;
 
 import io.github.team2.Camera;
 import io.github.team2.LevelManager;
-import io.github.team2.Actions.StartLevel1;
+import io.github.team2.Actions.StartLevel;
 import io.github.team2.CollisionSystem.CollisionListener;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityType;
@@ -51,9 +51,14 @@ public class StartLevelHandler implements CollisionListener {
             if (detectedLevel > 0) {
                 levelManager.setCurrentLevel(detectedLevel);
             }
+            
 
-            StartLevel1 beginLevel1 = new StartLevel1(sceneManager);
-            beginLevel1.execute();
+                
+            StartLevel beginLevel = new StartLevel(sceneManager, detectedLevel);
+            beginLevel.execute();
+        	
+
+        
         }
     }
 }
