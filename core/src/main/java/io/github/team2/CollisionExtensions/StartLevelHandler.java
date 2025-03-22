@@ -1,9 +1,9 @@
 package io.github.team2.CollisionExtensions;
 
-import io.github.team2.Actions.StartLevel;
 import io.github.team2.Camera.Camera;
 import io.github.team2.CollisionSystem.CollisionListener;
 import io.github.team2.EntitySystem.Entity;
+import io.github.team2.Game.Actions.StartLevel;
 import io.github.team2.Game.Entity.EntityType;
 import io.github.team2.Game.Entity.Planet;
 import io.github.team2.Game.Manager.LevelManager;

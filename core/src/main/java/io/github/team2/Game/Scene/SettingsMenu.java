@@ -7,10 +7,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.team2.Actions.ResumeGame;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.AudioSystem.IAudioManager;
 import io.github.team2.EntitySystem.EntityManager;
+import io.github.team2.Game.Actions.ResumeGame;
 import io.github.team2.Game.Manager.GameManager;
 import io.github.team2.Game.Manager.TextManager;
 import io.github.team2.InputSystem.Action;

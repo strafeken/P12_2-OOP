@@ -1,4 +1,4 @@
-package io.github.team2.Actions;
+package io.github.team2.Game.Actions;
 
 import io.github.team2.InputSystem.Action;
 import io.github.team2.SceneSystem.ISceneManager;

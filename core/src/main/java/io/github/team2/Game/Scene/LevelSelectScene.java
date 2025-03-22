@@ -10,8 +10,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
-import io.github.team2.Actions.ExitGame;
-import io.github.team2.Actions.PauseGame;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.AudioSystem.IAudioManager;
 import io.github.team2.Camera.Camera;
@@ -26,6 +24,8 @@ import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.Utils.DisplayManager;
+import io.github.team2.Game.Actions.ExitGame;
+import io.github.team2.Game.Actions.PauseGame;
 import io.github.team2.Game.Entity.EntityType;
 import io.github.team2.Game.Entity.Planet;
 import io.github.team2.Game.Entity.Player;

@@ -1,4 +1,4 @@
-package io.github.team2.Actions;
+package io.github.team2.Game.Actions.Movement;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;

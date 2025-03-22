@@ -3,9 +3,9 @@ package io.github.team2.InputSystem;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.team2.Actions.Move;
-import io.github.team2.Actions.Rotate;
 import io.github.team2.EntitySystem.Entity;
+import io.github.team2.Game.Actions.Movement.Move;
+import io.github.team2.Game.Actions.Movement.Rotate;
 
 public class PlayerInputManager extends InputManager {
 	private final Entity player;
