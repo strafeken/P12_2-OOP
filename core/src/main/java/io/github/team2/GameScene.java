@@ -1,6 +1,5 @@
 package io.github.team2;
 
-import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -38,8 +37,9 @@ import io.github.team2.InputSystem.PlayerInputManager;
 import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
-import io.github.team2.Trash.ConcreteTrashFactory;
+import io.github.team2.Trash.NonRecyclableTrashFactory;
 import io.github.team2.Trash.RecyclableTrash;
+import io.github.team2.Trash.RecyclableTrashFactory;
 import io.github.team2.Trash.RecycleType;
 import io.github.team2.Trash.RecyclingBin;
 import io.github.team2.Trash.TrashFactory;
@@ -54,7 +54,6 @@ public class GameScene extends Scene {
 
     // Physics world
     private World world;
-    private Box2DDebugRenderer debugRenderer;
     private float accumulator;
 
     // Managers
@@ -76,7 +75,9 @@ public class GameScene extends Scene {
 
     private float trashSpawnTimer = 0f;
     private float trashSpawnInterval = 5f; // Spawn trash every 5 seconds
-    private TrashFactory trashFactory;
+
+    private TrashFactory recyclableFactory;
+    private TrashFactory nonRecyclableFactory;
 
     private StartMiniGameHandler miniGameHandler;
     private PlayerLifeHandler playerLifeHandler;
@@ -148,7 +149,6 @@ public class GameScene extends Scene {
 
     private void initializeWorld() {
         world = new World(new Vector2(0, 0), true);
-        debugRenderer = new Box2DDebugRenderer();
     }
 
     private void initializeManagers() {
@@ -165,10 +165,12 @@ public class GameScene extends Scene {
 
         // Add all collision handlers/listeners after initializing audioManager
         world.setContactListener(collisionDetector);
+        
+        recyclableFactory = new RecyclableTrashFactory();
+        nonRecyclableFactory = new NonRecyclableTrashFactory();
 
         // Initialize the trash spawner
-        trashSpawner = new TrashSpawner(world, entityManager);
-        trashFactory = new ConcreteTrashFactory();
+        trashSpawner = new TrashSpawner(world, entityManager, recyclableFactory, nonRecyclableFactory);
     }
 
     private void initializeCollisionHandlers() {
@@ -290,6 +292,7 @@ public class GameScene extends Scene {
         try {
             // Use the ratio 0.7 for 70% recyclable trash
             trashSpawner.spawnRandomTrash(count, 0.7f);
+            
         } catch (Exception e) {
             System.out.println("Error spawning trash: " + e);
         }

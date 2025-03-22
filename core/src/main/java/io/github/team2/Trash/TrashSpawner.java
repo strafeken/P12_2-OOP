@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TrashSpawner {
+    private final TrashFactory recyclableFactory;
+    private final TrashFactory nonRecyclableFactory;
     // Add constants for max objects
     private static final int MAX_TOTAL_OBJECTS = 20;
     private static final int MAX_NON_RECYCLABLE = 5;
@@ -37,16 +39,13 @@ public class TrashSpawner {
         nonRecyclableTextures.put(NonRecyclableTrash.Type.MIXED_WASTE, "item/half-eaten-food-glow.png");
     }
 
-    public TrashSpawner(World world, IEntityManager entityManager) {
+    public TrashSpawner(World world, IEntityManager entityManager, TrashFactory recyclableFactory, TrashFactory nonRecyclableFactory) {
         this.world = world;
         this.entityManager = entityManager;
+        this.recyclableFactory = recyclableFactory;
+        this.nonRecyclableFactory = nonRecyclableFactory;
     }
 
-    /**
-     * Spawns a random mix of recyclable and non-recyclable trash
-     * @param count Total number of trash items to spawn
-     * @param recyclableRatio Ratio of recyclable to total trash (0.0-1.0)
-     */
     public void spawnRandomTrash(int count, float recyclableRatio) {
         // Get current counts
         int currentTotal = entityManager.getEntitiesByType(EntityType.RECYCLABLE).size() +
@@ -69,9 +68,6 @@ public class TrashSpawner {
         }
     }
 
-    /**
-     * Spawns a single random recyclable trash item
-     */
     public Entity spawnRandomRecyclable() {
     	RecycleType type = RecycleType.values()[
             MathUtils.random(RecycleType.values().length - 1)];
@@ -80,15 +76,14 @@ public class TrashSpawner {
         Vector2 position = getRandomPosition();
         Vector2 size = new Vector2(50, 50); // Adjust size as needed
 
-        RecyclableTrash trash = new RecyclableTrash(texture, size, position, type);
+        Trash trash = recyclableFactory.createTrash(EntityType.RECYCLABLE, texture, size, position, 
+        		new Vector2(), new Vector2(), 50f, TrashBehaviour.State.IDLE, TrashBehaviour.Move.NONE);
+
         setupTrashPhysics(trash);
 
         return trash;
     }
 
-    /**
-     * Spawns a single random non-recyclable trash item
-     */
     public Entity spawnRandomNonRecyclable() {
         // Check if we've hit the non-recyclable limit
         if (entityManager.getEntitiesByType(EntityType.NON_RECYCLABLE).size() >= MAX_NON_RECYCLABLE) {
@@ -102,23 +97,19 @@ public class TrashSpawner {
         Vector2 position = getRandomPosition();
         Vector2 size = new Vector2(40, 40); // Adjust size as needed
 
-        NonRecyclableTrash trash = new NonRecyclableTrash(texture, size, position, type);
+        Trash trash = nonRecyclableFactory.createTrash(EntityType.NON_RECYCLABLE, texture, size, position, 
+        		new Vector2(), new Vector2(), 50f, TrashBehaviour.State.IDLE, TrashBehaviour.Move.NONE);
+
         setupTrashPhysics(trash);
 
         return trash;
     }
 
-    /**
-     * Sets up physics body and adds the trash to the entity manager
-     */
     private void setupTrashPhysics(Trash trash) {
         trash.initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
         entityManager.addEntities(trash);
     }
 
-    /**
-     * Generates a random position within the screen bounds
-     */
     private Vector2 getRandomPosition() {
         float margin = 50;
         return new Vector2(
