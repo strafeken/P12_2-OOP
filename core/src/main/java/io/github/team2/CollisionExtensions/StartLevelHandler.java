@@ -59,15 +59,7 @@ public class StartLevelHandler implements CollisionListener {
             	
         } 
         
-        /*
-        else if (type == CollisionType.LEVEL2_PLAYER && levelManager.isLevelUnlocked(2)) {
 
-        } else if (type == CollisionType.LEVEL3_PLAYER && levelManager.isLevelUnlocked(3)) {
-
-        } else if (type == CollisionType.LEVEL4_PLAYER && levelManager.isLevelUnlocked(4)) {
-
-        }
-        */
     }
 
     public void processAction(Camera camera) {
