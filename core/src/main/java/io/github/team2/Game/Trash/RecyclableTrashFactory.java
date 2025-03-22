@@ -1,10 +1,10 @@
-package io.github.team2.Trash;
+package io.github.team2.Game.Trash;
 
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.team2.EntitySystem.EntityType;
-import io.github.team2.Trash.TrashBehaviour.Move;
-import io.github.team2.Trash.TrashBehaviour.State;
+import io.github.team2.Game.Trash.TrashBehaviour.Move;
+import io.github.team2.Game.Trash.TrashBehaviour.State;
 
 public class RecyclableTrashFactory implements TrashFactory {
 

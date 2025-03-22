@@ -1,4 +1,4 @@
-package io.github.team2.Trash;
+package io.github.team2.Game.Trash;
 
 import com.badlogic.gdx.math.Vector2;
 

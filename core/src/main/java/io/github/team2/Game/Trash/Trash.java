@@ -1,4 +1,4 @@
-package io.github.team2.Trash;
+package io.github.team2.Game.Trash;
 
 
 import com.badlogic.gdx.math.Vector2;
@@ -7,9 +7,9 @@ import com.badlogic.gdx.math.Vector2;
 import io.github.team2.Actions.Floating;
 import io.github.team2.EntitySystem.DynamicTextureObject;
 import io.github.team2.EntitySystem.EntityType;
+import io.github.team2.Game.Trash.TrashBehaviour.Move;
+import io.github.team2.Game.Trash.TrashBehaviour.State;
 import io.github.team2.InputSystem.Action;
-import io.github.team2.Trash.TrashBehaviour.Move;
-import io.github.team2.Trash.TrashBehaviour.State;
 
 
 public abstract class Trash extends DynamicTextureObject<TrashBehaviour.State, TrashBehaviour.Move> {
