@@ -26,13 +26,13 @@ import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.Utils.DisplayManager;
+import io.github.team2.Game.Entity.EntityType;
+import io.github.team2.Game.Entity.Planet;
+import io.github.team2.Game.Entity.Player;
+import io.github.team2.Game.Entity.PlayerBehaviour;
 import io.github.team2.Game.Manager.GameManager;
 import io.github.team2.Game.Manager.LevelManager;
 import io.github.team2.Game.Manager.TextManager;
-import io.github.team2.Game.entity.EntityType;
-import io.github.team2.Game.entity.Planet;
-import io.github.team2.Game.entity.Player;
-import io.github.team2.Game.entity.PlayerBehaviour;
 
 public class LevelSelectScene extends Scene {
 

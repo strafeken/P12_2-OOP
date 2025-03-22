@@ -6,13 +6,13 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.team2.Utils.DisplayManager;
+import io.github.team2.Game.Entity.Alien;
+import io.github.team2.Game.Entity.EntityType;
 import io.github.team2.Game.Manager.PlayerStatus;
 import io.github.team2.Game.Manager.PointsManager;
 import io.github.team2.Game.MiniGame.AsteroidDodgeMiniGame;
 import io.github.team2.Game.MiniGame.FlappyBirdMiniGame;
 import io.github.team2.Game.MiniGame.MiniGameFactory;
-import io.github.team2.Game.entity.Alien;
-import io.github.team2.Game.entity.EntityType;
 import io.github.team2.CollisionSystem.CollisionListener;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.IEntityManager;

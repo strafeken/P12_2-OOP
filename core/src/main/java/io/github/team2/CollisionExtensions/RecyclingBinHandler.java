@@ -2,11 +2,11 @@ package io.github.team2.CollisionExtensions;
 
 import io.github.team2.CollisionSystem.CollisionListener;
 import io.github.team2.EntitySystem.Entity;
+import io.github.team2.Game.Entity.EntityType;
 import io.github.team2.Game.Manager.PlayerStatus;
 import io.github.team2.Game.Manager.PointsManager;
 import io.github.team2.Game.Trash.RecyclableTrash;
 import io.github.team2.Game.Trash.RecyclingBin;
-import io.github.team2.Game.entity.EntityType;
 
 public class RecyclingBinHandler implements CollisionListener {
     private PointsManager pointsManager;

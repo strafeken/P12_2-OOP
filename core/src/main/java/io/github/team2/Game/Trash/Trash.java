@@ -6,9 +6,9 @@ import com.badlogic.gdx.math.Vector2;
 
 import io.github.team2.Actions.Floating;
 import io.github.team2.EntitySystem.DynamicTextureObject;
+import io.github.team2.Game.Entity.EntityType;
 import io.github.team2.Game.Trash.TrashBehaviour.Move;
 import io.github.team2.Game.Trash.TrashBehaviour.State;
-import io.github.team2.Game.entity.EntityType;
 import io.github.team2.InputSystem.Action;
 
 

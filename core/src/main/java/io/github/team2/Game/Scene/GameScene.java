@@ -36,6 +36,11 @@ import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.Utils.DisplayManager;
+import io.github.team2.Game.Entity.Alien;
+import io.github.team2.Game.Entity.AlienBehaviour;
+import io.github.team2.Game.Entity.EntityType;
+import io.github.team2.Game.Entity.Player;
+import io.github.team2.Game.Entity.PlayerBehaviour;
 import io.github.team2.Game.Manager.GameManager;
 import io.github.team2.Game.Manager.LevelManager;
 import io.github.team2.Game.Manager.PlayerStatus;
@@ -47,11 +52,6 @@ import io.github.team2.Game.Trash.RecyclableTrashFactory;
 import io.github.team2.Game.Trash.RecyclingBin;
 import io.github.team2.Game.Trash.TrashFactory;
 import io.github.team2.Game.Trash.TrashSpawner;
-import io.github.team2.Game.entity.Alien;
-import io.github.team2.Game.entity.AlienBehaviour;
-import io.github.team2.Game.entity.EntityType;
-import io.github.team2.Game.entity.Player;
-import io.github.team2.Game.entity.PlayerBehaviour;
 
 public class GameScene extends Scene {
     // Physics constants

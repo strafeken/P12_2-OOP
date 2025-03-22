@@ -1,7 +1,7 @@
 package io.github.team2.CollisionExtensions;
 
 import io.github.team2.EntitySystem.Entity;
-import io.github.team2.Game.entity.EntityType;
+import io.github.team2.Game.Entity.EntityType;
 
 public enum CollisionType {
     ALIEN_PLAYER,

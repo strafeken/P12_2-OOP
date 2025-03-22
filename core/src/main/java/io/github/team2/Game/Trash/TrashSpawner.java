@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.IEntityManager;
-import io.github.team2.Game.entity.EntityType;
+import io.github.team2.Game.Entity.EntityType;
 import io.github.team2.Utils.DisplayManager;
 
 import java.util.HashMap;

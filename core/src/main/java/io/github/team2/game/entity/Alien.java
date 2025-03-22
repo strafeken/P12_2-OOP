@@ -1,4 +1,4 @@
-package io.github.team2.Game.entity;
+package io.github.team2.Game.Entity;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -6,9 +6,9 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import io.github.team2.Actions.Chase;
 import io.github.team2.EntitySystem.DynamicTextureObject;
 import io.github.team2.EntitySystem.Entity;
+import io.github.team2.Game.Entity.AlienBehaviour.Move;
+import io.github.team2.Game.Entity.AlienBehaviour.State;
 import io.github.team2.Game.Manager.LevelManager;
-import io.github.team2.Game.entity.AlienBehaviour.Move;
-import io.github.team2.Game.entity.AlienBehaviour.State;
 
 public class Alien extends DynamicTextureObject<AlienBehaviour.State, AlienBehaviour.Move> {
     private Entity targetPlayer;

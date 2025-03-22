@@ -1,4 +1,4 @@
-package io.github.team2.Game.entity;
+package io.github.team2.Game.Entity;
 
 public class AlienBehaviour {
 	public enum State {

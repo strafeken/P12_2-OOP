@@ -3,7 +3,7 @@ package io.github.team2.EntitySystem;
 import java.util.HashMap;
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.team2.Game.entity.EntityType;
+import io.github.team2.Game.Entity.EntityType;
 import io.github.team2.InputSystem.Action;
 
 public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Entity {
