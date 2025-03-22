@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
+import io.github.team2.Game.entity.EntityType;
 import io.github.team2.Utils.DisplayManager;
 
 public abstract class DynamicGameShape<S extends Enum<S>, A extends Enum<A>> extends Dynamics<S,A> implements ShapeRenderable {

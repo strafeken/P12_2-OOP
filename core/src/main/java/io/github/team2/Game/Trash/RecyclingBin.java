@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.StaticTextureObject;
+import io.github.team2.Game.entity.EntityType;
 
 public class RecyclingBin extends StaticTextureObject {
 	

@@ -4,8 +4,8 @@ import io.github.team2.Actions.StartLevel;
 import io.github.team2.Camera.Camera;
 import io.github.team2.CollisionSystem.CollisionListener;
 import io.github.team2.EntitySystem.Entity;
-import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.Game.Manager.LevelManager;
+import io.github.team2.Game.entity.EntityType;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.SceneSystem.ISceneManager;
 

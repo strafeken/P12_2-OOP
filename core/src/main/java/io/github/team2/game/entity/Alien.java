@@ -6,7 +6,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import io.github.team2.Actions.Chase;
 import io.github.team2.EntitySystem.DynamicTextureObject;
 import io.github.team2.EntitySystem.Entity;
-import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.Game.Manager.LevelManager;
 import io.github.team2.Game.entity.AlienBehaviour.Move;
 import io.github.team2.Game.entity.AlienBehaviour.State;

@@ -1,6 +1,6 @@
-package io.github.team2.EntitySystem;
+package io.github.team2.Game.entity;
 
 public enum EntityType {
     UNDEFINED, PLAYER, ENEMY, DROP, BUCKET, CIRCLE, TRIANGLE, POWERUP, RECYCLABLE, NON_RECYCLABLE, RECYCLING_BIN, ALIEN, PIPE,
-    LEVEL1, LEVEL2, LEVEL3, LEVEL4
+    LEVEL1, LEVEL2, LEVEL3, LEVEL4, PLANET
 }

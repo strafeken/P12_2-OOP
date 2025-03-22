@@ -28,7 +28,6 @@ import io.github.team2.CollisionExtensions.StartMiniGameHandler;
 import io.github.team2.CollisionSystem.CollisionDetector;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityManager;
-import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.StaticTextureObject;
 import io.github.team2.InputSystem.Button;
 import io.github.team2.InputSystem.GameInputManager;
@@ -51,6 +50,7 @@ import io.github.team2.Game.Trash.TrashFactory;
 import io.github.team2.Game.Trash.TrashSpawner;
 import io.github.team2.Game.entity.Alien;
 import io.github.team2.Game.entity.AlienBehaviour;
+import io.github.team2.Game.entity.EntityType;
 import io.github.team2.Game.entity.Player;
 import io.github.team2.Game.entity.PlayerBehaviour;
 

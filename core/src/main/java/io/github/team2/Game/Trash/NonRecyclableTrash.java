@@ -2,7 +2,8 @@ package io.github.team2.Game.Trash;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import io.github.team2.EntitySystem.EntityType;
+
+import io.github.team2.Game.entity.EntityType;
 
 public class NonRecyclableTrash extends Trash {
     // Different types of non-recyclable trash
