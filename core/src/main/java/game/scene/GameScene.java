@@ -16,7 +16,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import abstractengine.audio.AudioManager;
 import abstractengine.audio.IAudioManager;
 import abstractengine.camera.Camera;
-import abstractengine.collision.CollisionDetector;
+import abstractengine.entity.CollisionDetector;
 import abstractengine.entity.Entity;
 import abstractengine.entity.EntityManager;
 import abstractengine.entity.StaticTextureObject;

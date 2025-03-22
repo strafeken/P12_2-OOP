@@ -1,4 +1,4 @@
-package abstractengine.collision;
+package abstractengine.entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,6 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 
-import abstractengine.entity.Entity;
 import game.entity.CollisionType;
 
 public class CollisionDetector implements ContactListener {

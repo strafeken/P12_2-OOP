@@ -1,7 +1,7 @@
 package game.entity;
 
 import abstractengine.camera.Camera;
-import abstractengine.collision.CollisionListener;
+import abstractengine.entity.CollisionListener;
 import abstractengine.entity.Entity;
 import abstractengine.scene.ISceneManager;
 import abstractengine.scene.SceneManager;

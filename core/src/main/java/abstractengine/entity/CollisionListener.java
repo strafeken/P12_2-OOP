@@ -1,6 +1,5 @@
-package abstractengine.collision;
+package abstractengine.entity;
 
-import abstractengine.entity.Entity;
 import game.entity.CollisionType;
 
 public interface CollisionListener {

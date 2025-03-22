@@ -2,7 +2,7 @@ package game.entity;
 
 import abstractengine.audio.AudioManager;
 import abstractengine.audio.IAudioManager;
-import abstractengine.collision.CollisionListener;
+import abstractengine.entity.CollisionListener;
 import abstractengine.entity.Entity;
 
 public class CollisionAudioHandler implements CollisionListener {
