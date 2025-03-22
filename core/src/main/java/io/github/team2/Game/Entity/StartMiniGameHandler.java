@@ -1,4 +1,4 @@
-package io.github.team2.CollisionExtensions;
+package io.github.team2.Game.Entity;
 
 import java.util.List;
 import java.util.Random;
@@ -6,8 +6,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.team2.Utils.DisplayManager;
-import io.github.team2.Game.Entity.Alien;
-import io.github.team2.Game.Entity.EntityType;
 import io.github.team2.Game.Manager.PlayerStatus;
 import io.github.team2.Game.Manager.PointsManager;
 import io.github.team2.Game.MiniGame.AsteroidDodgeMiniGame;

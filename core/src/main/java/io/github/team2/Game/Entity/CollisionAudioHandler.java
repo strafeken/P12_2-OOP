@@ -1,4 +1,4 @@
-package io.github.team2.CollisionExtensions;
+package io.github.team2.Game.Entity;
 
 import io.github.team2.AudioSystem.IAudioManager;
 import io.github.team2.CollisionSystem.CollisionListener;

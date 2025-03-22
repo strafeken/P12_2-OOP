@@ -13,8 +13,8 @@ import com.badlogic.gdx.utils.Array;
 
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.AudioSystem.IAudioManager;
-import io.github.team2.CollisionExtensions.StartMiniGameHandler;
 import io.github.team2.EntitySystem.EntityManager;
+import io.github.team2.Game.Entity.StartMiniGameHandler;
 import io.github.team2.Game.Manager.PlayerStatus;
 import io.github.team2.Game.Manager.PointsManager;
 import io.github.team2.Game.Manager.TextManager;

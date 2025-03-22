@@ -1,8 +1,7 @@
-package io.github.team2.CollisionExtensions;
+package io.github.team2.Game.Entity;
 
 import io.github.team2.CollisionSystem.CollisionListener;
 import io.github.team2.EntitySystem.Entity;
-import io.github.team2.Game.Entity.EntityType;
 import io.github.team2.Game.Manager.PlayerStatus;
 import io.github.team2.Game.Manager.PointsManager;
 import io.github.team2.Game.Trash.RecyclableTrash;

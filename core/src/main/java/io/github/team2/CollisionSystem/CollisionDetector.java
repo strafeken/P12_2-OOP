@@ -11,8 +11,8 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 
-import io.github.team2.CollisionExtensions.CollisionType;
 import io.github.team2.EntitySystem.Entity;
+import io.github.team2.Game.Entity.CollisionType;
 
 public class CollisionDetector implements ContactListener {
 
