@@ -8,14 +8,9 @@ import io.github.team2.InputSystem.GameInputManager;
 import io.github.team2.TextManager;
 
 public abstract class Scene {
-    // Change to interface
     protected IEntityManager entityManager;
     protected GameInputManager gameInputManager;
     protected TextManager textManager;
-
-    public Scene() {
-        // Constructor remains the same
-    }
 
     public abstract void load();
     public abstract void update();
