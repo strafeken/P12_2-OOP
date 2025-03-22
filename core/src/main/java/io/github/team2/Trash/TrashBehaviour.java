@@ -2,10 +2,10 @@ package io.github.team2.Trash;
 
 public class TrashBehaviour {
 	public enum State {
-		IDLE
+		IDLE, FLOAT
 	}
 	
 	public enum Move {
-		NONE
+		NONE, FLOAT
 	}
 }

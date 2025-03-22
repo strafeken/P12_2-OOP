@@ -1,32 +1,89 @@
 package io.github.team2.Trash;
 
-import com.badlogic.gdx.math.MathUtils;
+
 import com.badlogic.gdx.math.Vector2;
 
+
+import io.github.team2.Actions.Floating;
 import io.github.team2.EntitySystem.DynamicTextureObject;
 import io.github.team2.EntitySystem.EntityType;
+import io.github.team2.InputSystem.Action;
 import io.github.team2.Trash.TrashBehaviour.Move;
 import io.github.team2.Trash.TrashBehaviour.State;
-import io.github.team2.Utils.DisplayManager;
+
 
 public abstract class Trash extends DynamicTextureObject<TrashBehaviour.State, TrashBehaviour.Move> {
-    private Vector2 velocity;
-    private float maxSpeed = 50f;
-    private float dampingFactor = 0.99f;  // Slight damping for realistic movement
+    
+	
+//	private Vector2 velocity;
+//    private float maxSpeed = 50f;
+//    private float dampingFactor = 0.99f;  // Slight damping for realistic movement
 
     public Trash(EntityType type, String texture, Vector2 size, Vector2 position, Vector2 direction, Vector2 rotation,
             float speed, State state, Move actionState) {
         super(type, texture, size, position, direction, rotation, speed, state, actionState);
 
         // Initialize with random velocity for zero-gravity effect
-        this.velocity = new Vector2(
-            MathUtils.random(-maxSpeed, maxSpeed),
-            MathUtils.random(-maxSpeed, maxSpeed)
-        );
+//        this.velocity = new Vector2(
+//            MathUtils.random(-maxSpeed, maxSpeed),
+//            MathUtils.random(-maxSpeed, maxSpeed)
+//        );
+        
+        initActionMap();
     }
+    
+    
+    
+    
 
     @Override
+ 	public void initActionMap() {
+
+    	getActionMap().put(TrashBehaviour.Move.FLOAT, new Floating(this));
+ 	}
+
+
+    public void updateMovement() {
+
+		// move from default
+		if (getCurrentState() == TrashBehaviour.State.IDLE) {
+
+			setCurrentActionState(TrashBehaviour.Move.FLOAT);
+			setCurrentState(TrashBehaviour.State.FLOAT);
+		}
+
+		else if (getCurrentState() == TrashBehaviour.State.FLOAT) {
+			switch (getCurrentActionState()) {
+
+			case NONE:
+				// state not changed
+				System.out.println("Trash state stuck in NONE");
+				return;
+
+			case FLOAT:
+
+
+				break;
+
+
+			default:
+				System.out.println("Unknown direction");
+				break;
+			}
+
+
+			getAction(getCurrentActionState()).execute();
+		}
+    }
+
+
+    
+    @Override
     public void update() {
+    	
+    	updateMovement();
+    	
+    	/*
         // Apply zero-gravity physics
         if (getPhysicsBody() != null) {
             // Apply velocity to the body
@@ -81,13 +138,26 @@ public abstract class Trash extends DynamicTextureObject<TrashBehaviour.State, T
                 }
             }
         }
+        */
     }
 
+
+    
     public Vector2 getVelocity() {
-        return velocity;
+        Action action = getAction(getCurrentActionState());
+        if (action instanceof Floating) {
+            return ((Floating) action).getVelocity();
+        } else {
+            // Fallback: velocity unknown
+            return new Vector2(0, 0);
+        }
     }
 
     public void setVelocity(Vector2 velocity) {
-        this.velocity = velocity;
+        Action action = getAction(getCurrentActionState());
+        if (action instanceof Floating) {
+            ((Floating) action).setVelocity(velocity);
+        }
     }
+    
 }
