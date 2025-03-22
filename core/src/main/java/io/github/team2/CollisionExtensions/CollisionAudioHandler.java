@@ -12,10 +12,6 @@ public class CollisionAudioHandler implements CollisionListener {
         this.audioManager = audioManager;
     }
 
-    public CollisionAudioHandler() {
-        this(AudioManager.getInstance());
-    }
-
     @Override
     public void onCollision(Entity a, Entity b, CollisionType type) {
         if (audioManager == null) {

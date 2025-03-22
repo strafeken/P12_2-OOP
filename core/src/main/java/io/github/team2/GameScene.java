@@ -182,8 +182,8 @@ public class GameScene extends Scene {
         collisionDetector.addListener(new PointsSystem(pointsManager));
 
         // Add collision handlers (using direct contacts)
-        collisionDetector.addHandler(new RecyclableCarrierHandler(entityManager));
-        collisionDetector.addHandler(new RecyclingBinHandler(pointsManager));
+        collisionDetector.addListener(new RecyclableCarrierHandler(entityManager));
+        collisionDetector.addListener(new RecyclingBinHandler(pointsManager));
 
         // Store the handlers for updates
         this.miniGameHandler = miniGameHandler;
@@ -371,7 +371,7 @@ public class GameScene extends Scene {
         }
 
         // Debug output - remove in production
-        System.out.println("Current level displayed: " + level + ", Alien speed: " + levelManager.getCurrentAlienSpeed());
+//        System.out.println("Current level displayed: " + level + ", Alien speed: " + levelManager.getCurrentAlienSpeed());
     }
 
     private void drawPlayerStatus(SpriteBatch batch) {

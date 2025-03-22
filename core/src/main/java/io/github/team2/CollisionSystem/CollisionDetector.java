@@ -17,8 +17,7 @@ import io.github.team2.EntitySystem.Entity;
 public class CollisionDetector implements ContactListener {
 
     private List<CollisionListener> listeners = new ArrayList<>();
-    private List<ICollisionHandler> handlers = new ArrayList<>();
-    
+
     // Add Box2DDebugRenderer field
     private Box2DDebugRenderer debugRenderer;
     
@@ -49,9 +48,6 @@ public class CollisionDetector implements ContactListener {
             if (type != null) {
                 notifyListeners(a, b, type);
             }
-
-            // Handle direct contact handlers
-            notifyHandlers(a, b, contact);
         }
     }
 
@@ -74,19 +70,9 @@ public class CollisionDetector implements ContactListener {
         listeners.add(listener);
     }
 
-    public void addHandler(ICollisionHandler handler) {
-        handlers.add(handler);
-    }
-
     private void notifyListeners(Entity a, Entity b, CollisionType type) {
         for (CollisionListener listener : listeners) {
             listener.onCollision(a, b, type);
-        }
-    }
-
-    private void notifyHandlers(Entity a, Entity b, Contact contact) {
-        for (ICollisionHandler handler : handlers) {
-            handler.handleCollision(a, b, contact);
         }
     }
     

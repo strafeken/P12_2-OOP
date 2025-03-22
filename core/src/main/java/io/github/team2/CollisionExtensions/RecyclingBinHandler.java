@@ -1,35 +1,33 @@
 package io.github.team2.CollisionExtensions;
 
-import com.badlogic.gdx.physics.box2d.Contact;
-
 import io.github.team2.PlayerStatus;
 import io.github.team2.PointsManager;
-import io.github.team2.CollisionSystem.ICollisionHandler;
+import io.github.team2.CollisionSystem.CollisionListener;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.Trash.RecyclableTrash;
 import io.github.team2.Trash.RecyclingBin;
 
-public class RecyclingBinHandler implements ICollisionHandler {
+public class RecyclingBinHandler implements CollisionListener {
     private PointsManager pointsManager;
 
     public RecyclingBinHandler(PointsManager pointsManager) {
         this.pointsManager = pointsManager;
     }
 
-    
-    
-    
     @Override
-    public void handleCollision(Entity entityA, Entity entityB, Contact contact) {
+    public void onCollision(Entity a, Entity b, CollisionType type) {
+    	if (type != CollisionType.RECYCLING_BIN_PLAYER)
+    		return;
+    	
         PlayerStatus playerStatus = PlayerStatus.getInstance();
 
         // Check if one entity is the player and the other is a recycling bin
-        if ((entityA.getEntityType() == EntityType.PLAYER && entityB.getEntityType() == EntityType.RECYCLING_BIN) ||
-            (entityB.getEntityType() == EntityType.PLAYER && entityA.getEntityType() == EntityType.RECYCLING_BIN)) {
+        if ((a.getEntityType() == EntityType.PLAYER && b.getEntityType() == EntityType.RECYCLING_BIN) ||
+            (b.getEntityType() == EntityType.PLAYER && a.getEntityType() == EntityType.RECYCLING_BIN)) {
         	
         	// check which is bin
-        	Entity bin = (entityA.getEntityType() == EntityType.RECYCLING_BIN) ? entityA : entityB;
+        	Entity bin = (a.getEntityType() == EntityType.RECYCLING_BIN) ? a : b;
         	
             // Check if the player is carrying recyclable trash
             if (playerStatus.isCarryingRecyclable()) {

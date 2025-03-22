@@ -1,15 +1,13 @@
 package io.github.team2.CollisionExtensions;
 
-import com.badlogic.gdx.physics.box2d.Contact;
-
 import io.github.team2.PlayerStatus;
-import io.github.team2.CollisionSystem.ICollisionHandler;
+import io.github.team2.CollisionSystem.CollisionListener;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.IEntityManager;
 import io.github.team2.Trash.RecyclableTrash;
 
-public class RecyclableCarrierHandler implements ICollisionHandler {
+public class RecyclableCarrierHandler implements CollisionListener {
     private IEntityManager entityManager;
 
     public RecyclableCarrierHandler(IEntityManager entityManager) {
@@ -17,19 +15,22 @@ public class RecyclableCarrierHandler implements ICollisionHandler {
     }
 
     @Override
-    public void handleCollision(Entity entityA, Entity entityB, Contact contact) {
+    public void onCollision(Entity a, Entity b, CollisionType type) {
+    	if (type != CollisionType.RECYCLABLE_PLAYER)
+    		return;
+    	
         PlayerStatus playerStatus = PlayerStatus.getInstance();
 
         // Check if one entity is the player and the other is recyclable trash
         Entity player = null;
         Entity recyclable = null;
 
-        if (entityA.getEntityType() == EntityType.PLAYER && entityB.getEntityType() == EntityType.RECYCLABLE) {
-            player = entityA;
-            recyclable = entityB;
-        } else if (entityB.getEntityType() == EntityType.PLAYER && entityA.getEntityType() == EntityType.RECYCLABLE) {
-            player = entityB;
-            recyclable = entityA;
+        if (a.getEntityType() == EntityType.PLAYER && b.getEntityType() == EntityType.RECYCLABLE) {
+            player = a;
+            recyclable = b;
+        } else if (b.getEntityType() == EntityType.PLAYER && a.getEntityType() == EntityType.RECYCLABLE) {
+            player = b;
+            recyclable = a;
         } else {
             // Not a player-recyclable collision
             return;
