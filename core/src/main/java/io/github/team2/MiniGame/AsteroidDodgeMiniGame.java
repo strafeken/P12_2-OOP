@@ -1,4 +1,4 @@
-package io.github.team2.MiniGame;
+ package io.github.team2.MiniGame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -108,7 +108,7 @@ public class AsteroidDodgeMiniGame extends Scene {
                 shipTexture = new Texture(Gdx.files.internal("player.png"));
             }
             if (asteroidTexture == null) {
-                asteroidTexture = new Texture(Gdx.files.internal("plastic-bottle-2.png"));
+                asteroidTexture = new Texture(Gdx.files.internal("item/plastic-bottle.png"));
             }
         }
 

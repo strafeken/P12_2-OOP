@@ -1,5 +1,7 @@
 package io.github.team2;
 
+import java.lang.reflect.Constructor;
+import java.util.Arrays;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -38,6 +40,7 @@ import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.Trash.ConcreteTrashFactory;
 import io.github.team2.Trash.RecyclableTrash;
+import io.github.team2.Trash.RecycleType;
 import io.github.team2.Trash.RecyclingBin;
 import io.github.team2.Trash.TrashFactory;
 import io.github.team2.Trash.TrashSpawner;
@@ -80,12 +83,34 @@ public class GameScene extends Scene {
 
 
     private Camera camera;
+    
+    
+    // constructor settings
+    
+    private String planetPath = "planet/planet1_purple.jpg"; // level 1 default value
+    private int trashCount = 5;
+    private int alienCount;
+    
+    
 
     public GameScene() {
         super();
         random = new Random();
         accumulator = 0f;
     }
+    
+    
+    public GameScene(String planetPath, int trashCount, int alienCount) {
+        super();
+        random = new Random();
+        accumulator = 0f;
+        
+        this.planetPath = planetPath;
+        this.trashCount = trashCount; 
+        this.alienCount = alienCount;
+    }
+    
+    
 
     @Override
     public void load() {
@@ -169,7 +194,7 @@ public class GameScene extends Scene {
     	try {
 
 
-	        StaticTextureObject bg_image  = new StaticTextureObject(EntityType.UNDEFINED, "planet/planet2_yellow.jpg", new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight()),
+	        StaticTextureObject bg_image  = new StaticTextureObject(EntityType.UNDEFINED, this.planetPath , new Vector2(DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight()),
 	                new Vector2(DisplayManager.getScreenWidth()/2,  DisplayManager.getScreenHeight()/2),
 	                new Vector2(0, 0));
 
@@ -203,13 +228,41 @@ public class GameScene extends Scene {
             // Set the target player for the alien to chase
             ((Alien)alien).setTargetPlayer(player);
             entityManager.addEntities(alien);
+            
+			 RecyclingBin bin_yellow = new RecyclingBin(EntityType.RECYCLING_BIN, "bin/recycling-bin-yellow.png",
+						new Vector2(100, 150),
+						new Vector2(DisplayManager.getScreenWidth() / 2 - 120 , 100), new Vector2(0, 0), 
+								Arrays.asList( RecycleType.PAPER));
+			 
+			 bin_yellow.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
+			 bin_yellow.getPhysicsBody().setAsSensor();
+			entityManager.addEntities(bin_yellow);
+            
 
-            RecyclingBin bin = new RecyclingBin(EntityType.RECYCLING_BIN, "recycling-bin.png",
+            RecyclingBin bin_green = new RecyclingBin(EntityType.RECYCLING_BIN, "bin/recycling-bin-green.png",
             									new Vector2(100, 150),
-            									new Vector2(DisplayManager.getScreenWidth() / 2, 100), new Vector2(0, 0));
-            bin.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
-            bin.getPhysicsBody().setAsSensor();
-            entityManager.addEntities(bin);
+            									new Vector2(DisplayManager.getScreenWidth() / 2, 100), new Vector2(0, 0),
+            									Arrays.asList( RecycleType.GLASS,RecycleType.PLASTIC));
+            
+            
+            bin_green.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
+            bin_green.getPhysicsBody().setAsSensor();
+            entityManager.addEntities(bin_green);
+            
+            
+            RecyclingBin bin_blue = new RecyclingBin(EntityType.RECYCLING_BIN, "bin/recycling-bin-blue.png",
+					new Vector2(100, 150),
+					new Vector2(DisplayManager.getScreenWidth() / 2 + 120, 100), new Vector2(0, 0),
+					Arrays.asList(RecycleType.METAL));
+            
+            
+            bin_blue.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
+            bin_blue.getPhysicsBody().setAsSensor();
+			entityManager.addEntities(bin_blue);
+			
+			
+
+            
 
             spawnTrash(10);
 
@@ -264,7 +317,7 @@ public class GameScene extends Scene {
             trashSpawnTimer += delta;
             if (trashSpawnTimer >= trashSpawnInterval) {
                 trashSpawnTimer = 0;
-                spawnTrash(5);  // Try to spawn up to 5 pieces of trash each interval
+                spawnTrash(this.trashCount);  // Try to spawn up to 5 pieces of trash each interval
             }
         }
 
