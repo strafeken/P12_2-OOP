@@ -9,10 +9,10 @@ import io.github.team2.Game.entity.EntityType;
 
 public class RecyclingBin extends StaticTextureObject {
 	
-	private List<RecycleType> acceptedType;
+	private List<RecyclableTrash.Type> acceptedType;
 	
 	
-	public RecyclingBin(EntityType type, String texture, Vector2 size, Vector2 position, Vector2 direction, List<RecycleType> acceptedType) {
+	public RecyclingBin(EntityType type, String texture, Vector2 size, Vector2 position, Vector2 direction, List<RecyclableTrash.Type> acceptedType) {
 		super(type, texture, size, position, direction);
 		
 		this.acceptedType = acceptedType;

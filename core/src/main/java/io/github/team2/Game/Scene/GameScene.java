@@ -44,7 +44,6 @@ import io.github.team2.Game.Manager.TextManager;
 import io.github.team2.Game.Trash.NonRecyclableTrashFactory;
 import io.github.team2.Game.Trash.RecyclableTrash;
 import io.github.team2.Game.Trash.RecyclableTrashFactory;
-import io.github.team2.Game.Trash.RecycleType;
 import io.github.team2.Game.Trash.RecyclingBin;
 import io.github.team2.Game.Trash.TrashFactory;
 import io.github.team2.Game.Trash.TrashSpawner;
@@ -241,7 +240,7 @@ public class GameScene extends Scene {
 			 RecyclingBin bin_yellow = new RecyclingBin(EntityType.RECYCLING_BIN, "bin/recycling-bin-yellow.png",
 						new Vector2(100, 150),
 						new Vector2(DisplayManager.getScreenWidth() / 2 - 120 , 100), new Vector2(0, 0), 
-								Arrays.asList( RecycleType.PAPER));
+								Arrays.asList( RecyclableTrash.Type.PAPER));
 			 
 			 bin_yellow.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
 			 bin_yellow.getPhysicsBody().setAsSensor();
@@ -251,7 +250,7 @@ public class GameScene extends Scene {
             RecyclingBin bin_green = new RecyclingBin(EntityType.RECYCLING_BIN, "bin/recycling-bin-green.png",
             									new Vector2(100, 150),
             									new Vector2(DisplayManager.getScreenWidth() / 2, 100), new Vector2(0, 0),
-            									Arrays.asList( RecycleType.GLASS,RecycleType.PLASTIC));
+            									Arrays.asList( RecyclableTrash.Type.GLASS,RecyclableTrash.Type.PLASTIC));
             
             
             bin_green.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
@@ -262,7 +261,7 @@ public class GameScene extends Scene {
             RecyclingBin bin_blue = new RecyclingBin(EntityType.RECYCLING_BIN, "bin/recycling-bin-blue.png",
 					new Vector2(100, 150),
 					new Vector2(DisplayManager.getScreenWidth() / 2 + 120, 100), new Vector2(0, 0),
-					Arrays.asList(RecycleType.METAL));
+					Arrays.asList(RecyclableTrash.Type.METAL));
             
             
             bin_blue.initPhysicsBody(world, BodyDef.BodyType.StaticBody);

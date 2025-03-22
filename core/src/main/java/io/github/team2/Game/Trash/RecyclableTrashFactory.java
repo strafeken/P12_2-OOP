@@ -11,21 +11,21 @@ public class RecyclableTrashFactory implements TrashFactory {
 	@Override
 	public Trash createTrash(EntityType type, String texture, Vector2 size, Vector2 position, Vector2 direction,
 			Vector2 rotation, float speed, State state, Move actionState) {
-    	RecycleType recyclableType = getRecyclableTypeFromTexture(texture);
+		RecyclableTrash.Type recyclableType = getRecyclableTypeFromTexture(texture);
         return new RecyclableTrash(texture, size, position, recyclableType);
 	}
 
-    private RecycleType getRecyclableTypeFromTexture(String texture) {
+    private RecyclableTrash.Type getRecyclableTypeFromTexture(String texture) {
         if (texture.contains("cardboard") || texture.contains("paper")) {
-            return RecycleType.PAPER;
+            return RecyclableTrash.Type.PAPER;
         } else if (texture.contains("plastic") || texture.contains("bottle")) {
-            return RecycleType.PLASTIC;
+            return RecyclableTrash.Type.PLASTIC;
         } else if (texture.contains("glass")) {
-            return RecycleType.GLASS;
+            return RecyclableTrash.Type.GLASS;
         } else if (texture.contains("can") || texture.contains("metal")) {
-            return RecycleType.METAL;
+            return RecyclableTrash.Type.METAL;
         }
         // Default
-        return RecycleType.PAPER;
+        return RecyclableTrash.Type.PAPER;
     }
 }

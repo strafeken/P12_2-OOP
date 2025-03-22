@@ -7,11 +7,15 @@ import io.github.team2.Game.entity.EntityType;
 
 public class RecyclableTrash extends Trash {
     // Different types of recyclable trash
+	public enum Type {
+		
+		PAPER, PLASTIC, GLASS, METAL
 
+	}
 
-    private RecycleType recyclableType;
+    private Type recyclableType;
 
-    public RecyclableTrash(String texture, Vector2 size, Vector2 position, RecycleType type) {
+    public RecyclableTrash(String texture, Vector2 size, Vector2 position, Type type) {
         super(EntityType.RECYCLABLE, texture, size, position,
               new Vector2(0, 0), new Vector2(0, 0), 50f,
               TrashBehaviour.State.IDLE, TrashBehaviour.Move.NONE);
@@ -25,7 +29,7 @@ public class RecyclableTrash extends Trash {
         ));
     }
 
-    public RecycleType getRecyclableType() {
+    public Type getRecyclableType() {
         return recyclableType;
     }
 
