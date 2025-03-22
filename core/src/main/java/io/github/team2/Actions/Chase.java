@@ -26,9 +26,9 @@ public class Chase implements Action{
 
 
         switch (level) {
-            case 2:  	chaseSpeed = 50f;
-            case 3: 	chaseSpeed = 80f;
-            case 4: 	chaseSpeed = 120f;
+            case 2:  	chaseSpeed = 50f; break;
+            case 3: 	chaseSpeed = 80f; break;
+            case 4: 	chaseSpeed = 120f; break;
             default: 	chaseSpeed = 30f;
         }
         
