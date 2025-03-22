@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 
-import game.Entity.EntityType;
+import game.entity.EntityType;
 
 public class EntityManager implements IEntityManager {
 

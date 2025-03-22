@@ -4,7 +4,7 @@ import java.util.HashMap;
 import com.badlogic.gdx.math.Vector2;
 
 import abstractengine.input.Action;
-import game.Entity.EntityType;
+import game.entity.EntityType;
 
 public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Entity {
 	private float speed;
