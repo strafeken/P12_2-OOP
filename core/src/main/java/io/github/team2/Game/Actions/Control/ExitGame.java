@@ -1,4 +1,4 @@
-package io.github.team2.Game.Actions;
+package io.github.team2.Game.Actions.Control;
 
 import com.badlogic.gdx.Gdx;
 
