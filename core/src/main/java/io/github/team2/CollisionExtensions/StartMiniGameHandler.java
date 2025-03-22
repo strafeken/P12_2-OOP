@@ -5,8 +5,8 @@ import java.util.Random;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.team2.Alien;
 import io.github.team2.Utils.DisplayManager;
+import io.github.team2.Game.entity.Alien;
 import io.github.team2.CollisionSystem.CollisionListener;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityType;

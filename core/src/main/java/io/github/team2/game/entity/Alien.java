@@ -1,8 +1,10 @@
-package io.github.team2;
+package io.github.team2.Game.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 
+import io.github.team2.AlienBehaviour;
+import io.github.team2.LevelManager;
 import io.github.team2.Actions.Chase;
 import io.github.team2.AlienBehaviour.Move;
 import io.github.team2.AlienBehaviour.State;

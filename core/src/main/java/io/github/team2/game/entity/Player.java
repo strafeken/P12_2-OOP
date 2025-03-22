@@ -1,4 +1,4 @@
-package io.github.team2;
+package io.github.team2.Game.entity;
 
 
 import com.badlogic.gdx.math.Vector2;

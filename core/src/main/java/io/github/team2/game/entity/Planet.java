@@ -1,6 +1,6 @@
-package io.github.team2;
+package io.github.team2.Game.entity;
 
-import com.badlogic.gdx.graphics.Texture;
+
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.team2.EntitySystem.EntityType;

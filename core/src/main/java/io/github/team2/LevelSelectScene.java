@@ -28,6 +28,8 @@ import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.Utils.DisplayManager;
 import io.github.team2.camera.Camera;
+import io.github.team2.Game.entity.Planet;
+import io.github.team2.Game.entity.Player;
 
 public class LevelSelectScene extends Scene {
 

@@ -1,9 +1,10 @@
-package io.github.team2;
+package io.github.team2.Game.entity;
 
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.team2.PipeBehaviour.Move;
 import io.github.team2.PipeBehaviour.State;
+import io.github.team2.PipeBehaviour;
 import io.github.team2.EntitySystem.DynamicTextureObject;
 import io.github.team2.EntitySystem.EntityType;
 

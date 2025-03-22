@@ -45,6 +45,8 @@ import io.github.team2.Trash.TrashFactory;
 import io.github.team2.Trash.TrashSpawner;
 import io.github.team2.Utils.DisplayManager;
 import io.github.team2.camera.Camera;
+import io.github.team2.Game.entity.Alien;
+import io.github.team2.Game.entity.Player;
 
 public class GameScene extends Scene {
     // Physics constants
