@@ -232,7 +232,7 @@ public class GameScene extends Scene {
 			 RecyclingBin bin_yellow = new RecyclingBin(EntityType.RECYCLING_BIN, "bin/recycling-bin-yellow.png",
 						new Vector2(100, 150),
 						new Vector2(DisplayManager.getScreenWidth() / 2 - 120 , 100), new Vector2(0, 0), 
-								Arrays.asList(RecycleType.PLASTIC, RecycleType.GLASS));
+								Arrays.asList( RecycleType.PAPER));
 			 
 			 bin_yellow.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
 			 bin_yellow.getPhysicsBody().setAsSensor();
@@ -242,7 +242,7 @@ public class GameScene extends Scene {
             RecyclingBin bin_green = new RecyclingBin(EntityType.RECYCLING_BIN, "bin/recycling-bin-green.png",
             									new Vector2(100, 150),
             									new Vector2(DisplayManager.getScreenWidth() / 2, 100), new Vector2(0, 0),
-            									Arrays.asList(RecycleType.PAPER));
+            									Arrays.asList( RecycleType.GLASS,RecycleType.PLASTIC));
             
             
             bin_green.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
@@ -409,7 +409,7 @@ public class GameScene extends Scene {
         
         // Use the collisionDetector's render method instead of direct debugRenderer
         if (collisionDetector != null && world != null) {
-            //collisionDetector.renderDebug(world, shape.getProjectionMatrix());
+            collisionDetector.renderDebug(world, shape.getProjectionMatrix());
         }
     }
 
