@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public abstract class BaseSceneManager implements ISceneManager {
-    protected Map<SceneID, Scene> scenes = new HashMap<>();
-    protected Stack<SceneID> sceneStack = new Stack<>();
+    private Map<SceneID, Scene> scenes = new HashMap<>();
+    private Stack<SceneID> sceneStack = new Stack<>();
     
     @Override
     public void addScene(SceneID id, Scene scene) {
