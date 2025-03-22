@@ -10,13 +10,13 @@ import abstractEngine.AudioSystem.IAudioManager;
 import abstractEngine.SceneSystem.ISceneManager;
 import abstractEngine.SceneSystem.SceneID;
 import abstractEngine.SceneSystem.SceneManager;
-import io.github.team2.Game.Manager.LevelManager;
-import io.github.team2.Game.Scene.GameOverScreen;
-import io.github.team2.Game.Scene.GameScene;
-import io.github.team2.Game.Scene.LevelSelectScene;
-import io.github.team2.Game.Scene.MainMenu;
-import io.github.team2.Game.Scene.PauseMenu;
-import io.github.team2.Game.Scene.SettingsMenu;
+import game.Manager.LevelManager;
+import game.Scene.GameOverScreen;
+import game.Scene.GameScene;
+import game.Scene.LevelSelectScene;
+import game.Scene.MainMenu;
+import game.Scene.PauseMenu;
+import game.Scene.SettingsMenu;
 
 public class GameMaster extends ApplicationAdapter {
     private SpriteBatch batch;

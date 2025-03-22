@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import abstractEngine.Abstract.Utils.DisplayManager;
-import io.github.team2.Game.Entity.EntityType;
+import game.Entity.EntityType;
 
 public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>> extends Dynamics<S,A> implements TexturedObject {
     private Texture tex;

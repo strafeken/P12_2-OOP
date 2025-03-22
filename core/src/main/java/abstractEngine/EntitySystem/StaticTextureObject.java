@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.team2.Game.Entity.EntityType;
+import game.Entity.EntityType;
 
 public class StaticTextureObject extends Static implements TexturedObject {
 	private Texture tex;

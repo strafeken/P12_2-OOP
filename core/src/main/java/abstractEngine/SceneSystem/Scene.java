@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import abstractEngine.EntitySystem.IEntityManager;
 import abstractEngine.InputSystem.IInputManager;
-import io.github.team2.Game.Manager.TextManager;
+import game.Manager.TextManager;
 
 public abstract class Scene {
     protected IEntityManager entityManager;

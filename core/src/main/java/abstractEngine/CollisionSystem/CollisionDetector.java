@@ -12,7 +12,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 
 import abstractEngine.EntitySystem.Entity;
-import io.github.team2.Game.Entity.CollisionType;
+import game.Entity.CollisionType;
 
 public class CollisionDetector implements ContactListener {
 

@@ -5,7 +5,7 @@ import java.util.List;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-import io.github.team2.Game.Entity.EntityType;
+import game.Entity.EntityType;
 
 public interface IEntityManager {
     void addEntities(Entity entity);

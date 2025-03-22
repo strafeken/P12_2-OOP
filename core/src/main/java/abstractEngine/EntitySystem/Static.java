@@ -2,7 +2,7 @@ package abstractEngine.EntitySystem;
 
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.team2.Game.Entity.EntityType;
+import game.Entity.EntityType;
 
 public abstract class Static extends Entity {
 

@@ -4,8 +4,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
 import abstractEngine.EntitySystem.Entity;
-import io.github.team2.Game.Actions.Movement.Move;
-import io.github.team2.Game.Actions.Movement.Rotate;
+import game.Actions.Movement.Move;
+import game.Actions.Movement.Rotate;
 
 public class PlayerInputManager extends InputManager {
 	private final Entity player;
