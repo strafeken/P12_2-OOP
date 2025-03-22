@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 
 import io.github.team2.EntitySystem.Dynamics;
 import io.github.team2.EntitySystem.Entity;
-import io.github.team2.Game.entity.EntityType;
 import io.github.team2.InputSystem.Action;
 
 public class Move implements Action {
