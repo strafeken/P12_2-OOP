@@ -1,6 +1,7 @@
 package io.github.team2;
 
 import java.lang.reflect.Constructor;
+import java.util.Arrays;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -39,6 +40,7 @@ import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.Trash.ConcreteTrashFactory;
 import io.github.team2.Trash.RecyclableTrash;
+import io.github.team2.Trash.RecycleType;
 import io.github.team2.Trash.RecyclingBin;
 import io.github.team2.Trash.TrashFactory;
 import io.github.team2.Trash.TrashSpawner;
@@ -229,7 +231,9 @@ public class GameScene extends Scene {
             
 			 RecyclingBin bin_yellow = new RecyclingBin(EntityType.RECYCLING_BIN, "bin/recycling-bin-yellow.png",
 						new Vector2(100, 150),
-						new Vector2(DisplayManager.getScreenWidth() / 2 - 120 , 100), new Vector2(0, 0));
+						new Vector2(DisplayManager.getScreenWidth() / 2 - 120 , 100), new Vector2(0, 0), 
+								Arrays.asList(RecycleType.PLASTIC, RecycleType.GLASS));
+			 
 			 bin_yellow.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
 			 bin_yellow.getPhysicsBody().setAsSensor();
 			entityManager.addEntities(bin_yellow);
@@ -237,7 +241,10 @@ public class GameScene extends Scene {
 
             RecyclingBin bin_green = new RecyclingBin(EntityType.RECYCLING_BIN, "bin/recycling-bin-green.png",
             									new Vector2(100, 150),
-            									new Vector2(DisplayManager.getScreenWidth() / 2, 100), new Vector2(0, 0));
+            									new Vector2(DisplayManager.getScreenWidth() / 2, 100), new Vector2(0, 0),
+            									Arrays.asList(RecycleType.PAPER));
+            
+            
             bin_green.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
             bin_green.getPhysicsBody().setAsSensor();
             entityManager.addEntities(bin_green);
@@ -245,7 +252,10 @@ public class GameScene extends Scene {
             
             RecyclingBin bin_blue = new RecyclingBin(EntityType.RECYCLING_BIN, "bin/recycling-bin-blue.png",
 					new Vector2(100, 150),
-					new Vector2(DisplayManager.getScreenWidth() / 2 + 120, 100), new Vector2(0, 0));
+					new Vector2(DisplayManager.getScreenWidth() / 2 + 120, 100), new Vector2(0, 0),
+					Arrays.asList(RecycleType.METAL));
+            
+            
             bin_blue.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
             bin_blue.getPhysicsBody().setAsSensor();
 			entityManager.addEntities(bin_blue);

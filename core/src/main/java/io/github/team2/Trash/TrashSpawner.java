@@ -22,15 +22,15 @@ public class TrashSpawner {
     private final IEntityManager entityManager;
 
     // Texture mappings for different trash types
-    private static final Map<RecyclableTrash.Type, String> recyclableTextures = new HashMap<>();
+    private static final Map<RecycleType, String> recyclableTextures = new HashMap<>();
     private static final Map<NonRecyclableTrash.Type, String> nonRecyclableTextures = new HashMap<>();
 
     static {
         // Initialize texture mappings
-        recyclableTextures.put(RecyclableTrash.Type.PAPER, "item/cardboard-glow.png");
-        recyclableTextures.put(RecyclableTrash.Type.PLASTIC, "item/plastic-glow.png");
-        recyclableTextures.put(RecyclableTrash.Type.GLASS, "item/glass-glow.png");
-        recyclableTextures.put(RecyclableTrash.Type.METAL, "item/soda-can-glow.png");
+        recyclableTextures.put(RecycleType.PAPER, "item/cardboard-glow.png");
+        recyclableTextures.put(RecycleType.PLASTIC, "item/plastic-glow.png");
+        recyclableTextures.put(RecycleType.GLASS, "item/glass-glow.png");
+        recyclableTextures.put(RecycleType.METAL, "item/soda-can-glow.png");
 
         nonRecyclableTextures.put(NonRecyclableTrash.Type.HAZARDOUS, "item/toxic-waste-glow.png");
         nonRecyclableTextures.put(NonRecyclableTrash.Type.ELECTRONIC_WASTE, "item/broken-device-glow.png");
@@ -73,8 +73,8 @@ public class TrashSpawner {
      * Spawns a single random recyclable trash item
      */
     public Entity spawnRandomRecyclable() {
-        RecyclableTrash.Type type = RecyclableTrash.Type.values()[
-            MathUtils.random(RecyclableTrash.Type.values().length - 1)];
+    	RecycleType type = RecycleType.values()[
+            MathUtils.random(RecycleType.values().length - 1)];
 
         String texture = recyclableTextures.getOrDefault(type, "cardboard-box.png");
         Vector2 position = getRandomPosition();

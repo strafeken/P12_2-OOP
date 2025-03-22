@@ -13,7 +13,7 @@ public class ConcreteTrashFactory implements TrashFactory {
 
         if (type == EntityType.RECYCLABLE) {
             // Determine recyclable type based on texture
-            RecyclableTrash.Type recyclableType = getRecyclableTypeFromTexture(texture);
+        	RecycleType recyclableType = getRecyclableTypeFromTexture(texture);
             return new RecyclableTrash(texture, size, position, recyclableType);
         } else if (type == EntityType.NON_RECYCLABLE) {
             // Determine non-recyclable type based on texture
@@ -22,22 +22,22 @@ public class ConcreteTrashFactory implements TrashFactory {
         }
 
         // Default to recyclable paper if type is unknown
-        return new RecyclableTrash(texture, size, position, RecyclableTrash.Type.PAPER);
+        return new RecyclableTrash(texture, size, position, RecycleType.PAPER);
     }
 
-    private RecyclableTrash.Type getRecyclableTypeFromTexture(String texture) {
+    private RecycleType getRecyclableTypeFromTexture(String texture) {
         if (texture.contains("cardboard") || texture.contains("paper")) {
-            return RecyclableTrash.Type.PAPER;
+            return RecycleType.PAPER;
         } else if (texture.contains("plastic") || texture.contains("bottle")) {
-            return RecyclableTrash.Type.PLASTIC;
+            return RecycleType.PLASTIC;
         } else if (texture.contains("glass")) {
-            return RecyclableTrash.Type.GLASS;
+            return RecycleType.GLASS;
         } else if (texture.contains("can") || texture.contains("metal")) {
-            return RecyclableTrash.Type.METAL;
+            return RecycleType.METAL;
         }
 
         // Default
-        return RecyclableTrash.Type.PAPER;
+        return RecycleType.PAPER;
     }
 
     private NonRecyclableTrash.Type getNonRecyclableTypeFromTexture(String texture) {
