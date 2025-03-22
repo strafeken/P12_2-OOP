@@ -1,4 +1,4 @@
-package io.github.team2.MiniGame;
+package io.github.team2.Game.MiniGame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

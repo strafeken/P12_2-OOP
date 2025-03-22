@@ -16,9 +16,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import io.github.team2.Actions.ExitGame;
 import io.github.team2.Actions.GoToSettings;
 import io.github.team2.Actions.PauseGame;
-import io.github.team2.Actions.PlayerBehaviour;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.AudioSystem.IAudioManager;
+import io.github.team2.Camera.Camera;
 import io.github.team2.CollisionExtensions.CollisionAudioHandler;
 import io.github.team2.CollisionExtensions.CollisionRemovalHandler;
 import io.github.team2.CollisionExtensions.PlayerLifeHandler;
@@ -37,7 +37,6 @@ import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.Utils.DisplayManager;
-import io.github.team2.camera.Camera;
 import io.github.team2.Game.Trash.NonRecyclableTrashFactory;
 import io.github.team2.Game.Trash.RecyclableTrash;
 import io.github.team2.Game.Trash.RecyclableTrashFactory;
@@ -46,7 +45,9 @@ import io.github.team2.Game.Trash.RecyclingBin;
 import io.github.team2.Game.Trash.TrashFactory;
 import io.github.team2.Game.Trash.TrashSpawner;
 import io.github.team2.Game.entity.Alien;
+import io.github.team2.Game.entity.AlienBehaviour;
 import io.github.team2.Game.entity.Player;
+import io.github.team2.Game.entity.PlayerBehaviour;
 
 public class GameScene extends Scene {
     // Physics constants
