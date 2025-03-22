@@ -17,12 +17,6 @@ public class GameMaster extends ApplicationAdapter {
     private IAudioManager audioManager;
     private ISceneManager sceneManager;
 
-
-
-
-
-
-
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -82,13 +76,5 @@ public class GameMaster extends ApplicationAdapter {
         batch.dispose();
         shape.dispose();
         audioManager.dispose();
-    }
-
-    public ISceneManager getSceneManager() {
-        return sceneManager;
-    }
-
-    public IAudioManager getAudioManager() {
-        return audioManager;
     }
 }
