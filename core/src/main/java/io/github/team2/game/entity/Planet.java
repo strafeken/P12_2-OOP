@@ -13,6 +13,11 @@ public class Planet extends StaticTextureObject {
 		this.level = level;
 	}
 	
+	
+	public int getLevel() {
+		return level;
+		
+	}
 
 
 }

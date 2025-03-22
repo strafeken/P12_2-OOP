@@ -10,11 +10,8 @@ public enum CollisionType {
     NON_RECYCLABLE_PLAYER,  // Added missing enum value
     RECYCLING_BIN_PLAYER,   // Added missing enum value
     PIPE_PLAYER,            // Added missing enum value
-    LEVEL1_PLAYER,
-    LEVEL2_PLAYER,
-    LEVEL3_PLAYER,
-    LEVEL4_PLAYER;
-
+    PLANET_PLAYER;
+    
     public static CollisionType getCollisionType(Entity a, Entity b) {
         if (isPair(a, b, EntityType.RECYCLABLE, EntityType.PLAYER)) {
             return RECYCLABLE_PLAYER;
@@ -26,15 +23,11 @@ public enum CollisionType {
             return ALIEN_PLAYER;
         }  else if (isPair(a, b, EntityType.PIPE, EntityType.PLAYER)) {
             return PIPE_PLAYER;
-        }   else if (isPair(a, b, EntityType.LEVEL1, EntityType.PLAYER)) {
-           return LEVEL1_PLAYER;
-        } else if (isPair(a, b, EntityType.LEVEL2, EntityType.PLAYER)) {
-           return LEVEL2_PLAYER;
-        } else if (isPair(a, b, EntityType.LEVEL3, EntityType.PLAYER)) {
-           return LEVEL3_PLAYER;
-        } else if (isPair(a, b, EntityType.LEVEL4, EntityType.PLAYER)) {
-           return LEVEL4_PLAYER;
-        }
+            
+        }  else if (isPair(a, b, EntityType.PLANET, EntityType.PLAYER)) {
+            return PLANET_PLAYER;
+             
+        } 
         return null;
     }
 
