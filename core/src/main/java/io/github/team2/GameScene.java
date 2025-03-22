@@ -22,7 +22,6 @@ import io.github.team2.AudioSystem.IAudioManager;
 import io.github.team2.CollisionExtensions.CollisionAudioHandler;
 import io.github.team2.CollisionExtensions.CollisionRemovalHandler;
 import io.github.team2.CollisionExtensions.PlayerLifeHandler;
-import io.github.team2.CollisionExtensions.PointsSystem;
 import io.github.team2.CollisionExtensions.RecyclableCarrierHandler;
 import io.github.team2.CollisionExtensions.RecyclingBinHandler;
 import io.github.team2.CollisionExtensions.StartMiniGameHandler;
@@ -181,7 +180,6 @@ public class GameScene extends Scene {
         collisionDetector.addListener(miniGameHandler);
         collisionDetector.addListener(new CollisionAudioHandler(audioManager));
         collisionDetector.addListener(new CollisionRemovalHandler(entityManager));
-        collisionDetector.addListener(new PointsSystem(pointsManager));
 
         // Add collision handlers (using direct contacts)
         collisionDetector.addListener(new RecyclableCarrierHandler(entityManager));
