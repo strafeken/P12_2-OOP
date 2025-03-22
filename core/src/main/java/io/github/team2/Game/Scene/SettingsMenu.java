@@ -1,4 +1,4 @@
-package io.github.team2;
+package io.github.team2.Game.Scene;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -11,6 +11,8 @@ import io.github.team2.Actions.ResumeGame;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.AudioSystem.IAudioManager;
 import io.github.team2.EntitySystem.EntityManager;
+import io.github.team2.Game.Manager.GameManager;
+import io.github.team2.Game.Manager.TextManager;
 import io.github.team2.InputSystem.Action;
 import io.github.team2.InputSystem.Button;
 import io.github.team2.InputSystem.GameInputManager;

@@ -1,4 +1,4 @@
-package io.github.team2;
+package io.github.team2.Game.Scene;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -10,6 +10,7 @@ import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.StaticTextureObject;
+import io.github.team2.Game.Manager.TextManager;
 import io.github.team2.InputSystem.GameInputManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;

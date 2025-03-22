@@ -1,4 +1,4 @@
-package io.github.team2;
+package io.github.team2.Game.Scene;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -37,6 +37,11 @@ import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.Utils.DisplayManager;
+import io.github.team2.Game.Manager.GameManager;
+import io.github.team2.Game.Manager.LevelManager;
+import io.github.team2.Game.Manager.PlayerStatus;
+import io.github.team2.Game.Manager.PointsManager;
+import io.github.team2.Game.Manager.TextManager;
 import io.github.team2.Game.Trash.NonRecyclableTrashFactory;
 import io.github.team2.Game.Trash.RecyclableTrash;
 import io.github.team2.Game.Trash.RecyclableTrashFactory;

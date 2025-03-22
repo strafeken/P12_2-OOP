@@ -1,4 +1,4 @@
-package io.github.team2;
+package io.github.team2.Game.Manager;
 
 import io.github.team2.EntitySystem.Entity;
 

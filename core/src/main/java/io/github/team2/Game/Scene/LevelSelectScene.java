@@ -1,4 +1,4 @@
-package io.github.team2;
+package io.github.team2.Game.Scene;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -27,6 +27,9 @@ import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.Utils.DisplayManager;
+import io.github.team2.Game.Manager.GameManager;
+import io.github.team2.Game.Manager.LevelManager;
+import io.github.team2.Game.Manager.TextManager;
 import io.github.team2.Game.entity.Planet;
 import io.github.team2.Game.entity.Player;
 import io.github.team2.Game.entity.PlayerBehaviour;

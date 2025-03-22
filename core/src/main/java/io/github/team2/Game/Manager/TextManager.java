@@ -1,4 +1,4 @@
-package io.github.team2;
+package io.github.team2.Game.Manager;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;

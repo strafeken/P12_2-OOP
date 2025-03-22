@@ -11,19 +11,19 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
-import io.github.team2.GameOverScreen;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.AudioSystem.IAudioManager;
 import io.github.team2.CollisionExtensions.StartMiniGameHandler;
 import io.github.team2.EntitySystem.EntityManager;
+import io.github.team2.Game.Manager.PlayerStatus;
+import io.github.team2.Game.Manager.PointsManager;
+import io.github.team2.Game.Manager.TextManager;
+import io.github.team2.Game.Scene.GameOverScreen;
 import io.github.team2.InputSystem.GameInputManager;
-import io.github.team2.PlayerStatus;
-import io.github.team2.PointsManager;
 import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneID;
 import io.github.team2.SceneSystem.SceneManager;
-import io.github.team2.TextManager;
 import io.github.team2.Utils.DisplayManager;
 
 public class AsteroidDodgeMiniGame extends Scene {

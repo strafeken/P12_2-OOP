@@ -1,4 +1,4 @@
-package io.github.team2;
+package io.github.team2.Game.Manager;
 
 public class PointsManager {
     private int points;
