@@ -16,10 +16,12 @@ import io.github.team2.AudioSystem.IAudioManager;
 import io.github.team2.EntitySystem.EntityManager;
 import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.StaticTextureObject;
+import io.github.team2.InputSystem.Action;
 import io.github.team2.InputSystem.GameInputManager;
 import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.SceneSystem.Scene;
-import io.github.team2.SceneSystem.SceneManager; // Use this interface for the variable type
+import io.github.team2.SceneSystem.SceneID;
+import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.Utils.DisplayManager;
 
 public class GameOverScreen extends Scene {
@@ -110,10 +112,40 @@ public class GameOverScreen extends Scene {
             if (inputDelay <= 0) {
                 // Get scene manager and create actions
                 ISceneManager sceneManager = SceneManager.getInstance();
-                StartGame restartAction = new StartGame(sceneManager);
+
+                // Create restart action to restart the CURRENT level, not start a new game
+                Action restartAction = () -> {
+                    // Get the current level and restart it
+                    LevelManager levelManager = LevelManager.getInstance();
+                    int level = levelManager.getCurrentLevel();
+                    SceneID sceneID;
+
+                    switch (level) {
+                        case 2:
+                            sceneID = SceneID.LEVEL2;
+                            break;
+                        case 3:
+                            sceneID = SceneID.LEVEL3;
+                            break;
+                        case 4:
+                            sceneID = SceneID.LEVEL4;
+                            break;
+                        default:
+                            sceneID = SceneID.LEVEL1;
+                            break;
+                    }
+
+                    // Reset player status (lives, etc.)
+                    PlayerStatus.getInstance().reset();
+
+                    // Transition to the level
+                    sceneManager.setNextScene(sceneID);
+                    System.out.println("Restarting current level: " + level);
+                };
+
                 StartLevelSelect levelSelectAction = new StartLevelSelect(sceneManager);
 
-                // Now register the key handlers
+                // Register key handlers
                 gameInputManager.registerKeyUp(Input.Keys.SPACE, restartAction);
                 gameInputManager.registerKeyUp(Input.Keys.L, levelSelectAction);
 

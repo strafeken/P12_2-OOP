@@ -2,9 +2,11 @@ package io.github.team2.CollisionExtensions;
 
 import java.util.List;
 import java.util.Random;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.team2.Alien;
+import io.github.team2.Utils.DisplayManager;
 import io.github.team2.CollisionSystem.CollisionListener;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityType;
@@ -21,7 +23,7 @@ import io.github.team2.SceneSystem.SceneManager;
 
 /**
  * Handles starting mini-games when player collides with an alien.
- * Following Single Responsibility Principle, this class focuses solely on 
+ * Following Single Responsibility Principle, this class focuses solely on
  * managing mini-game initialization and alien respawning after mini-games.
  */
 public class StartMiniGameHandler implements CollisionListener {
@@ -34,7 +36,7 @@ public class StartMiniGameHandler implements CollisionListener {
     // Cooldown timer to prevent rapid mini-game triggers
     private float miniGameCooldown = 0f;
     private static final float COOLDOWN_DURATION = 5f; // 5 seconds cooldown
-    
+
     // Alien respawn settings
     private static final float MIN_RESPAWN_DISTANCE = 300f;
     private static final float MAX_RESPAWN_DISTANCE = 500f;
@@ -86,7 +88,7 @@ public class StartMiniGameHandler implements CollisionListener {
             }
         }
     }
-    
+
     /**
      * Starts a random mini-game
      */
@@ -110,9 +112,12 @@ public class StartMiniGameHandler implements CollisionListener {
      * Called when a mini-game completes
      * Respawns aliens at a distance from the player
      */
+
     public void onMiniGameCompleted() {
-        // Set cooldown
-        miniGameCooldown = COOLDOWN_DURATION;
+        System.out.println("Mini-game completed callback received");
+
+        // Reset mini-game cooldown - allowing immediate future interactions
+        miniGameCooldown = 0.0f;
 
         try {
             respawnAliensAtDistanceFromPlayer();
@@ -122,65 +127,82 @@ public class StartMiniGameHandler implements CollisionListener {
             respawnAliensToOriginalPositions();
         }
     }
-    
+
     /**
-     * Respawns all aliens at a random distance from the player
+     * Respawns all aliens at a distance from the player
      */
     private void respawnAliensAtDistanceFromPlayer() {
         // Get the player status and position
         PlayerStatus playerStatus = PlayerStatus.getInstance();
         Entity player = playerStatus.getPlayer();
-        
+
         // Only proceed if we have a valid player
         if (player != null) {
             Vector2 playerPos = player.getPosition();
-            
+
             // Respawn all aliens at a safe distance from the player
             List<Entity> aliens = entityManager.getEntitiesByType(EntityType.ALIEN);
             for (Entity entity : aliens) {
                 if (entity instanceof Alien) {
                     Alien alien = (Alien)entity;
-                    
+
                     // Calculate a new respawn position at a distance from the player
                     Vector2 respawnPos = calculateRespawnPosition(playerPos);
-                    
-                    // Set the alien to this position
-                    if (alien.getPhysicsBody() != null) {
-                        alien.getPhysicsBody().setLocation(respawnPos.x, respawnPos.y);
-                        
-                        // Also reset velocity to ensure they don't keep moving from previous state
-                        alien.getPhysicsBody().setLinearVelocity(0, 0);
-                        
-                        System.out.println("Respawned alien at position: " + respawnPos);
-                    }
+
+                    // Use the improved respawn method that recreates the physics body
+                    alien.respawnAt(respawnPos);
                 }
             }
         } else {
-            // Fallback to original respawn logic if player is null
+            System.err.println("Error: Player is null, can't respawn aliens relative to player.");
             respawnAliensToOriginalPositions();
         }
     }
-    
+
     /**
      * Calculates a random position at a distance from the player
      * @param playerPos The player's current position
      * @return A new position vector
      */
     private Vector2 calculateRespawnPosition(Vector2 playerPos) {
-        // Choose a random angle
-        float angle = random.nextFloat() * 2f * (float)Math.PI;
-        
-        // Choose a distance between MIN and MAX
-        float distance = MIN_RESPAWN_DISTANCE + random.nextFloat() * (MAX_RESPAWN_DISTANCE - MIN_RESPAWN_DISTANCE);
-        
-        // Calculate new position
-        float newX = playerPos.x + distance * (float)Math.cos(angle);
-        float newY = playerPos.y + distance * (float)Math.sin(angle);
-        
-        // Return a new respawn position vector
-        return new Vector2(newX, newY);
+        // Calculate a new position that is at a distance from the player
+        // but still within the screen bounds
+        float safeDistance = 200.0f;  // Minimum distance from player
+
+        // Screen dimensions with margins
+        float margin = 100.0f;
+        float screenWidth = DisplayManager.getScreenWidth() - margin*2;
+        float screenHeight = DisplayManager.getScreenHeight() - margin*2;
+
+        // Calculate a position within the screen bounds
+        float x, y;
+
+        do {
+            // Generate a random angle
+            float angle = MathUtils.random(0, MathUtils.PI2);
+
+            // Calculate position at safe distance
+            x = playerPos.x + safeDistance * MathUtils.cos(angle);
+            y = playerPos.y + safeDistance * MathUtils.sin(angle);
+
+            // Ensure it's within screen bounds
+            x = MathUtils.clamp(x, margin, DisplayManager.getScreenWidth() - margin);
+            y = MathUtils.clamp(y, margin, DisplayManager.getScreenHeight() - margin);
+
+            // Check if this position is far enough from the player
+            float distanceSquared = (x - playerPos.x)*(x - playerPos.x) + (y - playerPos.y)*(y - playerPos.y);
+            if (distanceSquared >= safeDistance*safeDistance*0.75f) {
+                // Position is good, exit the loop
+                break;
+            }
+            // Otherwise, try again
+        } while(true);
+
+        System.out.println("Respawning alien at: " + x + ", " + y + " (player at " + playerPos.x + ", " + playerPos.y + ")");
+
+        return new Vector2(x, y);
     }
-    
+
     /**
      * Fallback method that respawns aliens to their original positions
      */

@@ -1,6 +1,7 @@
 package io.github.team2;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 
 import io.github.team2.Actions.Chase;
 import io.github.team2.AlienBehaviour.Move;
@@ -31,27 +32,27 @@ public class Alien extends DynamicTextureObject<AlienBehaviour.State, AlienBehav
 //        this.chaseSpeed = levelManager.getCurrentAlienSpeed();
     }
 
-    
-    
+
+
     @Override
  	public void initActionMap() {
-    	
+
     	getActionMap().put(AlienBehaviour.Move.CHASE, new Chase(this, targetPlayer, levelManager.getCurrentLevel()));
  	}
-    
-    
+
+
     public void updateMovement() {
-    	
+
 		// move from default
 		if (getCurrentState() == AlienBehaviour.State.IDLE) {
-			
+
 			setCurrentActionState(AlienBehaviour.Move.CHASE);
 			setCurrentState(AlienBehaviour.State.MOVING);
-		} 
-		
+		}
+
 		else if (getCurrentState() == AlienBehaviour.State.MOVING) {
 			switch (getCurrentActionState()) {
-			
+
 			case NONE:
 				// state not changed
 				System.out.println("Alien state stuck in NONE");
@@ -59,7 +60,7 @@ public class Alien extends DynamicTextureObject<AlienBehaviour.State, AlienBehav
 
 			case CHASE:
 
-				
+
 				break;
 
 
@@ -67,20 +68,20 @@ public class Alien extends DynamicTextureObject<AlienBehaviour.State, AlienBehav
 				System.out.println("Unknown direction");
 				break;
 			}
-    		
-			
+
+
 			getAction(getCurrentActionState()).execute();
 		}
     }
-    
 
 
 
 
-    
+
+
     @Override
     public void update() {
-    	
+
     	updateMovement();
         // Update the physics body
         updateBody();
@@ -94,9 +95,32 @@ public class Alien extends DynamicTextureObject<AlienBehaviour.State, AlienBehav
         }
     }
 
+    // Method to respawn the alien at a new position with proper collision handling
+    public void respawnAt(Vector2 position) {
+        if (getPhysicsBody() != null) {
+            // Store the current body data for later
+            Object userData = getPhysicsBody().getBody().getUserData();
+
+            // Remove old body from world
+            getPhysicsBody().getBody().getWorld().destroyBody(getPhysicsBody().getBody());
+
+            // Create new body at the new position
+            setPosition(position);
+            initPhysicsBody(getPhysicsBody().getBody().getWorld(), BodyDef.BodyType.DynamicBody);
+
+            // Restore user data
+            getPhysicsBody().getBody().setUserData(userData);
+
+            // Start with no velocity
+            getPhysicsBody().getBody().setLinearVelocity(0, 0);
+
+            System.out.println("Alien respawned at: " + position.x + ", " + position.y);
+        }
+    }
+
     public void setTargetPlayer(Entity player) {
         this.targetPlayer = player;
-        
+
         initActionMap();
     }
 

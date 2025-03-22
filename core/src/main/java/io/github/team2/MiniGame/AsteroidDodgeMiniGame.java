@@ -1,4 +1,4 @@
- package io.github.team2.MiniGame;
+package io.github.team2.MiniGame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
+import io.github.team2.GameOverScreen;
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.AudioSystem.IAudioManager;
 import io.github.team2.CollisionExtensions.StartMiniGameHandler;
@@ -20,13 +21,14 @@ import io.github.team2.PlayerStatus;
 import io.github.team2.PointsManager;
 import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.SceneSystem.Scene;
+import io.github.team2.SceneSystem.SceneID;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.TextManager;
 import io.github.team2.Utils.DisplayManager;
 
 public class AsteroidDodgeMiniGame extends Scene {
     // Game state
-    private enum GameState { READY, PLAYING, GAME_OVER }
+    private enum GameState { READY, PLAYING, GAME_OVER, CONFIRM_EXIT }
     private GameState state;
 
     // Game objects
@@ -42,6 +44,7 @@ public class AsteroidDodgeMiniGame extends Scene {
     private float asteroidSpeedMax = 350f;
     private float asteroidSpawnInterval = 1.0f;
     private float timeSinceLastAsteroid = 0;
+    private float asteroidSizeMultiplier = 1.0f;
 
     // Collision settings
     private float collisionGracePeriod = 1.5f;
@@ -73,6 +76,16 @@ public class AsteroidDodgeMiniGame extends Scene {
     // Debug flag
     private boolean debugCollision = false;
 
+    // Add these fields to the class
+    private float initialSpawnInterval = 1.5f;
+    private float initialAsteroidSpeed = 100f;
+    private float asteroidSpeed = 100f;
+
+    // Add confirmation dialog variables
+    private boolean confirmYes = true; // Default to Yes selection
+    private Color selectedColor = Color.YELLOW;
+    private Color unselectedColor = Color.WHITE;
+
     public AsteroidDodgeMiniGame(PointsManager pointsManager, StartMiniGameHandler miniGameHandler) {
         super();
         this.pointsManager = pointsManager;
@@ -102,7 +115,7 @@ public class AsteroidDodgeMiniGame extends Scene {
         } catch (Exception e) {
             System.err.println("Error loading textures: " + e.getMessage());
             e.printStackTrace();
-            
+
             // Fallback textures if needed
             if (shipTexture == null) {
                 shipTexture = new Texture(Gdx.files.internal("player.png"));
@@ -136,13 +149,18 @@ public class AsteroidDodgeMiniGame extends Scene {
 
     private void spawnAsteroid() {
         Rectangle asteroid = new Rectangle();
-        asteroid.width = MathUtils.random(30, 70);
+        float baseSize = MathUtils.random(30, 70);
+
+        // Apply size multiplier for increased difficulty
+        asteroid.width = baseSize * asteroidSizeMultiplier;
         asteroid.height = asteroid.width;
+
         asteroid.x = MathUtils.random(0, DisplayManager.getScreenWidth() - asteroid.width);
         asteroid.y = DisplayManager.getScreenHeight();  // Start above screen
-        
+
+        // Use the variable speed range
         float speed = MathUtils.random(asteroidSpeedMin, asteroidSpeedMax);
-        
+
         asteroids.add(asteroid);
         asteroidSpeeds.add(speed);
     }
@@ -150,12 +168,12 @@ public class AsteroidDodgeMiniGame extends Scene {
     @Override
     public void update() {
         float deltaTime = Gdx.graphics.getDeltaTime();
-        
+
         // Cap deltaTime to prevent extreme jumps in physics
         if (deltaTime > 0.1f) {
             deltaTime = 0.1f;
         }
-        
+
         gameTime += deltaTime;
 
         // Check for game completion based on time
@@ -175,29 +193,20 @@ public class AsteroidDodgeMiniGame extends Scene {
                 break;
 
             case PLAYING:
-                // Move ship with arrow keys
-                if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && ship.x > 0) {
-                    ship.x -= shipSpeed * deltaTime;
-                }
-                if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && ship.x < DisplayManager.getScreenWidth() - ship.width) {
-                    ship.x += shipSpeed * deltaTime;
+                // Quick exit with Q key
+                if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+                    state = GameState.CONFIRM_EXIT;
+                    break;
                 }
 
+                // Move ship with WASD keys
+                handlePlayerMovement();
+
                 // Spawn new asteroids
-                timeSinceLastAsteroid += deltaTime;
-                if (timeSinceLastAsteroid > asteroidSpawnInterval) {
-                    spawnAsteroid();
-                    timeSinceLastAsteroid = 0;
-                    
-                    // Make game progressively harder
-                    asteroidSpawnInterval = Math.max(0.3f, asteroidSpawnInterval - 0.02f);
-                }
+                updateAsteroidSpawning(deltaTime);
 
                 // Update asteroids and check collisions
                 updateAsteroidsAndCollisions(deltaTime);
-                
-                // Increase score over time
-                score = (int)(gameTime * 10);
                 break;
 
             case GAME_OVER:
@@ -214,61 +223,125 @@ public class AsteroidDodgeMiniGame extends Scene {
                     }
                 }
                 break;
+
+            case CONFIRM_EXIT:
+                handleConfirmExitState();
+                break;
         }
     }
 
+    private void handlePlayerMovement() {
+        float speed = 300f;
+        float deltaTime = Gdx.graphics.getDeltaTime();
+
+        // Change controls from arrow keys to WASD
+        boolean moveUp = Gdx.input.isKeyPressed(Input.Keys.W);
+        boolean moveDown = Gdx.input.isKeyPressed(Input.Keys.S);
+        boolean moveLeft = Gdx.input.isKeyPressed(Input.Keys.A);
+        boolean moveRight = Gdx.input.isKeyPressed(Input.Keys.D);
+
+        // Apply movement based on pressed keys
+        float dx = 0, dy = 0;
+
+        if (moveLeft) dx -= speed * deltaTime;
+        if (moveRight) dx += speed * deltaTime;
+        if (moveUp) dy += speed * deltaTime;
+        if (moveDown) dy -= speed * deltaTime;
+
+        // Update player position
+        ship.x += dx;
+        ship.y += dy;
+
+        // Keep player within screen bounds
+        ship.x = MathUtils.clamp(ship.x, 0, DisplayManager.getScreenWidth() - ship.width);
+        ship.y = MathUtils.clamp(ship.y, 0, DisplayManager.getScreenHeight() - ship.height);
+    }
+
+    private void updateAsteroidSpawning(float deltaTime) {
+        // More aggressive spawn rate increase
+        float baseInterval = 1.0f;
+        float minInterval = 0.25f; // Minimum 1/4 second between asteroids
+
+        // Rapidly decrease spawn interval over time
+        asteroidSpawnInterval = Math.max(minInterval, baseInterval - (gameTime / 15f));
+
+        timeSinceLastAsteroid += deltaTime;
+        if (timeSinceLastAsteroid >= asteroidSpawnInterval) {
+            spawnAsteroid();
+            timeSinceLastAsteroid = 0;
+
+            // Increase asteroid speed more aggressively
+            asteroidSpeedMin = Math.min(250f, 150f + gameTime * 5f);
+            asteroidSpeedMax = Math.min(450f, 350f + gameTime * 5f);
+
+            // Increase asteroid size over time
+            asteroidSizeMultiplier = Math.min(1.5f, 1.0f + gameTime / 30f);
+        }
+    }
+
+    /**
+     * Updates asteroid positions and checks for collisions
+     * @param deltaTime The time since the last update
+     */
     private void updateAsteroidsAndCollisions(float deltaTime) {
         // Check if we're in grace period
         boolean inGracePeriod = gameTime < collisionGracePeriod;
-        
+
         for (int i = 0; i < asteroids.size; i++) {
             Rectangle asteroid = asteroids.get(i);
             float speed = asteroidSpeeds.get(i);
-            
+
             // Move asteroid down
             asteroid.y -= speed * deltaTime;
-            
+
             // Remove asteroids that go off the bottom of the screen
             if (asteroid.y + asteroid.height < 0) {
                 asteroids.removeIndex(i);
                 asteroidSpeeds.removeIndex(i);
                 i--;
+
+                // Add score for each successfully avoided asteroid
+                // Scale points based on game time to make it harder to get points later
+                float timeMultiplier = 1.0f + (gameTime / 15.0f);
+                int pointsAwarded = Math.min(3, (int)(1 * timeMultiplier));
+                score += pointsAwarded;
+
                 continue;
             }
-            
+
             // Skip collision detection during grace period
             if (inGracePeriod) {
                 continue;
             }
-            
+
             // Create smaller hitboxes for more forgiving collision detection
             float shipMarginW = ship.width * collisionMargin / 2;
             float shipMarginH = ship.height * collisionMargin / 2;
             float asteroidMargin = asteroid.width * collisionMargin / 2;
-            
+
             // Smaller ship hitbox
             float shipHitboxX = ship.x + shipMarginW;
             float shipHitboxY = ship.y + shipMarginH;
             float shipHitboxWidth = ship.width - shipMarginW * 2;
             float shipHitboxHeight = ship.height - shipMarginH * 2;
-            
+
             // Smaller asteroid hitbox
             float asteroidHitboxX = asteroid.x + asteroidMargin;
             float asteroidHitboxY = asteroid.y + asteroidMargin;
             float asteroidHitboxWidth = asteroid.width - asteroidMargin * 2;
             float asteroidHitboxHeight = asteroid.height - asteroidMargin * 2;
-            
+
             // Check for collision
             boolean collision = shipHitboxX < asteroidHitboxX + asteroidHitboxWidth &&
                                shipHitboxX + shipHitboxWidth > asteroidHitboxX &&
                                shipHitboxY < asteroidHitboxY + asteroidHitboxHeight &&
                                shipHitboxY + shipHitboxHeight > asteroidHitboxY;
-            
+
             if (collision && collisionEnabled) {
                 if (debugCollision) {
                     System.out.println("Collision detected with asteroid " + i);
                 }
-                
+
                 state = GameState.GAME_OVER;
                 audioManager.playSoundEffect("hit");
                 currentDelay = 0;
@@ -277,34 +350,158 @@ public class AsteroidDodgeMiniGame extends Scene {
         }
     }
 
+    /**
+     * Handles the CONFIRM_EXIT state logic
+     */
+    private void handleConfirmExitState() {
+        // Handle confirmation dialog navigation (up/down or W/S keys)
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP) || Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+            confirmYes = true;
+        }
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN) || Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+            confirmYes = false;
+        }
+
+        // Handle confirmation selection (Enter or Space)
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            if (confirmYes) {
+                // Player confirmed exit - take penalty and exit
+                completeGameWithPenalty();
+            } else {
+                // Player cancelled - return to game
+                state = GameState.PLAYING;
+            }
+        }
+
+        // Allow escape to cancel
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            state = GameState.PLAYING;
+        }
+    }
+
+    /**
+     * Completes the game and returns to the main game screen
+     * @param success Whether the player completed successfully
+     */
     private void completeGame(boolean success) {
         gameCompleted = true;
 
-        // Add the minigame score to the main game score
-        pointsManager.addPoints(score);
-        System.out.println("Asteroid Dodge completed! Added " + score + " points from mini-game score.");
-        
-        // Penalize player if they died early (before 15 seconds) by reducing health
-        if (!success && gameTime < 15.0f) {
-            // Only reduce health if player has more than 1 life remaining
-            if (PlayerStatus.getInstance().getLives() > 1) {
-                PlayerStatus.getInstance().decrementLife();
-                System.out.println("Died early in mini-game (before 15 seconds). Lost 1 life!");
-            } else {
-                System.out.println("Died early in mini-game, but only 1 life remaining. No life penalty applied.");
-            }
+        // Calculate final score with time bonus
+        int finalPoints = score;
+
+        if (success) {
+            // Add a survival bonus only if the player completes the full duration
+            // This is scaled based on the maximum game time
+            int survivalBonus = (int)(maxGameTime / 3); // Reduced to 10 points for 30 seconds
+            finalPoints += survivalBonus;
+            System.out.println("Asteroid Dodge completed successfully! Score: " + score +
+                              ", Survival bonus: " + survivalBonus);
+        } else {
+            // For game over, only award points earned so far
+            System.out.println("Asteroid Dodge failed. Score: " + score);
         }
+
+        // Add the minigame score to the main game score
+        pointsManager.addPoints(finalPoints);
+        System.out.println("Asteroid Dodge completed! Added " + finalPoints + " points from mini-game.");
 
         // Stop mini-game music
         audioManager.stopSoundEffect("minigame");
 
-        // Return to main game
-        PlayerStatus.getInstance().setInMiniGame(false);
-        sceneManager.removeOverlay();
+        // Apply penalty if player died early - this might redirect to game over screen
+        // This needs to happen before returning to the main game
+        applyEarlyDeathPenalty(success);
+
+        // Only do these if we're not going to the game over screen
+        // (if applyEarlyDeathPenalty didn't send us to game over)
+        if (PlayerStatus.getInstance().getLives() > 0) {
+            // Return to main game
+            PlayerStatus.getInstance().setInMiniGame(false);
+            sceneManager.removeOverlay();
+
+            // Notify handler that mini-game is completed
+            if (miniGameHandler != null) {
+                miniGameHandler.onMiniGameCompleted();
+            }
+        }
+    }
+
+    /**
+     * Completes the game with a life penalty for early exit
+     */
+    private void completeGameWithPenalty() {
+        gameCompleted = true;
+
+        // Apply penalty (same as if player died early)
+        PlayerStatus playerStatus = PlayerStatus.getInstance();
+        if (playerStatus.getLives() > 1) {
+            // Normal case - player has more than 1 life, just decrement
+            playerStatus.decrementLife();
+            System.out.println("Player skipped mini-game. Lost 1 life as penalty!");
+
+            // Stop mini-game music
+            audioManager.stopSoundEffect("minigame");
+
+            // Return to main game
+            playerStatus.setInMiniGame(false);
+            sceneManager.removeOverlay();
+        } else {
+            // Player has only 1 life left - reduce to 0 and trigger game over
+            playerStatus.decrementLife(); // This will set lives to 0
+            System.out.println("Player skipped mini-game with only 1 life remaining. Game over!");
+
+            // Stop mini-game music
+            audioManager.stopSoundEffect("minigame");
+
+            // Player is no longer in mini-game
+            playerStatus.setInMiniGame(false);
+
+            // Create and set up game over screen with final score
+            GameOverScreen gameOverScreen = new GameOverScreen();
+            gameOverScreen.setFinalScore(pointsManager.getPoints());
+            sceneManager.setNextScene(SceneID.GAME_OVER);
+        }
 
         // Notify handler that mini-game is completed
         if (miniGameHandler != null) {
             miniGameHandler.onMiniGameCompleted();
+        }
+    }
+
+    /**
+     * Apply penalty if player died early in the game
+     * @param success Whether the player completed successfully
+     */
+    private void applyEarlyDeathPenalty(boolean success) {
+        if (!success && gameTime < 15.0f) {
+            // Get player status
+            PlayerStatus playerStatus = PlayerStatus.getInstance();
+            if (playerStatus != null) {
+                // Always decrement life, regardless of current life count
+                playerStatus.decrementLife();
+
+                // Check if player has no lives left after decrementing
+                if (playerStatus.getLives() <= 0) {
+                    System.out.println("Player died early in mini-game and lost last life. Going to Game Over!");
+
+                    try {
+                        // Create game over screen with main game score (not mini-game score)
+                        GameOverScreen gameOverScreen = new GameOverScreen();
+
+                        // Important: Use the main game's score, not the mini-game score
+                        gameOverScreen.setFinalScore(pointsManager.getPoints());
+
+                        // Transition to game over screen
+                        sceneManager.setNextScene(SceneID.GAME_OVER);
+                    } catch (Exception e) {
+                        System.err.println("Error transitioning to game over screen: " + e.getMessage());
+                    }
+                } else {
+                    // Player still has lives left
+                    System.out.println("Player died early in mini-game. Lost 1 life as penalty! Lives remaining: "
+                                      + playerStatus.getLives());
+                }
+            }
         }
     }
 
@@ -340,7 +537,7 @@ public class AsteroidDodgeMiniGame extends Scene {
             case READY:
                 textManager.draw(batch, "ASTEROID DODGE", DisplayManager.getScreenWidth()/2 - 180,
                                 DisplayManager.getScreenHeight()/2 + 50, Color.YELLOW);
-                textManager.draw(batch, "Use LEFT/RIGHT arrows to move", DisplayManager.getScreenWidth()/2 - 200,
+                textManager.draw(batch, "Use W/A/S/D to move", DisplayManager.getScreenWidth()/2 - 200,
                                 DisplayManager.getScreenHeight()/2, Color.WHITE);
                 textManager.draw(batch, "Avoid the asteroids!", DisplayManager.getScreenWidth()/2 - 120,
                                 DisplayManager.getScreenHeight()/2 - 50, Color.WHITE);
@@ -351,7 +548,7 @@ public class AsteroidDodgeMiniGame extends Scene {
             case PLAYING:
                 // Show grace period indicator if active
                 if (gameTime < collisionGracePeriod) {
-                    textManager.draw(batch, "Immunity: " + (int)(collisionGracePeriod - gameTime + 1), 
+                    textManager.draw(batch, "Immunity: " + (int)(collisionGracePeriod - gameTime + 1),
                                     20, DisplayManager.getScreenHeight() - 50, Color.GREEN);
                 }
                 break;
@@ -376,7 +573,67 @@ public class AsteroidDodgeMiniGame extends Scene {
                                     DisplayManager.getScreenHeight()/2 - 150, Color.WHITE);
                 }
                 break;
+
+            case CONFIRM_EXIT:
+                drawConfirmExitUI(batch);
+                break;
         }
+    }
+
+    /**
+     * Draws the exit confirmation dialog
+     */
+    private void drawConfirmExitUI(SpriteBatch batch) {
+        // End the SpriteBatch before drawing shapes
+        batch.end();
+
+        // Set up blending for transparency
+        Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
+        Gdx.gl.glBlendFunc(Gdx.gl.GL_SRC_ALPHA, Gdx.gl.GL_ONE_MINUS_SRC_ALPHA);
+
+        // Draw semi-transparent overlay for dialog background
+        localShapeRenderer.begin(ShapeType.Filled);
+        localShapeRenderer.setColor(0, 0, 0, 0.7f); // Semi-transparent black background
+        localShapeRenderer.rect(0, 0, DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
+        localShapeRenderer.end();
+
+        // Draw dialog box background
+        localShapeRenderer.begin(ShapeType.Filled);
+        float dialogWidth = 400;
+        float dialogHeight = 220;
+        float dialogX = DisplayManager.getScreenWidth()/2 - dialogWidth/2;
+        float dialogY = DisplayManager.getScreenHeight()/2 - dialogHeight/2;
+        localShapeRenderer.setColor(0.1f, 0.1f, 0.2f, 0.95f);
+        localShapeRenderer.rect(dialogX, dialogY, dialogWidth, dialogHeight);
+        localShapeRenderer.end();
+
+        // Draw dialog border
+        localShapeRenderer.begin(ShapeType.Line);
+        localShapeRenderer.setColor(0.5f, 0.5f, 0.8f, 1);
+        localShapeRenderer.rect(dialogX, dialogY, dialogWidth, dialogHeight);
+        localShapeRenderer.end();
+
+        Gdx.gl.glDisable(Gdx.gl.GL_BLEND);
+
+        // Resume batch to draw text
+        batch.begin();
+
+        // Dialog text
+        float textX = dialogX + 20;
+        float textY = dialogY + dialogHeight - 30;
+
+        textManager.draw(batch, "QUIT MINI-GAME?", textX, textY, Color.YELLOW);
+        textManager.draw(batch, "You will lose one life as penalty", textX, textY - 40, Color.WHITE);
+        textManager.draw(batch, "for skipping this challenge.", textX, textY - 70, Color.WHITE);
+
+        // Options with highlighted selection
+        textManager.draw(batch, "Yes, quit anyway", textX + 20, textY - 110,
+                       confirmYes ? selectedColor : unselectedColor);
+        textManager.draw(batch, "No, continue playing", textX + 20, textY - 140,
+                       confirmYes ? unselectedColor : selectedColor);
+
+        // Controls hint
+        textManager.draw(batch, "Use UP/DOWN to select, SPACE to confirm", textX - 50, textY - 180, Color.WHITE);
     }
 
     @Override
@@ -385,11 +642,11 @@ public class AsteroidDodgeMiniGame extends Scene {
         if (debugCollision && state == GameState.PLAYING) {
             localShapeRenderer.setProjectionMatrix(shape.getProjectionMatrix());
             localShapeRenderer.begin(ShapeType.Line);
-            
+
             // Draw actual hitboxes used for collision in red
             if (gameTime >= collisionGracePeriod) {
                 localShapeRenderer.setColor(Color.RED);
-                
+
                 // Draw smaller ship hitbox
                 float shipMarginW = ship.width * collisionMargin / 2;
                 float shipMarginH = ship.height * collisionMargin / 2;
@@ -398,7 +655,7 @@ public class AsteroidDodgeMiniGame extends Scene {
                 float shipHitboxWidth = ship.width - shipMarginW * 2;
                 float shipHitboxHeight = ship.height - shipMarginH * 2;
                 localShapeRenderer.rect(shipHitboxX, shipHitboxY, shipHitboxWidth, shipHitboxHeight);
-                
+
                 // Draw smaller asteroid hitboxes
                 for (Rectangle asteroid : asteroids) {
                     float asteroidMargin = asteroid.width * collisionMargin / 2;
@@ -409,15 +666,15 @@ public class AsteroidDodgeMiniGame extends Scene {
                     localShapeRenderer.rect(asteroidHitboxX, asteroidHitboxY, asteroidHitboxWidth, asteroidHitboxHeight);
                 }
             }
-            
+
             // Draw visual bounds in yellow
             localShapeRenderer.setColor(Color.YELLOW);
             localShapeRenderer.rect(ship.x, ship.y, ship.width, ship.height);
-            
+
             for (Rectangle asteroid : asteroids) {
                 localShapeRenderer.rect(asteroid.x, asteroid.y, asteroid.width, asteroid.height);
             }
-            
+
             // Show grace period bar
             if (gameTime < collisionGracePeriod) {
                 localShapeRenderer.setColor(Color.GREEN);
@@ -454,4 +711,4 @@ public class AsteroidDodgeMiniGame extends Scene {
             localShapeRenderer = null;
         }
     }
-} 
+}

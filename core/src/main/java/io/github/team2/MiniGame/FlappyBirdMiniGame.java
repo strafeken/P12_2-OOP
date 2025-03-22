@@ -28,7 +28,7 @@ import io.github.team2.Utils.DisplayManager;
 
 /**
  * Implementation of a Flappy Bird style mini-game.
- * Following Single Responsibility Principle, this class focuses on 
+ * Following Single Responsibility Principle, this class focuses on
  * mini-game mechanics and rendering.
  */
 public class FlappyBirdMiniGame extends Scene {
@@ -53,7 +53,7 @@ public class FlappyBirdMiniGame extends Scene {
     private float pipeHeight = 300f;
     private float timeSinceLastPipe = 0;
     private float pipeInterval = 1.7f;
-    
+
     // Collision settings
     private float collisionTolerance = 0.8f; // Reduce hitbox size by 20% for more forgiving collisions
     private boolean debugCollision = false;  // For debugging collision boundaries
@@ -97,7 +97,7 @@ public class FlappyBirdMiniGame extends Scene {
         // Initialize managers and collections
         initializeCore();
     }
-    
+
     /**
      * Initialize core components and collections
      */
@@ -108,7 +108,7 @@ public class FlappyBirdMiniGame extends Scene {
         this.audioManager = AudioManager.getInstance();
         this.sceneManager = SceneManager.getInstance();
         this.localShapeRenderer = null; // Initialize in load() when GL context is ready
-        
+
         this.topPipes = new Array<>();
         this.bottomPipes = new Array<>();
         this.passedPipes = new Array<>();
@@ -120,13 +120,13 @@ public class FlappyBirdMiniGame extends Scene {
         if (localShapeRenderer == null) {
             localShapeRenderer = new ShapeRenderer();
         }
-        
+
         loadTextures();
         initializeGameObjects();
         resetGameState();
         playStartSound();
     }
-    
+
     /**
      * Load required textures with error handling
      */
@@ -139,14 +139,14 @@ public class FlappyBirdMiniGame extends Scene {
         } catch (Exception e) {
             System.err.println("Error loading textures: " + e.getMessage());
             e.printStackTrace();
-            
+
             // Create fallbacks if needed
             if (birdTexture == null) createPlaceholderTexture("birdTexture");
             if (pipeTopTexture == null) createPlaceholderTexture("pipeTopTexture");
             if (pipeBottomTexture == null) createPlaceholderTexture("pipeBottomTexture");
         }
     }
-    
+
     /**
      * Initialize game objects like the bird
      */
@@ -157,7 +157,7 @@ public class FlappyBirdMiniGame extends Scene {
         bird.x = DisplayManager.getScreenWidth() / 4;
         bird.y = DisplayManager.getScreenHeight() / 2;
     }
-    
+
     /**
      * Reset game state for a new game
      */
@@ -172,7 +172,7 @@ public class FlappyBirdMiniGame extends Scene {
         passedPipes.clear();
         state = GameState.READY;
     }
-    
+
     /**
      * Play the start sound
      */
@@ -183,7 +183,7 @@ public class FlappyBirdMiniGame extends Scene {
             System.err.println("Error playing sound: " + e.getMessage());
         }
     }
-    
+
     /**
      * Creates a placeholder texture when loading fails
      * @param name Identifier for which texture to create
@@ -195,7 +195,7 @@ public class FlappyBirdMiniGame extends Scene {
             com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(1, 1, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
             pixmap.setColor(Color.WHITE);
             pixmap.fill();
-            
+
             if (name.equals("birdTexture")) {
                 birdTexture = new Texture(pixmap);
             } else if (name.equals("pipeTopTexture")) {
@@ -203,7 +203,7 @@ public class FlappyBirdMiniGame extends Scene {
             } else if (name.equals("pipeBottomTexture")) {
                 pipeBottomTexture = new Texture(pixmap);
             }
-            
+
             pixmap.dispose();
         } catch (Exception e) {
             System.err.println("Failed to create placeholder texture: " + e.getMessage());
@@ -241,10 +241,10 @@ public class FlappyBirdMiniGame extends Scene {
     @Override
     public void update() {
         float deltaTime = Gdx.graphics.getDeltaTime();
-        
+
         // Cap deltaTime to prevent physics glitches if framerate drops significantly
         deltaTime = Math.min(deltaTime, 0.05f);
-        
+
         gameTime += deltaTime;
 
         // Check for game completion based on time
@@ -258,7 +258,7 @@ public class FlappyBirdMiniGame extends Scene {
             case READY:
                 handleReadyState();
                 break;
-                
+
             case PLAYING:
                 handlePlayingState(deltaTime);
                 break;
@@ -272,7 +272,7 @@ public class FlappyBirdMiniGame extends Scene {
                 break;
         }
     }
-    
+
     /**
      * Handles the READY state logic
      */
@@ -282,7 +282,7 @@ public class FlappyBirdMiniGame extends Scene {
             state = GameState.PLAYING;
         }
     }
-    
+
     /**
      * Handles the PLAYING state logic
      * @param deltaTime Time since last update
@@ -319,7 +319,7 @@ public class FlappyBirdMiniGame extends Scene {
         // Move pipes and check collision
         updatePipesAndCollisions(deltaTime);
     }
-    
+
     /**
      * Constrains the bird to stay within screen bounds
      */
@@ -333,7 +333,7 @@ public class FlappyBirdMiniGame extends Scene {
             velocity = 0;
         }
     }
-    
+
     /**
      * Plays the jump sound with error handling
      */
@@ -344,7 +344,7 @@ public class FlappyBirdMiniGame extends Scene {
             // Silently handle sound errors
         }
     }
-    
+
     /**
      * Handles the GAME_OVER state logic
      * @param deltaTime Time since last update
@@ -364,7 +364,7 @@ public class FlappyBirdMiniGame extends Scene {
             }
         }
     }
-    
+
     /**
      * Handles the CONFIRM_EXIT state logic
      */
@@ -421,7 +421,7 @@ public class FlappyBirdMiniGame extends Scene {
         // Remove pipes that are off screen
         removeOffscreenPipes();
     }
-    
+
     /**
      * Checks if the bird has passed a pipe and awards score
      * @param pipeIndex Index of the pipe
@@ -430,7 +430,8 @@ public class FlappyBirdMiniGame extends Scene {
     private void checkForScoring(int pipeIndex, Rectangle pipe) {
         if (bird.x > pipe.x + pipe.width && !passedPipes.contains(pipeIndex, false)) {
             passedPipes.add(pipeIndex);
-            score++;
+            // Award 3 points per pipe passed (moderate difficulty)
+            score += 3;
             try {
                 audioManager.playSoundEffect("ding");
             } catch (Exception e) {
@@ -438,7 +439,7 @@ public class FlappyBirdMiniGame extends Scene {
             }
         }
     }
-    
+
     /**
      * Checks if the bird has collided with pipes
      * @param topPipe Top pipe to check
@@ -450,7 +451,7 @@ public class FlappyBirdMiniGame extends Scene {
         float reducedBirdHeight = bird.height * collisionTolerance;
         float birdCenterX = bird.x + bird.width/2;
         float birdCenterY = bird.y + bird.height/2;
-        
+
         // Create bird collision box centered on the bird
         Rectangle birdCollision = new Rectangle(
             birdCenterX - reducedBirdWidth/2,
@@ -458,7 +459,7 @@ public class FlappyBirdMiniGame extends Scene {
             reducedBirdWidth,
             reducedBirdHeight
         );
-        
+
         // Check collisions
         boolean topCollision = birdCollision.overlaps(topPipe);
         boolean bottomCollision = birdCollision.overlaps(bottomPipe);
@@ -478,7 +479,7 @@ public class FlappyBirdMiniGame extends Scene {
             currentDelay = 0;
         }
     }
-    
+
     /**
      * Removes pipes that have moved off the left edge of the screen
      */
@@ -496,7 +497,7 @@ public class FlappyBirdMiniGame extends Scene {
             }
         }
     }
-    
+
     /**
      * Updates passed pipes indices after a pipe is removed
      * @param removedIndex Index of the removed pipe
@@ -519,62 +520,88 @@ public class FlappyBirdMiniGame extends Scene {
     }
 
     /**
-     * Completes the mini-game, awards points, and returns to main game
-     * @param success Whether the player completed successfully
-     */
-    private void completeGame(boolean success) {
-        gameCompleted = true;
-
-        // Add the minigame score to the main game score
-        pointsManager.addPoints(score * 10);
-        System.out.println("Mini-game completed! Added " + (score * 10) + " points from mini-game score.");
-
-        // Penalize player if they died early
-        applyEarlyDeathPenalty(success);
-
-        // Stop mini-game music
-        try {
-            audioManager.stopSoundEffect("minigame");
-        } catch (Exception e) {
-            // Silently handle sound errors
-        }
-
-        // Return to main game
-        returnToMainGame();
-
-        // Notify handler that mini-game is completed
-        if (miniGameHandler != null) {
-            try {
-                miniGameHandler.onMiniGameCompleted();
-            } catch (Exception e) {
-                System.err.println("Error notifying mini-game handler: " + e.getMessage());
-            }
-        }
-    }
-    
-    /**
      * Apply penalty if player died early in the game
      * @param success Whether the player completed successfully
      */
     private void applyEarlyDeathPenalty(boolean success) {
         if (!success && gameTime < 15.0f) {
-            // Only reduce health if player has more than 1 life remaining
+            // Get player status
             PlayerStatus playerStatus = PlayerStatus.getInstance();
-            if (playerStatus != null && playerStatus.getLives() > 1) {
+            if (playerStatus != null) {
+                // Always decrement life, regardless of current life count
                 playerStatus.decrementLife();
-                System.out.println("Died early in mini-game (before 15 seconds). Lost 1 life!");
-            } else {
-                System.out.println("Died early in mini-game, but only 1 life remaining. No life penalty applied.");
+
+                // Check if player has no lives left after decrementing
+                if (playerStatus.getLives() <= 0) {
+                    System.out.println("Player died early in FlappyBird mini-game and lost last life. Going to Game Over!");
+
+                    try {
+                        // Create game over screen with main game score (not mini-game score)
+                        GameOverScreen gameOverScreen = new GameOverScreen();
+
+                        // Important: Use the main game's score, not the mini-game score
+                        gameOverScreen.setFinalScore(pointsManager.getPoints());
+
+                        // Transition to game over screen
+                        sceneManager.setNextScene(SceneID.GAME_OVER);
+                    } catch (Exception e) {
+                        System.err.println("Error transitioning to game over screen: " + e.getMessage());
+                    }
+                } else {
+                    // Player still has lives left
+                    System.out.println("Player died early in FlappyBird mini-game. Lost 1 life as penalty! Lives remaining: "
+                                      + playerStatus.getLives());
+                }
             }
         }
     }
-    
+
+    /**
+     * Completes the game and returns to the main game screen
+     * @param success Whether the player completed successfully
+     */
+    private void completeGame(boolean success) {
+        gameCompleted = true;
+
+        // Calculate bonus points based on game completion
+        int finalPoints = score;
+
+        if (success) {
+            // Award bonus points for completing the full mini-game duration
+            int timeBonus = (int)(gameTime / 5);  // Reduced bonus - 1 point per 5 seconds played
+            finalPoints += timeBonus;
+            System.out.println("FlappyBird completed successfully! Score: " + score + ", Time bonus: " + timeBonus);
+        }
+
+        // Add the minigame score to the main game score
+        pointsManager.addPoints(finalPoints);
+        System.out.println("Flappy Bird completed! Added " + finalPoints + " points from mini-game.");
+
+        // Stop mini-game music
+        audioManager.stopSoundEffect("minigame");
+
+        // Apply penalty if player died early - this might redirect to game over screen
+        applyEarlyDeathPenalty(success);
+
+        // Only return to main game if we didn't die with last life
+        if (PlayerStatus.getInstance().getLives() > 0) {
+            // Return to main game
+            PlayerStatus.getInstance().setInMiniGame(false);
+            sceneManager.removeOverlay();
+
+            // Notify handler that mini-game is completed
+            if (miniGameHandler != null) {
+                miniGameHandler.onMiniGameCompleted();
+            }
+        }
+    }
+
     /**
      * Returns to the main game by removing the mini-game overlay
      */
     private void returnToMainGame() {
         PlayerStatus.getInstance().setInMiniGame(false);
-        
+
         try {
             sceneManager.removeOverlay();
         } catch (Exception e) {
@@ -660,7 +687,7 @@ public class FlappyBirdMiniGame extends Scene {
             System.err.println("SpriteBatch is null in draw method");
             return;
         }
-        
+
         try {
             // End the batch before drawing shapes
             batch.end();
@@ -678,7 +705,7 @@ public class FlappyBirdMiniGame extends Scene {
         } catch (Exception e) {
             System.err.println("Error in draw method: " + e.getMessage());
             e.printStackTrace();
-            
+
             // Try to recover by restarting the batch
             try {
                 if (!batch.isDrawing()) {
@@ -689,7 +716,7 @@ public class FlappyBirdMiniGame extends Scene {
             }
         }
     }
-    
+
     /**
      * Draws the game background
      */
@@ -705,7 +732,7 @@ public class FlappyBirdMiniGame extends Scene {
         localShapeRenderer.rect(0, 0, DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
         localShapeRenderer.end();
     }
-    
+
     /**
      * Draws the pipes
      * @param batch SpriteBatch to draw with
@@ -729,7 +756,7 @@ public class FlappyBirdMiniGame extends Scene {
             }
         }
     }
-    
+
     /**
      * Draws the bird
      * @param batch SpriteBatch to draw with
@@ -739,14 +766,14 @@ public class FlappyBirdMiniGame extends Scene {
             batch.draw(birdTexture, bird.x, bird.y, bird.width, bird.height);
         }
     }
-    
+
     /**
      * Draws the UI based on current game state
      * @param batch SpriteBatch to draw with
      */
     private void drawUI(SpriteBatch batch) {
         if (textManager == null) return;
-        
+
         // Always draw score and time
         textManager.draw(batch, "Score: " + score, 20, DisplayManager.getScreenHeight() - 20, Color.WHITE);
         textManager.draw(batch, "Time: " + (int)(maxGameTime - gameTime), DisplayManager.getScreenWidth() - 150, DisplayManager.getScreenHeight() - 20, Color.WHITE);
@@ -767,7 +794,7 @@ public class FlappyBirdMiniGame extends Scene {
                 break;
         }
     }
-    
+
     /**
      * Draws the UI for the READY state
      * @param batch SpriteBatch to draw with
@@ -782,7 +809,7 @@ public class FlappyBirdMiniGame extends Scene {
         textManager.draw(batch, "Avoid the pipes!", DisplayManager.getScreenWidth()/2 - 100,
                         DisplayManager.getScreenHeight()/2 - 100, Color.WHITE);
     }
-    
+
     /**
      * Draws the UI for the GAME_OVER state
      * @param batch SpriteBatch to draw with
@@ -807,7 +834,7 @@ public class FlappyBirdMiniGame extends Scene {
                             DisplayManager.getScreenHeight()/2 - 150, Color.WHITE);
         }
     }
-    
+
     /**
      * Draws the confirmation dialog UI
      * @param batch SpriteBatch to draw with
@@ -849,7 +876,7 @@ public class FlappyBirdMiniGame extends Scene {
         // Controls hint
         textManager.draw(batch, "Use UP/DOWN to select, SPACE to confirm", textX - 50, textY - 180, Color.WHITE);
     }
-    
+
     /**
      * Draws the confirmation dialog background
      */
@@ -861,7 +888,7 @@ public class FlappyBirdMiniGame extends Scene {
         if (localShapeRenderer == null) {
             localShapeRenderer = new ShapeRenderer();
         }
-        
+
         // Draw semi-transparent overlay for dialog background
         localShapeRenderer.begin(ShapeType.Filled);
         localShapeRenderer.setColor(0, 0, 0, 0.7f); // Semi-transparent black background
@@ -884,7 +911,7 @@ public class FlappyBirdMiniGame extends Scene {
         localShapeRenderer.rect(dialogX, dialogY, dialogWidth, dialogHeight);
         localShapeRenderer.end();
     }
-    
+
     /**
      * Draws the UI for the PLAYING state
      * @param batch SpriteBatch to draw with
@@ -900,7 +927,7 @@ public class FlappyBirdMiniGame extends Scene {
         if (!debugCollision || state != GameState.PLAYING || shape == null || bird == null) {
             return;
         }
-        
+
         // Safety check to avoid modifying external ShapeRenderer state
         boolean wasDrawing = false;
         try {
@@ -913,16 +940,16 @@ public class FlappyBirdMiniGame extends Scene {
             if (localShapeRenderer == null) {
                 localShapeRenderer = new ShapeRenderer();
             }
-            
+
             localShapeRenderer.setProjectionMatrix(shape.getProjectionMatrix());
             localShapeRenderer.begin(ShapeType.Line);
-            
+
             // Show the actual collision boundary (reduced hitbox)
             float reducedBirdWidth = bird.width * collisionTolerance;
             float reducedBirdHeight = bird.height * collisionTolerance;
             float birdCenterX = bird.x + bird.width/2;
             float birdCenterY = bird.y + bird.height/2;
-            
+
             // Draw bird collision hitbox
             localShapeRenderer.setColor(Color.GREEN);
             localShapeRenderer.rect(
@@ -931,7 +958,7 @@ public class FlappyBirdMiniGame extends Scene {
                 reducedBirdWidth,
                 reducedBirdHeight
             );
-            
+
             // Draw visual bounds of the bird
             localShapeRenderer.setColor(Color.YELLOW);
             localShapeRenderer.rect(bird.x, bird.y, bird.width, bird.height);
@@ -998,12 +1025,12 @@ public class FlappyBirdMiniGame extends Scene {
                 localShapeRenderer.dispose();
                 localShapeRenderer = null;
             }
-            
+
             // Clear collections
             if (topPipes != null) topPipes.clear();
             if (bottomPipes != null) bottomPipes.clear();
             if (passedPipes != null) passedPipes.clear();
-            
+
             System.out.println("FlappyBirdMiniGame resources disposed successfully");
         } catch (Exception e) {
             System.err.println("Error disposing FlappyBirdMiniGame resources: " + e.getMessage());
