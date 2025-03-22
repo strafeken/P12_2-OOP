@@ -2,9 +2,9 @@ package io.github.team2.CollisionExtensions;
 
 import io.github.team2.CollisionSystem.CollisionListener;
 import io.github.team2.EntitySystem.Entity;
-import io.github.team2.GameOverScreen;
-import io.github.team2.PlayerStatus;
-import io.github.team2.PointsManager;
+import io.github.team2.Game.Manager.PlayerStatus;
+import io.github.team2.Game.Manager.PointsManager;
+import io.github.team2.Game.Scene.GameOverScreen;
 import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.SceneSystem.SceneID;
 

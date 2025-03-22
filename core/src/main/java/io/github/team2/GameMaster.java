@@ -7,6 +7,13 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 import io.github.team2.AudioSystem.AudioManager;
 import io.github.team2.AudioSystem.IAudioManager;
+import io.github.team2.Game.Manager.LevelManager;
+import io.github.team2.Game.Scene.GameOverScreen;
+import io.github.team2.Game.Scene.GameScene;
+import io.github.team2.Game.Scene.LevelSelectScene;
+import io.github.team2.Game.Scene.MainMenu;
+import io.github.team2.Game.Scene.PauseMenu;
+import io.github.team2.Game.Scene.SettingsMenu;
 import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.SceneSystem.SceneID;
 import io.github.team2.SceneSystem.SceneManager;
