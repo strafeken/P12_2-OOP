@@ -27,6 +27,7 @@ import io.github.team2.SceneSystem.ISceneManager;
 import io.github.team2.SceneSystem.Scene;
 import io.github.team2.SceneSystem.SceneManager;
 import io.github.team2.Utils.DisplayManager;
+import io.github.team2.camera.Camera;
 
 public class LevelSelectScene extends Scene {
 
