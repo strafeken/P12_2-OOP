@@ -133,8 +133,8 @@ public class FlappyBirdMiniGame extends Scene {
     private void loadTextures() {
         try {
             birdTexture = new Texture(Gdx.files.internal("rocket-2.png"));
-            pipeTopTexture = new Texture(Gdx.files.internal("barrel.png"));
-            pipeBottomTexture = new Texture(Gdx.files.internal("barrel.png"));
+            pipeTopTexture = new Texture(Gdx.files.internal("barrel-2.png"));
+            pipeBottomTexture = new Texture(Gdx.files.internal("barrel-2.png"));
             System.out.println("Loaded textures successfully");
         } catch (Exception e) {
             System.err.println("Error loading textures: " + e.getMessage());

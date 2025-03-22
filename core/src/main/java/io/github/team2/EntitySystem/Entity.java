@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 
+import io.github.team2.Game.entity.EntityType;
+
 public abstract class Entity {
 
     private Vector2 position;

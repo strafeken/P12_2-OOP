@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 
 import io.github.team2.EntitySystem.Dynamics;
 import io.github.team2.EntitySystem.Entity;
-import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.InputSystem.Action;
 
 public class Move implements Action {
@@ -21,20 +20,15 @@ public class Move implements Action {
 		// check if is dynamic entity
 		if (entity instanceof Dynamics<?, ?>) {
 			if (entity.getPhysicsBody() != null) {
-				if (entity.getEntityType() == EntityType.DROP) {
-
+				
+				if (((Dynamics<?, ?>)entity).isOutOfBound(direction) == false) {
+	
 					entity.getPhysicsBody().setLinearVelocity(direction.x * ((Dynamics<?, ?>) entity).getSpeed(),
 							direction.y * ((Dynamics<?, ?>) entity).getSpeed());
 				} else {
-
-					if (((Dynamics<?, ?>)entity).isOutOfBound(direction) == false) {
-
-						entity.getPhysicsBody().setLinearVelocity(direction.x * ((Dynamics<?, ?>) entity).getSpeed(),
-								direction.y * ((Dynamics<?, ?>) entity).getSpeed());
-					} else {
-						entity.getPhysicsBody().setLinearVelocity(0, 0);
-					}
+					entity.getPhysicsBody().setLinearVelocity(0, 0);
 				}
+				
 			}
 		}
 	}

@@ -19,7 +19,6 @@ import io.github.team2.CollisionExtensions.StartLevelHandler;
 import io.github.team2.CollisionSystem.CollisionDetector;
 import io.github.team2.EntitySystem.Entity;
 import io.github.team2.EntitySystem.EntityManager;
-import io.github.team2.EntitySystem.EntityType;
 import io.github.team2.EntitySystem.StaticTextureObject;
 import io.github.team2.InputSystem.GameInputManager;
 import io.github.team2.InputSystem.PlayerInputManager;
@@ -30,6 +29,7 @@ import io.github.team2.Utils.DisplayManager;
 import io.github.team2.Game.Manager.GameManager;
 import io.github.team2.Game.Manager.LevelManager;
 import io.github.team2.Game.Manager.TextManager;
+import io.github.team2.Game.entity.EntityType;
 import io.github.team2.Game.entity.Planet;
 import io.github.team2.Game.entity.Player;
 import io.github.team2.Game.entity.PlayerBehaviour;
@@ -123,8 +123,8 @@ public class LevelSelectScene extends Scene {
         levelPlanets = new Entity[4];  // 4 levels
 
         // Level 1 planet (always unlocked)
-        levelPlanets[0] = new Planet(EntityType.LEVEL1, "planet/level_planet1_purple.png",
-                new Vector2(80, 80), new Vector2(150, 150), new Vector2(0, 0));
+        levelPlanets[0] = new Planet(EntityType.PLANET, "planet/level_planet1_purple.png",
+                new Vector2(80, 80), new Vector2(150, 150), new Vector2(0, 0),1);
         levelPlanets[0].initPhysicsBody(world, BodyDef.BodyType.StaticBody);
         entityManager.addEntities(levelPlanets[0]);
 
@@ -133,8 +133,8 @@ public class LevelSelectScene extends Scene {
         // ONLY show level 2+ planets if they're actually unlocked
         if (levelManager.isLevelUnlocked(2)) {
             System.out.println("Level 2 is unlocked!");
-            levelPlanets[1] = new Planet(EntityType.LEVEL2, "planet/level_planet2_yellow.png",
-                    new Vector2(80, 80), new Vector2(280, 120), new Vector2(0, 0));
+            levelPlanets[1] = new Planet(EntityType.PLANET, "planet/level_planet2_yellow.png",
+                    new Vector2(80, 80), new Vector2(280, 120), new Vector2(0, 0),2);
             levelPlanets[1].initPhysicsBody(world, BodyDef.BodyType.StaticBody);
             entityManager.addEntities(levelPlanets[1]);
         } else {
@@ -144,15 +144,15 @@ public class LevelSelectScene extends Scene {
 
         // Same for levels 3 and 4
         if (levelManager.isLevelUnlocked(3)) {
-            levelPlanets[2] = new Planet(EntityType.LEVEL3, "planet/level_planet3_red.png",
-                    new Vector2(80, 80), new Vector2(480, 180), new Vector2(0, 0));
+            levelPlanets[2] = new Planet(EntityType.PLANET, "planet/level_planet3_red.png",
+                    new Vector2(80, 80), new Vector2(480, 180), new Vector2(0, 0),3);
             levelPlanets[2].initPhysicsBody(world, BodyDef.BodyType.StaticBody);
             entityManager.addEntities(levelPlanets[2]);
         }
 
         if (levelManager.isLevelUnlocked(4)) {
-            levelPlanets[3] = new Planet(EntityType.LEVEL4, "planet/level_planet4_grey.png",
-                    new Vector2(80, 80), new Vector2(650, 250), new Vector2(0, 0));
+            levelPlanets[3] = new Planet(EntityType.PLANET, "planet/level_planet4_grey.png",
+                    new Vector2(80, 80), new Vector2(650, 250), new Vector2(0, 0),4);
             levelPlanets[3].initPhysicsBody(world, BodyDef.BodyType.StaticBody);
             entityManager.addEntities(levelPlanets[3]);
         }
