@@ -1,8 +1,8 @@
 package io.github.team2.Game.Entity;
 
-import io.github.team2.CollisionSystem.CollisionListener;
-import io.github.team2.EntitySystem.Entity;
-import io.github.team2.EntitySystem.IEntityManager;
+import io.github.team2.Abstract.CollisionSystem.CollisionListener;
+import io.github.team2.Abstract.EntitySystem.Entity;
+import io.github.team2.Abstract.EntitySystem.IEntityManager;
 
 public class CollisionRemovalHandler implements CollisionListener {
     private IEntityManager em;

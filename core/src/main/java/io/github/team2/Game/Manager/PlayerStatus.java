@@ -1,6 +1,6 @@
 package io.github.team2.Game.Manager;
 
-import io.github.team2.EntitySystem.Entity;
+import io.github.team2.Abstract.EntitySystem.Entity;
 
 public class PlayerStatus {
     private static PlayerStatus instance = null;

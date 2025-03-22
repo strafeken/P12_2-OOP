@@ -1,12 +1,12 @@
 package io.github.team2.Game.Entity;
 
-import io.github.team2.Camera.Camera;
-import io.github.team2.CollisionSystem.CollisionListener;
-import io.github.team2.EntitySystem.Entity;
+import io.github.team2.Abstract.Camera.Camera;
+import io.github.team2.Abstract.CollisionSystem.CollisionListener;
+import io.github.team2.Abstract.EntitySystem.Entity;
+import io.github.team2.Abstract.SceneSystem.ISceneManager;
+import io.github.team2.Abstract.SceneSystem.SceneManager;
 import io.github.team2.Game.Actions.Control.StartLevel;
 import io.github.team2.Game.Manager.LevelManager;
-import io.github.team2.SceneSystem.SceneManager;
-import io.github.team2.SceneSystem.ISceneManager;
 
 public class StartLevelHandler implements CollisionListener {
     private ISceneManager sceneManager;

@@ -6,21 +6,21 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.team2.AudioSystem.AudioManager;
-import io.github.team2.AudioSystem.IAudioManager;
-import io.github.team2.EntitySystem.EntityManager;
-import io.github.team2.EntitySystem.IEntityManager;
-import io.github.team2.EntitySystem.StaticTextureObject;
+import io.github.team2.Abstract.AudioSystem.AudioManager;
+import io.github.team2.Abstract.AudioSystem.IAudioManager;
+import io.github.team2.Abstract.EntitySystem.EntityManager;
+import io.github.team2.Abstract.EntitySystem.IEntityManager;
+import io.github.team2.Abstract.EntitySystem.StaticTextureObject;
+import io.github.team2.Abstract.InputSystem.Button;
+import io.github.team2.Abstract.InputSystem.GameInputManager;
+import io.github.team2.Abstract.SceneSystem.ISceneManager;
+import io.github.team2.Abstract.SceneSystem.Scene;
+import io.github.team2.Abstract.SceneSystem.SceneManager;
+import io.github.team2.Abstract.Utils.DisplayManager;
 import io.github.team2.Game.Actions.Control.StartGame;
 import io.github.team2.Game.Actions.Control.StartLevelSelect;
 import io.github.team2.Game.Entity.EntityType;
 import io.github.team2.Game.Manager.TextManager;
-import io.github.team2.InputSystem.Button;
-import io.github.team2.InputSystem.GameInputManager;
-import io.github.team2.SceneSystem.Scene;
-import io.github.team2.SceneSystem.SceneManager;
-import io.github.team2.SceneSystem.ISceneManager;
-import io.github.team2.Utils.DisplayManager;
 
 public class MainMenu extends Scene {
     private StaticTextureObject image;

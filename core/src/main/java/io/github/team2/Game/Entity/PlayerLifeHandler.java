@@ -1,12 +1,12 @@
 package io.github.team2.Game.Entity;
 
-import io.github.team2.CollisionSystem.CollisionListener;
-import io.github.team2.EntitySystem.Entity;
+import io.github.team2.Abstract.CollisionSystem.CollisionListener;
+import io.github.team2.Abstract.EntitySystem.Entity;
+import io.github.team2.Abstract.SceneSystem.ISceneManager;
+import io.github.team2.Abstract.SceneSystem.SceneID;
 import io.github.team2.Game.Manager.PlayerStatus;
 import io.github.team2.Game.Manager.PointsManager;
 import io.github.team2.Game.Scene.GameOverScreen;
-import io.github.team2.SceneSystem.ISceneManager;
-import io.github.team2.SceneSystem.SceneID;
 
 public class PlayerLifeHandler implements CollisionListener {
     private ISceneManager sceneManager;

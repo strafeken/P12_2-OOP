@@ -2,9 +2,9 @@ package io.github.team2.Game.MiniGame;
 
 import java.util.Random;
 
+import io.github.team2.Abstract.SceneSystem.Scene;
 import io.github.team2.Game.Entity.StartMiniGameHandler;
 import io.github.team2.Game.Manager.PointsManager;
-import io.github.team2.SceneSystem.Scene;
 
 /**
  * Factory for creating mini-games.
