@@ -1,9 +1,9 @@
 package io.github.team2.Game.Entity;
 
-import io.github.team2.Abstract.CollisionSystem.CollisionListener;
-import io.github.team2.Abstract.EntitySystem.Entity;
-import io.github.team2.Abstract.SceneSystem.ISceneManager;
-import io.github.team2.Abstract.SceneSystem.SceneID;
+import abstractEngine.CollisionSystem.CollisionListener;
+import abstractEngine.EntitySystem.Entity;
+import abstractEngine.SceneSystem.ISceneManager;
+import abstractEngine.SceneSystem.SceneID;
 import io.github.team2.Game.Manager.PlayerStatus;
 import io.github.team2.Game.Manager.PointsManager;
 import io.github.team2.Game.Scene.GameOverScreen;

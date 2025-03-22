@@ -1,6 +1,6 @@
 package io.github.team2.Game.Manager;
 
-import io.github.team2.Abstract.InputSystem.PlayerInputManager;
+import abstractEngine.InputSystem.PlayerInputManager;
 
 public class GameManager {
 	private static GameManager instance = null;

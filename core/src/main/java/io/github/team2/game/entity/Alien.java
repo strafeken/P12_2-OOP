@@ -3,8 +3,8 @@ package io.github.team2.Game.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 
-import io.github.team2.Abstract.EntitySystem.DynamicTextureObject;
-import io.github.team2.Abstract.EntitySystem.Entity;
+import abstractEngine.EntitySystem.DynamicTextureObject;
+import abstractEngine.EntitySystem.Entity;
 import io.github.team2.Game.Actions.Movement.Chase;
 import io.github.team2.Game.Entity.AlienBehaviour.Move;
 import io.github.team2.Game.Entity.AlienBehaviour.State;

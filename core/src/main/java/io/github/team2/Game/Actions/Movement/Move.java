@@ -2,9 +2,9 @@ package io.github.team2.Game.Actions.Movement;
 
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.team2.Abstract.EntitySystem.Dynamics;
-import io.github.team2.Abstract.EntitySystem.Entity;
-import io.github.team2.Abstract.InputSystem.Action;
+import abstractEngine.EntitySystem.Dynamics;
+import abstractEngine.EntitySystem.Entity;
+import abstractEngine.InputSystem.Action;
 
 public class Move implements Action {
 	private final Entity entity;

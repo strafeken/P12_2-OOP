@@ -1,6 +1,6 @@
 package io.github.team2.Game.Entity;
 
-import io.github.team2.Abstract.EntitySystem.Entity;
+import abstractEngine.EntitySystem.Entity;
 
 public enum CollisionType {
     ALIEN_PLAYER,

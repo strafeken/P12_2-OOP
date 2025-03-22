@@ -1,10 +1,10 @@
 package io.github.team2.Game.Entity;
 
-import io.github.team2.Abstract.Camera.Camera;
-import io.github.team2.Abstract.CollisionSystem.CollisionListener;
-import io.github.team2.Abstract.EntitySystem.Entity;
-import io.github.team2.Abstract.SceneSystem.ISceneManager;
-import io.github.team2.Abstract.SceneSystem.SceneManager;
+import abstractEngine.Camera.Camera;
+import abstractEngine.CollisionSystem.CollisionListener;
+import abstractEngine.EntitySystem.Entity;
+import abstractEngine.SceneSystem.ISceneManager;
+import abstractEngine.SceneSystem.SceneManager;
 import io.github.team2.Game.Actions.Control.StartLevel;
 import io.github.team2.Game.Manager.LevelManager;
 

@@ -1,9 +1,9 @@
 package io.github.team2.Game.Entity;
 
-import io.github.team2.Abstract.AudioSystem.AudioManager;
-import io.github.team2.Abstract.AudioSystem.IAudioManager;
-import io.github.team2.Abstract.CollisionSystem.CollisionListener;
-import io.github.team2.Abstract.EntitySystem.Entity;
+import abstractEngine.AudioSystem.AudioManager;
+import abstractEngine.AudioSystem.IAudioManager;
+import abstractEngine.CollisionSystem.CollisionListener;
+import abstractEngine.EntitySystem.Entity;
 
 public class CollisionAudioHandler implements CollisionListener {
     private final IAudioManager audioManager;

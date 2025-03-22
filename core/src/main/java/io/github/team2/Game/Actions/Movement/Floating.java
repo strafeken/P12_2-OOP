@@ -3,11 +3,11 @@ package io.github.team2.Game.Actions.Movement;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.team2.Abstract.EntitySystem.DynamicTextureObject;
-import io.github.team2.Abstract.EntitySystem.Dynamics;
-import io.github.team2.Abstract.EntitySystem.Entity;
-import io.github.team2.Abstract.InputSystem.Action;
-import io.github.team2.Abstract.Utils.DisplayManager;
+import abstractEngine.Abstract.Utils.DisplayManager;
+import abstractEngine.EntitySystem.DynamicTextureObject;
+import abstractEngine.EntitySystem.Dynamics;
+import abstractEngine.EntitySystem.Entity;
+import abstractEngine.InputSystem.Action;
 import io.github.team2.Game.Entity.EntityType;
 
 public class Floating implements Action {

@@ -5,9 +5,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 
-import io.github.team2.Abstract.EntitySystem.Entity;
-import io.github.team2.Abstract.EntitySystem.IEntityManager;
-import io.github.team2.Abstract.Utils.DisplayManager;
+import abstractEngine.Abstract.Utils.DisplayManager;
+import abstractEngine.EntitySystem.Entity;
+import abstractEngine.EntitySystem.IEntityManager;
 import io.github.team2.Game.Entity.EntityType;
 
 import java.util.HashMap;

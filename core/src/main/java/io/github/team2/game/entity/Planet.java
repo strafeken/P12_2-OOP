@@ -2,7 +2,7 @@ package io.github.team2.Game.Entity;
 
 import com.badlogic.gdx.math.Vector2;
 
-import io.github.team2.Abstract.EntitySystem.StaticTextureObject;
+import abstractEngine.EntitySystem.StaticTextureObject;
 
 public class Planet extends StaticTextureObject {
 	private int level;

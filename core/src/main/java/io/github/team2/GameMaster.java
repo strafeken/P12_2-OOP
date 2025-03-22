@@ -5,11 +5,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-import io.github.team2.Abstract.AudioSystem.AudioManager;
-import io.github.team2.Abstract.AudioSystem.IAudioManager;
-import io.github.team2.Abstract.SceneSystem.ISceneManager;
-import io.github.team2.Abstract.SceneSystem.SceneID;
-import io.github.team2.Abstract.SceneSystem.SceneManager;
+import abstractEngine.AudioSystem.AudioManager;
+import abstractEngine.AudioSystem.IAudioManager;
+import abstractEngine.SceneSystem.ISceneManager;
+import abstractEngine.SceneSystem.SceneID;
+import abstractEngine.SceneSystem.SceneManager;
 import io.github.team2.Game.Manager.LevelManager;
 import io.github.team2.Game.Scene.GameOverScreen;
 import io.github.team2.Game.Scene.GameScene;

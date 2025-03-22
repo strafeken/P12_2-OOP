@@ -5,19 +5,19 @@ import java.util.Random;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import abstractEngine.Abstract.Utils.DisplayManager;
+import abstractEngine.CollisionSystem.CollisionListener;
+import abstractEngine.EntitySystem.Entity;
+import abstractEngine.EntitySystem.IEntityManager;
+import abstractEngine.SceneSystem.ISceneManager;
+import abstractEngine.SceneSystem.Scene;
+import abstractEngine.SceneSystem.SceneID;
+import abstractEngine.SceneSystem.SceneManager;
 import io.github.team2.Game.Manager.PlayerStatus;
 import io.github.team2.Game.Manager.PointsManager;
 import io.github.team2.Game.MiniGame.AsteroidDodgeMiniGame;
 import io.github.team2.Game.MiniGame.FlappyBirdMiniGame;
 import io.github.team2.Game.MiniGame.MiniGameFactory;
-import io.github.team2.Abstract.CollisionSystem.CollisionListener;
-import io.github.team2.Abstract.EntitySystem.Entity;
-import io.github.team2.Abstract.EntitySystem.IEntityManager;
-import io.github.team2.Abstract.SceneSystem.ISceneManager;
-import io.github.team2.Abstract.SceneSystem.Scene;
-import io.github.team2.Abstract.SceneSystem.SceneID;
-import io.github.team2.Abstract.SceneSystem.SceneManager;
-import io.github.team2.Abstract.Utils.DisplayManager;
 
 /**
  * Handles starting mini-games when player collides with an alien.
