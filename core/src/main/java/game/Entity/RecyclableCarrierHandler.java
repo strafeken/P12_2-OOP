@@ -1,8 +1,8 @@
 package game.Entity;
 
-import abstractEngine.CollisionSystem.CollisionListener;
-import abstractEngine.EntitySystem.Entity;
-import abstractEngine.EntitySystem.IEntityManager;
+import abstractengine.collision.CollisionListener;
+import abstractengine.entity.Entity;
+import abstractengine.entity.IEntityManager;
 import game.Manager.PlayerStatus;
 import game.Trash.RecyclableTrash;
 

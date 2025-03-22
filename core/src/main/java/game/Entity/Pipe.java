@@ -2,7 +2,7 @@ package game.Entity;
 
 import com.badlogic.gdx.math.Vector2;
 
-import abstractEngine.EntitySystem.DynamicTextureObject;
+import abstractengine.entity.DynamicTextureObject;
 import game.Entity.PipeBehaviour.Move;
 import game.Entity.PipeBehaviour.State;
 

@@ -2,7 +2,7 @@ package game.MiniGame;
 
 import java.util.Random;
 
-import abstractEngine.SceneSystem.Scene;
+import abstractengine.scene.Scene;
 import game.Entity.StartMiniGameHandler;
 import game.Manager.PointsManager;
 

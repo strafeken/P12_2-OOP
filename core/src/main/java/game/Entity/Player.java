@@ -3,7 +3,7 @@ package game.Entity;
 
 import com.badlogic.gdx.math.Vector2;
 
-import abstractEngine.EntitySystem.DynamicTextureObject;
+import abstractengine.entity.DynamicTextureObject;
 
 public class Player extends DynamicTextureObject<PlayerBehaviour.State, PlayerBehaviour.Move > {
 	public Player(

@@ -1,8 +1,8 @@
 package game.Actions.Control;
 
-import abstractEngine.InputSystem.Action;
-import abstractEngine.SceneSystem.ISceneManager;
-import abstractEngine.SceneSystem.SceneID;
+import abstractengine.input.Action;
+import abstractengine.scene.ISceneManager;
+import abstractengine.scene.SceneID;
 
 public class GoToSettings implements Action {
     private final ISceneManager sm;

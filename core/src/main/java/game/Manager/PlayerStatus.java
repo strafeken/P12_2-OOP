@@ -1,6 +1,6 @@
 package game.Manager;
 
-import abstractEngine.EntitySystem.Entity;
+import abstractengine.entity.Entity;
 
 public class PlayerStatus {
     private static PlayerStatus instance = null;

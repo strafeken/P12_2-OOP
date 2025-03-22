@@ -1,8 +1,8 @@
 package game.Entity;
 
-import abstractEngine.CollisionSystem.CollisionListener;
-import abstractEngine.EntitySystem.Entity;
-import abstractEngine.EntitySystem.IEntityManager;
+import abstractengine.collision.CollisionListener;
+import abstractengine.entity.Entity;
+import abstractengine.entity.IEntityManager;
 
 public class CollisionRemovalHandler implements CollisionListener {
     private IEntityManager em;

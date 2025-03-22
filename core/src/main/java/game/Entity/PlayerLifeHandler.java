@@ -1,9 +1,9 @@
 package game.Entity;
 
-import abstractEngine.CollisionSystem.CollisionListener;
-import abstractEngine.EntitySystem.Entity;
-import abstractEngine.SceneSystem.ISceneManager;
-import abstractEngine.SceneSystem.SceneID;
+import abstractengine.collision.CollisionListener;
+import abstractengine.entity.Entity;
+import abstractengine.scene.ISceneManager;
+import abstractengine.scene.SceneID;
 import game.Manager.PlayerStatus;
 import game.Manager.PointsManager;
 import game.Scene.GameOverScreen;

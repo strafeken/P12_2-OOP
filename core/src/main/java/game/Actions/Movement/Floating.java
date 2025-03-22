@@ -3,11 +3,11 @@ package game.Actions.Movement;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-import abstractEngine.Abstract.Utils.DisplayManager;
-import abstractEngine.EntitySystem.DynamicTextureObject;
-import abstractEngine.EntitySystem.Dynamics;
-import abstractEngine.EntitySystem.Entity;
-import abstractEngine.InputSystem.Action;
+import abstractengine.entity.DynamicTextureObject;
+import abstractengine.entity.Dynamics;
+import abstractengine.entity.Entity;
+import abstractengine.input.Action;
+import abstractengine.utils.DisplayManager;
 import game.Entity.EntityType;
 
 public class Floating implements Action {

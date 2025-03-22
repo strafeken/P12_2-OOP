@@ -3,8 +3,8 @@ package game.Trash;
 
 import com.badlogic.gdx.math.Vector2;
 
-import abstractEngine.EntitySystem.DynamicTextureObject;
-import abstractEngine.InputSystem.Action;
+import abstractengine.entity.DynamicTextureObject;
+import abstractengine.input.Action;
 import game.Actions.Movement.Floating;
 import game.Entity.EntityType;
 import game.Trash.TrashBehaviour.Move;

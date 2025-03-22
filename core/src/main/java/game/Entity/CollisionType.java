@@ -1,6 +1,6 @@
 package game.Entity;
 
-import abstractEngine.EntitySystem.Entity;
+import abstractengine.entity.Entity;
 
 public enum CollisionType {
     ALIEN_PLAYER,

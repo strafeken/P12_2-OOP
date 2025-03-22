@@ -3,8 +3,8 @@ package game.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 
-import abstractEngine.EntitySystem.DynamicTextureObject;
-import abstractEngine.EntitySystem.Entity;
+import abstractengine.entity.DynamicTextureObject;
+import abstractengine.entity.Entity;
 import game.Actions.Movement.Chase;
 import game.Entity.AlienBehaviour.Move;
 import game.Entity.AlienBehaviour.State;

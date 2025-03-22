@@ -1,6 +1,6 @@
 package game.Manager;
 
-import abstractEngine.InputSystem.PlayerInputManager;
+import abstractengine.input.PlayerInputManager;
 
 public class GameManager {
 	private static GameManager instance = null;

@@ -1,10 +1,10 @@
 package game.Entity;
 
-import abstractEngine.Camera.Camera;
-import abstractEngine.CollisionSystem.CollisionListener;
-import abstractEngine.EntitySystem.Entity;
-import abstractEngine.SceneSystem.ISceneManager;
-import abstractEngine.SceneSystem.SceneManager;
+import abstractengine.camera.Camera;
+import abstractengine.collision.CollisionListener;
+import abstractengine.entity.Entity;
+import abstractengine.scene.ISceneManager;
+import abstractengine.scene.SceneManager;
 import game.Actions.Control.StartLevel;
 import game.Manager.LevelManager;
 
