@@ -3,6 +3,7 @@ package application.minigame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -34,9 +35,11 @@ public class AsteroidDodgeMiniGame extends Scene {
     // Game objects
     private Texture shipTexture;
     private Texture asteroidTexture;
+    private Texture backgroundTexture;
     private Rectangle ship;
     private Array<Rectangle> asteroids;
     private Array<Float> asteroidSpeeds;
+    private SpriteBatch backgroundBatch;
 
     // Physics
     private float shipSpeed = 300f;
@@ -85,6 +88,9 @@ public class AsteroidDodgeMiniGame extends Scene {
     private boolean confirmYes = true; // Default to Yes selection
     private Color selectedColor = Color.YELLOW;
     private Color unselectedColor = Color.WHITE;
+    
+    // Flag to track if we've created a fallback texture
+    private boolean usingFallbackTexture = false;
 
     public AsteroidDodgeMiniGame(PointsManager pointsManager, StartMiniGameHandler miniGameHandler) {
         super();
@@ -92,7 +98,7 @@ public class AsteroidDodgeMiniGame extends Scene {
         this.miniGameHandler = miniGameHandler;
         this.state = GameState.READY;
         this.score = 0;
-
+    
         // Initialize managers
         this.entityManager = new EntityManager();
         this.gameInputManager = new GameInputManager();
@@ -100,20 +106,52 @@ public class AsteroidDodgeMiniGame extends Scene {
         this.audioManager = AudioManager.getInstance();
         this.sceneManager = SceneManager.getInstance();
         this.localShapeRenderer = new ShapeRenderer();
-
+        this.backgroundBatch = new SpriteBatch(); // Initialize here
+    
         // Initialize collections
         this.asteroids = new Array<>();
         this.asteroidSpeeds = new Array<>();
     }
 
+    /**
+     * Utility method to check if assets exist in multiple paths
+     */
+    
+    /**
+     * Creates a fallback colored texture when image loading fails
+     */
+    private Texture createColoredTexture(float r, float g, float b) {
+        try {
+            Pixmap pixmap = new Pixmap(2, 2, Pixmap.Format.RGBA8888);
+            pixmap.setColor(r, g, b, 1);
+            pixmap.fill();
+            Texture texture = new Texture(pixmap);
+            pixmap.dispose();
+            System.out.println("Created colored texture fallback");
+            usingFallbackTexture = true;
+            return texture;
+        } catch (Exception e) {
+            System.err.println("Failed to create colored texture: " + e.getMessage());
+            return null;
+        }
+    }
+
     @Override
     public void load() {
-        // Load textures
+        // Debug asset loading first
+    
+        
+        System.out.println("Loading asteroid game textures...");
+        
+        // Load game textures
         try {
             shipTexture = new Texture(Gdx.files.internal("rocket-2.png"));
+            System.out.println("Loaded rocket texture successfully");
+            
             asteroidTexture = new Texture(Gdx.files.internal("asteroid.png"));
+            System.out.println("Loaded asteroid texture successfully");
         } catch (Exception e) {
-            System.err.println("Error loading textures: " + e.getMessage());
+            System.err.println("Error loading game textures: " + e.getMessage());
             e.printStackTrace();
 
             // Fallback textures if needed
@@ -122,6 +160,32 @@ public class AsteroidDodgeMiniGame extends Scene {
             }
             if (asteroidTexture == null) {
                 asteroidTexture = new Texture(Gdx.files.internal("item/plastic-bottle.png"));
+            }
+        }
+        
+        // Load background texture with extensive error handling
+        try {
+            System.out.println("Attempting to load space_backgroundv2.jpg");
+            backgroundTexture = new Texture(Gdx.files.internal("space_backgroundv2.jpg"));
+            System.out.println("Background loaded successfully: " + 
+                backgroundTexture.getWidth() + "x" + backgroundTexture.getHeight());
+        } catch (Exception e) {
+            System.out.println("Failed to load .jpg, trying .jpeg...");
+            try {
+                backgroundTexture = new Texture(Gdx.files.internal("space_backgroundv2.jpeg"));
+                System.out.println("Background loaded with .jpeg extension");
+            } catch (Exception e2) {
+                System.err.println("Failed to load background with .jpeg too: " + e2.getMessage());
+                
+                // Try png format
+                try {
+                    backgroundTexture = new Texture(Gdx.files.internal("space_backgroundv2.png"));
+                    System.out.println("Background loaded with .png extension");
+                } catch (Exception e3) {
+                    System.err.println("Failed with all extensions. Creating fallback texture.");
+                    // Create a dark blue fallback texture
+                    backgroundTexture = createColoredTexture(0.1f, 0.1f, 0.3f);
+                }
             }
         }
 
@@ -145,6 +209,8 @@ public class AsteroidDodgeMiniGame extends Scene {
         audioManager.playSoundEffect("minigame");
 
         state = GameState.READY;
+        
+        System.out.println("Asteroid Dodge Mini-Game loaded successfully");
     }
 
     private void spawnAsteroid() {
@@ -510,11 +576,60 @@ public class AsteroidDodgeMiniGame extends Scene {
         // End the batch before drawing shapes and begin it again afterward
         batch.end();
 
-        // Draw space background
-        localShapeRenderer.begin(ShapeType.Filled);
-        localShapeRenderer.setColor(skyColor);
-        localShapeRenderer.rect(0, 0, DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
-        localShapeRenderer.end();
+        // Draw background
+        if (backgroundTexture == null) {
+            // Fallback to solid color if texture failed to load
+            localShapeRenderer.begin(ShapeType.Filled);
+            localShapeRenderer.setColor(skyColor);
+            localShapeRenderer.rect(0, 0, DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
+            localShapeRenderer.end();
+            
+            // If we've tried to load the texture but it's still null, create a fallback
+            if (!usingFallbackTexture) {
+                backgroundTexture = createColoredTexture(0.1f, 0.1f, 0.3f);
+            }
+        } else {
+            // Use the persistent backgroundBatch
+            try {
+                // Set viewport to screen dimensions
+                backgroundBatch.getProjectionMatrix().setToOrtho2D(
+                    0, 0, DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
+                
+                backgroundBatch.begin();
+                backgroundBatch.draw(backgroundTexture, 0, 0, 
+                                   DisplayManager.getScreenWidth(), 
+                                   DisplayManager.getScreenHeight());
+                backgroundBatch.end();
+                
+                // Print confirmation that background was drawn (only once)
+                if (state == GameState.READY && gameTime < 0.1f) {
+                    System.out.println("Drew background: " + 
+                        DisplayManager.getScreenWidth() + "x" + DisplayManager.getScreenHeight());
+                }
+            } catch (Exception e) {
+                System.err.println("Error drawing background: " + e.getMessage());
+                e.printStackTrace();
+                
+                // Fallback to shape renderer
+                localShapeRenderer.begin(ShapeType.Filled);
+                localShapeRenderer.setColor(skyColor);
+                localShapeRenderer.rect(0, 0, DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
+                localShapeRenderer.end();
+            }
+        }
+
+        // If we're using the fallback texture, draw some simple stars
+        if (usingFallbackTexture) {
+            localShapeRenderer.begin(ShapeType.Filled);
+            localShapeRenderer.setColor(Color.WHITE);
+            for (int i = 0; i < 100; i++) {
+                float x = MathUtils.random(0, DisplayManager.getScreenWidth());
+                float y = MathUtils.random(0, DisplayManager.getScreenHeight());
+                float size = MathUtils.random(1, 3);
+                localShapeRenderer.rect(x, y, size, size);
+            }
+            localShapeRenderer.end();
+        }
 
         // Restart the batch for sprites
         batch.begin();
@@ -706,9 +821,17 @@ public class AsteroidDodgeMiniGame extends Scene {
             asteroidTexture.dispose();
             asteroidTexture = null;
         }
+        if (backgroundTexture != null) {
+            backgroundTexture.dispose();
+            backgroundTexture = null;
+        }
         if (localShapeRenderer != null) {
             localShapeRenderer.dispose();
             localShapeRenderer = null;
+        }
+        if (backgroundBatch != null) {
+            backgroundBatch.dispose();
+            backgroundBatch = null;
         }
     }
 }

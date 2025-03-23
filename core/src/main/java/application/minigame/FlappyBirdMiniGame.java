@@ -40,6 +40,7 @@ public class FlappyBirdMiniGame extends Scene {
     private Texture birdTexture;
     private Texture pipeTopTexture;
     private Texture pipeBottomTexture;
+    private Texture backgroundTexture;
     private Rectangle bird;
     private Array<Rectangle> topPipes;
     private Array<Rectangle> bottomPipes;
@@ -120,7 +121,7 @@ public class FlappyBirdMiniGame extends Scene {
         if (localShapeRenderer == null) {
             localShapeRenderer = new ShapeRenderer();
         }
-
+        backgroundTexture = new Texture(Gdx.files.internal("space_backgroundv2.jpg"));
         loadTextures();
         initializeGameObjects();
         resetGameState();
@@ -725,12 +726,21 @@ public class FlappyBirdMiniGame extends Scene {
         if (localShapeRenderer == null) {
             localShapeRenderer = new ShapeRenderer();
         }
-
-        // Draw sky background
-        localShapeRenderer.begin(ShapeType.Filled);
-        localShapeRenderer.setColor(skyColor);
-        localShapeRenderer.rect(0, 0, DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
-        localShapeRenderer.end();
+    
+        if (backgroundTexture == null) {
+            // Fallback to solid color if texture failed to load
+            localShapeRenderer.begin(ShapeType.Filled);
+            localShapeRenderer.setColor(skyColor);
+            localShapeRenderer.rect(0, 0, DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
+            localShapeRenderer.end();
+        } else {
+            // Draw background image with SpriteBatch
+            SpriteBatch backgroundBatch = new SpriteBatch();
+            backgroundBatch.begin();
+            backgroundBatch.draw(backgroundTexture, 0, 0, DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
+            backgroundBatch.end();
+            backgroundBatch.dispose();
+        }
     }
 
     /**
