@@ -16,7 +16,6 @@ import abstractengine.scene.SceneManager;
 import abstractengine.utils.DisplayManager;
 import application.entity.EntityType;
 import application.io.GameInputManager;
-import application.scene.control.ResumeGame;
 
 public class PauseMenu extends Scene {
     private Entity image;
@@ -40,9 +39,8 @@ public class PauseMenu extends Scene {
 
         entityManager.addEntities(image);
 
-        // Use interface instead of concrete class
-        ISceneManager sceneManager = SceneManager.getInstance();
-        gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new ResumeGame(sceneManager));
+        ISceneManager sm = SceneManager.getInstance();
+        gameInputManager.registerKeyUp(Input.Keys.ESCAPE, () -> sm.removeOverlay());
     }
 
     @Override

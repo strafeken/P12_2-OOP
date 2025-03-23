@@ -46,9 +46,6 @@ import application.entity.trash.TrashSpawner;
 import application.io.GameInputManager;
 import application.io.GameManager;
 import application.io.PlayerInputManager;
-import application.scene.control.ExitGame;
-import application.scene.control.GoToSettings;
-import application.scene.control.PauseGame;
 
 public class GameScene extends Scene {
     // Physics constants
@@ -279,14 +276,13 @@ public class GameScene extends Scene {
     private void initializeInput() {
         playerInputManager = new PlayerInputManager(player);
 
-        // Use interface instead of concrete class
-        ISceneManager sceneManager = SceneManager.getInstance();
-        gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new PauseGame(sceneManager));
-        gameInputManager.registerKeyUp(Input.Keys.X, new ExitGame(sceneManager));
+        ISceneManager sm = SceneManager.getInstance();
+        gameInputManager.registerKeyUp(Input.Keys.ESCAPE, () -> sm.overlayScene(SceneID.PAUSE_MENU));
+        gameInputManager.registerKeyUp(Input.Keys.X, () -> sm.setNextScene(SceneID.MAIN_MENU));
 
         settingsButton = new Button("settingsBtn.png",
                 new Vector2(DisplayManager.getScreenWidth() - 80, DisplayManager.getScreenHeight() - 80),
-                new GoToSettings(sceneManager), 70, 70);
+                () -> sm.overlayScene(SceneID.SETTINGS_MENU), 70, 70);
 
         gameInputManager.registerClickable(settingsButton);
     }

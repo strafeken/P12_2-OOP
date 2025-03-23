@@ -19,8 +19,6 @@ import abstractengine.scene.SceneManager;
 import abstractengine.utils.DisplayManager;
 import application.entity.EntityType;
 import application.io.GameInputManager;
-import application.scene.control.StartGame;
-import application.scene.control.StartLevelSelect;
 
 public class MainMenu extends Scene {
     private StaticTextureObject image;
@@ -49,13 +47,9 @@ public class MainMenu extends Scene {
 
         Vector2 centerPos = new Vector2(DisplayManager.getScreenWidth() / 2, DisplayManager.getScreenHeight() / 2 - 180);
 
-        // Create the level select action
-        ISceneManager sceneManager = SceneManager.getInstance();
-        StartLevelSelect levelSelectAction = new StartLevelSelect(sceneManager);
-
-        // Use levelSelectAction for both button and space key
-        startButton = new Button("startBtn.png", centerPos, levelSelectAction, 100, 100);
-        gameInputManager.registerKeyUp(Input.Keys.SPACE, levelSelectAction);
+        ISceneManager sm = SceneManager.getInstance();
+        startButton = new Button("startBtn.png", centerPos, () -> sm.setNextScene(SceneID.LEVEL_SELECT), 100, 100);
+        gameInputManager.registerKeyUp(Input.Keys.SPACE, () -> sm.setNextScene(SceneID.LEVEL_SELECT));
         gameInputManager.registerClickable(startButton);
 
         startButton.update();

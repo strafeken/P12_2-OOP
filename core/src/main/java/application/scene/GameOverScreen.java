@@ -22,12 +22,9 @@ import abstractengine.utils.DisplayManager;
 import application.entity.EntityType;
 import application.entity.PlayerStatus;
 import application.io.GameInputManager;
-import application.scene.control.StartGame;
-import application.scene.control.StartLevelSelect;
 
 public class GameOverScreen extends Scene {
     private int finalScore;
-    private IAudioManager audioManager;
     private String currentTrivia; // Store current random trivia
     private Random random;
     private StaticTextureObject backgroundImage;
@@ -87,18 +84,7 @@ public class GameOverScreen extends Scene {
         // Get random trivia
         currentTrivia = TRIVIA[random.nextInt(TRIVIA.length)];
 
-        // Get scene manager instance
-        ISceneManager sceneManager = SceneManager.getInstance();
-
-        // Create actions - only need level select now
-        StartGame restartAction = new StartGame(sceneManager);
-        StartLevelSelect levelSelectAction = new StartLevelSelect(sceneManager);
-
-        // Get instance through concrete class but store as interface type
-        audioManager = AudioManager.getInstance();
-
-        // Play a game over sound
-        audioManager.playSoundEffect("gameover");
+        AudioManager.getInstance().playSoundEffect("gameover");
     }
 
     @Override
@@ -112,7 +98,7 @@ public class GameOverScreen extends Scene {
             // Once delay is complete, register the key handlers
             if (inputDelay <= 0) {
                 // Get scene manager and create actions
-                ISceneManager sceneManager = SceneManager.getInstance();
+                ISceneManager sm = SceneManager.getInstance();
 
                 // Create restart action to restart the CURRENT level, not start a new game
                 Action restartAction = () -> {
@@ -140,15 +126,13 @@ public class GameOverScreen extends Scene {
                     PlayerStatus.getInstance().reset();
 
                     // Transition to the level
-                    sceneManager.setNextScene(sceneID);
+                    sm.setNextScene(sceneID);
                     System.out.println("Restarting current level: " + level);
                 };
 
-                StartLevelSelect levelSelectAction = new StartLevelSelect(sceneManager);
-
                 // Register key handlers
                 gameInputManager.registerKeyUp(Input.Keys.SPACE, restartAction);
-                gameInputManager.registerKeyUp(Input.Keys.L, levelSelectAction);
+                gameInputManager.registerKeyUp(Input.Keys.L, () -> sm.setNextScene(SceneID.LEVEL_SELECT));
 
                 System.out.println("Game Over Screen key controls now active");
             }

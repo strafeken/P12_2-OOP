@@ -19,7 +19,6 @@ import abstractengine.scene.SceneManager;
 import application.io.GameInputManager;
 import application.io.GameManager;
 import application.io.PlayerInputManager;
-import application.scene.control.ResumeGame;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -92,11 +91,10 @@ public class SettingsMenu extends Scene {
 
         createButtonsForKeyBindings();
 
-        // Get SceneManager through interface
-        ISceneManager sceneManager = SceneManager.getInstance();
+        ISceneManager sm = SceneManager.getInstance();
         backButton = new Button("backBtn.png",
             new Vector2(PANEL_LEFT + 40, 50),
-            new ResumeGame(sceneManager), 80, 32);
+            () -> sm.removeOverlay(), 80, 32);
 
         gameInputManager.registerClickable(backButton);
         backButton.update();

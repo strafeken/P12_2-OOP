@@ -29,8 +29,6 @@ import application.entity.PlayerBehaviour;
 import application.io.GameInputManager;
 import application.io.GameManager;
 import application.io.PlayerInputManager;
-import application.scene.control.ExitGame;
-import application.scene.control.PauseGame;
 
 public class LevelSelectScene extends Scene {
 
@@ -163,11 +161,7 @@ public class LevelSelectScene extends Scene {
 
     private void initializeInput() {
         playerInputManager = new PlayerInputManager(player);
-
-        // Use interface instead of concrete class
-        ISceneManager sceneManager = SceneManager.getInstance();
-        gameInputManager.registerKeyUp(Input.Keys.ESCAPE, new PauseGame(sceneManager));
-        gameInputManager.registerKeyUp(Input.Keys.X, new ExitGame(sceneManager));
+        gameInputManager.registerKeyUp(Input.Keys.X, () -> SceneManager.getInstance().setNextScene(SceneID.MAIN_MENU));
     }
 
     private void initializeCollisionHandlers() {
