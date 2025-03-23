@@ -26,7 +26,6 @@ import application.entity.EntityType;
 import application.entity.Planet;
 import application.entity.Player;
 import application.entity.PlayerBehaviour;
-import application.entity.StartLevelHandler;
 import application.io.GameInputManager;
 import application.io.PlayerInputManager;
 import application.manager.GameManager;

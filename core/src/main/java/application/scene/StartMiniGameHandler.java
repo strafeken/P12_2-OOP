@@ -1,4 +1,4 @@
-package application.entity;
+package application.scene;
 
 import java.util.List;
 import java.util.Random;
@@ -12,12 +12,14 @@ import abstractengine.scene.ISceneManager;
 import abstractengine.scene.Scene;
 import abstractengine.scene.SceneManager;
 import abstractengine.utils.DisplayManager;
+import application.entity.Alien;
+import application.entity.CollisionType;
+import application.entity.EntityType;
 import application.manager.PlayerStatus;
 import application.manager.PointsManager;
 import application.minigame.AsteroidDodgeMiniGame;
 import application.minigame.FlappyBirdMiniGame;
 import application.minigame.MiniGameFactory;
-import application.scene.SceneID;
 
 /**
  * Handles starting mini-games when player collides with an alien.

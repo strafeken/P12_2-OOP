@@ -19,12 +19,12 @@ import abstractengine.scene.ISceneManager;
 import abstractengine.scene.Scene;
 import abstractengine.scene.SceneManager;
 import abstractengine.utils.DisplayManager;
-import application.entity.StartMiniGameHandler;
 import application.io.GameInputManager;
 import application.manager.PlayerStatus;
 import application.manager.PointsManager;
 import application.scene.GameOverScreen;
 import application.scene.SceneID;
+import application.scene.StartMiniGameHandler;
 
 /**
  * Implementation of a Flappy Bird style mini-game.

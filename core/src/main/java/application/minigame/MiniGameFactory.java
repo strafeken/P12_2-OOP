@@ -3,8 +3,8 @@ package application.minigame;
 import java.util.Random;
 
 import abstractengine.scene.Scene;
-import application.entity.StartMiniGameHandler;
 import application.manager.PointsManager;
+import application.scene.StartMiniGameHandler;
 
 /**
  * Factory for creating mini-games.

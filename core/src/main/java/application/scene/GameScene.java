@@ -36,7 +36,6 @@ import application.entity.PlayerBehaviour;
 import application.entity.PlayerLifeHandler;
 import application.entity.RecyclableCarrierHandler;
 import application.entity.RecyclingBinHandler;
-import application.entity.StartMiniGameHandler;
 import application.entity.trash.NonRecyclableTrashFactory;
 import application.entity.trash.RecyclableTrash;
 import application.entity.trash.RecyclableTrashFactory;
