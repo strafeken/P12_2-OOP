@@ -46,12 +46,5 @@ public abstract class StaticGameShape extends Static implements ShapeRenderable 
     }
     
     @Override
-    public void draw(ShapeRenderer shape) {
-        if (shape != null) {
-            drawShape(shape);
-        }
-    }
-    
-    @Override
-    public abstract void drawShape(ShapeRenderer shapeRenderer);
+    public abstract void draw(ShapeRenderer shape);
 }

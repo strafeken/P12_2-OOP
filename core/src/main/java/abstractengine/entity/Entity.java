@@ -66,17 +66,12 @@ public abstract class Entity {
         }
     }
 
-    // Default implementations that subclasses can override
     public void draw(ShapeRenderer shape) {
-        // Check if this Entity is a ShapeRenderable before attempting to draw
-        if (this instanceof ShapeRenderable && shape != null) {
-            ((ShapeRenderable) this).drawShape(shape);
-        }
-        // Default empty implementation if not a ShapeRenderable
+
     }
 
     public void draw(SpriteBatch batch) {
-        // Default empty implementation
+
     }
 
     // Sync position with physics body position

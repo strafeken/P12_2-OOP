@@ -76,5 +76,5 @@ public abstract class DynamicGameShape<S extends Enum<S>, A extends Enum<A>> ext
     }
     
     @Override
-    public abstract void draw(ShapeRenderer shapeRenderer);
+    public abstract void draw(ShapeRenderer shape);
 }
