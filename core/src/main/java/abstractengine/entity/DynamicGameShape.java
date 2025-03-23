@@ -74,14 +74,7 @@ public abstract class DynamicGameShape<S extends Enum<S>, A extends Enum<A>> ext
     public void initActionMap() {
         // To be implemented by subclasses
     }
-
-    @Override
-    public void draw(ShapeRenderer shape) {
-        if (shape != null) {
-            drawShape(shape);
-        }
-    }
     
     @Override
-    public abstract void drawShape(ShapeRenderer shapeRenderer);
+    public abstract void draw(ShapeRenderer shapeRenderer);
 }
