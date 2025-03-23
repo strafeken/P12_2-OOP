@@ -5,12 +5,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import abstractengine.entity.IEntityManager;
 import abstractengine.io.IInputManager;
-import abstractengine.io.TextManager;
+import abstractengine.io.ITextManager;
 
 public abstract class Scene {
     protected IEntityManager entityManager;
     protected IInputManager gameInputManager;
-    protected TextManager textManager;
+    protected ITextManager textManager;
 
     public abstract void load();
     public abstract void update();

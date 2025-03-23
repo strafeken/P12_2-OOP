@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class TextManager {
+public class TextManager implements ITextManager {
     private BitmapFont font;
     private float baseScale = 2.0f;
 
