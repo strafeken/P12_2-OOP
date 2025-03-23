@@ -1,6 +1,6 @@
 package application.manager;
 
-import application.input.PlayerInputManager;
+import application.io.PlayerInputManager;
 
 public class GameManager {
 	private static GameManager instance = null;

@@ -1,10 +1,10 @@
-package application.input;
+package application.io;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
 import abstractengine.entity.Entity;
-import abstractengine.input.InputManager;
+import abstractengine.io.InputManager;
 import application.entity.movement.Move;
 import application.entity.movement.Rotate;
 

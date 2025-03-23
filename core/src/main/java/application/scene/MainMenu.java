@@ -11,14 +11,14 @@ import abstractengine.audio.IAudioManager;
 import abstractengine.entity.EntityManager;
 import abstractengine.entity.IEntityManager;
 import abstractengine.entity.StaticTextureObject;
-import abstractengine.input.Button;
+import abstractengine.io.Button;
+import abstractengine.io.TextManager;
 import abstractengine.scene.ISceneManager;
 import abstractengine.scene.Scene;
 import abstractengine.scene.SceneManager;
 import abstractengine.utils.DisplayManager;
 import application.entity.EntityType;
-import application.input.GameInputManager;
-import application.manager.TextManager;
+import application.io.GameInputManager;
 import application.scene.control.StartGame;
 import application.scene.control.StartLevelSelect;
 

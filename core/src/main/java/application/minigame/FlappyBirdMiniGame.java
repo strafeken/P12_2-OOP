@@ -14,15 +14,15 @@ import com.badlogic.gdx.utils.Array;
 import abstractengine.audio.AudioManager;
 import abstractengine.audio.IAudioManager;
 import abstractengine.entity.EntityManager;
+import abstractengine.io.TextManager;
 import abstractengine.scene.ISceneManager;
 import abstractengine.scene.Scene;
 import abstractengine.scene.SceneManager;
 import abstractengine.utils.DisplayManager;
 import application.entity.StartMiniGameHandler;
-import application.input.GameInputManager;
+import application.io.GameInputManager;
 import application.manager.PlayerStatus;
 import application.manager.PointsManager;
-import application.manager.TextManager;
 import application.scene.GameOverScreen;
 import application.scene.SceneID;
 

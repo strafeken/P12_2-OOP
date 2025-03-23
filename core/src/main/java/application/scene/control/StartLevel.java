@@ -2,7 +2,7 @@ package application.scene.control;
 
 
 
-import abstractengine.input.Action;
+import abstractengine.io.Action;
 import abstractengine.scene.ISceneManager;
 import application.scene.SceneID;
 

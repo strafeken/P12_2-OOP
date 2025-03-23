@@ -3,7 +3,7 @@ package abstractengine.entity;
 import java.util.HashMap;
 import com.badlogic.gdx.math.Vector2;
 
-import abstractengine.input.Action;
+import abstractengine.io.Action;
 import application.entity.EntityType;
 
 public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Entity {

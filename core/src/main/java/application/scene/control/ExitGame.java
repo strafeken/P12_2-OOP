@@ -2,7 +2,7 @@ package application.scene.control;
 
 import com.badlogic.gdx.Gdx;
 
-import abstractengine.input.Action;
+import abstractengine.io.Action;
 import abstractengine.scene.ISceneManager;
 import application.scene.SceneID;
 

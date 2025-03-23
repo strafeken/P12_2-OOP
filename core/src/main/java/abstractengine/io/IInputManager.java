@@ -1,4 +1,4 @@
- package abstractengine.input;
+ package abstractengine.io;
 
 public interface IInputManager {
     public void registerKeyDown(int keycode, Action action);

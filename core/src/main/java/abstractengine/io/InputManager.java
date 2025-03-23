@@ -1,4 +1,4 @@
-package abstractengine.input;
+package abstractengine.io;
 
 public abstract class InputManager implements IInputManager {
 	protected final KeyboardManager keyboardManager;

@@ -1,4 +1,4 @@
-package abstractengine.input;
+package abstractengine.io;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;

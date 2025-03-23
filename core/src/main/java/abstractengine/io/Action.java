@@ -1,4 +1,4 @@
-package abstractengine.input;
+package abstractengine.io;
 
 public interface Action {
 	public void execute();

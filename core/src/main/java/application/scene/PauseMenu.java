@@ -9,13 +9,13 @@ import com.badlogic.gdx.math.Vector2;
 import abstractengine.entity.Entity;
 import abstractengine.entity.EntityManager;
 import abstractengine.entity.StaticTextureObject;
+import abstractengine.io.TextManager;
 import abstractengine.scene.ISceneManager;
 import abstractengine.scene.Scene;
 import abstractengine.scene.SceneManager;
 import abstractengine.utils.DisplayManager;
 import application.entity.EntityType;
-import application.input.GameInputManager;
-import application.manager.TextManager;
+import application.io.GameInputManager;
 import application.scene.control.ResumeGame;
 
 public class PauseMenu extends Scene {
