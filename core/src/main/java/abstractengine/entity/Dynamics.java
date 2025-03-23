@@ -8,7 +8,7 @@ import application.entity.EntityType;
 
 public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Entity {
 	private float speed;
-	private HashMap<A, Action> ActionMap;
+	private HashMap<A, Action> actionMap;
 	private S currentState;
 	private A currentActionState;
 	private Vector2 rotation;
@@ -16,7 +16,7 @@ public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Ent
 	public Dynamics() {
 		super();
 		this.speed = 0;
-		ActionMap = new HashMap<>();
+		actionMap = new HashMap<>();
 		currentState = null;
 		currentActionState = null;
 
@@ -27,7 +27,7 @@ public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Ent
 		super(type, position, direction);
 		this.speed = speed;
 		this.rotation = rotation;
-		ActionMap = new HashMap<>();
+		actionMap = new HashMap<>();
 		currentState = state;
 		currentActionState = actionState;
 
@@ -51,18 +51,18 @@ public abstract class Dynamics<S extends Enum<S>, A extends Enum<A>> extends Ent
 
 	public <E extends Enum<E>> Action getAction(E moveKey) {
 
-		Action action = ActionMap.get(moveKey);
+		Action action = actionMap.get(moveKey);
 
 		return action;
 	}
 
 	public HashMap<A, Action> getActionMap() {
-		return (HashMap<A, Action>) ActionMap;
+		return (HashMap<A, Action>) actionMap;
 	}
 
 	public void clearActionMap() {
 
-		ActionMap.clear();
+		actionMap.clear();
 	}
 
 	public void setCurrentActionState(A actionState) {
