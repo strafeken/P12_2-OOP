@@ -4,7 +4,6 @@ import abstractengine.entity.CollisionListener;
 import abstractengine.entity.Entity;
 import abstractengine.entity.IEntityManager;
 import application.entity.trash.RecyclableTrash;
-import application.manager.PlayerStatus;
 
 public class RecyclableCarrierHandler implements CollisionListener {
     private IEntityManager entityManager;

@@ -17,8 +17,8 @@ import abstractengine.scene.ISceneManager;
 import abstractengine.scene.Scene;
 import abstractengine.scene.SceneManager;
 import application.io.GameInputManager;
+import application.io.GameManager;
 import application.io.PlayerInputManager;
-import application.manager.GameManager;
 import application.scene.control.ResumeGame;
 
 import java.util.ArrayList;

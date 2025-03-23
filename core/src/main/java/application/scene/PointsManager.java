@@ -1,4 +1,4 @@
-package application.manager;
+package application.scene;
 
 public class PointsManager {
     private int points;

@@ -3,9 +3,8 @@ package application.entity;
 import abstractengine.entity.CollisionListener;
 import abstractengine.entity.Entity;
 import abstractengine.scene.ISceneManager;
-import application.manager.PlayerStatus;
-import application.manager.PointsManager;
 import application.scene.GameOverScreen;
+import application.scene.PointsManager;
 import application.scene.SceneID;
 
 public class PlayerLifeHandler implements CollisionListener {

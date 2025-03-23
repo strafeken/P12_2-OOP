@@ -1,4 +1,4 @@
-package application.manager;
+package application.scene;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;

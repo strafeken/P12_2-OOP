@@ -7,7 +7,6 @@ import abstractengine.scene.ISceneManager;
 import abstractengine.scene.SceneManager;
 import application.entity.CollisionType;
 import application.entity.Planet;
-import application.manager.LevelManager;
 import application.scene.control.StartLevel;
 
 public class StartLevelHandler implements CollisionListener {

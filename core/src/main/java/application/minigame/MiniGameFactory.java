@@ -3,7 +3,7 @@ package application.minigame;
 import java.util.Random;
 
 import abstractengine.scene.Scene;
-import application.manager.PointsManager;
+import application.scene.PointsManager;
 import application.scene.StartMiniGameHandler;
 
 /**

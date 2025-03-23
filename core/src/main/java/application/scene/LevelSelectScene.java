@@ -27,9 +27,8 @@ import application.entity.Planet;
 import application.entity.Player;
 import application.entity.PlayerBehaviour;
 import application.io.GameInputManager;
+import application.io.GameManager;
 import application.io.PlayerInputManager;
-import application.manager.GameManager;
-import application.manager.LevelManager;
 import application.scene.control.ExitGame;
 import application.scene.control.PauseGame;
 

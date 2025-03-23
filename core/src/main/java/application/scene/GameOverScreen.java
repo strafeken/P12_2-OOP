@@ -20,9 +20,8 @@ import abstractengine.scene.Scene;
 import abstractengine.scene.SceneManager;
 import abstractengine.utils.DisplayManager;
 import application.entity.EntityType;
+import application.entity.PlayerStatus;
 import application.io.GameInputManager;
-import application.manager.LevelManager;
-import application.manager.PlayerStatus;
 import application.scene.control.StartGame;
 import application.scene.control.StartLevelSelect;
 

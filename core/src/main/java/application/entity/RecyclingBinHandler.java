@@ -4,8 +4,7 @@ import abstractengine.entity.CollisionListener;
 import abstractengine.entity.Entity;
 import application.entity.trash.RecyclableTrash;
 import application.entity.trash.RecyclingBin;
-import application.manager.PlayerStatus;
-import application.manager.PointsManager;
+import application.scene.PointsManager;
 
 public class RecyclingBinHandler implements CollisionListener {
     private PointsManager pointsManager;

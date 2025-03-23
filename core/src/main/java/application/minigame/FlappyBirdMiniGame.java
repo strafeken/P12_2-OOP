@@ -19,10 +19,10 @@ import abstractengine.scene.ISceneManager;
 import abstractengine.scene.Scene;
 import abstractengine.scene.SceneManager;
 import abstractengine.utils.DisplayManager;
+import application.entity.PlayerStatus;
 import application.io.GameInputManager;
-import application.manager.PlayerStatus;
-import application.manager.PointsManager;
 import application.scene.GameOverScreen;
+import application.scene.PointsManager;
 import application.scene.SceneID;
 import application.scene.StartMiniGameHandler;
 

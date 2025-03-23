@@ -8,7 +8,7 @@ import abstractengine.entity.Entity;
 import application.entity.AlienBehaviour.Move;
 import application.entity.AlienBehaviour.State;
 import application.entity.movement.Chase;
-import application.manager.LevelManager;
+import application.scene.LevelManager;
 
 public class Alien extends DynamicTextureObject<AlienBehaviour.State, AlienBehaviour.Move> {
     private Entity targetPlayer;

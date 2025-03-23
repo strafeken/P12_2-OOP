@@ -1,4 +1,4 @@
-package application.manager;
+package application.entity;
 
 import abstractengine.entity.Entity;
 
