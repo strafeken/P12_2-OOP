@@ -26,20 +26,22 @@ public abstract class DynamicTextureObject <S extends Enum<S>, A extends Enum<A>
         tex = resizeTexture(originalTexture, Math.round(size.x), Math.round(size.y));
     }
     
+    @Override
 	public Texture getTexture() {
 		return tex;
 	}
 
+    @Override
 	public void setTexture(Texture texture) {
 		tex = texture;
 	}
 
-	@Override
+    @Override
 	public float getWidth() {
 		return tex.getWidth();
 	}
 
-	@Override
+    @Override
 	public float getHeight() {
 		return tex.getHeight();
 	}

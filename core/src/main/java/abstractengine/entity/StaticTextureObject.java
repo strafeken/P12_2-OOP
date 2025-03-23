@@ -24,10 +24,12 @@ public class StaticTextureObject extends Static implements TexturedObject {
         tex = resizeTexture(originalTexture, Math.round(size.x), Math.round(size.y));
 	}
 
+	@Override
 	public Texture getTexture() {
 		return tex;
 	}
 
+	@Override
 	public void setTexture(Texture texture) {
 		tex = texture;
 	}

@@ -21,26 +21,32 @@ public abstract class StaticGameShape extends Static implements ShapeRenderable 
         this.color = color;
     }
 
+    @Override
     public Color getColor() {
         return color;
     }
 
+    @Override
     public void setColor(Color color) {
         this.color = color;
     }
 
+    @Override
     public float getWidth() {
         return this.width;
     }
 
+    @Override
     public void setWidth(float width) {
         this.width = width;
     }
 
+    @Override
     public float getHeight() {
         return this.height;
     }
 
+    @Override
     public void setHeight(float height) {
         this.height = height;
     }
