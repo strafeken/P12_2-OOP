@@ -25,26 +25,32 @@ public abstract class DynamicGameShape<S extends Enum<S>, A extends Enum<A>> ext
         System.out.println("check if still work in game shape ");
     }
 
+    @Override
     public Color getColor() {
         return color;
     }
 
+    @Override
     public void setColor(Color color) {
         this.color = color;
     }
 
+    @Override
     public float getWidth() {
         return width;
     }
 
+    @Override
     public void setWidth(float width) {
         this.width = width;
     }
 
+    @Override
     public float getHeight() {
         return height;
     }
 
+    @Override
     public void setHeight(float height) {
         this.height = height;
     }
