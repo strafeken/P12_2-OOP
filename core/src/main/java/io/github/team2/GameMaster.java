@@ -5,18 +5,18 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-import abstractEngine.AudioSystem.AudioManager;
-import abstractEngine.AudioSystem.IAudioManager;
-import abstractEngine.SceneSystem.ISceneManager;
-import abstractEngine.SceneSystem.SceneID;
-import abstractEngine.SceneSystem.SceneManager;
-import game.Manager.LevelManager;
-import game.Scene.GameOverScreen;
-import game.Scene.GameScene;
-import game.Scene.LevelSelectScene;
-import game.Scene.MainMenu;
-import game.Scene.PauseMenu;
-import game.Scene.SettingsMenu;
+import abstractengine.audio.AudioManager;
+import abstractengine.audio.IAudioManager;
+import abstractengine.scene.ISceneManager;
+import abstractengine.scene.SceneManager;
+import application.manager.LevelManager;
+import application.scene.GameOverScreen;
+import application.scene.GameScene;
+import application.scene.LevelSelectScene;
+import application.scene.MainMenu;
+import application.scene.PauseMenu;
+import application.scene.SceneID;
+import application.scene.SettingsMenu;
 
 public class GameMaster extends ApplicationAdapter {
     private SpriteBatch batch;
