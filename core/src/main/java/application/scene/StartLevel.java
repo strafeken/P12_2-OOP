@@ -1,10 +1,9 @@
-package application.scene.control;
+package application.scene;
 
 
 
 import abstractengine.io.Action;
 import abstractengine.scene.ISceneManager;
-import application.scene.SceneID;
 
 public class StartLevel implements Action{
 
