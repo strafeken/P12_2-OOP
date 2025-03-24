@@ -80,6 +80,9 @@ public class Pipe extends StaticTextureObject {
     public float getX() {
         return getPosition().x;
     }
+    public float getY() {
+        return getPosition().y;
+    }
 
     /**
      * Get the pipe's bounds for collision detection

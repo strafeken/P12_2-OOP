@@ -7,7 +7,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-
+import com.badlogic.gdx.math.Vector2;
+import application.entity.EntityType;
 import application.minigame.common.AbstractMiniGame;
 import application.minigame.common.GameState;
 import application.minigame.common.MiniGameUI;
@@ -22,7 +23,6 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
     private Ship ship;
     private AsteroidManager asteroidManager;
     private AsteroidDodgePhysics physics;
-    private AsteroidDodgeRenderer renderer;
     private AsteroidDodgeUI gameUI;
     private ShapeRenderer shapeRenderer;
 
@@ -140,7 +140,7 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
         // Handle player movement
         handlePlayerMovement(deltaTime);
 
-        // Update asteroids spawning
+        // Update asteroids spawning - now passing current game time
         asteroidManager.update(deltaTime, gameTime);
 
         // Update physics and check collisions
@@ -232,18 +232,12 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
 
     @Override
     protected void drawGame(SpriteBatch batch) {
-        if (renderer == null) {
-            System.err.println("ERROR: Renderer is null in drawGame!");
-            return;
+        // Draw the background texture first if available
+        if (backgroundTexture != null) {
+            batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         }
-
-        // Always draw the background only when in READY state
-        if (state == GameState.READY) {
-            renderer.renderBackground(batch);
-        } else {
-            // For all other states, draw the full game
-            renderer.render(batch, shapeRenderer);
-        }
+        // Delegate drawing of dynamic entities to IEntityManager
+        entityManager.draw(batch);
     }
 
     @Override
@@ -275,40 +269,40 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
         state = GameState.READY;
         gameTime = 0;
         score = 0;
-
-        // Set the time limit to 60 seconds
         timeLimit = 60f;
 
-        // Load assets
         loadAssets();
 
-        // Create game objects
-        // Updated ship instantiation with initial position (centered horizontally, near bottom)
-        float scale = 0.1f; // scale factor for ship size reduction
-        ship = new Ship(shipTexture,
-                        Gdx.graphics.getWidth() / 2f,
-                        100f,
-                        shipTexture.getWidth() * scale,
-                        shipTexture.getHeight() * scale);
-        asteroidManager = new AsteroidManager(asteroidTexture);
+        // Use proper constructor with explicit size
+        Vector2 shipSize = new Vector2(40f, 40f); // Set desired size
+        ship = new Ship(EntityType.PLAYER,
+                       "rocket-2.png",
+                       shipSize,
+                       new Vector2(Gdx.graphics.getWidth() / 2f, 100f),
+                       new Vector2(0, 0),
+                       new Vector2(0, 0),
+                       300f);
+
+        // Assign a dummy physics body using the ship as the entity.
+        ship.setPhysicsBody(new application.minigame.utils.DummyPhysicsBody(ship));
+
+        entityManager.addEntities(ship);
+
+        asteroidManager = new AsteroidManager(
+            entityManager,
+            asteroidTexture,
+            30f,   // min asteroid size
+            80f,   // max asteroid size
+            1.5f,  // min spawn interval (seconds)
+            3.0f   // max spawn interval (seconds)
+        );
         physics = new AsteroidDodgePhysics(ship, asteroidManager, collisionGracePeriod);
         Color skyColor = new Color(0.1f, 0.1f, 0.3f, 1);
-        renderer = new AsteroidDodgeRenderer(backgroundTexture,
-                                             ship,
-                                             asteroidManager,
-                                             usingFallbackTexture,
-                                             skyColor);
         shapeRenderer = new ShapeRenderer();
         gameUI = (AsteroidDodgeUI) createGameUI();
 
-        // Set time limit on the UI
         if (gameUI instanceof AsteroidDodgeUI) {
             ((AsteroidDodgeUI) gameUI).setTimeLimit(timeLimit);
-        }
-
-        // Play mini-game music
-        if (audioManager != null) {
-            audioManager.playSoundEffect("minigame");
         }
 
         System.out.println("Asteroid Dodge mini-game loaded successfully");
@@ -316,16 +310,9 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
 
     @Override
     public void draw(ShapeRenderer shape) {
-        // Disable the debug visualization completely
-        // This will prevent yellow squares from being drawn
-
-        // If you need debug visualization in the future, uncomment this:
-        /*
-        if (renderer != null && physics != null) {
-            // Optionally draw debug outlines
-            renderer.renderDebug(shape, physics, gameTime, collisionGracePeriod);
-        }
-        */
+        // Delegate debug drawing to IEntityManager (if supported)
+        // For now, remove renderer debug calls.
+        // entityManager.draw(shape);
     }
 
     @Override

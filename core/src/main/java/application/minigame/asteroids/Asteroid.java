@@ -16,6 +16,7 @@ public class Asteroid extends DynamicTextureObject<AsteroidState, AsteroidAction
     // Asteroid properties
     private float speedY;
     private Rectangle bounds; // For collision detection
+    protected abstractengine.entity.PhysicsBody physicsBody;
 
     /**
      * Creates a new Asteroid
@@ -28,18 +29,22 @@ public class Asteroid extends DynamicTextureObject<AsteroidState, AsteroidAction
      * @param speedY Vertical speed
      */
     public Asteroid(Texture texture, float x, float y, float width, float height, float speedY) {
-        super(texture);
+        // Use the entity constructor that resizes the texture
+        super(EntityType.OBSTACLE,
+              texture.toString().replace("Texture: file:", ""),
+              new Vector2(width, height),
+              new Vector2(x, y),
+              new Vector2(0, -1), // Direction downward
+              new Vector2(0, 0),
+              speedY,
+              AsteroidState.ACTIVE,
+              AsteroidAction.NONE);
 
-        // Set position
-        setPosition(new Vector2(x, y));
-
-        // Set asteroid-specific properties
         this.speedY = speedY;
         this.bounds = new Rectangle(x - width/2, y - height/2, width, height);
 
-        // Set initial state
-        setState(AsteroidState.ACTIVE);
-        setActionState(AsteroidAction.NONE);
+        // Set physics body right away
+        this.setPhysicsBody(new application.minigame.utils.DummyPhysicsBody(this));
     }
 
     /**
@@ -76,17 +81,19 @@ public class Asteroid extends DynamicTextureObject<AsteroidState, AsteroidAction
      * @param deltaTime Time since last update
      */
     public void update(float deltaTime) {
-        // Update position based on speed
+        // Move the position downward
         Vector2 position = getPosition();
         position.y -= speedY * deltaTime;
         setPosition(position);
 
-        // Update collision bounds to match position
-        bounds.y = position.y - bounds.height/2;
-        bounds.x = position.x - bounds.width/2;
+        // Update physics body position if it exists
+        if (physicsBody != null && physicsBody instanceof application.minigame.utils.DummyPhysicsBody) {
+            ((application.minigame.utils.DummyPhysicsBody)physicsBody).setDummyPosition(position);
+        }
 
-        // Set action state to MOVE while moving
-        setActionState(AsteroidAction.MOVE);
+        // Update collision bounds
+        bounds.x = position.x - bounds.width/2;
+        bounds.y = position.y - bounds.height/2;
     }
 
     /**
@@ -131,4 +138,13 @@ public class Asteroid extends DynamicTextureObject<AsteroidState, AsteroidAction
     public float getSpeedY() {
         return speedY;
     }
+    public void setPhysicsBody(abstractengine.entity.PhysicsBody physicsBody) {
+        this.physicsBody = physicsBody;
+    }
+
+    // Optionally, add a getter if needed
+    public abstractengine.entity.PhysicsBody getPhysicsBody() {
+        return physicsBody;
+    }
 }
+

@@ -9,7 +9,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 
+import com.badlogic.gdx.math.Vector2;
+import abstractengine.utils.DisplayManager;
+import application.entity.EntityType;
 import application.minigame.common.GameState;
+import application.minigame.asteroids.Ship;
 import application.minigame.common.AbstractMiniGame;
 import application.minigame.common.MiniGameUI;
 import application.scene.PointsManager;
@@ -24,7 +28,6 @@ public class FlappyBirdGame extends AbstractMiniGame {
     private Bird bird;
     private PipeManager pipeManager;
     private FlappyBirdPhysics physics;
-    private FlappyBirdRenderer renderer;
     private FlappyBirdUI gameUI;
 
     // Game assets
@@ -249,17 +252,24 @@ public class FlappyBirdGame extends AbstractMiniGame {
 
     @Override
     protected void drawGame(SpriteBatch batch) {
-        if (batch == null || renderer == null) {
-            System.err.println("ERROR: Renderer or batch is null in drawGame!");
-            return;
+        // Draw the background texture first
+        if (backgroundTexture != null) {
+            batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         }
 
-        // Always draw the background only when in READY state
-        if (state == GameState.READY) {
-            renderer.renderBackground(batch);
+        // Delegate drawing of dynamic entities to IEntityManager
+        entityManager.draw(batch);
+
+        // Only draw pipes if pipeManager has been instantiated
+        if (pipeManager != null) {
+            for (Pipe pipe : pipeManager.getPipes()) {
+                batch.draw(pipe.getTexture(),
+                    pipe.getX() - pipe.getWidth() / 2,
+                    pipe.getY() - pipe.getHeight() / 2,
+                    pipe.getWidth(), pipe.getHeight());
+            }
         } else {
-            // For all other states, draw the full game
-            renderer.render(batch);
+            System.err.println("PipeManager is null!");
         }
     }
 
@@ -292,41 +302,35 @@ public class FlappyBirdGame extends AbstractMiniGame {
     @Override
     public void load() {
         System.out.println("Starting FlappyBird load process...");
-
-        // Initialize game state
         state = GameState.READY;
         gameTime = 0;
         score = 0;
         gameOverTimer = 0;
-
-        // Set the time limit to 60 seconds
         timeLimit = 60f;
 
-        // Load assets if needed
         if (birdTexture == null || pipeTexture == null || backgroundTexture == null) {
             loadAssets();
         }
 
-        // Create game objects with loaded textures
-        bird = new Bird(birdTexture);
+        // Create bird with correct size using constructor parameters
+        Vector2 birdSize = new Vector2(50f, 50f); // Set desired size
+        bird = new Bird(EntityType.PLAYER,
+                       "rocket-2.png",
+                       birdSize,
+                       new Vector2(Gdx.graphics.getWidth() / 2f, 100f),
+                       new Vector2(0, 0),
+                       new Vector2(0, 0),
+                       300f);
+
+        bird.setPhysicsBody(new application.minigame.utils.DummyPhysicsBody(bird));
+
         pipeManager = new PipeManager(pipeTexture);
         physics = new FlappyBirdPhysics(bird, pipeManager);
-        renderer = new FlappyBirdRenderer(backgroundTexture, bird, pipeManager);
 
-        // Create UI and set initial values
+        // Register dynamic entities with the IEntityManager:
+        entityManager.addEntities(bird);
+
         gameUI = (FlappyBirdUI)createGameUI();
-
-        // Double-check gameUI configuration
-        if (gameUI instanceof FlappyBirdUI) {
-            ((FlappyBirdUI)gameUI).setTimeLimit(timeLimit);
-            ((FlappyBirdUI)gameUI).setScore(score);
-            System.out.println("FlappyBird UI configured with timeLimit=" + timeLimit + ", score=" + score);
-        }
-
-        // Play mini-game music
-        if (audioManager != null) {
-            audioManager.playSoundEffect("minigame");
-        }
 
         System.out.println("FlappyBird mini-game loaded successfully");
     }

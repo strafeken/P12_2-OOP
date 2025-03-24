@@ -27,6 +27,9 @@ public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
     private ShipState state;
     private ShipAction actionState;
 
+    // Add a physicsBody field so that setPhysicsBody() can assign it.
+    protected abstractengine.entity.PhysicsBody physicsBody;
+
     public ShipState getState() {
         return state;
     }
@@ -53,10 +56,15 @@ public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
      * @param height Height
      */
     public Ship(Texture texture, float x, float y, float width, float height) {
-        super(texture);
-
-        // Set position
-        setPosition(new Vector2(x, y));
+        super(EntityType.PLAYER,
+              texture.toString().replace("Texture: file:", ""), // Clean texture path
+              new Vector2(width, height), // Size parameter for scaling
+              new Vector2(x, y),
+              new Vector2(0, 0),
+              new Vector2(0, 0),
+              DEFAULT_SPEED,
+              ShipState.IDLE,
+              ShipAction.NONE);
 
         // Set ship-specific properties
         this.speed = DEFAULT_SPEED;
@@ -219,5 +227,14 @@ public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
         // Update collision bounds if you maintain them separately
         bounds.x = pos.x - bounds.width / 2;
         bounds.y = pos.y - bounds.height / 2;
+    }
+
+    public void setPhysicsBody(abstractengine.entity.PhysicsBody physicsBody) {
+        this.physicsBody = physicsBody;
+    }
+
+    // Optionally, add a getter if needed
+    public abstractengine.entity.PhysicsBody getPhysicsBody() {
+        return physicsBody;
     }
 }

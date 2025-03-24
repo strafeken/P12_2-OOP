@@ -13,7 +13,8 @@ import abstractengine.utils.DisplayManager;
 public class PipeManager {
     // Constants for pipe generation
     private static final float PIPE_WIDTH = 64;
-    private static final float PIPE_GAP = 150;
+    private static final float MIN_GAP = 150;
+    private static final float MAX_GAP = 200;
     private static final float PIPE_SPACING = 200;
     private static final float PIPE_SPEED = 150;
 
@@ -74,27 +75,27 @@ public class PipeManager {
      * Generate a new pipe pair
      */
     private void generatePipe() {
-        // Fixed gap between pipes
-        float gap = PIPE_GAP;
+        // Random gap between MIN_GAP and MAX_GAP
+        float gap = MathUtils.random(MIN_GAP, MAX_GAP);
 
-        // Define limits for bottom pipe height (in pixels)
-        float minOffset = 50f;
-        float maxOffset = screenHeight - gap - 50f;
+        // Set minimum and maximum bottom pipe heights
+        float minBottomHeight = 10f; // adjust as desired
+        float maxBottomHeight = screenHeight - gap - 10f; // ensure top pipe has at least 10f height
 
-        // Randomly choose a bottom pipe height (this offset)
-        float offsetY = MathUtils.random(minOffset, maxOffset);
+        // Generate a random bottom pipe height within the allowed range
+        float bottomPipeHeight = MathUtils.random(minBottomHeight, maxBottomHeight);
 
-        float bottomPipeHeight = offsetY;
-        float topPipeHeight = screenHeight - gap - offsetY;
+        // Calculate top pipe height based on bottom pipe height and gap
+        float topPipeHeight = screenHeight - gap - bottomPipeHeight;
 
-        // Bottom pipe: anchored at y = 0
-        float bottomPipeY = bottomPipeHeight / 2;
+        // Bottom pipe: position its center so that its bottom edge is at y = -10.
+        // (Center = bottom edge + half the height)
+        float bottomPipeY = bottomPipeHeight / 2f;
 
-        // For the top pipe, add an extra offset to have it spawn further above the screen
-        float extra = 30f; // adjust as needed
-        float topPipeY = screenHeight + extra - topPipeHeight / 2;
+        // Top pipe: position its center so that its bottom edge aligns exactly with the top of the screen.
+        float topPipeY = screenHeight - topPipeHeight / 2f;
 
-        // Create bottom pipe anchored at the bottom
+        // Create the bottom and top pipes.
         Pipe bottomPipe = new Pipe(pipeTexture,
                                    screenWidth, // starting X position (offscreen right)
                                    bottomPipeY,
@@ -102,7 +103,6 @@ public class PipeManager {
                                    bottomPipeHeight,
                                    false);
 
-        // Create top pipe so that its top edge is above the screen
         Pipe topPipe = new Pipe(pipeTexture,
                                 screenWidth, // starting X position (offscreen right)
                                 topPipeY,
@@ -113,7 +113,7 @@ public class PipeManager {
         pipes.add(bottomPipe);
         pipes.add(topPipe);
 
-        // Reset timer for pipe generation
+        // Reset pipe generation timer.
         timeSinceLastPipe = 0;
     }
 
