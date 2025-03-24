@@ -16,9 +16,7 @@ import application.entity.Alien;
 import application.entity.CollisionType;
 import application.entity.EntityType;
 import application.entity.PlayerStatus;
-import application.minigame.AsteroidDodgeMiniGame;
-import application.minigame.FlappyBirdMiniGame;
-import application.minigame.MiniGameFactory;
+import application.minigame.common.MiniGameFactory;
 
 /**
  * Handles starting mini-games when player collides with an alien.
@@ -92,7 +90,7 @@ public class StartMiniGameHandler implements CollisionListener {
      * Starts a random mini-game
      */
     private void startMiniGame() {
-        // Choose a random mini-game
+        // Choose a random mini-game using the OOP factory
         Scene miniGame = miniGameFactory.createRandomMiniGame();
 
         // Check if scene exists already and remove it if it does
