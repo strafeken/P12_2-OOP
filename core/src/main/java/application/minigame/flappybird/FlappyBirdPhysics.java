@@ -19,7 +19,6 @@ public class FlappyBirdPhysics {
 
     // Collision tracking
     private boolean hasCollided;
-    // Removed newlyPassedPipes and added cumulative score
     private int score;
 
     /**
@@ -51,6 +50,9 @@ public class FlappyBirdPhysics {
         Rectangle birdBounds = bird.getBounds();
         birdBounds.y += bird.getVelocityY() * deltaTime;
 
+        // Update the bird entity
+        bird.update(deltaTime);
+
         // Check collisions with screen boundaries
         if (birdBounds.y < 0) {
             birdBounds.y = 0;
@@ -75,11 +77,9 @@ public class FlappyBirdPhysics {
 
     /**
      * Check for pipes that have been passed and return the count
-     * (Internal helper method to avoid duplicated logic)
      */
     private int checkForPassedPipes() {
         int passedCount = 0;
-        // Use getBounds() to access the Rectangle object properties
         Rectangle birdBounds = bird.getBounds();
         float birdLeftEdge = birdBounds.x;
         Array<Pipe> pipes = pipeManager.getPipes();
@@ -87,12 +87,11 @@ public class FlappyBirdPhysics {
         for (int i = 0; i < pipes.size; i++) {
             Pipe pipe = pipes.get(i);
 
-            // Only check bottom pipes to avoid double counting (since pipes come in pairs)
+            // Only check bottom pipes to avoid double counting
             if (!pipe.isTop()) {
-                // Use the start/left edge of the pipe instead of the right edge
                 float pipeLeftEdge = pipe.getX();
 
-                // Check if bird has passed the pipe (bird's left edge > pipe's start x)
+                // Check if bird has passed the pipe
                 if (!pipe.isPassed() && birdLeftEdge > pipeLeftEdge) {
                     pipe.setPassed(true);
 
@@ -104,7 +103,7 @@ public class FlappyBirdPhysics {
 
                     passedCount++;
                     System.out.println("PIPE PASSED! Bird left edge: " + birdLeftEdge +
-                                       ", Pipe left edge: " + pipeLeftEdge);
+                                     ", Pipe left edge: " + pipeLeftEdge);
                 }
             }
         }
@@ -118,14 +117,10 @@ public class FlappyBirdPhysics {
 
     /**
      * Find the matching top pipe for a bottom pipe
-     * @param pipes The array of pipes
-     * @param bottomPipe The bottom pipe to match
-     * @return The index of the top pipe or -1 if not found
      */
     private int findMatchingTopPipe(Array<Pipe> pipes, Pipe bottomPipe) {
         float bottomPipeX = bottomPipe.getX();
 
-        // Use a larger tolerance for matching x values
         for (int i = 0; i < pipes.size; i++) {
             Pipe candidatePipe = pipes.get(i);
             if (candidatePipe.isTop() && Math.abs(candidatePipe.getX() - bottomPipeX) < 5) {
@@ -141,6 +136,7 @@ public class FlappyBirdPhysics {
      */
     public void jump() {
         bird.setVelocityY(JUMP_VELOCITY);
+        bird.flap(); // This updates the bird action state.
     }
 
     /**
@@ -151,7 +147,7 @@ public class FlappyBirdPhysics {
     }
 
     /**
-     * Get the cumulative score (points) from pipes that have been passed
+     * Get the cumulative score from pipes passed
      */
     public int getNewlyPassedPipes() {
         return score;

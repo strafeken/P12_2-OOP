@@ -2,6 +2,8 @@ package application.minigame.common;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 
 import abstractengine.io.TextManager;
 import abstractengine.utils.DisplayManager;
@@ -128,25 +130,34 @@ public abstract class MiniGameUI {
     /**
      * Draw the exit confirmation dialog
      */
+
     public void drawConfirmExitDialog(SpriteBatch batch, boolean confirmYes) {
+        // Create a 1x1 pixmap with a solid color (e.g. dark gray)
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.DARK_GRAY); // change to any color you prefer
+        pixmap.fill();
+        Texture bgTexture = new Texture(pixmap);
+        pixmap.dispose();
+
+        // Draw the background stretched to full screen
+        batch.draw(bgTexture, 0, 0, DisplayManager.getScreenWidth(), DisplayManager.getScreenHeight());
+        // Dispose of the texture afterwards (alternatively, cache it for repeated use)
+        bgTexture.dispose();
+
         int centerX = (int)(DisplayManager.getScreenWidth() / 2);
         int centerY = (int)(DisplayManager.getScreenHeight() / 2);
 
-        // Draw semi-transparent background rectangle
-        // This would normally use a shape renderer, but since we're only using SpriteBatch here,
-        // we'll assume there's a background drawn elsewhere
-
-        // Draw dialog text
+        // Draw dialog text and options on top of the background
         textManager.draw(batch, "Exit Mini-Game?", centerX - 100, centerY + 50, WARNING_COLOR);
-        textManager.draw(batch, "You will lose one life!", centerX - 130, centerY, INSTRUCTION_COLOR);
+        textManager.draw(batch, "You will lose one life!", centerX - 130, centerY + 20, INSTRUCTION_COLOR);
 
-        // Draw options
+        // Draw options (Yes/No) with selection highlight
         textManager.draw(batch, "Yes", centerX - 80, centerY - 50,
-                        confirmYes ? SELECTED_COLOR : UNSELECTED_COLOR);
+                         confirmYes ? SELECTED_COLOR : UNSELECTED_COLOR);
         textManager.draw(batch, "No", centerX + 40, centerY - 50,
-                        confirmYes ? UNSELECTED_COLOR : SELECTED_COLOR);
+                         confirmYes ? UNSELECTED_COLOR : SELECTED_COLOR);
 
-        // Draw navigation help
+        // Draw navigation help text
         textManager.draw(batch, "Use W/S or Up/Down to select", centerX - 160, centerY - 100, INSTRUCTION_COLOR);
         textManager.draw(batch, "Press SPACE to confirm", centerX - 130, centerY - 130, INSTRUCTION_COLOR);
     }

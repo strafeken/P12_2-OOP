@@ -77,4 +77,5 @@ public class AsteroidDodgeUI extends MiniGameUI {
     protected String getGameTitle() {
         return "Asteroid Dodge";
     }
+
 }

@@ -74,38 +74,47 @@ public class PipeManager {
      * Generate a new pipe pair
      */
     private void generatePipe() {
-        // Generate a random gap size between 150-200 pixels
-        float gapSize = MathUtils.random(150f, 200f);
+        // Fixed gap between pipes
+        float gap = PIPE_GAP;
 
-        // Calculate the maximum Y position for the bottom pipe
-        // (leaves enough space at the top for at least the gap and the top pipe)
-        float maxBottomPipeY = screenHeight - gapSize - 50; // 50px minimum top pipe height
+        // Define limits for bottom pipe height (in pixels)
+        float minOffset = 50f;
+        float maxOffset = screenHeight - gap - 50f;
 
-        // Calculate random bottom pipe top position (Y coordinate of top edge of bottom pipe)
-        float bottomPipeTopY = MathUtils.random(100f, maxBottomPipeY); // 100px minimum from bottom
+        // Randomly choose a bottom pipe height (this offset)
+        float offsetY = MathUtils.random(minOffset, maxOffset);
 
-        // Calculate top pipe bottom Y position (Y coordinate of bottom edge of top pipe)
-        float topPipeBottomY = bottomPipeTopY + gapSize;
+        float bottomPipeHeight = offsetY;
+        float topPipeHeight = screenHeight - gap - offsetY;
 
-        // Calculate pipe heights
-        float bottomPipeHeight = bottomPipeTopY;
-        float topPipeHeight = screenHeight - topPipeBottomY;
+        // Bottom pipe: anchored at y = 0
+        float bottomPipeY = bottomPipeHeight / 2;
 
-        // Create bottom pipe - starts at y=0 and extends upward to bottomPipeTopY
-        Pipe bottomPipe = new Pipe(pipeTexture, screenWidth, 0,
-                                  PIPE_WIDTH, bottomPipeHeight, false);
+        // For the top pipe, add an extra offset to have it spawn further above the screen
+        float extra = 30f; // adjust as needed
+        float topPipeY = screenHeight + extra - topPipeHeight / 2;
 
-        // Create top pipe - starts at topPipeBottomY and extends to the top of the screen
-        Pipe topPipe = new Pipe(pipeTexture, screenWidth, topPipeBottomY,
-                               PIPE_WIDTH, topPipeHeight, true);
+        // Create bottom pipe anchored at the bottom
+        Pipe bottomPipe = new Pipe(pipeTexture,
+                                   screenWidth, // starting X position (offscreen right)
+                                   bottomPipeY,
+                                   PIPE_WIDTH,
+                                   bottomPipeHeight,
+                                   false);
 
-        // Ensure the new pipes are marked as not passed
-        bottomPipe.setPassed(false);
-        topPipe.setPassed(false);
+        // Create top pipe so that its top edge is above the screen
+        Pipe topPipe = new Pipe(pipeTexture,
+                                screenWidth, // starting X position (offscreen right)
+                                topPipeY,
+                                PIPE_WIDTH,
+                                topPipeHeight,
+                                true);
 
-        // Add pipes to the array
         pipes.add(bottomPipe);
         pipes.add(topPipe);
+
+        // Reset timer for pipe generation
+        timeSinceLastPipe = 0;
     }
 
     /**

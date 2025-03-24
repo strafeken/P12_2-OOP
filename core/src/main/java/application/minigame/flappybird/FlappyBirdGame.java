@@ -222,6 +222,12 @@ public class FlappyBirdGame extends AbstractMiniGame {
             }
         }
 
+        // Example snippet to add in your FlappyBirdGame.handlePlayingState() method:
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+            state = GameState.CONFIRM_EXIT;
+            System.out.println("Quick exit triggered in FlappyBirdGame");
+        }
+
         // Check if game time is up
         if (gameTime >= timeLimit) {
             state = GameState.GAME_OVER;
@@ -234,14 +240,11 @@ public class FlappyBirdGame extends AbstractMiniGame {
      */
     private void handleJumpInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            // Call physics.jump() which should set bird's jump velocity internally before calling flap()
             physics.jump();
             audioManager.playSoundEffect("jump");
         }
-
-        // Check for exit with Q key
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-            state = GameState.CONFIRM_EXIT;
-        }
+        // Optional: allow touch input or other input for jump
     }
 
     @Override

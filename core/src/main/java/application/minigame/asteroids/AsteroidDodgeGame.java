@@ -283,17 +283,27 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
         loadAssets();
 
         // Create game objects
-        ship = new Ship(shipTexture);
+        // Updated ship instantiation with initial position (centered horizontally, near bottom)
+        float scale = 0.1f; // scale factor for ship size reduction
+        ship = new Ship(shipTexture,
+                        Gdx.graphics.getWidth() / 2f,
+                        100f,
+                        shipTexture.getWidth() * scale,
+                        shipTexture.getHeight() * scale);
         asteroidManager = new AsteroidManager(asteroidTexture);
         physics = new AsteroidDodgePhysics(ship, asteroidManager, collisionGracePeriod);
         Color skyColor = new Color(0.1f, 0.1f, 0.3f, 1);
-        renderer = new AsteroidDodgeRenderer(backgroundTexture, ship, asteroidManager, usingFallbackTexture, skyColor);
+        renderer = new AsteroidDodgeRenderer(backgroundTexture,
+                                             ship,
+                                             asteroidManager,
+                                             usingFallbackTexture,
+                                             skyColor);
         shapeRenderer = new ShapeRenderer();
         gameUI = (AsteroidDodgeUI) createGameUI();
 
         // Set time limit on the UI
         if (gameUI instanceof AsteroidDodgeUI) {
-            ((AsteroidDodgeUI)gameUI).setTimeLimit(timeLimit);
+            ((AsteroidDodgeUI) gameUI).setTimeLimit(timeLimit);
         }
 
         // Play mini-game music
@@ -340,7 +350,8 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
         state = GameState.READY;
 
         // Reset game components
-        ship.reset();
+        // Updated ship reset call with new position values (centered horizontally, near bottom)
+        ship.reset(Gdx.graphics.getWidth() / 2f, 100f);
         asteroidManager.reset();
         physics.reset();
     }
