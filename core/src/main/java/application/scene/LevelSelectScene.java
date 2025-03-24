@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
 import abstractengine.audio.AudioManager;
@@ -18,7 +17,6 @@ import abstractengine.entity.Entity;
 import abstractengine.entity.EntityManager;
 import abstractengine.entity.StaticTextureObject;
 import abstractengine.io.TextManager;
-import abstractengine.scene.ISceneManager;
 import abstractengine.scene.Scene;
 import abstractengine.scene.SceneManager;
 import abstractengine.utils.DisplayManager;
@@ -42,7 +40,6 @@ public class LevelSelectScene extends Scene {
 
     // Physics world
     private World world;
-    private Box2DDebugRenderer debugRenderer;
     private float accumulator;
 
     private PlayerInputManager playerInputManager;
@@ -156,7 +153,6 @@ public class LevelSelectScene extends Scene {
 
     private void initializeWorld() {
         world = new World(new Vector2(0, 0), true);
-        debugRenderer = new Box2DDebugRenderer();
     }
 
     private void initializeInput() {
