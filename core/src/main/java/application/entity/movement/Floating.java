@@ -3,10 +3,10 @@ package application.entity.movement;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import abstractengine.entity.Action;
 import abstractengine.entity.DynamicTextureObject;
 import abstractengine.entity.Dynamics;
 import abstractengine.entity.Entity;
-import abstractengine.io.Action;
 import abstractengine.utils.DisplayManager;
 import application.entity.EntityType;
 

@@ -11,9 +11,9 @@ import com.badlogic.gdx.math.Vector2;
 
 import abstractengine.audio.AudioManager;
 import abstractengine.audio.IAudioManager;
+import abstractengine.entity.Action;
 import abstractengine.entity.EntityManager;
 import abstractengine.entity.StaticTextureObject;
-import abstractengine.io.Action;
 import abstractengine.io.TextManager;
 import abstractengine.scene.ISceneManager;
 import abstractengine.scene.Scene;

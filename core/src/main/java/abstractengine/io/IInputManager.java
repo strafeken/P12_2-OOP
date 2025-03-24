@@ -1,5 +1,7 @@
  package abstractengine.io;
 
+import abstractengine.entity.Action;
+
 public interface IInputManager {
     public void registerKeyDown(int keycode, Action action);
     public void registerKeyUp(int keycode, Action action);

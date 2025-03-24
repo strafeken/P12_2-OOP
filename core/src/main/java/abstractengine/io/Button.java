@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
+import abstractengine.entity.Action;
+
 public class Button extends UIComponent {
     private Texture texture;
     private Action action;

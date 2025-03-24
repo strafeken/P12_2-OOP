@@ -2,7 +2,7 @@ package application.scene;
 
 
 
-import abstractengine.io.Action;
+import abstractengine.entity.Action;
 import abstractengine.scene.ISceneManager;
 
 public class StartLevel implements Action{

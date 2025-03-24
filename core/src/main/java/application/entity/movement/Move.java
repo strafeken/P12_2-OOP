@@ -2,9 +2,9 @@ package application.entity.movement;
 
 import com.badlogic.gdx.math.Vector2;
 
+import abstractengine.entity.Action;
 import abstractengine.entity.Dynamics;
 import abstractengine.entity.Entity;
-import abstractengine.io.Action;
 
 public class Move implements Action {
 	private final Entity entity;

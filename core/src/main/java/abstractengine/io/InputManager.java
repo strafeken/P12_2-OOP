@@ -1,5 +1,7 @@
 package abstractengine.io;
 
+import abstractengine.entity.Action;
+
 public abstract class InputManager implements IInputManager {
 	protected final KeyboardManager keyboardManager;
 	protected final MouseManager mouseManager;

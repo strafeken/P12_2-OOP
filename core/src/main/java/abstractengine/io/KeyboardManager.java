@@ -3,6 +3,8 @@ package abstractengine.io;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
+import abstractengine.entity.Action;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
