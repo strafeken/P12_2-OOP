@@ -8,6 +8,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import abstractengine.entity.CollisionListener;
+import abstractengine.entity.Entity;
+import abstractengine.entity.CollisionDetector;
+import application.entity.CollisionType;
 import application.entity.EntityType;
 import application.minigame.common.AbstractMiniGame;
 import application.minigame.common.GameState;
@@ -304,6 +308,25 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
         if (gameUI instanceof AsteroidDodgeUI) {
             ((AsteroidDodgeUI) gameUI).setTimeLimit(timeLimit);
         }
+
+
+
+
+
+
+        // Create and register the collision detector
+        CollisionDetector collisionDetector = new CollisionDetector();
+
+        collisionDetector.addListener(new CollisionListener() {
+            @Override
+            public void onCollision(Entity a, Entity b, CollisionType type) {
+                if (type == CollisionType.ALIEN_PLAYER) {
+                    state = GameState.GAME_OVER;
+                    gameOverTimer = 0;
+                    System.out.println("Ship hit an asteroid!");
+                }
+            }
+        });
 
         System.out.println("Asteroid Dodge mini-game loaded successfully");
     }

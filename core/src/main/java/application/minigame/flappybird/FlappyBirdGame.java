@@ -18,6 +18,10 @@ import application.minigame.common.AbstractMiniGame;
 import application.minigame.common.MiniGameUI;
 import application.scene.PointsManager;
 import application.scene.StartMiniGameHandler;
+import abstractengine.entity.CollisionDetector;
+import abstractengine.entity.CollisionListener;
+import abstractengine.entity.Entity;
+import application.entity.CollisionType;
 
 /**
  * FlappyBirdGame - A mini-game where the player controls a bird flying through pipes.
@@ -331,6 +335,22 @@ public class FlappyBirdGame extends AbstractMiniGame {
         entityManager.addEntities(bird);
 
         gameUI = (FlappyBirdUI)createGameUI();
+
+        // Create a CollisionDetector instance (do not modify abstractengine code)
+        CollisionDetector collisionDetector = new CollisionDetector();
+
+        // Register a collision listener for bird–pipe collisions.
+        collisionDetector.addListener(new CollisionListener() {
+            @Override
+            public void onCollision(Entity a, Entity b, CollisionType type) {
+                // Check for bird vs pipe collisions
+                if (type == CollisionType.PIPE_PLAYER) {
+                    state = GameState.GAME_OVER;
+                    gameOverTimer = 0;
+                    System.out.println("Bird collided with a pipe!");
+                }
+            }
+        });
 
         System.out.println("FlappyBird mini-game loaded successfully");
     }

@@ -20,9 +20,9 @@ public class AsteroidManager {
 
     // Difficulty parameters with updated intervals as per requirements
     private static final float SPEED_INCREASE_INTERVAL = 9.0f;    // Speed increases every 9 seconds
-    private static final float ASTEROID_COUNT_INCREASE_INTERVAL = 11.0f; // Count increases every 20 seconds
+    private static final float ASTEROID_COUNT_INCREASE_INTERVAL = 11.0f; // Count increases every 11 seconds
     private static final int MAX_SIMULTANEOUS_ASTEROIDS = 6;      // Maximum number of asteroids to spawn at once
-    private static final float SPEED_INCREASE_FACTOR = 0.05f;     // Speed increases by 5% each time
+    private static final float SPEED_INCREASE_FACTOR = 0.1f;     // Speed increases by 10%% each time
 
     // Asteroids
     private Array<Asteroid> asteroids;
