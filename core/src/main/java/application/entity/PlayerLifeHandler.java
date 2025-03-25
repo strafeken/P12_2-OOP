@@ -19,11 +19,13 @@ public class PlayerLifeHandler implements CollisionListener {
 
     @Override
     public void onCollision(Entity a, Entity b, CollisionType type) {
-        if (type == CollisionType.NON_RECYCLABLE_PLAYER) {
-            PlayerStatus playerStatus = PlayerStatus.getInstance();
+        PlayerStatus playerStatus = PlayerStatus.getInstance();
 
-            // Decrement player life
+        // Handle non-recyclable collisions
+        if (type == CollisionType.NON_RECYCLABLE_PLAYER) {
+
             playerStatus.decrementLife();
+
             System.out.println("Player collided with non-recyclable! Lives remaining: " + playerStatus.getLives());
 
             // Check if game over, but don't transition immediately during collision
@@ -32,14 +34,27 @@ public class PlayerLifeHandler implements CollisionListener {
                 isGameOver = true;
             }
         }
+        // Handle alien collisions
+        else if (type == CollisionType.ALIEN_PLAYER) {
+            // Decrement player life by 2
+            playerStatus.decrementLife();
+            playerStatus.decrementLife();
+            System.out.println("Player collided with alien! Lives remaining: " + playerStatus.getLives());
+
+            // Check if game over
+            if (playerStatus.isGameOver()) {
+                System.out.println("Game Over! No lives remaining.");
+                isGameOver = true;
+            }
+        }
     }
-    
+
     // This method should be called from the game scene update loop, not during collision
     public boolean checkGameOver() {
         if (isGameOver) {
             // Reset the flag
             isGameOver = false;
-            
+
             // Create and set up game over screen with final score
             GameOverScreen gameOverScreen = new GameOverScreen();
             gameOverScreen.setFinalScore(pointsManager.getPoints());

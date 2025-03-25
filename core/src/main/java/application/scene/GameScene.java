@@ -8,6 +8,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -83,9 +84,10 @@ public class GameScene extends Scene {
     private StartMiniGameHandler miniGameHandler;
     private PlayerLifeHandler playerLifeHandler;
 
-
     private Camera camera;
 
+    // Add a ShapeRenderer field
+    private ShapeRenderer shapeRenderer;
 
     // constructor settings
 
@@ -93,14 +95,11 @@ public class GameScene extends Scene {
     private int trashCount = 5;
     private int alienCount;
 
-
-
     public GameScene() {
         super();
         random = new Random();
         accumulator = 0f;
     }
-
 
     public GameScene(String planetPath, int trashCount, int alienCount) {
         super();
@@ -111,8 +110,6 @@ public class GameScene extends Scene {
         this.trashCount = trashCount;
         this.alienCount = alienCount;
     }
-
-
 
     @Override
     public void load() {
@@ -146,6 +143,9 @@ public class GameScene extends Scene {
         // Debug output to verify level
         System.out.println("Game Scene loaded with level: " + levelManager.getCurrentLevel() +
                           ", Alien speed: " + levelManager.getCurrentAlienSpeed());
+
+        // Initialize the ShapeRenderer
+        shapeRenderer = new ShapeRenderer();
     }
 
     private void initializeWorld() {
@@ -380,10 +380,59 @@ public class GameScene extends Scene {
     private void drawPlayerStatus(SpriteBatch batch) {
         PlayerStatus status = PlayerStatus.getInstance();
 
-        // Draw lives
         float x = 20;
         float y = DisplayManager.getScreenHeight() - 30;
-        textManager.draw(batch, "Lives: " + status.getLives(), x, y, Color.WHITE);
+
+        // End the SpriteBatch to switch to ShapeRenderer
+        batch.end();
+
+        // Draw the life bar
+        shapeRenderer.begin(ShapeType.Filled);
+
+        // Get current level to determine max lives
+        int currentLevel = LevelManager.getInstance().getCurrentLevel();
+        int maxLives;
+        switch (currentLevel) {
+            case 2: maxLives = 7; break;
+            case 3: maxLives = 5; break;
+            case 4: maxLives = 3; break;
+            default: maxLives = 9; // Level 1
+        }
+
+        // Life bar parameters
+        int barWidth = 150;
+        int barHeight = 15;
+        int segmentWidth = barWidth / maxLives;
+        int spacing = 2;
+        float lifeX = x;
+
+        // Draw background (empty life bar)
+        shapeRenderer.setColor(0.3f, 0.3f, 0.3f, 0.7f); // Dark gray
+        shapeRenderer.rect(x, y, barWidth, barHeight);
+
+        // Draw filled segments based on current lives
+        for (int i = 0; i < status.getLives(); i++) {
+            // Change color based on remaining health
+            if (status.getLives() <= maxLives / 4) {
+                shapeRenderer.setColor(1, 0, 0, 1); // Red for low health
+            } else if (status.getLives() <= maxLives / 2) {
+                shapeRenderer.setColor(1, 0.5f, 0, 1); // Orange for medium health
+            } else {
+                shapeRenderer.setColor(0, 1, 0, 1); // Green for high health
+            }
+
+            // Draw the life segment
+            shapeRenderer.rect(lifeX, y, segmentWidth - spacing, barHeight);
+            lifeX += segmentWidth;
+        }
+
+        shapeRenderer.end();
+
+        // Resume SpriteBatch for text rendering
+        batch.begin();
+
+        // Add "Lives" label next to the bar
+        textManager.draw(batch, "Lives", x - 15, y + 30, Color.WHITE);
 
         // Draw score
         textManager.draw(batch, "Score: " + pointsManager.getPoints(), x, y - 30, Color.WHITE);
@@ -397,8 +446,6 @@ public class GameScene extends Scene {
                 textManager.draw(batch, "Carrying: " + type, x, y - 60, Color.GREEN);
             }
         }
-
-        // Remove the isInMiniGame check and text display that was here
     }
 
     @Override
@@ -446,6 +493,10 @@ public class GameScene extends Scene {
 
         if (entityManager != null) {
             entityManager.dispose();
+        }
+
+        if (shapeRenderer != null) {
+            shapeRenderer.dispose();
         }
     }
 }

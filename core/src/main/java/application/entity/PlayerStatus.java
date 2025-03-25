@@ -2,6 +2,8 @@ package application.entity;
 
 import abstractengine.entity.Entity;
 import application.entity.trash.RecyclableTrash;
+import application.scene.LevelManager;
+
 public class PlayerStatus {
     private static PlayerStatus instance = null;
 
@@ -65,7 +67,23 @@ public class PlayerStatus {
     public void reset() {
         isCarryingRecyclable = false;
         carriedItem = null;
-        lives = 5;
+
+        // Set lives based on current level
+        int currentLevel = LevelManager.getInstance().getCurrentLevel();
+        switch (currentLevel) {
+            case 2:
+                lives = 7;
+                break;
+            case 3:
+                lives = 5;
+                break;
+            case 4:
+                lives = 3;
+                break;
+            default:
+                lives = 9; // Level 1
+        }
+
         lastAlienEncounter = null;
     }
 

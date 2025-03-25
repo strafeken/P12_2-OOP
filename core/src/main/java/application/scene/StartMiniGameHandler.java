@@ -24,7 +24,7 @@ public class StartMiniGameHandler implements CollisionListener {
 
     // Cooldown timer to prevent rapid collision handling
     private float interactionCooldown = 0f;
-    private static final float COOLDOWN_DURATION = 2f; // 2 seconds cooldown
+    private static final float COOLDOWN_DURATION = 0.2f; // 0.2 seconds cooldown
 
     // List of aliens to respawn during next update
     private List<AlienRespawnData> aliensToRespawn = new ArrayList<>();

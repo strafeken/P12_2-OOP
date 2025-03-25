@@ -5,6 +5,10 @@ public class PointsManager {
     private boolean levelUnlocked = false;
     private LevelManager levelManager;
 
+    public static final int LEVEL_2_THRESHOLD = 150;
+    public static final int LEVEL_3_THRESHOLD = 500;
+    public static final int LEVEL_4_THRESHOLD = 1000;
+
     public PointsManager() {
         points = 0;
         levelManager = LevelManager.getInstance();
