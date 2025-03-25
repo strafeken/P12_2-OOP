@@ -3,8 +3,8 @@ package application.minigame.common;
 import java.util.Random;
 
 import abstractengine.scene.Scene;
-import application.minigame.flappybird.FlappyBirdGame;
 import application.minigame.asteroids.AsteroidDodgeGame;
+import application.minigame.flappybird.FlappyBirdGame;
 import application.scene.PointsManager;
 import application.scene.StartMiniGameHandler;
 
@@ -35,7 +35,7 @@ public class MiniGameFactory {
      */
     public Scene createRandomMiniGame() {
         // Choose a random number between 0 and 1
-        int gameChoice = random.nextInt(2);
+        int gameChoice = 1;
 
         switch (gameChoice) {
             case 0:
