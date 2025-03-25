@@ -1,7 +1,7 @@
 package application.entity;
 
 import abstractengine.entity.Entity;
-
+import application.entity.trash.RecyclableTrash;
 public class PlayerStatus {
     private static PlayerStatus instance = null;
 
@@ -9,7 +9,6 @@ public class PlayerStatus {
     private boolean isCarryingRecyclable = false;
     private Entity carriedItem = null;
     private int lives = 5;
-    private boolean inMiniGame = false;
 
     private PlayerStatus() {
         // Private constructor for singleton
@@ -63,23 +62,13 @@ public class PlayerStatus {
         return lives <= 0;
     }
 
-    public boolean isInMiniGame() {
-        return inMiniGame;
-    }
-
-    public void setInMiniGame(boolean inMiniGame) {
-        this.inMiniGame = inMiniGame;
-    }
-
     public void reset() {
         isCarryingRecyclable = false;
         carriedItem = null;
         lives = 5;
-        inMiniGame = false;
         lastAlienEncounter = null;
     }
 
-    // Add this method to PlayerStatus class
     private Entity lastAlienEncounter;
 
     public Entity getLastAlienEncounter() {
@@ -90,4 +79,25 @@ public class PlayerStatus {
         this.lastAlienEncounter = alien;
     }
 
+    /**
+     * Check if the player is holding trash
+     * @return true if the player is holding trash
+     */
+    public boolean isHoldingTrash() {
+        return isCarryingRecyclable && carriedItem != null;
+    }
+
+    /**
+     * Make the player drop any trash they're holding
+     */
+    public void dropTrash() {
+        if (isCarryingRecyclable && carriedItem != null) {
+            System.out.println("Player dropped " +
+                              (carriedItem instanceof RecyclableTrash ?
+                              ((RecyclableTrash)carriedItem).getRecyclableType().toString() :
+                              "trash"));
+            isCarryingRecyclable = false;
+            carriedItem = null;
+        }
+    }
 }

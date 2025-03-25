@@ -1,158 +1,112 @@
 package application.scene;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import abstractengine.entity.CollisionListener;
 import abstractengine.entity.Entity;
 import abstractengine.entity.IEntityManager;
-import abstractengine.scene.ISceneManager;
-import abstractengine.scene.Scene;
-import abstractengine.scene.SceneManager;
 import abstractengine.utils.DisplayManager;
 import application.entity.Alien;
 import application.entity.CollisionType;
 import application.entity.EntityType;
 import application.entity.PlayerStatus;
-import application.minigame.common.MiniGameFactory;
 
 /**
- * Handles starting mini-games when player collides with an alien.
+ * Handles player-alien collisions.
  * Following Single Responsibility Principle, this class focuses solely on
- * managing mini-game initialization and alien respawning after mini-games.
+ * handling alien interactions and respawning.
  */
 public class StartMiniGameHandler implements CollisionListener {
-    private PointsManager pointsManager;
-    private ISceneManager sceneManager;
     private IEntityManager entityManager;
-    private Random random;
-    private MiniGameFactory miniGameFactory;
 
-    // Cooldown timer to prevent rapid mini-game triggers
-    private float miniGameCooldown = 0f;
-    private static final float COOLDOWN_DURATION = 5f; // 5 seconds cooldown
+    // Cooldown timer to prevent rapid collision handling
+    private float interactionCooldown = 0f;
+    private static final float COOLDOWN_DURATION = 2f; // 2 seconds cooldown
 
-    // Alien respawn settings
-    private static final float MIN_RESPAWN_DISTANCE = 300f;
-    private static final float MAX_RESPAWN_DISTANCE = 500f;
+    // List of aliens to respawn during next update
+    private List<AlienRespawnData> aliensToRespawn = new ArrayList<>();
+
+    // Class to hold respawn data
+    private static class AlienRespawnData {
+        Entity alien;
+        Vector2 respawnPos;
+
+        public AlienRespawnData(Entity alien, Vector2 respawnPos) {
+            this.alien = alien;
+            this.respawnPos = respawnPos;
+        }
+    }
 
     /**
-     * Creates a new StartMiniGameHandler
-     * @param pointsManager The points manager for scoring
+     * Creates a new collision handler
      * @param entityManager The entity manager for finding aliens
      */
-    public StartMiniGameHandler(PointsManager pointsManager, IEntityManager entityManager) {
-        this.pointsManager = pointsManager;
+    public StartMiniGameHandler(IEntityManager entityManager) {
         this.entityManager = entityManager;
-        this.sceneManager = SceneManager.getInstance();
-        this.random = new Random();
-        this.miniGameFactory = new MiniGameFactory(pointsManager, this);
     }
 
     /**
      * Handles collision between player and alien
-     * Following Open/Closed principle, collision handling is extensible through
-     * the CollisionType enum
      */
     @Override
     public void onCollision(Entity a, Entity b, CollisionType type) {
         if (type == CollisionType.ALIEN_PLAYER) {
-            PlayerStatus playerStatus = PlayerStatus.getInstance();
-
             // Check if cooldown is active
-            if (miniGameCooldown > 0) {
+            if (interactionCooldown > 0) {
                 return;
             }
 
-            // Only start mini-game if not already in one
-            if (!playerStatus.isInMiniGame()) {
-                playerStatus.setInMiniGame(true);
-                System.out.println("Starting random mini-game with alien!");
+            // Get player status
+            PlayerStatus playerStatus = PlayerStatus.getInstance();
 
-                // Store reference to alien for respawning later
-                Entity alien = (a.getEntityType() == EntityType.ALIEN) ? a : b;
-                playerStatus.setLastAlienEncounter(alien);
+            // Store reference to alien for respawning
+            Entity alien = (a.getEntityType() == EntityType.ALIEN) ? a : b;
+            playerStatus.setLastAlienEncounter(alien);
 
-                try {
-                    startMiniGame();
-                } catch (Exception e) {
-                    System.err.println("Error starting mini-game: " + e.getMessage());
-                    e.printStackTrace();
-                    playerStatus.setInMiniGame(false);
+            try {
+                // Check if player is holding trash
+                if (playerStatus.isHoldingTrash()) {
+                    // Make the player drop the trash
+                    playerStatus.dropTrash();
+                    System.out.println("Player dropped trash due to alien collision!");
+                } else {
+                    // Queue alien to move away from player instead of moving it immediately
+                    queueAlienMoveAwayFromPlayer(alien);
+                    System.out.println("Alien will move away from player!");
                 }
+
+                // Start cooldown
+                interactionCooldown = COOLDOWN_DURATION;
+
+            } catch (Exception e) {
+                System.err.println("Error handling collision: " + e.getMessage());
+                e.printStackTrace();
             }
         }
     }
 
     /**
-     * Starts a random mini-game
+     * Queues alien to be moved away from the player
      */
-    private void startMiniGame() {
-        // Choose a random mini-game using the OOP factory
-        Scene miniGame = miniGameFactory.createRandomMiniGame();
-
-        // Check if scene exists already and remove it if it does
-        if (sceneManager.hasScene(SceneID.MINI_GAME)) {
-            sceneManager.removeScene(SceneID.MINI_GAME);
-        }
-
-        // Add the new mini-game scene
-        sceneManager.addScene(SceneID.MINI_GAME, miniGame);
-
-        // Overlay the mini-game on top of the current scene
-        sceneManager.overlayScene(SceneID.MINI_GAME);
-    }
-
-    /**
-     * Called when a mini-game completes
-     * Respawns aliens at a distance from the player
-     */
-
-    public void onMiniGameCompleted() {
-        System.out.println("Mini-game completed callback received");
-
-        // Reset mini-game cooldown - allowing immediate future interactions
-        miniGameCooldown = 0.0f;
-
-        try {
-            respawnAliensAtDistanceFromPlayer();
-        } catch (Exception e) {
-            // Log and use the original respawn logic as fallback
-            System.err.println("Error respawning aliens after mini-game: " + e.getMessage());
-            respawnAliensToOriginalPositions();
-        }
-    }
-
-    /**
-     * Respawns all aliens at a distance from the player
-     */
-    private void respawnAliensAtDistanceFromPlayer() {
+    private void queueAlienMoveAwayFromPlayer(Entity alien) {
         // Get the player status and position
         PlayerStatus playerStatus = PlayerStatus.getInstance();
         Entity player = playerStatus.getPlayer();
 
-        // Only proceed if we have a valid player
-        if (player != null) {
+        // Only proceed if we have a valid player and alien
+        if (player != null && alien != null) {
             Vector2 playerPos = player.getPosition();
 
-            // Respawn all aliens at a safe distance from the player
-            List<Entity> aliens = entityManager.getEntitiesByType(EntityType.ALIEN);
-            for (Entity entity : aliens) {
-                if (entity instanceof Alien) {
-                    Alien alien = (Alien)entity;
+            // Calculate a new respawn position away from the player
+            Vector2 respawnPos = calculateRespawnPosition(playerPos);
 
-                    // Calculate a new respawn position at a distance from the player
-                    Vector2 respawnPos = calculateRespawnPosition(playerPos);
-
-                    // Use the improved respawn method that recreates the physics body
-                    alien.respawnAt(respawnPos);
-                }
-            }
+            // Queue the alien for respawning instead of doing it immediately
+            aliensToRespawn.add(new AlienRespawnData(alien, respawnPos));
         } else {
-            System.err.println("Error: Player is null, can't respawn aliens relative to player.");
-            respawnAliensToOriginalPositions();
+            System.err.println("Error: Player or alien is null, can't move alien away.");
         }
     }
 
@@ -196,34 +150,28 @@ public class StartMiniGameHandler implements CollisionListener {
         } while(true);
 
         System.out.println("Respawning alien at: " + x + ", " + y + " (player at " + playerPos.x + ", " + playerPos.y + ")");
-
         return new Vector2(x, y);
     }
 
     /**
-     * Fallback method that respawns aliens to their original positions
-     */
-    private void respawnAliensToOriginalPositions() {
-        System.out.println("Using original alien respawn positions");
-        List<Entity> aliens = entityManager.getEntitiesByType(EntityType.ALIEN);
-        for (Entity entity : aliens) {
-            try {
-                if (entity instanceof Alien) {
-                    ((Alien) entity).respawn();
-                }
-            } catch (Exception ex) {
-                System.err.println("Error on alien respawn: " + ex.getMessage());
-            }
-        }
-    }
-
-    /**
-     * Updates the cooldown timer
+     * Updates the cooldown timer and processes any queued alien respawns
      * @param deltaTime Time since last update
      */
     public void update(float deltaTime) {
-        if (miniGameCooldown > 0) {
-            miniGameCooldown -= deltaTime;
+        // Update cooldown
+        if (interactionCooldown > 0) {
+            interactionCooldown -= deltaTime;
+        }
+
+        // Process any aliens that need to be respawned
+        if (!aliensToRespawn.isEmpty()) {
+            for (AlienRespawnData respawnData : aliensToRespawn) {
+                if (respawnData.alien instanceof Alien) {
+                    ((Alien) respawnData.alien).respawnAt(respawnData.respawnPos);
+                }
+            }
+            // Clear the list after processing
+            aliensToRespawn.clear();
         }
     }
 }

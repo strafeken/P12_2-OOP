@@ -85,34 +85,34 @@ public class GameScene extends Scene {
 
 
     private Camera camera;
-    
-    
+
+
     // constructor settings
-    
+
     private String planetPath = "planet/planet1_purple.jpg"; // level 1 default value
     private int trashCount = 5;
     private int alienCount;
-    
-    
+
+
 
     public GameScene() {
         super();
         random = new Random();
         accumulator = 0f;
     }
-    
-    
+
+
     public GameScene(String planetPath, int trashCount, int alienCount) {
         super();
         random = new Random();
         accumulator = 0f;
-        
+
         this.planetPath = planetPath;
-        this.trashCount = trashCount; 
+        this.trashCount = trashCount;
         this.alienCount = alienCount;
     }
-    
-    
+
+
 
     @Override
     public void load() {
@@ -166,7 +166,7 @@ public class GameScene extends Scene {
 
         // Add all collision handlers/listeners after initializing audioManager
         world.setContactListener(collisionDetector);
-        
+
         recyclableFactory = new RecyclableTrashFactory();
         nonRecyclableFactory = new NonRecyclableTrashFactory();
 
@@ -178,8 +178,10 @@ public class GameScene extends Scene {
         // Add collision listeners (using CollisionType enum)
         PlayerLifeHandler playerLifeHandler = new PlayerLifeHandler(SceneManager.getInstance(), pointsManager);
         collisionDetector.addListener(playerLifeHandler);
-        StartMiniGameHandler miniGameHandler = new StartMiniGameHandler(pointsManager, entityManager);
-        collisionDetector.addListener(miniGameHandler);
+
+        this.miniGameHandler = new StartMiniGameHandler(entityManager);
+        collisionDetector.addListener(this.miniGameHandler);
+
         collisionDetector.addListener(new CollisionAudioHandler(audioManager));
         collisionDetector.addListener(new CollisionRemovalHandler(entityManager));
 
@@ -187,8 +189,8 @@ public class GameScene extends Scene {
         collisionDetector.addListener(new RecyclableCarrierHandler(entityManager));
         collisionDetector.addListener(new RecyclingBinHandler(pointsManager));
 
-        // Store the handlers for updates
-        this.miniGameHandler = miniGameHandler;
+        // Store the handlers for updates - REMOVE THIS LINE, it's redundant and causes a bug
+        // this.miniGameHandler = miniGameHandler;  // <-- REMOVE THIS
         this.playerLifeHandler = playerLifeHandler;
     }
 
@@ -230,41 +232,41 @@ public class GameScene extends Scene {
             // Set the target player for the alien to chase
             ((Alien)alien).setTargetPlayer(player);
             entityManager.addEntities(alien);
-            
+
 			 RecyclingBin bin_yellow = new RecyclingBin(EntityType.RECYCLING_BIN, "bin/recycling-bin-yellow.png",
 						new Vector2(100, 150),
-						new Vector2(DisplayManager.getScreenWidth() / 2 - 120 , 100), new Vector2(0, 0), 
+						new Vector2(DisplayManager.getScreenWidth() / 2 - 120 , 100), new Vector2(0, 0),
 								Arrays.asList( RecyclableTrash.Type.PAPER));
-			 
+
 			 bin_yellow.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
 			 bin_yellow.getPhysicsBody().setAsSensor();
 			entityManager.addEntities(bin_yellow);
-            
+
 
             RecyclingBin bin_green = new RecyclingBin(EntityType.RECYCLING_BIN, "bin/recycling-bin-green.png",
             									new Vector2(100, 150),
             									new Vector2(DisplayManager.getScreenWidth() / 2, 100), new Vector2(0, 0),
             									Arrays.asList( RecyclableTrash.Type.GLASS,RecyclableTrash.Type.PLASTIC));
-            
-            
+
+
             bin_green.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
             bin_green.getPhysicsBody().setAsSensor();
             entityManager.addEntities(bin_green);
-            
-            
+
+
             RecyclingBin bin_blue = new RecyclingBin(EntityType.RECYCLING_BIN, "bin/recycling-bin-blue.png",
 					new Vector2(100, 150),
 					new Vector2(DisplayManager.getScreenWidth() / 2 + 120, 100), new Vector2(0, 0),
 					Arrays.asList(RecyclableTrash.Type.METAL));
-            
-            
+
+
             bin_blue.initPhysicsBody(world, BodyDef.BodyType.StaticBody);
             bin_blue.getPhysicsBody().setAsSensor();
 			entityManager.addEntities(bin_blue);
-			
-			
 
-            
+
+
+
 
             spawnTrash(10);
 
@@ -291,7 +293,7 @@ public class GameScene extends Scene {
         try {
             // Use the ratio 0.7 for 70% recyclable trash
             trashSpawner.spawnRandomTrash(count, 0.7f);
-            
+
         } catch (Exception e) {
             System.out.println("Error spawning trash: " + e);
         }
@@ -304,26 +306,25 @@ public class GameScene extends Scene {
         // Get player status
         PlayerStatus playerStatus = PlayerStatus.getInstance();
 
-        // Only update physics and check collisions if not in mini-game
-        if (!playerStatus.isInMiniGame()) {
-            updatePhysics(delta);
+        // Always update physics now that mini-game is removed
+        updatePhysics(delta);
 
-            if (playerLifeHandler.checkGameOver()) {
-                return;
-            }
-
-            // Update mini-game handler cooldown timer
-            miniGameHandler.update(delta);
-
-            // Update trash spawn timer
-            trashSpawnTimer += delta;
-            if (trashSpawnTimer >= trashSpawnInterval) {
-                trashSpawnTimer = 0;
-                spawnTrash(this.trashCount);  // Try to spawn up to 5 pieces of trash each interval
-            }
+        if (playerLifeHandler.checkGameOver()) {
+            return;
         }
 
-        // These updates should happen regardless of mini-game status
+        // Update mini game handler (for cooldown timer)
+        // Make sure miniGameHandler is the variable name you're using
+        miniGameHandler.update(delta);
+
+        // Update trash spawn timer
+        trashSpawnTimer += delta;
+        if (trashSpawnTimer >= trashSpawnInterval) {
+            trashSpawnTimer = 0;
+            spawnTrash(this.trashCount);  // Spawn trash each interval
+        }
+
+        // These updates should happen regardless
         entityManager.update();
         gameInputManager.update();
         playerInputManager.update();
@@ -397,18 +398,14 @@ public class GameScene extends Scene {
             }
         }
 
-        // Draw mini-game status if in one
-        if (status.isInMiniGame()) {
-            textManager.draw(batch, "IN MINI-GAME", DisplayManager.getScreenWidth() / 2 - 100,
-                            DisplayManager.getScreenHeight() - 30, Color.YELLOW);
-        }
+        // Remove the isInMiniGame check and text display that was here
     }
 
     @Override
     public void draw(ShapeRenderer shape) {
         shape.setProjectionMatrix(camera.camera.combined);
         entityManager.draw(shape);
-        
+
         // Use the collisionDetector's render method instead of direct debugRenderer
         if (collisionDetector != null && world != null) {
             collisionDetector.renderDebug(world, shape.getProjectionMatrix());
@@ -441,12 +438,12 @@ public class GameScene extends Scene {
             world.dispose();
             world = null;
         }
-        
+
         // Let collisionDetector handle its own debugRenderer cleanup
         if (collisionDetector != null) {
             collisionDetector.dispose();
         }
-        
+
         if (entityManager != null) {
             entityManager.dispose();
         }
