@@ -1,5 +1,6 @@
 package application.audio;
 
+import abstractengine.audio.AudioManager;
 import abstractengine.audio.IAudioManager;
 import abstractengine.entity.CollisionListener;
 import abstractengine.entity.Entity;
@@ -30,9 +31,6 @@ public class CollisionAudioHandler implements CollisionListener {
                 audioManager.playSoundEffect("ding");
                 break;
             case ALIEN_PLAYER:
-                audioManager.playSoundEffect("ding");
-                break;
-            case ASTEROID_PLAYER:
                 audioManager.playSoundEffect("ding");
                 break;
             default:

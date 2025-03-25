@@ -2,26 +2,27 @@ package application.minigame.flappybird;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-
-import abstractengine.entity.CollisionDetector;
-import abstractengine.entity.CollisionListener;
-import abstractengine.entity.Entity;
 import abstractengine.utils.DisplayManager;
-import application.entity.CollisionType;
 import application.entity.EntityType;
-import application.minigame.common.AbstractMiniGame;
 import application.minigame.common.GameState;
+import application.minigame.common.AbstractMiniGame;
 import application.minigame.common.MiniGameUI;
 import application.scene.PointsManager;
 import application.scene.StartMiniGameHandler;
-// import application.minigame.utils.DummyPhysicsBody;
+import abstractengine.entity.CollisionDetector;
+import abstractengine.entity.CollisionListener;
+import abstractengine.entity.Entity;
+import application.entity.CollisionType;
+import application.minigame.utils.DummyPhysicsBody;
 
 /**
  * FlappyBirdGame - A mini-game where the player controls a bird flying through pipes.
@@ -347,8 +348,8 @@ public class FlappyBirdGame extends AbstractMiniGame implements CollisionListene
         );
 
         // Add physics bodies to pipes
-        // topPipe.setPhysicsBody(new DummyPhysicsBody(topPipe));
-        // bottomPipe.setPhysicsBody(new DummyPhysicsBody(bottomPipe));
+        topPipe.setPhysicsBody(new DummyPhysicsBody(topPipe));
+        bottomPipe.setPhysicsBody(new DummyPhysicsBody(bottomPipe));
 
         // Add pipes to array and entity manager
         pipes.add(topPipe);
@@ -485,7 +486,7 @@ public class FlappyBirdGame extends AbstractMiniGame implements CollisionListene
                        300f);
 
         // Assign physics body to bird
-        // bird.setPhysicsBody(new DummyPhysicsBody(bird));
+        bird.setPhysicsBody(new DummyPhysicsBody(bird));
 
         // Register bird with the entity manager
         entityManager.addEntities(bird);
