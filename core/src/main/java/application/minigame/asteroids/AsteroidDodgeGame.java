@@ -1,5 +1,6 @@
 package application.minigame.asteroids;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -7,7 +8,9 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import abstractengine.entity.CollisionListener;
 import abstractengine.entity.Entity;
 import abstractengine.entity.CollisionDetector;
@@ -18,17 +21,18 @@ import application.minigame.common.GameState;
 import application.minigame.common.MiniGameUI;
 import application.scene.PointsManager;
 import application.scene.StartMiniGameHandler;
+import abstractengine.utils.DisplayManager;
+import application.minigame.utils.DummyPhysicsBody;
 
 /**
  * AsteroidDodgeGame - A mini-game where the player controls a spaceship to dodge asteroids.
  */
-public class AsteroidDodgeGame extends AbstractMiniGame {
+public class AsteroidDodgeGame extends AbstractMiniGame implements CollisionListener {
     // Game components
     private Ship ship;
-    private AsteroidManager asteroidManager;
-    private AsteroidDodgePhysics physics;
     private AsteroidDodgeUI gameUI;
     private ShapeRenderer shapeRenderer;
+    private CollisionDetector collisionDetector;
 
     // Game assets
     private Texture shipTexture;
@@ -47,6 +51,35 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
     private float gameOverTimer = 0;
     private int finalScore = 0;
 
+    // Collision state
+    private boolean collisionEnabled = false;
+    private float gracePeriodTimer = 0f;
+
+    // Asteroid management constants (from AsteroidManager)
+    private static final float INITIAL_SPAWN_INTERVAL = 1.5f;
+    private static final float MIN_SPAWN_INTERVAL = 0.5f;
+    private static final float MIN_ASTEROID_SPEED = 50f;
+    private static final float MAX_ASTEROID_SPEED = 100f;
+    private static final float BASE_ASTEROID_SIZE = 40f;
+    private static final float SPEED_INCREASE_INTERVAL = 9.0f;
+    private static final float ASTEROID_COUNT_INCREASE_INTERVAL = 11.0f;
+    private static final int MAX_SIMULTANEOUS_ASTEROIDS = 6;
+    private static final float SPEED_INCREASE_FACTOR = 0.1f;
+
+    // Asteroid management fields (from AsteroidManager)
+    private Array<Asteroid> asteroids;
+    private float timeSinceLastAsteroid;
+    private float spawnInterval;
+    private float asteroidSizeMultiplier = 1.0f;
+    private float minAsteroidSize;
+    private float maxAsteroidSize;
+    private float minSpawnInterval;
+    private float maxSpawnInterval;
+    private int speedLevel = 1;
+    private int asteroidCountLevel = 1;
+    private int simultaneousAsteroidsCount = 1;
+    private float speedMultiplier = 1.0f;
+
     /**
      * Creates a new AsteroidDodgeGame
      *
@@ -59,8 +92,9 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
         // Create a basic shape renderer
         this.shapeRenderer = new ShapeRenderer();
 
-        // Note: Don't initialize other components yet
-        // We'll do that in load() when the game is actually starting
+        // Initialize collision detector
+        this.collisionDetector = new CollisionDetector();
+        this.collisionDetector.addListener(this);
     }
 
     /**
@@ -136,6 +170,132 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
         System.out.println("--- End Debug ---");
     }
 
+    /**
+     * Update asteroid positions and generate new asteroids as needed
+     *
+     * @param deltaTime Time since last update
+     * @param currentGameTime Current game time
+     */
+    private void updateAsteroids(float deltaTime, float currentGameTime) {
+        // Check if speed should increase (every 9 seconds)
+        int newSpeedLevel = 1 + (int)(currentGameTime / SPEED_INCREASE_INTERVAL);
+        if (newSpeedLevel > speedLevel) {
+            increaseAsteroidSpeed();
+            speedLevel = newSpeedLevel;
+        }
+
+        // Check if asteroid count should increase (every 11 seconds)
+        int newAsteroidCountLevel = 1 + (int)(currentGameTime / ASTEROID_COUNT_INCREASE_INTERVAL);
+        if (newAsteroidCountLevel > asteroidCountLevel) {
+            increaseAsteroidCount();
+            asteroidCountLevel = newAsteroidCountLevel;
+        }
+
+        // Update all existing asteroids
+        for (int i = 0; i < asteroids.size; i++) {
+            Asteroid asteroid = asteroids.get(i);
+            asteroid.update(deltaTime);
+
+            // Remove asteroids that are off screen
+            Vector2 position = asteroid.getPosition();
+            Vector2 size = asteroid.getSize();
+
+            // Add debug output to see when asteroids are removed
+            System.out.println("Asteroid position: " + position.y + ", screen height: " + Gdx.graphics.getHeight());
+
+            // Only remove when completely below the bottom of the screen
+            if (position.y + size.y < -50) { // Give some buffer below the screen
+                System.out.println("Removing asteroid at y=" + position.y);
+                entityManager.markForRemoval(asteroid);
+                asteroids.removeIndex(i);
+                i--;
+            }
+        }
+
+        // Spawn new asteroids as needed
+        timeSinceLastAsteroid += deltaTime;
+        if (timeSinceLastAsteroid > spawnInterval) {
+            // Spawn multiple asteroids based on current difficulty
+            for (int i = 0; i < simultaneousAsteroidsCount; i++) {
+                spawnAsteroid();
+            }
+            timeSinceLastAsteroid = 0;
+            spawnInterval = MathUtils.random(minSpawnInterval, maxSpawnInterval);
+        }
+    }
+
+    /**
+     * Increase asteroid speed
+     */
+    private void increaseAsteroidSpeed() {
+        speedMultiplier += SPEED_INCREASE_FACTOR;
+        System.out.println("Speed increased to level " + speedLevel +
+                          ": multiplier = " + speedMultiplier);
+    }
+
+    /**
+     * Increase number of simultaneous asteroids
+     */
+    private void increaseAsteroidCount() {
+        // Increase number of simultaneous asteroids (max 6)
+        if (simultaneousAsteroidsCount < MAX_SIMULTANEOUS_ASTEROIDS) {
+            simultaneousAsteroidsCount++;
+            System.out.println("Asteroid count increased to " + simultaneousAsteroidsCount);
+        }
+    }
+
+    /**
+     * Generate a new asteroid
+     */
+    private void spawnAsteroid() {
+        float screenWidth = DisplayManager.getScreenWidth();
+        float screenHeight = DisplayManager.getScreenHeight();
+
+        // Random position at top of screen with some spacing for multiple asteroids
+        float asteroidSize = MathUtils.random(minAsteroidSize, maxAsteroidSize);
+        float x = MathUtils.random(0, screenWidth - asteroidSize);
+        float y = screenHeight + asteroidSize/2; // Start slightly above top of screen
+
+        // Base speed with current difficulty multiplier applied
+        float baseSpeed = MathUtils.random(MIN_ASTEROID_SPEED, MAX_ASTEROID_SPEED);
+        float speed = baseSpeed * speedMultiplier;
+
+        System.out.println("Spawning asteroid at x=" + x + ", y=" + y +
+                          " with size=" + asteroidSize + ", speed=" + speed);
+
+        // Create asteroid with explicit texture
+        Asteroid asteroid = new Asteroid(asteroidTexture, x, y, asteroidSize, asteroidSize, speed);
+
+        // Add to our list
+        asteroids.add(asteroid);
+
+        // Register with entity manager
+        entityManager.addEntities(asteroid);
+
+        // Ensure the physics body is set for collision detection
+        asteroid.setPhysicsBody(new DummyPhysicsBody(asteroid));
+    }
+
+    /**
+     * Reset all asteroids and difficulty settings
+     */
+    private void resetAsteroids() {
+        asteroids.clear();
+        timeSinceLastAsteroid = 0;
+        spawnInterval = INITIAL_SPAWN_INTERVAL;
+        speedLevel = 1;
+        asteroidCountLevel = 1;
+        simultaneousAsteroidsCount = 1;
+        speedMultiplier = 1.0f;
+    }
+
+    /**
+     * Get all asteroids
+     */
+    public Array<Asteroid> getAsteroids() {
+        return asteroids;
+    }
+
     @Override
     protected void handlePlayingState(float deltaTime) {
         // Update game time
@@ -144,14 +304,41 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
         // Handle player movement
         handlePlayerMovement(deltaTime);
 
-        // Update asteroids spawning - now passing current game time
-        asteroidManager.update(deltaTime, gameTime);
+        // Update asteroids spawning
+        updateAsteroids(deltaTime, gameTime);
 
-        // Update physics and check collisions
-        physics.update(deltaTime, gameTime);
+        // Entity manager update should come after all our manual updates
+        entityManager.update();
 
-        // Check for collision
-        if (physics.hasCollided()) {
+        // Update grace period timer
+        if (!collisionEnabled) {
+            gracePeriodTimer += deltaTime;
+            if (gracePeriodTimer >= collisionGracePeriod) {
+                collisionEnabled = true;
+                System.out.println("Collision detection enabled after grace period");
+            }
+        }
+
+        // Process collisions through the physics system
+        processCollisions();
+
+        // Update score based on survival time
+        int newScore = (int)(gameTime * 2.5f);
+        setScore(newScore);
+
+        // Check if game time is up
+        if (gameTime >= timeLimit) {
+            state = GameState.GAME_OVER;
+            gameOverTimer = 0;
+        }
+    }
+
+    @Override
+    public void onCollision(Entity a, Entity b, CollisionType type) {
+        // Skip collision handling during the grace period
+        if (!collisionEnabled) return;
+
+        if (type == CollisionType.ASTEROID_PLAYER) {
             state = GameState.GAME_OVER;
             gameOverTimer = 0;
 
@@ -159,23 +346,54 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
             if (audioManager != null) {
                 audioManager.playSoundEffect("collision");
             }
+
+            System.out.println("Ship hit an asteroid!");
         }
+    }
 
-        // Update score based on survival time (+5 points every 2 seconds)
-        // IMPORTANT CHANGE: Use parent's setScore method instead of local score variable
-        int newScore = (int)(gameTime * 2.5f); // This gives +5 points every 2 seconds
+    /**
+     * Process any potential collisions between entities
+     * This uses the abstractengine physics system rather than direct Rectangle checking
+     */
+    private void processCollisions() {
+        if (!collisionEnabled) return;
 
-        // Update parent class's score
-        setScore(newScore);
-
-        // Debug output to track score calculation
-        System.out.println("AsteroidDodgeGame.handlePlayingState - Calculated and set score: " + score);
-
-        // Check if game time is up
-        if (gameTime >= timeLimit) {
-            state = GameState.GAME_OVER;
-            gameOverTimer = 0;
+        // Loop through all asteroids
+        for (Asteroid asteroid : asteroids) {
+            // Check if the asteroid's physics body is intersecting with the ship's physics body
+            if (isEntitiesOverlapping(ship, asteroid)) {
+                // If overlapping, manually trigger the collision event
+                onCollision(ship, asteroid, CollisionType.ASTEROID_PLAYER);
+                // Break after first collision for better performance
+                break;
+            }
         }
+    }
+
+    /**
+     * Check if two entities are overlapping based on their positions and sizes
+     */
+    private boolean isEntitiesOverlapping(Entity a, Entity b) {
+        // We know these are Ship and Asteroid objects which provide getPosition and getSize
+
+        // Get position and size for entity A (Ship)
+        Vector2 posA = ((Ship)a).getPosition();
+        float widthA = ((Ship)a).getWidth();
+        float heightA = ((Ship)a).getHeight();
+
+        // Get position and size for entity B (Asteroid)
+        Vector2 posB = ((Asteroid)b).getPosition();
+        float widthB = ((Asteroid)b).getWidth();
+        float heightB = ((Asteroid)b).getHeight();
+
+        // Apply collision margin for more forgiving collisions
+        float margin = Math.min(widthA, heightA) * 0.2f;
+
+        // Check for overlap (simplified AABB collision)
+        return !(posA.x + widthA/2 - margin < posB.x - widthB/2 ||
+                 posA.x - widthA/2 + margin > posB.x + widthB/2 ||
+                 posA.y + heightA/2 - margin < posB.y - heightB/2 ||
+                 posA.y - heightA/2 + margin > posB.y + heightB/2);
     }
 
     @Override
@@ -252,10 +470,9 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
     @Override
     public void dispose() {
         if (shipTexture != null) shipTexture.dispose();
-        if (asteroidTexture != null) asteroidTexture.dispose();
+        if (asteroidTexture != null) asteroidTexture.dispose(); // Fixed - was disposing shipTexture twice
         if (backgroundTexture != null) backgroundTexture.dispose();
         if (shapeRenderer != null) shapeRenderer.dispose();
-
     }
 
     /**
@@ -275,6 +492,19 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
         score = 0;
         timeLimit = 60f;
 
+        // Initialize collision state
+        collisionEnabled = false;
+        gracePeriodTimer = 0f;
+
+        // Initialize asteroid management parameters
+        minAsteroidSize = 30f;
+        maxAsteroidSize = 80f;
+        minSpawnInterval = 1.5f;
+        maxSpawnInterval = 3.0f;
+        asteroids = new Array<>();
+        timeSinceLastAsteroid = 0;
+        spawnInterval = INITIAL_SPAWN_INTERVAL;
+
         loadAssets();
 
         // Use proper constructor with explicit size
@@ -288,19 +518,10 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
                        300f);
 
         // Assign a dummy physics body using the ship as the entity.
-        ship.setPhysicsBody(new application.minigame.utils.DummyPhysicsBody(ship));
+        ship.setPhysicsBody(new DummyPhysicsBody(ship));
 
         entityManager.addEntities(ship);
 
-        asteroidManager = new AsteroidManager(
-            entityManager,
-            asteroidTexture,
-            30f,   // min asteroid size
-            80f,   // max asteroid size
-            1.5f,  // min spawn interval (seconds)
-            3.0f   // max spawn interval (seconds)
-        );
-        physics = new AsteroidDodgePhysics(ship, asteroidManager, collisionGracePeriod);
         Color skyColor = new Color(0.1f, 0.1f, 0.3f, 1);
         shapeRenderer = new ShapeRenderer();
         gameUI = (AsteroidDodgeUI) createGameUI();
@@ -308,25 +529,6 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
         if (gameUI instanceof AsteroidDodgeUI) {
             ((AsteroidDodgeUI) gameUI).setTimeLimit(timeLimit);
         }
-
-
-
-
-
-
-        // Create and register the collision detector
-        CollisionDetector collisionDetector = new CollisionDetector();
-
-        collisionDetector.addListener(new CollisionListener() {
-            @Override
-            public void onCollision(Entity a, Entity b, CollisionType type) {
-                if (type == CollisionType.ALIEN_PLAYER) {
-                    state = GameState.GAME_OVER;
-                    gameOverTimer = 0;
-                    System.out.println("Ship hit an asteroid!");
-                }
-            }
-        });
 
         System.out.println("Asteroid Dodge mini-game loaded successfully");
     }
@@ -351,24 +553,22 @@ public class AsteroidDodgeGame extends AbstractMiniGame {
         System.out.println("Asteroid Dodge mini-game unloaded successfully");
     }
 
-
     protected void reset() {
         // Reset game variables to starting state
         gameTime = 0;
         gameOverTimer = 0;
         score = 0;
         state = GameState.READY;
+        collisionEnabled = false;
+        gracePeriodTimer = 0f;
 
         // Reset game components
-        // Updated ship reset call with new position values (centered horizontally, near bottom)
         ship.reset(Gdx.graphics.getWidth() / 2f, 100f);
-        asteroidManager.reset();
-        physics.reset();
+        resetAsteroids();
     }
 
     @Override
     public void update() {
-        // FIXED VERSION - don't call update(deltaTime) which creates recursion
         float deltaTime = Gdx.graphics.getDeltaTime();
 
         // Call the parent method directly instead

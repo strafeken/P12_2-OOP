@@ -3,148 +3,216 @@ package application.minigame.asteroids;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import abstractengine.entity.DynamicTextureObject;
+import abstractengine.entity.PhysicsBody;
 import application.entity.EntityType;
-import application.minigame.asteroids.AsteroidState;
-import application.minigame.asteroids.AsteroidAction;
+
 /**
- * Represents an asteroid obstacle in the AsteroidDodgeGame.
- * Now extends DynamicTextureObject for better integration with the engine.
+ * Asteroid class for the Asteroid Dodge mini-game
  */
 public class Asteroid extends DynamicTextureObject<AsteroidState, AsteroidAction> {
-    // Asteroid properties
-    private float speedY;
-    private Rectangle bounds; // For collision detection
-    protected abstractengine.entity.PhysicsBody physicsBody;
+    private float speed;
+    private boolean counted = false;
+    private Rectangle bounds = new Rectangle();
+    private Vector2 size; // Add a local size field
+    private Texture asteroidTexture; // Store texture reference
+
+    // Add physicsBody field like in Ship class
+    protected PhysicsBody physicsBody;
 
     /**
-     * Creates a new Asteroid
-     *
-     * @param texture The asteroid texture
-     * @param x X position
-     * @param y Y position
-     * @param width Width
-     * @param height Height
-     * @param speedY Vertical speed
+     * Creates a new asteroid
      */
-    public Asteroid(Texture texture, float x, float y, float width, float height, float speedY) {
-        // Use the entity constructor that resizes the texture
-        super(EntityType.OBSTACLE,
-              texture.toString().replace("Texture: file:", ""),
+    public Asteroid(Texture texture, float x, float y, float width, float height, float speed) {
+        super(EntityType.ASTEROID,
+              "barrel-2.png",    // Use the actual file name instead of texture.toString()
               new Vector2(width, height),
               new Vector2(x, y),
-              new Vector2(0, -1), // Direction downward
+              new Vector2(0, -1),
               new Vector2(0, 0),
-              speedY,
-              AsteroidState.ACTIVE,
-              AsteroidAction.NONE);
+              speed,
+              AsteroidState.MOVING,
+              AsteroidAction.MOVE);
 
-        this.speedY = speedY;
-        this.bounds = new Rectangle(x - width/2, y - height/2, width, height);
+        this.speed = speed;
+        this.size = new Vector2(width, height);
+        this.bounds.set(x - width/2, y - height/2, width, height);
+        this.asteroidTexture = texture; // Store texture locally - don't call setTexture
 
-        // Set physics body right away
-        this.setPhysicsBody(new application.minigame.utils.DummyPhysicsBody(this));
+        // Debug output to verify texture
+        if (texture != null) {
+            System.out.println("Asteroid created with texture: " + texture +
+                              " dimensions: " + texture.getWidth() + "x" + texture.getHeight());
+        } else {
+            System.err.println("WARNING: Asteroid texture is null!");
+        }
     }
 
     /**
-     * Creates a new Asteroid with full entity parameters
-     */
-    public Asteroid(EntityType type, String texturePath, Vector2 size, Vector2 position,
-                   Vector2 direction, Vector2 rotation, float speed, float speedY) {
-        super(type, texturePath, size, position, direction, rotation, speed,
-              AsteroidState.ACTIVE, AsteroidAction.NONE);
-
-        this.speedY = speedY;
-        this.bounds = new Rectangle(position.x - size.x/2, position.y - size.y/2,
-                                   size.x, size.y);
-    }
-
-    private AsteroidState state;
-    private AsteroidAction action;
-
-    public void setState(AsteroidState state) {
-        this.state = state;
-    }
-
-    public AsteroidState getState() {
-        return state;
-    }
-
-    public void setActionState(AsteroidAction action) {
-        this.action = action;
-    }
-
-    /**
-     * Update the asteroid position
-     *
-     * @param deltaTime Time since last update
+     * Update the asteroid position based on its speed
      */
     public void update(float deltaTime) {
-        // Move the position downward
-        Vector2 position = getPosition();
-        position.y -= speedY * deltaTime;
-        setPosition(position);
+        // Calculate movement distance - increase speed for debugging
+        float distance = speed * deltaTime;
 
-        // Update physics body position if it exists
-        if (physicsBody != null && physicsBody instanceof application.minigame.utils.DummyPhysicsBody) {
-            ((application.minigame.utils.DummyPhysicsBody)physicsBody).setDummyPosition(position);
-        }
+        // Get current position
+        Vector2 currentPos = getPosition();
 
-        // Update collision bounds
-        bounds.x = position.x - bounds.width/2;
-        bounds.y = position.y - bounds.height/2;
+        // Calculate new position - move downward
+        float newY = currentPos.y - distance;
+
+        // Debug output to trace movement
+        System.out.println("ASTEROID: moving from y=" + currentPos.y +
+                          " to y=" + newY +
+                          " (delta=" + distance + ", speed=" + speed + ")");
+
+        // Update position in parent class
+        setPosition(new Vector2(currentPos.x, newY));
+
+        // Also update our local size and bounds for collision detection
+        this.bounds.setPosition(currentPos.x - bounds.width/2, newY - bounds.height/2);
+    }
+
+    // Override update() to call our custom update method - critical for movement!
+    @Override
+    public void update() {
+        // Get delta time from Gdx.graphics
+        float deltaTime = com.badlogic.gdx.Gdx.graphics.getDeltaTime();
+
+        // Call our custom update method that moves the asteroid
+        update(deltaTime);
+    }
+
+    @Override
+    public Texture getTexture() {
+        // Return our stored texture instead of the parent's
+        return asteroidTexture;
+    }
+
+    @Override
+    public boolean isOutOfBound(Vector2 direction) {
+        // Return false to prevent automatic boundary checking
+        return false;
+    }
+
+    @Override
+    public void initActionMap() {
+        // Empty implementation to satisfy abstract method
     }
 
     /**
-     * Get the asteroid's Y position
+     * Check if this asteroid has been counted for scoring
      */
-    public float getY() {
-        return getPosition().y;
+    public boolean isCounted() {
+        return counted;
     }
 
     /**
-     * Get the asteroid's bounds for collision detection
+     * Mark this asteroid as counted for scoring
+     */
+    public void setCounted(boolean counted) {
+        this.counted = counted;
+    }
+
+    /**
+     * Get the collision bounds of this asteroid
      */
     public Rectangle getBounds() {
         return bounds;
     }
 
     /**
-     * Set the asteroid to destroyed state
+     * Set the physics body for this asteroid
+     *
+     * @param physicsBody The physics body
      */
-    public void destroy() {
-        setState(AsteroidState.DESTROYED);
-        setActionState(AsteroidAction.EXPLODE);
-    }
-
-    /**
-     * Check if asteroid is destroyed
-     */
-    public boolean isDestroyed() {
-        return getState() == AsteroidState.DESTROYED;
-    }
-
-    /**
-     * Set the asteroid's speed
-     */
-    public void setSpeedY(float speedY) {
-        this.speedY = speedY;
-    }
-
-    /**
-     * Get the asteroid's speed
-     */
-    public float getSpeedY() {
-        return speedY;
-    }
-    public void setPhysicsBody(abstractengine.entity.PhysicsBody physicsBody) {
+    public void setPhysicsBody(PhysicsBody physicsBody) {
         this.physicsBody = physicsBody;
     }
 
-    // Optionally, add a getter if needed
-    public abstractengine.entity.PhysicsBody getPhysicsBody() {
+    /**
+     * Get the physics body for this asteroid
+     *
+     * @return The physics body
+     */
+    public PhysicsBody getPhysicsBody() {
         return physicsBody;
     }
-}
 
+    /**
+     * Get the Y position (convenience method)
+     *
+     * @return Y position
+     */
+    public float getY() {
+        return getPosition().y;
+    }
+
+    /**
+     * Get the X position (convenience method)
+     *
+     * @return X position
+     */
+    public float getX() {
+        return getPosition().x;
+    }
+
+    /**
+     * Get the size of this asteroid
+     *
+     * @return Size as Vector2
+     */
+    public Vector2 getSize() {
+        return size;
+    }
+
+    /**
+     * Get the height (convenience method)
+     *
+     * @return Height
+     */
+    public float getHeight() {
+        return size.y;
+    }
+
+    /**
+     * Get the width (convenience method)
+     *
+     * @return Width
+     */
+    public float getWidth() {
+        return size.x;
+    }
+
+    @Override
+    public void draw(SpriteBatch batch) {
+        if (getTexture() == null) {
+            System.err.println("ERROR: Asteroid texture is null in draw method!");
+            return;
+        }
+
+        // Get current position and use the actual size from asteroid properties
+        Vector2 position = getPosition();
+        float width = this.size.x;   // Use the size that was set in constructor
+        float height = this.size.y;  // Use the size that was set in constructor
+
+        // Draw the texture with the actual asteroid size, centered at the object's position
+        batch.draw(
+            getTexture(),
+            position.x - width / 2,  // X position (centered)
+            position.y - height / 2, // Y position (centered)
+            width / 2,  // Origin X
+            height / 2, // Origin Y
+            width,      // Width
+            height,     // Height
+            1.0f,       // Scale X
+            1.0f,       // Scale Y
+            0.0f,       // Rotation (no rotation)
+            0, 0,       // Source rectangle X, Y
+            getTexture().getWidth(), getTexture().getHeight(), // Source width, height
+            false, false // Flip X, Y
+        );
+    }
+}

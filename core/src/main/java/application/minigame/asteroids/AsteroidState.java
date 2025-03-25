@@ -1,7 +1,7 @@
 package application.minigame.asteroids;
 
 public enum AsteroidState {
-    ACTIVE,
-    DESTROYED,
-    INACTIVE
+    IDLE,
+    MOVING,
+    EXPLODING
 }

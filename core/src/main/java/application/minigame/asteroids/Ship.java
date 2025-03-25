@@ -7,13 +7,11 @@ import com.badlogic.gdx.math.Vector2;
 import abstractengine.entity.DynamicTextureObject;
 import abstractengine.utils.DisplayManager;
 import application.entity.EntityType;
-import application.minigame.asteroids.ShipState;
-import application.minigame.asteroids.ShipAction;
 
 /**
  * Represents the player's ship in the AsteroidDodgeGame.
  */
-public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
+public class Ship extends DynamicTextureObject<ShipBehaviour.State, ShipBehaviour.Action> {
     // Ship constants
     private static final float DEFAULT_SPEED = 300.0f;
     private static final float MAX_SPEED = 600.0f;
@@ -24,36 +22,30 @@ public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
     private float invulnerabilityTimer;
 
     // Added state variables and accessor methods for ship state and action
-    private ShipState state;
-    private ShipAction actionState;
+    private ShipBehaviour.State state;
+    private ShipBehaviour.Action actionState;
 
     // Add a physicsBody field so that setPhysicsBody() can assign it.
     protected abstractengine.entity.PhysicsBody physicsBody;
 
-    public ShipState getState() {
+    public ShipBehaviour.State getState() {
         return state;
     }
 
-    public void setState(ShipState state) {
+    public void setState(ShipBehaviour.State state) {
         this.state = state;
     }
 
-    public ShipAction getActionState() {
+    public ShipBehaviour.Action getActionState() {
         return actionState;
     }
 
-    public void setActionState(ShipAction actionState) {
+    public void setActionState(ShipBehaviour.Action actionState) {
         this.actionState = actionState;
     }
 
     /**
      * Creates a new Ship
-     *
-     * @param texture The ship texture
-     * @param x X position
-     * @param y Y position
-     * @param width Width
-     * @param height Height
      */
     public Ship(Texture texture, float x, float y, float width, float height) {
         super(EntityType.PLAYER,
@@ -63,8 +55,8 @@ public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
               new Vector2(0, 0),
               new Vector2(0, 0),
               DEFAULT_SPEED,
-              ShipState.IDLE,
-              ShipAction.NONE);
+              ShipBehaviour.State.IDLE,
+              ShipBehaviour.Action.NONE);
 
         // Set ship-specific properties
         this.speed = DEFAULT_SPEED;
@@ -72,8 +64,8 @@ public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
         this.invulnerabilityTimer = 0;
 
         // Set initial state
-        setState(ShipState.IDLE);
-        setActionState(ShipAction.NONE);
+        setState(ShipBehaviour.State.IDLE);
+        setActionState(ShipBehaviour.Action.NONE);
     }
 
     /**
@@ -82,7 +74,7 @@ public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
     public Ship(EntityType type, String texturePath, Vector2 size, Vector2 position,
                Vector2 direction, Vector2 rotation, float speed) {
         super(type, texturePath, size, position, direction, rotation, speed,
-              ShipState.IDLE, ShipAction.NONE);
+              ShipBehaviour.State.IDLE, ShipBehaviour.Action.NONE);
 
         this.speed = speed;
         this.bounds = new Rectangle(position.x - size.x/2, position.y - size.y/2,
@@ -92,9 +84,6 @@ public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
 
     /**
      * Update the ship position
-     *
-     * @param deltaTime Time since last update
-     * @param moveDirection -1 for left, 0 for none, 1 for right
      */
     public void update(float deltaTime, int moveDirection) {
         // Update position based on input
@@ -105,11 +94,11 @@ public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
             position.x += moveAmount;
 
             // Set state and action based on movement
-            setState(ShipState.MOVING);
-            setActionState(moveDirection < 0 ? ShipAction.MOVE_LEFT : ShipAction.MOVE_RIGHT);
+            setState(ShipBehaviour.State.MOVING);
+            setActionState(moveDirection < 0 ? ShipBehaviour.Action.MOVE_LEFT : ShipBehaviour.Action.MOVE_RIGHT);
         } else {
-            setState(ShipState.IDLE);
-            setActionState(ShipAction.NONE);
+            setState(ShipBehaviour.State.IDLE);
+            setActionState(ShipBehaviour.Action.NONE);
         }
 
         // Constrain position to screen bounds
@@ -127,7 +116,7 @@ public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
             invulnerabilityTimer -= deltaTime;
 
             if (invulnerabilityTimer <= 0) {
-                setState(ShipState.IDLE);
+                setState(ShipBehaviour.State.IDLE);
             }
         }
     }
@@ -143,7 +132,7 @@ public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
      * Make the ship temporarily invulnerable
      */
     public void makeInvulnerable(float duration) {
-        setState(ShipState.INVULNERABLE);
+        setState(ShipBehaviour.State.INVULNERABLE);
         invulnerabilityTimer = duration;
     }
 
@@ -151,21 +140,21 @@ public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
      * Check if the ship is currently invulnerable
      */
     public boolean isInvulnerable() {
-        return getState() == ShipState.INVULNERABLE;
+        return getState() == ShipBehaviour.State.INVULNERABLE;
     }
 
     /**
      * Set the ship to destroyed state
      */
     public void destroy() {
-        setState(ShipState.DESTROYED);
+        setState(ShipBehaviour.State.DESTROYED);
     }
 
     /**
      * Check if ship is destroyed
      */
     public boolean isDestroyed() {
-        return getState() == ShipState.DESTROYED;
+        return getState() == ShipBehaviour.State.DESTROYED;
     }
 
     /**
@@ -180,7 +169,7 @@ public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
      */
     public void boost() {
         setSpeed(MAX_SPEED);
-        setActionState(ShipAction.BOOST);
+        setActionState(ShipBehaviour.Action.BOOST);
     }
 
     /**
@@ -188,8 +177,8 @@ public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
      */
     public void reset(float x, float y) {
         setPosition(new Vector2(x, y));
-        setState(ShipState.IDLE);
-        setActionState(ShipAction.NONE);
+        setState(ShipBehaviour.State.IDLE);
+        setActionState(ShipBehaviour.Action.NONE);
         this.speed = DEFAULT_SPEED;
         this.invulnerabilityTimer = 0;
 
@@ -199,9 +188,6 @@ public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
 
     /**
      * Move the ship by a specified amount
-     *
-     * @param dx Change in x position
-     * @param dy Change in y position
      */
     public void move(float dx, float dy) {
         // Get current position
@@ -212,14 +198,14 @@ public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
         if (dx != 0 || dy != 0) {
             // For example, if moving horizontally, update state accordingly
             if (dx < 0) {
-                setActionState(ShipAction.MOVE_LEFT);
+                setActionState(ShipBehaviour.Action.MOVE_LEFT);
             } else if (dx > 0) {
-                setActionState(ShipAction.MOVE_RIGHT);
+                setActionState(ShipBehaviour.Action.MOVE_RIGHT);
             }
-            setState(ShipState.MOVING);
+            setState(ShipBehaviour.State.MOVING);
         } else {
-            setState(ShipState.IDLE);
-            setActionState(ShipAction.NONE);
+            setState(ShipBehaviour.State.IDLE);
+            setActionState(ShipBehaviour.Action.NONE);
         }
 
         setPosition(pos);
@@ -233,7 +219,6 @@ public class Ship extends DynamicTextureObject<ShipState, ShipAction> {
         this.physicsBody = physicsBody;
     }
 
-    // Optionally, add a getter if needed
     public abstractengine.entity.PhysicsBody getPhysicsBody() {
         return physicsBody;
     }
