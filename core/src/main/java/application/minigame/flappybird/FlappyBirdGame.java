@@ -10,10 +10,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import abstractengine.utils.DisplayManager;
 import application.entity.EntityType;
 import application.minigame.common.GameState;
-import application.minigame.asteroids.Ship;
 import application.minigame.common.AbstractMiniGame;
 import application.minigame.common.MiniGameUI;
 import application.scene.PointsManager;
@@ -22,16 +22,17 @@ import abstractengine.entity.CollisionDetector;
 import abstractengine.entity.CollisionListener;
 import abstractengine.entity.Entity;
 import application.entity.CollisionType;
+import application.minigame.utils.DummyPhysicsBody;
 
 /**
  * FlappyBirdGame - A mini-game where the player controls a bird flying through pipes.
  * This class handles the core game logic and coordinates other components.
  */
-public class FlappyBirdGame extends AbstractMiniGame {
+public class FlappyBirdGame extends AbstractMiniGame implements CollisionListener {
     // Game components
     private Bird bird;
-    private PipeManager pipeManager;
-    private FlappyBirdPhysics physics;
+    private Array<Pipe> pipes;
+    private CollisionDetector collisionDetector;
     private FlappyBirdUI gameUI;
 
     // Game assets
@@ -46,6 +47,22 @@ public class FlappyBirdGame extends AbstractMiniGame {
     private float timeLimit = 30f;
     private int finalScore = 0;
 
+    // Physics constants
+    private static final float GRAVITY = 600.0f;
+    private static final float JUMP_VELOCITY = 350.0f;
+
+    // Pipe generation parameters
+    private static final float PIPE_SPAWN_INTERVAL = 1.25f; // Reduced from 2.5f for closer pipe spacing
+    private static final float PIPE_SPEED = 150.0f;
+    private static final float PIPE_WIDTH = 60.0f;
+    // Make gap size vary between these two values
+    private static final float MIN_PIPE_GAP = 150.0f;
+    private static final float MAX_PIPE_GAP = 200.0f;
+    private static final float PIPE_MIN_HEIGHT = 60.0f;
+
+    // Pipe spawning timer
+    private float timeSinceLastPipe = 0;
+
     /**
      * Creates a new FlappyBirdGame
      *
@@ -55,8 +72,12 @@ public class FlappyBirdGame extends AbstractMiniGame {
     public FlappyBirdGame(PointsManager pointsManager, StartMiniGameHandler miniGameHandler) {
         super(pointsManager, miniGameHandler, 30f); // 30 second time limit
 
-        // Don't initialize components in constructor
-        // We'll do that in load() to ensure proper texture loading
+        // Initialize collision detector
+        collisionDetector = new CollisionDetector();
+        collisionDetector.addListener(this);
+
+        // Initialize pipes array
+        pipes = new Array<>();
     }
 
     /**
@@ -194,42 +215,19 @@ public class FlappyBirdGame extends AbstractMiniGame {
         // Handle jump input
         handleJumpInput();
 
-        // Update pipe positions
-        if (pipeManager != null) {
-            pipeManager.update(deltaTime);
-        }
+        // Update pipe positions and spawn new pipes
+        updatePipes(deltaTime);
 
-        // Update physics
-        physics.update(deltaTime);
+        // Update bird physics
+        updateBirdPhysics(deltaTime);
 
-        // Check for collision with pipes
-        if (physics.hasCollidedWithPipe()) {
-            state = GameState.GAME_OVER;
-            gameOverTimer = 0;
+        // Apply gravity to bird
+        applyGravity(deltaTime);
 
-            // Play collision sound
-            if (audioManager != null) {
-                audioManager.playSoundEffect("collision");
-            }
-            return;
-        }
+        // Check for collisions
+        checkCollisions();
 
-        // Update score based on passed pipes
-        int newlyPassedPipes = physics.getNewlyPassedPipes();
-        if (newlyPassedPipes > 0) {
-            // +10 points per pipe
-            // Use parent class's setScore instead of directly modifying local score
-            setScore(score + (newlyPassedPipes * 10));
-
-            System.out.println("FlappyBird score updated: " + score);
-
-            // Play score sound
-            if (audioManager != null) {
-                audioManager.playSoundEffect("score");
-            }
-        }
-
-        // Example snippet to add in your FlappyBirdGame.handlePlayingState() method:
+        // Check for key press to exit
         if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
             state = GameState.CONFIRM_EXIT;
             System.out.println("Quick exit triggered in FlappyBirdGame");
@@ -240,6 +238,173 @@ public class FlappyBirdGame extends AbstractMiniGame {
             state = GameState.GAME_OVER;
             gameOverTimer = 0;
         }
+
+        // Update entity manager
+        entityManager.update();
+    }
+
+    /**
+     * Apply gravity to the bird
+     */
+    private void applyGravity(float deltaTime) {
+        // Apply gravity to bird's velocity
+        float currentVelocity = bird.getVelocityY();
+        bird.setVelocityY(currentVelocity - GRAVITY * deltaTime);
+    }
+
+    /**
+     * Update bird position based on physics
+     */
+    private void updateBirdPhysics(float deltaTime) {
+        // Update bird position based on velocity
+        bird.update(deltaTime);
+
+        // Check if bird is out of bounds
+        Vector2 birdPos = bird.getPosition();
+        if (birdPos.y < 0) {
+            // Hit the ground
+            birdPos.y = 0;
+            bird.setPosition(birdPos);
+
+            // Game over if hits ground
+            state = GameState.GAME_OVER;
+            gameOverTimer = 0;
+
+            // Play collision sound
+            if (audioManager != null) {
+                audioManager.playSoundEffect("collision");
+            }
+        } else if (birdPos.y > DisplayManager.getScreenHeight()) {
+            // Hit the ceiling
+            birdPos.y = DisplayManager.getScreenHeight() - bird.getHeight();
+            bird.setPosition(birdPos);
+            bird.setVelocityY(0);
+        }
+    }
+
+    /**
+     * Update pipe positions and spawn new pipes
+     */
+    private void updatePipes(float deltaTime) {
+        // Update existing pipes
+        for (int i = 0; i < pipes.size; i++) {
+            Pipe pipe = pipes.get(i);
+            pipe.update(deltaTime, PIPE_SPEED);
+
+            // Remove pipes that are off-screen
+            if (pipe.getX() + pipe.getWidth() < 0) {
+                entityManager.markForRemoval(pipe);
+                pipes.removeIndex(i);
+                i--;
+            }
+        }
+
+        // Spawn new pipes
+        timeSinceLastPipe += deltaTime;
+        if (timeSinceLastPipe >= PIPE_SPAWN_INTERVAL) {
+            spawnPipePair();
+            timeSinceLastPipe = 0;
+        }
+    }
+
+    /**
+     * Spawn a new pair of pipes
+     */
+    private void spawnPipePair() {
+        float screenHeight = DisplayManager.getScreenHeight();
+        float screenWidth = DisplayManager.getScreenWidth();
+
+        // Generate a random gap height
+        float gapHeight = MathUtils.random(MIN_PIPE_GAP, MAX_PIPE_GAP);
+
+        // Calculate random gap position (vertical center point)
+        float gapCenter = MathUtils.random(
+            screenHeight * 0.3f, // Keep gap at least 30% from the top
+            screenHeight * 0.7f  // And at least 30% from the bottom
+        );
+
+        // Create top pipe - anchored to top of screen
+        float topPipeHeight = gapCenter - gapHeight/2;
+        Pipe topPipe = new Pipe(
+            pipeTexture,
+            screenWidth,
+            screenHeight - topPipeHeight/2, // Position y at top of screen minus half pipe height
+            PIPE_WIDTH,
+            topPipeHeight,
+            true
+        );
+
+        // Create bottom pipe - anchored to bottom of screen
+        float bottomPipeHeight = screenHeight - (gapCenter + gapHeight/2);
+        if (bottomPipeHeight < PIPE_MIN_HEIGHT) bottomPipeHeight = PIPE_MIN_HEIGHT;
+
+        Pipe bottomPipe = new Pipe(
+            pipeTexture,
+            screenWidth,
+            bottomPipeHeight/2, // Position at bottom of screen (y=0) plus half pipe height
+            PIPE_WIDTH,
+            bottomPipeHeight,
+            false
+        );
+
+        // Add physics bodies to pipes
+        topPipe.setPhysicsBody(new DummyPhysicsBody(topPipe));
+        bottomPipe.setPhysicsBody(new DummyPhysicsBody(bottomPipe));
+
+        // Add pipes to array and entity manager
+        pipes.add(topPipe);
+        pipes.add(bottomPipe);
+        entityManager.addEntities(topPipe);
+        entityManager.addEntities(bottomPipe);
+    }
+
+    /**
+     * Check for collisions between bird and pipes
+     */
+    private void checkCollisions() {
+        // No need for Rectangle references, we'll check using entity positions and sizes
+        Vector2 birdPos = bird.getPosition();
+        float birdWidth = bird.getWidth();
+        float birdHeight = bird.getHeight();
+
+        // Add a smaller hitbox for more forgiving gameplay
+        float margin = Math.min(birdWidth, birdHeight) * 0.2f;
+
+        // Check collision with each pipe
+        for (Pipe pipe : pipes) {
+            Vector2 pipePos = pipe.getPosition();
+            float pipeWidth = pipe.getWidth();
+            float pipeHeight = pipe.getHeight();
+
+            // Simple AABB collision check with margin
+            boolean collision = !(
+                birdPos.x + birdWidth/2 - margin < pipePos.x - pipeWidth/2 ||
+                birdPos.x - birdWidth/2 + margin > pipePos.x + pipeWidth/2 ||
+                birdPos.y + birdHeight/2 - margin < pipePos.y - pipeHeight/2 ||
+                birdPos.y - birdHeight/2 + margin > pipePos.y + pipeHeight/2
+            );
+
+            if (collision) {
+                // Trigger collision event
+                onCollision(bird, pipe, CollisionType.PIPE_PLAYER);
+                break;
+            }
+
+            // Check for score - bird passes the pipe
+            if (!pipe.isPassed() && !pipe.isTop() && birdPos.x > pipePos.x + pipeWidth/2) {
+                pipe.setPassed(true);
+
+                // Increase score
+                setScore(score + 10);
+
+                System.out.println("FlappyBird score updated: " + score);
+
+                // Play score sound
+                if (audioManager != null) {
+                    audioManager.playSoundEffect("score");
+                }
+            }
+        }
     }
 
     /**
@@ -247,11 +412,14 @@ public class FlappyBirdGame extends AbstractMiniGame {
      */
     private void handleJumpInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            // Call physics.jump() which should set bird's jump velocity internally before calling flap()
-            physics.jump();
-            audioManager.playSoundEffect("jump");
+            // Set bird's jump velocity
+            bird.setVelocityY(JUMP_VELOCITY);
+            bird.flap();
+
+            if (audioManager != null) {
+                audioManager.playSoundEffect("jump");
+            }
         }
-        // Optional: allow touch input or other input for jump
     }
 
     @Override
@@ -261,31 +429,20 @@ public class FlappyBirdGame extends AbstractMiniGame {
             batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         }
 
-        // Delegate drawing of dynamic entities to IEntityManager
+        // Draw all entities including bird via the entity manager
         entityManager.draw(batch);
 
-        // Only draw pipes if pipeManager has been instantiated
-        if (pipeManager != null) {
-            for (Pipe pipe : pipeManager.getPipes()) {
-                batch.draw(pipe.getTexture(),
-                    pipe.getX() - pipe.getWidth() / 2,
-                    pipe.getY() - pipe.getHeight() / 2,
-                    pipe.getWidth(), pipe.getHeight());
-            }
-        } else {
-            System.err.println("PipeManager is null!");
+        // Draw pipes
+        for (Pipe pipe : pipes) {
+            pipe.draw(batch);
         }
     }
 
     @Override
     protected MiniGameUI createGameUI() {
         FlappyBirdUI ui = new FlappyBirdUI();
-
-        // Initialize UI with current game state
         ui.setScore(score);
         ui.setTimeLimit(timeLimit);
-
-        System.out.println("Created UI with score: " + score);
         return ui;
     }
 
@@ -296,9 +453,7 @@ public class FlappyBirdGame extends AbstractMiniGame {
         if (backgroundTexture != null) backgroundTexture.dispose();
     }
 
-    /**
-     * Get the current score
-     */
+    @Override
     public int getScore() {
         return score;
     }
@@ -312,6 +467,10 @@ public class FlappyBirdGame extends AbstractMiniGame {
         gameOverTimer = 0;
         timeLimit = 60f;
 
+        // Clear existing pipes
+        pipes.clear();
+        timeSinceLastPipe = 0;
+
         if (birdTexture == null || pipeTexture == null || backgroundTexture == null) {
             loadAssets();
         }
@@ -321,78 +480,56 @@ public class FlappyBirdGame extends AbstractMiniGame {
         bird = new Bird(EntityType.PLAYER,
                        "rocket-2.png",
                        birdSize,
-                       new Vector2(Gdx.graphics.getWidth() / 2f, 100f),
+                       new Vector2(Gdx.graphics.getWidth() / 4f, Gdx.graphics.getHeight() / 2f),
                        new Vector2(0, 0),
                        new Vector2(0, 0),
                        300f);
 
-        bird.setPhysicsBody(new application.minigame.utils.DummyPhysicsBody(bird));
+        // Assign physics body to bird
+        bird.setPhysicsBody(new DummyPhysicsBody(bird));
 
-        pipeManager = new PipeManager(pipeTexture);
-        physics = new FlappyBirdPhysics(bird, pipeManager);
-
-        // Register dynamic entities with the IEntityManager:
+        // Register bird with the entity manager
         entityManager.addEntities(bird);
 
+        // Create UI
         gameUI = (FlappyBirdUI)createGameUI();
-
-        // Create a CollisionDetector instance (do not modify abstractengine code)
-        CollisionDetector collisionDetector = new CollisionDetector();
-
-        // Register a collision listener for bird–pipe collisions.
-        collisionDetector.addListener(new CollisionListener() {
-            @Override
-            public void onCollision(Entity a, Entity b, CollisionType type) {
-                // Check for bird vs pipe collisions
-                if (type == CollisionType.PIPE_PLAYER) {
-                    state = GameState.GAME_OVER;
-                    gameOverTimer = 0;
-                    System.out.println("Bird collided with a pipe!");
-                }
-            }
-        });
 
         System.out.println("FlappyBird mini-game loaded successfully");
     }
 
     @Override
     public void draw(ShapeRenderer shape) {
-        // Disable the debug hitbox visualization completely
-        // This will prevent yellow rectangles from being drawn
-
-        // If you need debug visualization in the future, uncomment this:
-        /*
-        if (physics != null && shape != null) {
-            // Draw hitboxes for debugging
-            shape.begin(ShapeRenderer.ShapeType.Line);
-
-            // Draw bird hitbox
-            shape.setColor(Color.RED); // Change from yellow to red to be less intrusive
-            Rectangle birdBounds = bird.getBounds();
-            shape.rect(birdBounds.x, birdBounds.y, birdBounds.width, birdBounds.height);
-
-            // Draw pipe hitboxes
-            for (Pipe pipe : pipeManager.getPipes()) {
-                Rectangle pipeBounds = pipe.getBounds();
-                shape.rect(pipeBounds.x, pipeBounds.y, pipeBounds.width, pipeBounds.height);
-            }
-
-            shape.end();
-        }
-        */
+        // Debug drawing can be left empty or implemented for visualization
     }
 
     @Override
     public void unload() {
-        // Stop any sounds related to this mini-game
+        // Stop sounds
         if (audioManager != null) {
             audioManager.stopSoundEffect("minigame");
         }
 
-        // Clean up any resources
+        // Clean up resources
         gameCompleted = false;
+        pipes.clear();
 
         System.out.println("Flappy Bird mini-game unloaded successfully");
+    }
+
+    @Override
+    public void onCollision(Entity a, Entity b, CollisionType type) {
+        // Handle bird-pipe collision
+        if (type == CollisionType.PIPE_PLAYER) {
+            state = GameState.GAME_OVER;
+            gameOverTimer = 0;
+
+            // Play collision sound
+            if (audioManager != null) {
+                audioManager.playSoundEffect("collision");
+            }
+
+            System.out.println("Bird collided with a pipe!");
+        }
     }
 
     @Override
@@ -407,7 +544,7 @@ public class FlappyBirdGame extends AbstractMiniGame {
 
         // Use the saved final score for display
         if (gameUI != null) {
-            ((FlappyBirdUI)gameUI).setScore(finalScore);
+            gameUI.setScore(finalScore);
         }
 
         // Wait for a few seconds before auto-returning
@@ -425,20 +562,24 @@ public class FlappyBirdGame extends AbstractMiniGame {
 
     @Override
     public void update() {
-        // Call the parent update method with the current delta time
         float deltaTime = Gdx.graphics.getDeltaTime();
         super.update(deltaTime);
     }
 
     protected void reset() {
-        // Reset game variables to starting state
+        // Reset game variables
         gameTime = 0;
         gameOverTimer = 0;
         score = 0;
         state = GameState.READY;
 
-        // Reset game components
-        if (bird != null) bird.reset();
-        if (pipeManager != null) pipeManager.reset();
+        // Reset bird
+        if (bird != null) {
+            bird.reset();
+        }
+
+        // Clear and reset pipes
+        pipes.clear();
+        timeSinceLastPipe = 0;
     }
 }

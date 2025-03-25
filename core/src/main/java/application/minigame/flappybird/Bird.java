@@ -1,36 +1,36 @@
 package application.minigame.flappybird;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 
 import abstractengine.entity.DynamicTextureObject;
+import abstractengine.entity.PhysicsBody;
 import abstractengine.utils.DisplayManager;
 import application.entity.EntityType;
-import application.minigame.flappybird.BirdState;
-
-import application.minigame.flappybird.BirdAction;
+import application.minigame.flappybird.BirdBehaviour;
 
 /**
  * Bird class for FlappyBirdGame.
  * This class represents the bird that the player controls.
  */
-public class Bird extends DynamicTextureObject<BirdState, BirdAction> {
-    // Configurable properties (initialize in constructor)
+public class Bird extends DynamicTextureObject<BirdBehaviour.State, BirdBehaviour.Action> {
+    // Bird constants
     public static final float WIDTH = 40f;
     private static final float DEFAULT_SPEED = 10.0f;
     public static final float HEIGHT = 40f;
+
+    // Bird properties
     private final Vector2 size;
     private final Vector2 initialPosition;
-    private BirdState state;
-    // Bird-specific properties
+    private BirdBehaviour.State state;
     private float velocityY;
     private Rectangle bounds; // For collision detection with pipes
-
-    private BirdAction actionState;
-    protected abstractengine.entity.PhysicsBody physicsBody;
+    private BirdBehaviour.Action actionState;
+    protected PhysicsBody physicsBody;
 
     /**
      * Creates a new Bird with a texture
@@ -43,8 +43,8 @@ public class Bird extends DynamicTextureObject<BirdState, BirdAction> {
               new Vector2(0, 0),
               new Vector2(0, 0),
               DEFAULT_SPEED,
-              BirdState.IDLE,
-              BirdAction.NONE);
+              BirdBehaviour.State.IDLE,
+              BirdBehaviour.Action.NONE);
 
         // Initialize final fields
         this.size = new Vector2(width, height);
@@ -54,18 +54,14 @@ public class Bird extends DynamicTextureObject<BirdState, BirdAction> {
         this.bounds = new Rectangle(x - width/2, y - height/2, width, height);
 
         // Set initial state
-        setState(BirdState.IDLE);
-        setActionState(BirdAction.NONE);
+        setState(BirdBehaviour.State.IDLE);
+        setActionState(BirdBehaviour.Action.NONE);
     }
-
-
-
-
 
     public Bird(EntityType type, String texturePath, Vector2 size, Vector2 position,
                Vector2 direction, Vector2 rotation, float speed) {
         super(type, texturePath, size, position, direction, rotation, speed,
-              BirdState.IDLE, BirdAction.NONE);
+              BirdBehaviour.State.IDLE, BirdBehaviour.Action.NONE);
 
         this.size = size;
         this.initialPosition = new Vector2(position);
@@ -73,21 +69,6 @@ public class Bird extends DynamicTextureObject<BirdState, BirdAction> {
         this.bounds = new Rectangle(position.x - size.x/2, position.y - size.y/2,
                                    size.x, size.y);
         this.velocityY = 0;
-    }
-
-
-    /**
-     * Creates a new Bird with all parameters
-    public Bird(EntityType type, String texturePath, Vector2 size, Vector2 position,
-                Vector2 direction, Vector2 rotation, float speed) {
-        super(type, texturePath, size, position, direction, rotation, speed,
-              BirdState.IDLE, BirdAction.NONE);
-
-        this.size = size;
-        this.initialPosition = new Vector2(position);
-        this.bounds = new Rectangle(position.x - size.x/2, position.y - size.y/2, size.x, size.y);
-        this.velocityY = 0;
-    }
     }
 
     /**
@@ -113,9 +94,9 @@ public class Bird extends DynamicTextureObject<BirdState, BirdAction> {
 
         // Update state based on vertical velocity
         if (velocityY > 0) {
-            setState(BirdState.FLYING);
+            setState(BirdBehaviour.State.FLYING);
         } else {
-            setState(BirdState.FALLING);
+            setState(BirdBehaviour.State.FALLING);
         }
     }
 
@@ -159,46 +140,48 @@ public class Bird extends DynamicTextureObject<BirdState, BirdAction> {
         bounds.x = initialPosition.x - bounds.width / 2;
         bounds.y = initialPosition.y - bounds.height / 2;
         velocityY = 0;
-        setState(BirdState.IDLE);
+        setState(BirdBehaviour.State.IDLE);
     }
 
     /**
      * Make the bird flap (jump)
      */
     public void flap() {
-        setActionState(BirdAction.FLAP);
+        setActionState(BirdBehaviour.Action.FLAP);
     }
 
     /**
      * Set the bird to dead state
      */
     public void die() {
-        setState(BirdState.DEAD);
+        setState(BirdBehaviour.State.DEAD);
     }
+
     /**
      * Sets the bird's state
      */
-    public void setState(BirdState state) {
+    public void setState(BirdBehaviour.State state) {
         this.state = state;
     }
+
     /**
      * Returns the bird's state
      */
-    public BirdState getState() {
+    public BirdBehaviour.State getState() {
         return state;
     }
 
     /**
      * Sets the bird's action state
      */
-    public void setActionState(BirdAction action) {
+    public void setActionState(BirdBehaviour.Action action) {
         this.actionState = action;
     }
 
     /**
      * Returns the bird's action state
      */
-    public BirdAction getActionState() {
+    public BirdBehaviour.Action getActionState() {
         return this.actionState;
     }
 
@@ -206,15 +189,63 @@ public class Bird extends DynamicTextureObject<BirdState, BirdAction> {
      * Check if bird is dead
      */
     public boolean isDead() {
-        return getState() == BirdState.DEAD;
+        return getState() == BirdBehaviour.State.DEAD;
     }
 
-    public void setPhysicsBody(abstractengine.entity.PhysicsBody physicsBody) {
+    /**
+     * Set the physics body
+     */
+    public void setPhysicsBody(PhysicsBody physicsBody) {
         this.physicsBody = physicsBody;
     }
 
-    public abstractengine.entity.PhysicsBody getPhysicsBody() {
+    /**
+     * Get the physics body
+     */
+    public PhysicsBody getPhysicsBody() {
         return physicsBody;
+    }
+
+    /**
+     * Get the width (convenience method)
+     */
+    public float getWidth() {
+        return size.x;
+    }
+
+    /**
+     * Get the height (convenience method)
+     */
+    public float getHeight() {
+        return size.y;
+    }
+
+    /**
+     * Custom draw method to ensure proper rendering
+     */
+    @Override
+    public void draw(SpriteBatch batch) {
+        if (getTexture() == null) return;
+
+        Vector2 position = getPosition();
+        float width = this.size.x;
+        float height = this.size.y;
+
+        batch.draw(
+            getTexture(),
+            position.x - width / 2,  // X position (centered)
+            position.y - height / 2, // Y position (centered)
+            width / 2,   // Origin X
+            height / 2,  // Origin Y
+            width,       // Width
+            height,      // Height
+            1.0f,        // Scale X
+            1.0f,        // Scale Y
+            0.0f,        // Rotation
+            0, 0,        // Source rectangle X, Y
+            getTexture().getWidth(), getTexture().getHeight(), // Source width, height
+            false, false // Flip X, Y
+        );
     }
 }
 
