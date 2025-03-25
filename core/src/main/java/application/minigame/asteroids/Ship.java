@@ -25,8 +25,6 @@ public class Ship extends DynamicTextureObject<ShipBehaviour.State, ShipBehaviou
     private ShipBehaviour.State state;
     private ShipBehaviour.Action actionState;
 
-    // Add a physicsBody field so that setPhysicsBody() can assign it.
-    protected abstractengine.entity.PhysicsBody physicsBody;
 
     public ShipBehaviour.State getState() {
         return state;
@@ -214,12 +212,6 @@ public class Ship extends DynamicTextureObject<ShipBehaviour.State, ShipBehaviou
         bounds.x = pos.x - bounds.width / 2;
         bounds.y = pos.y - bounds.height / 2;
     }
-
-    public void setPhysicsBody(abstractengine.entity.PhysicsBody physicsBody) {
-        this.physicsBody = physicsBody;
-    }
-
-    public abstractengine.entity.PhysicsBody getPhysicsBody() {
-        return physicsBody;
-    }
 }
+
+    
