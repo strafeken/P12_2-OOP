@@ -12,7 +12,7 @@ import application.entity.EntityType;
 /**
  * Asteroid class for the Asteroid Dodge mini-game
  */
-public class Asteroid extends DynamicTextureObject<AsteroidState, AsteroidAction> {
+public class Asteroid extends DynamicTextureObject<AsteroidBehaviour.State, AsteroidBehaviour.Action> {
     private float speed;
     private boolean counted = false;
     private Rectangle bounds = new Rectangle();
@@ -33,8 +33,8 @@ public class Asteroid extends DynamicTextureObject<AsteroidState, AsteroidAction
               new Vector2(0, -1),
               new Vector2(0, 0),
               speed,
-              AsteroidState.MOVING,
-              AsteroidAction.MOVE);
+              AsteroidBehaviour.State.MOVING,
+              AsteroidBehaviour.Action.MOVE);
 
         this.speed = speed;
         this.size = new Vector2(width, height);

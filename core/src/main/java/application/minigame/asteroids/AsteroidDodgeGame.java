@@ -58,8 +58,8 @@ public class AsteroidDodgeGame extends AbstractMiniGame implements CollisionList
     // Asteroid management constants (from AsteroidManager)
     private static final float INITIAL_SPAWN_INTERVAL = 1.5f;
     private static final float MIN_SPAWN_INTERVAL = 0.5f;
-    private static final float MIN_ASTEROID_SPEED = 50f;
-    private static final float MAX_ASTEROID_SPEED = 100f;
+    private static final float MIN_ASTEROID_SPEED = 200f;
+    private static final float MAX_ASTEROID_SPEED = 300f;
     private static final float BASE_ASTEROID_SIZE = 40f;
     private static final float SPEED_INCREASE_INTERVAL = 9.0f;
     private static final float ASTEROID_COUNT_INCREASE_INTERVAL = 11.0f;
