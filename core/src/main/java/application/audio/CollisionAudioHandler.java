@@ -14,11 +14,6 @@ public class CollisionAudioHandler implements CollisionListener {
 
     @Override
     public void onCollision(Entity a, Entity b, CollisionType type) {
-        if (audioManager == null) {
-            System.out.println("AudioManager is null in CollisionAudioHandler!");
-            return;
-        }
-
         switch (type) {
             case RECYCLABLE_PLAYER:
                 audioManager.playSoundEffect("ding");
@@ -30,9 +25,6 @@ public class CollisionAudioHandler implements CollisionListener {
                 audioManager.playSoundEffect("ding");
                 break;
             case ALIEN_PLAYER:
-                audioManager.playSoundEffect("ding");
-                break;
-            case ASTEROID_PLAYER:
                 audioManager.playSoundEffect("ding");
                 break;
             default:
