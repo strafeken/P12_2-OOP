@@ -10,7 +10,7 @@ public class LevelManager {
     private final Preferences prefs;
 
     // Points required to unlock each level
-    public static final int LEVEL2_POINTS = 150;
+    public static final int LEVEL2_POINTS = 100;
     public static final int LEVEL3_POINTS = 300;
     public static final int LEVEL4_POINTS = 600;
 

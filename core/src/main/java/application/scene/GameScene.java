@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
 import abstractengine.audio.AudioManager;
@@ -458,9 +457,9 @@ public class GameScene extends Scene {
         entityManager.draw(shape);
 
         // Use the collisionDetector's render method instead of direct debugRenderer
-        if (collisionDetector != null && world != null) {
-            collisionDetector.renderDebug(world, shape.getProjectionMatrix());
-        }
+        // if (collisionDetector != null && world != null) {
+        //     collisionDetector.renderDebug(world, shape.getProjectionMatrix());
+        // }
     }
 
     @Override

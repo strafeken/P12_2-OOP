@@ -233,9 +233,9 @@ public class LevelSelectScene extends Scene {
         entityManager.draw(shape);
         
         // Use the collisionDetector's render method instead of direct debugRenderer
-        if (collisionDetector != null && world != null) {
-            collisionDetector.renderDebug(world, shape.getProjectionMatrix());
-        }
+        // if (collisionDetector != null && world != null) {
+        //     collisionDetector.renderDebug(world, shape.getProjectionMatrix());
+        // }
     }
 
     @Override
