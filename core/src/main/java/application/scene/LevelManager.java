@@ -11,14 +11,14 @@ public class LevelManager {
 
     // Points required to unlock each level
     public static final int LEVEL2_POINTS = 150;
-    public static final int LEVEL3_POINTS = 500;
-    public static final int LEVEL4_POINTS = 1000;
+    public static final int LEVEL3_POINTS = 300;
+    public static final int LEVEL4_POINTS = 600;
 
     // Alien speed multiplier for each level
-    public static final float LEVEL1_ALIEN_SPEED = 30f;
+    public static final float LEVEL1_ALIEN_SPEED = 25f;
     public static final float LEVEL2_ALIEN_SPEED = 50f;
-    public static final float LEVEL3_ALIEN_SPEED = 80f;
-    public static final float LEVEL4_ALIEN_SPEED = 120f;
+    public static final float LEVEL3_ALIEN_SPEED = 70f;
+    public static final float LEVEL4_ALIEN_SPEED = 100f;
 
     private LevelManager() {
         prefs = Gdx.app.getPreferences("level-progress");
