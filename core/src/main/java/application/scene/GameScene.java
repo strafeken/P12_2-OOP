@@ -310,6 +310,7 @@ public class GameScene extends Scene {
         updatePhysics(delta);
 
         if (playerLifeHandler.checkGameOver()) {
+        	//System.out.println("chekc game over called");
             return;
         }
 

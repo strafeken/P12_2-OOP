@@ -3,6 +3,7 @@ package application.entity;
 import abstractengine.entity.CollisionListener;
 import abstractengine.entity.Entity;
 import abstractengine.scene.ISceneManager;
+import abstractengine.scene.Scene;
 import application.scene.GameOverScreen;
 import application.scene.PointsManager;
 import application.scene.SceneID;
@@ -56,8 +57,11 @@ public class PlayerLifeHandler implements CollisionListener {
             isGameOver = false;
 
             // Create and set up game over screen with final score
-            GameOverScreen gameOverScreen = new GameOverScreen();
-            gameOverScreen.setFinalScore(pointsManager.getPoints());
+            //GameOverScreen gameOverScreen = new GameOverScreen();
+            Scene gameOverScreen = sceneManager.getScene(SceneID.GAME_OVER);
+            
+            
+            ((GameOverScreen) gameOverScreen).setFinalScore(pointsManager.getPoints());
             sceneManager.setNextScene(SceneID.GAME_OVER);
             return true;
         }
