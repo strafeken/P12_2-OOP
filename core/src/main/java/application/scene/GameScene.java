@@ -318,6 +318,9 @@ public class GameScene extends Scene {
         // Make sure miniGameHandler is the variable name you're using
         miniGameHandler.update(delta);
 
+        // Update the player life handler to process cooldowns
+        playerLifeHandler.update(delta);
+
         // Update trash spawn timer
         trashSpawnTimer += delta;
         if (trashSpawnTimer >= trashSpawnInterval) {

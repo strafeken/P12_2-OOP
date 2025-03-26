@@ -12,6 +12,8 @@ public class PlayerLifeHandler implements CollisionListener {
     private ISceneManager sceneManager;
     private PointsManager pointsManager;
     private boolean isGameOver = false;
+    private float alienCollisionCooldown = 0f;
+    private static final float ALIEN_COOLDOWN_DURATION = 1.0f;
 
     public PlayerLifeHandler(ISceneManager sceneManager, PointsManager pointsManager) {
         this.sceneManager = sceneManager;
@@ -22,31 +24,40 @@ public class PlayerLifeHandler implements CollisionListener {
     public void onCollision(Entity a, Entity b, CollisionType type) {
         PlayerStatus playerStatus = PlayerStatus.getInstance();
 
-        // Handle non-recyclable collisions
         if (type == CollisionType.NON_RECYCLABLE_PLAYER) {
-
+            // Decrement player life by 2
             playerStatus.decrementLife();
-
+            playerStatus.decrementLife();
             System.out.println("Player collided with non-recyclable! Lives remaining: " + playerStatus.getLives());
 
-            // Check if game over, but don't transition immediately during collision
             if (playerStatus.isGameOver()) {
                 System.out.println("Game Over! No lives remaining.");
                 isGameOver = true;
             }
         }
-        // Handle alien collisions
-        else if (type == CollisionType.ALIEN_PLAYER) {
-            // Decrement player life by 2
+        // Handle alien collisions with our cooldown
+        else if (type == CollisionType.ALIEN_PLAYER && alienCollisionCooldown <= 0) {
+            // Set our cooldown
+            alienCollisionCooldown = ALIEN_COOLDOWN_DURATION;
+            System.out.println("Setting alien collision cooldown in PlayerLifeHandler");
+
+            // Decrement player life by 2 (regardless of carrying trash)
             playerStatus.decrementLife();
             playerStatus.decrementLife();
             System.out.println("Player collided with alien! Lives remaining: " + playerStatus.getLives());
 
-            // Check if game over
+            // Check for game over
             if (playerStatus.isGameOver()) {
                 System.out.println("Game Over! No lives remaining.");
                 isGameOver = true;
             }
+        }
+    }
+
+    // Update method to process cooldown timer
+    public void update(float deltaTime) {
+        if (alienCollisionCooldown > 0) {
+            alienCollisionCooldown -= deltaTime;
         }
     }
 
@@ -59,8 +70,8 @@ public class PlayerLifeHandler implements CollisionListener {
             // Create and set up game over screen with final score
             //GameOverScreen gameOverScreen = new GameOverScreen();
             Scene gameOverScreen = sceneManager.getScene(SceneID.GAME_OVER);
-            
-            
+
+
             ((GameOverScreen) gameOverScreen).setFinalScore(pointsManager.getPoints());
             sceneManager.setNextScene(SceneID.GAME_OVER);
             return true;

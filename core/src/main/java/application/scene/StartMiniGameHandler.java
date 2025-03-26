@@ -24,7 +24,7 @@ public class StartMiniGameHandler implements CollisionListener {
 
     // Cooldown timer to prevent rapid collision handling
     private float interactionCooldown = 0f;
-    private static final float COOLDOWN_DURATION = 0.2f; // 0.2 seconds cooldown
+    private static final float COOLDOWN_DURATION = 0.8f; // 0.2 seconds cooldown
 
     // List of aliens to respawn during next update
     private List<AlienRespawnData> aliensToRespawn = new ArrayList<>();
@@ -53,61 +53,35 @@ public class StartMiniGameHandler implements CollisionListener {
      */
     @Override
     public void onCollision(Entity a, Entity b, CollisionType type) {
-        if (type == CollisionType.ALIEN_PLAYER) {
-            // Check if cooldown is active
-            if (interactionCooldown > 0) {
-                return;
-            }
+        if (type == CollisionType.ALIEN_PLAYER && interactionCooldown <= 0) {
+            // Set cooldown
+            interactionCooldown = COOLDOWN_DURATION;
+            System.out.println("Alien collision detected, cooldown set: " + interactionCooldown);
 
             // Get player status
             PlayerStatus playerStatus = PlayerStatus.getInstance();
 
-            // Store reference to alien for respawning
+            // Identify which entity is the alien - FIX: use getEntityType() instead of getType()
             Entity alien = (a.getEntityType() == EntityType.ALIEN) ? a : b;
-            playerStatus.setLastAlienEncounter(alien);
+            Entity player = playerStatus.getPlayer();
 
-            try {
-                // Check if player is holding trash
-                if (playerStatus.isHoldingTrash()) {
-                    // Make the player drop the trash
-                    playerStatus.dropTrash();
-                    System.out.println("Player dropped trash due to alien collision!");
-                } else {
-                    // Queue alien to move away from player instead of moving it immediately
-                    queueAlienMoveAwayFromPlayer(alien);
-                    System.out.println("Alien will move away from player!");
-                }
-
-                // Start cooldown
-                interactionCooldown = COOLDOWN_DURATION;
-
-            } catch (Exception e) {
-                System.err.println("Error handling collision: " + e.getMessage());
-                e.printStackTrace();
-            }
+            // Move alien away
+            queueAlienMoveAwayFromPlayer(alien, player);
         }
     }
 
     /**
      * Queues alien to be moved away from the player
      */
-    private void queueAlienMoveAwayFromPlayer(Entity alien) {
-        // Get the player status and position
-        PlayerStatus playerStatus = PlayerStatus.getInstance();
-        Entity player = playerStatus.getPlayer();
+    private void queueAlienMoveAwayFromPlayer(Entity alien, Entity player) {
+        // Calculate respawn position
+        Vector2 playerPos = player.getPosition();
+        Vector2 respawnPos = calculateRespawnPosition(playerPos);
 
-        // Only proceed if we have a valid player and alien
-        if (player != null && alien != null) {
-            Vector2 playerPos = player.getPosition();
+        System.out.println("Queueing alien to respawn at: " + respawnPos.x + ", " + respawnPos.y);
 
-            // Calculate a new respawn position away from the player
-            Vector2 respawnPos = calculateRespawnPosition(playerPos);
-
-            // Queue the alien for respawning instead of doing it immediately
-            aliensToRespawn.add(new AlienRespawnData(alien, respawnPos));
-        } else {
-            System.err.println("Error: Player or alien is null, can't move alien away.");
-        }
+        // Only add to the queue - don't try to move it immediately
+        aliensToRespawn.add(new AlienRespawnData(alien, respawnPos));
     }
 
     /**
@@ -116,40 +90,22 @@ public class StartMiniGameHandler implements CollisionListener {
      * @return A new position vector
      */
     private Vector2 calculateRespawnPosition(Vector2 playerPos) {
-        // Calculate a new position that is at a distance from the player
-        // but still within the screen bounds
-        float safeDistance = 200.0f;  // Minimum distance from player
+        // Dramatically increase safe distance
+        float safeDistance = 600f; // Increased from 400f
+        float margin = 50f;
 
-        // Screen dimensions with margins
-        float margin = 100.0f;
-        float screenWidth = DisplayManager.getScreenWidth() - margin*2;
-        float screenHeight = DisplayManager.getScreenHeight() - margin*2;
+        // Generate a random angle
+        float angle = MathUtils.random(0, MathUtils.PI2);
 
-        // Calculate a position within the screen bounds
-        float x, y;
+        // Calculate position at safe distance
+        float x = playerPos.x + safeDistance * MathUtils.cos(angle);
+        float y = playerPos.y + safeDistance * MathUtils.sin(angle);
 
-        do {
-            // Generate a random angle
-            float angle = MathUtils.random(0, MathUtils.PI2);
+        // Ensure it's within screen bounds
+        x = MathUtils.clamp(x, margin, DisplayManager.getScreenWidth() - margin);
+        y = MathUtils.clamp(y, margin, DisplayManager.getScreenHeight() - margin);
 
-            // Calculate position at safe distance
-            x = playerPos.x + safeDistance * MathUtils.cos(angle);
-            y = playerPos.y + safeDistance * MathUtils.sin(angle);
-
-            // Ensure it's within screen bounds
-            x = MathUtils.clamp(x, margin, DisplayManager.getScreenWidth() - margin);
-            y = MathUtils.clamp(y, margin, DisplayManager.getScreenHeight() - margin);
-
-            // Check if this position is far enough from the player
-            float distanceSquared = (x - playerPos.x)*(x - playerPos.x) + (y - playerPos.y)*(y - playerPos.y);
-            if (distanceSquared >= safeDistance*safeDistance*0.75f) {
-                // Position is good, exit the loop
-                break;
-            }
-            // Otherwise, try again
-        } while(true);
-
-        System.out.println("Respawning alien at: " + x + ", " + y + " (player at " + playerPos.x + ", " + playerPos.y + ")");
+        System.out.println("Calculated respawn position: " + x + ", " + y + " (distance: " + safeDistance + ")");
         return new Vector2(x, y);
     }
 
@@ -163,14 +119,17 @@ public class StartMiniGameHandler implements CollisionListener {
             interactionCooldown -= deltaTime;
         }
 
-        // Process any aliens that need to be respawned
+        // Process any aliens that need to be respawned - THIS IS SAFE HERE
         if (!aliensToRespawn.isEmpty()) {
+            System.out.println("Processing " + aliensToRespawn.size() + " aliens for respawn");
             for (AlienRespawnData respawnData : aliensToRespawn) {
                 if (respawnData.alien instanceof Alien) {
                     ((Alien) respawnData.alien).respawnAt(respawnData.respawnPos);
+                    System.out.println("Successfully respawned alien to: " + respawnData.respawnPos.x + ", " + respawnData.respawnPos.y);
+                } else {
+                    System.err.println("Error: Entity is not an Alien, cannot respawn");
                 }
             }
-            // Clear the list after processing
             aliensToRespawn.clear();
         }
     }

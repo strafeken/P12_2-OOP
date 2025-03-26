@@ -97,39 +97,26 @@ public class Alien extends DynamicTextureObject<AlienBehaviour.State, AlienBehav
 
     // Method to respawn the alien at a new position with proper collision handling
     public void respawnAt(Vector2 position) {
-        try {
-            if (getPhysicsBody() != null && getPhysicsBody().getBody() != null &&
-                getPhysicsBody().getBody().getWorld() != null) {
+        System.out.println("Respawning alien at: " + position.x + ", " + position.y);
 
-                // Store the current body data and world
-                Object userData = getPhysicsBody().getBody().getUserData();
-                com.badlogic.gdx.physics.box2d.World world = getPhysicsBody().getBody().getWorld();
+        // Simply set position for both the entity and physics body
+        setPosition(position);
 
-                // Check if the world is locked before modifying
-                if (!world.isLocked()) {
-                    // Remove old body from world
-                    world.destroyBody(getPhysicsBody().getBody());
+        // Set physics body position directly
+        if (getPhysicsBody() != null && getPhysicsBody().getBody() != null) {
+            // Reset velocity first
+            getPhysicsBody().getBody().setLinearVelocity(0, 0);
 
-                    // Create new body at the new position
-                    setPosition(position);
-                    initPhysicsBody(world, BodyDef.BodyType.DynamicBody);
+            // Set position directly - use 100 as default PIXELS_PER_METER
+            float pixelsPerMeter = 100f;
+            getPhysicsBody().getBody().setTransform(
+                position.x / pixelsPerMeter,
+                position.y / pixelsPerMeter,
+                0
+            );
 
-                    // Restore user data
-                    getPhysicsBody().getBody().setUserData(userData);
-
-                    // Start with no velocity
-                    getPhysicsBody().getBody().setLinearVelocity(0, 0);
-
-                    System.out.println("Alien respawned successfully at: " + position.x + ", " + position.y);
-                } else {
-                    System.err.println("Cannot respawn alien: physics world is locked");
-                }
-            } else {
-                System.err.println("Cannot respawn alien: physics body or world is null");
-            }
-        } catch (Exception e) {
-            System.err.println("Error respawning alien: " + e.getMessage());
-            e.printStackTrace();
+            // Important: wake up the body to ensure it processes the position change
+            getPhysicsBody().getBody().setAwake(true);
         }
     }
 
